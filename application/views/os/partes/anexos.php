@@ -32,6 +32,8 @@ if ($anexos === []) { ?>
                     <?= icon('triangle-alert', ['class' => 'size-8']) ?>
                     <span class="text-caption">Arquivo não encontrado</span>
                 </div>
+            <?php } elseif (function_exists('trifasePublicoHabilitado') && trifasePublicoHabilitado() && in_array(strtolower($extensao), ['mp4', 'webm'], true) && $this->permission->checkPermission($this->session->userdata('permissao'), 'eOs')) { ?>
+                <?php $this->load->view('trifase/miniatura', ['nomeMiniatura' => $nome, 'urlMiniatura' => null, 'urlImagem' => null, 'urlVideo' => site_url('trifase/video/' . (int) $os->idOs . '/' . (int) $anexo->idAnexos), 'urlDownload' => site_url('os/downloadanexo/' . (int) $anexo->idAnexos), 'extensaoMiniatura' => $extensao]); ?>
             <?php } else { ?>
             <a href="<?= e(componenteUrl($endereco)) ?>" target="_blank" rel="noopener" class="flex aspect-[8/5] items-center justify-center bg-surface-subtle text-muted focus-visible:outline-3 focus-visible:-outline-offset-3 focus-visible:outline-ring">
                 <?php if ($miniatura !== null) { ?>

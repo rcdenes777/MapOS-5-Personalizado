@@ -44,7 +44,7 @@ $id = (int) $osPublica->idOs;
                     $miniatura = trifasePublicoMiniatura($anexo) !== null ? site_url('trifase/miniatura/' . $id . '/' . (int) $anexo->idAnexos) : null;
                     ?>
                     <li class="flex min-w-0 flex-col overflow-hidden rounded-card border border-border bg-surface">
-                        <?php $this->load->view('trifase/miniatura', ['nomeMiniatura' => $nome, 'urlMiniatura' => $miniatura, 'urlImagem' => site_url('os/anexo/' . (int) $anexo->idAnexos), 'urlDownload' => site_url('os/downloadanexo/' . (int) $anexo->idAnexos), 'extensaoMiniatura' => $extensao]); ?>
+                        <?php $this->load->view('trifase/miniatura', ['nomeMiniatura' => $nome, 'urlMiniatura' => $miniatura, 'urlImagem' => site_url('os/anexo/' . (int) $anexo->idAnexos), 'urlDownload' => site_url('os/downloadanexo/' . (int) $anexo->idAnexos), 'urlVideo' => trifaseVideoArquivo($anexo) !== null ? site_url('trifase/video/' . $id . '/' . (int) $anexo->idAnexos) : null, 'extensaoMiniatura' => $extensao]); ?>
                         <div class="p-3">
                             <?= component('checkbox', ['name' => 'anexos[]', 'id' => 'publicar-anexo-' . (int) $anexo->idAnexos, 'value' => (string) $anexo->idAnexos, 'label' => $nome . ($extensao !== '' ? ' · ' . $extensao : ''), 'checked' => $anexo->publicado !== null]) ?>
                         </div>
@@ -59,3 +59,5 @@ $id = (int) $osPublica->idOs;
     </section>
 </div>
 <?php $this->load->view('trifase/galeria'); ?>
+
+<?php $this->load->view('trifase/video'); ?>

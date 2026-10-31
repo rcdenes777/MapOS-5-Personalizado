@@ -31,7 +31,7 @@
             <ul class="mt-3 grid grid-cols-1 gap-4 sm:grid-cols-2" aria-label="Anexos compartilhados">
                 <?php foreach ($anexos as $anexo) { ?>
                     <li class="flex min-w-0 flex-col overflow-hidden rounded-card border border-border bg-surface">
-                        <?php $this->load->view('trifase/miniatura', ['nomeMiniatura' => $anexo['nome'], 'urlMiniatura' => $anexo['miniatura'], 'urlImagem' => $anexo['imagem'], 'urlDownload' => $anexo['url'], 'extensaoMiniatura' => $anexo['extensao']]); ?>
+                        <?php $this->load->view('trifase/miniatura', ['nomeMiniatura' => $anexo['nome'], 'urlMiniatura' => $anexo['miniatura'], 'urlImagem' => $anexo['imagem'], 'urlDownload' => $anexo['url'], 'urlVideo' => $anexo['video'], 'extensaoMiniatura' => $anexo['extensao']]); ?>
                         <div class="flex flex-col gap-2 p-3">
                             <p class="text-label-md"><?= e($anexo['nome']) ?></p>
                             <?= component('button', ['label' => 'Baixar ' . $anexo['nome'], 'variant' => 'outline', 'size' => 'sm', 'href' => $anexo['url']]) ?>
@@ -46,5 +46,6 @@
         <p class="text-caption text-muted">Este link é privado. Compartilhe apenas com pessoas autorizadas.</p>
     </main>
     <?php $this->load->view('trifase/galeria'); ?>
+    <?php $this->load->view('trifase/video'); ?>
 </body>
 </html>

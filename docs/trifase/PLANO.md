@@ -4,7 +4,8 @@ Data: 31/10/2026. Registro histórico da preparação inicial (etapa 0).
 
 Atualização: o link público foi implementado e testado na branch local. O estado
 atual, a arquitetura modular e as evidências estão em [LINK_PUBLICO.md](LINK_PUBLICO.md).
-Recebimentos parciais e galeria de vídeos continuam como etapas futuras.
+A galeria de vídeos MP4/WebM e o limite de 200 MB também foram concluídos na
+prévia. Recebimentos parciais continuam como etapa futura.
 
 ## Base e isolamento
 

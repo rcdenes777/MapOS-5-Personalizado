@@ -44,6 +44,9 @@ class Publico extends CI_Controller
             $anexos[] = [
                 'nome' => 'Anexo #' . (int) $anexo->idAnexos,
                 'url' => $prefixo . 'publico/anexo/' . $token . '/' . (int) $anexo->idAnexos,
+                'miniatura' => trifasePublicoMiniatura($anexo) !== null ? $prefixo . 'publico/miniatura/' . $token . '/' . (int) $anexo->idAnexos : null,
+                'imagem' => trifasePublicoMiniatura($anexo, false) !== null ? $prefixo . 'publico/imagem/' . $token . '/' . (int) $anexo->idAnexos : null,
+                'extensao' => strtoupper(pathinfo((string) $anexo->anexo, PATHINFO_EXTENSION)),
             ];
         }
         $this->load->view('trifase/publico', ['os' => trifasePublicoDados($os), 'anexos' => $anexos, 'basePublica' => $base]);
@@ -51,27 +54,32 @@ class Publico extends CI_Controller
 
     public function anexo($token = null, $id = null)
     {
+        $this->entregar($token, $id, 'arquivo');
+    }
+
+    public function miniatura($token = null, $id = null)
+    {
+        $this->entregar($token, $id, 'miniatura');
+    }
+
+    public function imagem($token = null, $id = null)
+    {
+        $this->entregar($token, $id, 'imagem');
+    }
+
+    private function entregar($token, $id, string $modo): void
+    {
         $os = $this->publico_model->resolver($token);
         $id = filter_var($id, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
         $anexo = $os && $id !== false ? $this->publico_model->anexoPublicado((int) $os->idOs, $id) : null;
         // Só o storage privado da v5 é aceito; caminhos legados públicos não passam.
-        $arquivo = $anexo ? armazenamentoLocalizar(rtrim((string) $anexo->path, '/\\') . '/' . basename((string) $anexo->anexo)) : null;
+        $arquivo = $anexo ? ($modo === 'arquivo' ? trifasePublicoArquivo($anexo) : trifasePublicoMiniatura($anexo, $modo === 'miniatura')) : null;
         $extensao = $arquivo ? strtolower(pathinfo($arquivo, PATHINFO_EXTENSION)) : '';
         if (! $arquivo || ! armazenamentoMimePermitido($arquivo, $extensao)) {
             show_404('', false);
         }
         // Reutiliza MIME/disposição do storage, mas sobrescreve seu cache de
         // uma hora: um arquivo revogado não pode continuar no cache do cliente.
-        $cabecalhos = trifasePublicoArquivoCabecalhos('anexo-' . $id . '.' . $extensao, $extensao, (int) filesize($arquivo));
-        while (ob_get_level() > 0) {
-            ob_end_clean();
-        }
-        foreach ($cabecalhos as $nome => $valor) {
-            header($nome . ': ' . $valor);
-        }
-        if ($this->input->method(true) !== 'HEAD') {
-            readfile($arquivo);
-        }
-        exit;
+        trifasePublicoEnviarArquivo($arquivo, $id, $modo !== 'arquivo', $this->input->method(true) === 'HEAD');
     }
 }

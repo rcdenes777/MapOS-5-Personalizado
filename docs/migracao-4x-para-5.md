@@ -300,6 +300,10 @@ ambiente isolado, configure `TRIFASE_PUBLICO_ENABLED=true` e, quando o domínio
 dos clientes for diferente do painel, `TRIFASE_PUBLIC_BASEURL`.
 
 As rotas `trifase/*` são administrativas, com vOs + eOs e POST/CSRF nas mudanças.
+Miniaturas em `trifase/miniatura/<os>/<id>` exigem login e vínculo à OS.
+As prévias `publico/miniatura/<token>/<id>` e `publico/imagem/<token>/<id>` usam
+a mesma autorização do download e servem somente imagens raster verificadas,
+sem cache. Não há migration adicional para as miniaturas.
 As rotas `publico/os/<token>` e `publico/anexo/<token>/<id>` só atendem com o
 módulo ligado e token vigente. Os anexos precisam de publicação explícita.
 Revisar proxy, HTTPS e logs antes de qualquer acesso externo; não expor o painel

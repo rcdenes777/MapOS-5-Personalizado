@@ -26,9 +26,14 @@ usam POST com o CSRF padrão da v5. Não cria uma permissão administrativa para
 - Anexos começam privados. Marque explicitamente os que deseja disponibilizar.
   Desmarcar e salvar remove o acesso sem precisar trocar o link. Todo download
   verifica novamente token, OS e publicação do anexo.
-- Nesta etapa arquivos são baixados, não apresentados em galeria. Vídeos,
-  recebimentos parciais, laudos públicos e personalização da página são etapas
-  separadas; não foram adicionados ao escopo deste módulo.
+- Fotos aparecem em cartões com miniaturas tanto na seleção administrativa
+  quanto na página pública. Clicar na miniatura abre a imagem maior em outra
+  aba. Arquivos sem prévia de imagem (PDF, TXT etc.) mostram ícone e extensão,
+  com download. Vídeos, recebimentos parciais e laudos públicos são etapas separadas.
+- Miniaturas reutilizam o arquivo criado no upload. Se ele não existir ou
+  estiver inválido, usam a imagem original verificada, respeitando o limite
+  de pixels configurado. Arquivo sem imagem válida recebe um ícone, sem imagem
+  quebrada. Esta etapa não cria derivados novos nem altera anexos ou publicações.
 
 ## Ativação em uma instalação de testes
 
@@ -57,8 +62,11 @@ O módulo usa o roteamento padrão do CI3, sem editar `routes.php`:
 | `trifase/gerar/<os>` | POST, login, vOs + eOs + CSRF |
 | `trifase/revogar/<os>` | POST, login, vOs + eOs + CSRF |
 | `trifase/anexos/<os>` | POST, login, vOs + eOs + CSRF |
+| `trifase/miniatura/<os>/<anexo>` | GET/HEAD, login, vOs + eOs e vínculo do anexo à OS |
 | `publico/os/<token>` | GET/HEAD, token vigente |
 | `publico/anexo/<token>/<anexo>` | GET/HEAD, token vigente e anexo publicado na OS |
+| `publico/miniatura/<token>/<anexo>` | GET/HEAD, mesmas verificações, somente imagem raster válida |
+| `publico/imagem/<token>/<anexo>` | GET/HEAD, imagem original inline com as mesmas verificações |
 
 O prefixo `index.php` acompanha `config['index_page']`. Não desative o CSRF nem
 inclua rotas Trifase em `csrf_exclude_uris`. Não exponha o painel para viabilizar
@@ -142,3 +150,25 @@ da versão instalada. Restaurar dados antigos exige revisar/revogar os links.
 
 Esses testes não comprovam funcionamento em um domínio externo, túnel, proxy
 de produção ou dados reais. Esses ambientes não foram alterados.
+
+### Atualização: miniaturas
+
+Miniaturas foram adicionadas em arquivos próprios do módulo e aplicadas somente
+à prévia local 8200, sem nova migration, troca de token ou alteração na seleção
+de publicação. O trecho `views/trifase/miniatura.php` é compartilhado pelas duas
+telas. A imagem original abre em outra aba; o download continua separado.
+
+- Nove testes novos de filesystem/cabeçalhos: prioridade da thumb, fallback,
+  MIME falso, original ausente, arquivo sem prévia, caminhos e symlinks externos,
+  limite de pixels e imagem inline com no-store.
+- Suíte PHP: 1.614 testes, 7.355 assertions, sem falhas; permanece o aviso antigo
+  em `TemaCorTest`. PHPStan sem erros, formatação conferida, frontend recompilado
+  e 20 arquivos de testes JS passaram.
+- Dezenove verificações HTTP na prévia: bytes JPEG das URLs emitidas, ampliação,
+  HEAD, no-store, token inválido, bloqueio do anexo privado nas duas rotas de
+  imagem, login obrigatório no painel e token ausente dos logs.
+- Inspeção no navegador: quatro miniaturas administrativas carregadas e somente
+  as três autorizadas na página pública. Molduras uniformes, sem recorte das fotos.
+
+A inspeção usou a seleção já definida pelo usuário. Nenhum arquivo foi publicado
+automaticamente para produzir a demonstração.

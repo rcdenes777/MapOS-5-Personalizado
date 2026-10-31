@@ -38,6 +38,7 @@ $config['permissions_map'] = [
         'gerar' => ['todas' => ['vOs', 'eOs']],
         'revogar' => ['todas' => ['vOs', 'eOs']],
         'anexos' => ['todas' => ['vOs', 'eOs']],
+        'miniatura' => ['todas' => ['vOs', 'eOs']],
     ],
     'Arquivos' => [
         'index' => 'vArquivo',

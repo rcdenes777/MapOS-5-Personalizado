@@ -53,9 +53,70 @@ function trifasePublicoCabecalhos(): array
 }
 
 /** @return array<string, string> */
-function trifasePublicoArquivoCabecalhos(string $nome, string $extensao, int $tamanho): array
+function trifasePublicoArquivoCabecalhos(string $nome, string $extensao, int $tamanho, bool $imagem = false): array
 {
-    return array_replace(armazenamentoCabecalhos($nome, $extensao, $tamanho, true), trifasePublicoCabecalhos());
+    return array_replace(armazenamentoCabecalhos($nome, $extensao, $tamanho, ! $imagem), trifasePublicoCabecalhos());
+}
+
+/** Somente arquivos no storage privado; nunca aceita as raízes públicas legadas. */
+function trifasePublicoArquivo(object $anexo, bool $miniatura = false): ?string
+{
+    $pasta = rtrim((string) ($anexo->path ?? ''), '/\\');
+    $nome = (string) ($miniatura ? ($anexo->thumb ?? '') : ($anexo->anexo ?? ''));
+    if ($pasta === '' || $nome === '') {
+        return null;
+    }
+
+    return armazenamentoLocalizar($pasta . '/' . ($miniatura ? 'thumbs/' : '') . basename($nome));
+}
+
+/** Só imagens raster verificadas podem ser exibidas inline. */
+function trifasePublicoEhImagem(?string $arquivo): bool
+{
+    if ($arquivo === null) {
+        return false;
+    }
+    $extensao = strtolower(pathinfo($arquivo, PATHINFO_EXTENSION));
+    $dimensoes = @getimagesize($arquivo);
+
+    return is_array($dimensoes) && $dimensoes[0] > 0 && $dimensoes[1] > 0
+        && in_array($extensao, ['jpg', 'jpeg', 'png', 'gif'], true)
+        && armazenamentoMimePermitido($arquivo, $extensao)
+        && ! armazenamentoImagemGrandeDemais($arquivo, $extensao);
+}
+
+/** Usa a miniatura do upload; se ausente/inválida, usa a imagem original segura. */
+function trifasePublicoMiniatura(object $anexo, bool $preferirMiniatura = true): ?string
+{
+    $original = trifasePublicoArquivo($anexo);
+    if (! trifasePublicoEhImagem($original)) {
+        return null;
+    }
+    if ($preferirMiniatura) {
+        $thumb = trifasePublicoArquivo($anexo, true);
+        if (trifasePublicoEhImagem($thumb)) {
+            return $thumb;
+        }
+    }
+
+    return $original;
+}
+
+/** Envia arquivo já autorizado pelo controller, preservando no-store em HEAD/GET. */
+function trifasePublicoEnviarArquivo(string $arquivo, int $id, bool $imagem, bool $head): void
+{
+    $extensao = strtolower(pathinfo($arquivo, PATHINFO_EXTENSION));
+    $cabecalhos = trifasePublicoArquivoCabecalhos('anexo-' . $id . '.' . $extensao, $extensao, (int) filesize($arquivo), $imagem);
+    while (ob_get_level() > 0) {
+        ob_end_clean();
+    }
+    foreach ($cabecalhos as $nome => $valor) {
+        header($nome . ': ' . $valor);
+    }
+    if (! $head) {
+        readfile($arquivo);
+    }
+    exit;
 }
 
 /** A projeção pública não recebe cliente, técnico, anotações ou dados financeiros. */

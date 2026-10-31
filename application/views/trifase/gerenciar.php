@@ -36,9 +36,21 @@ $id = (int) $osPublica->idOs;
         <p class="mt-1 text-caption text-muted">Novos anexos começam privados. Alterar esta seleção não exige gerar outro link.</p>
         <form method="post" action="<?= e(site_url('trifase/anexos/' . $id)) ?>" class="mt-4 flex flex-col gap-3">
             <input type="hidden" name="<?= e($this->security->get_csrf_token_name()) ?>" value="<?= e($this->security->get_csrf_hash()) ?>">
-            <?php foreach ($anexosPublicos as $anexo) { ?>
-                <?= component('checkbox', ['name' => 'anexos[]', 'id' => 'publicar-anexo-' . (int) $anexo->idAnexos, 'value' => (string) $anexo->idAnexos, 'label' => 'Anexo #' . (int) $anexo->idAnexos . ' · ' . basename((string) $anexo->anexo), 'checked' => $anexo->publicado !== null]) ?>
-            <?php } ?>
+            <ul class="grid grid-cols-2 gap-4 lg:grid-cols-3" aria-label="Anexos para publicação">
+                <?php foreach ($anexosPublicos as $anexo) { ?>
+                    <?php
+                    $nome = 'Anexo #' . (int) $anexo->idAnexos;
+                    $extensao = strtoupper(pathinfo((string) $anexo->anexo, PATHINFO_EXTENSION));
+                    $miniatura = trifasePublicoMiniatura($anexo) !== null ? site_url('trifase/miniatura/' . $id . '/' . (int) $anexo->idAnexos) : null;
+                    ?>
+                    <li class="flex min-w-0 flex-col overflow-hidden rounded-card border border-border bg-surface">
+                        <?php $this->load->view('trifase/miniatura', ['nomeMiniatura' => $nome, 'urlMiniatura' => $miniatura, 'urlImagem' => site_url('os/anexo/' . (int) $anexo->idAnexos), 'extensaoMiniatura' => $extensao]); ?>
+                        <div class="p-3">
+                            <?= component('checkbox', ['name' => 'anexos[]', 'id' => 'publicar-anexo-' . (int) $anexo->idAnexos, 'value' => (string) $anexo->idAnexos, 'label' => $nome . ($extensao !== '' ? ' · ' . $extensao : ''), 'checked' => $anexo->publicado !== null]) ?>
+                        </div>
+                    </li>
+                <?php } ?>
+            </ul>
             <?php if ($anexosPublicos === []) { ?>
                 <p class="text-body-md text-muted">Esta OS ainda não tem anexos.</p>
             <?php } ?>

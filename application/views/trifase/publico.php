@@ -27,14 +27,20 @@
         </section>
         <section class="rounded-card border border-border bg-surface p-4" aria-labelledby="anexos">
             <h2 id="anexos" class="text-heading-sm">Arquivos compartilhados</h2>
-            <div class="mt-3 flex flex-col gap-3">
+            <ul class="mt-3 grid grid-cols-1 gap-4 sm:grid-cols-2" aria-label="Anexos compartilhados">
                 <?php foreach ($anexos as $anexo) { ?>
-                    <?= component('button', ['label' => 'Baixar ' . $anexo['nome'], 'variant' => 'outline', 'href' => $anexo['url']]) ?>
+                    <li class="flex min-w-0 flex-col overflow-hidden rounded-card border border-border bg-surface">
+                        <?php $this->load->view('trifase/miniatura', ['nomeMiniatura' => $anexo['nome'], 'urlMiniatura' => $anexo['miniatura'], 'urlImagem' => $anexo['imagem'], 'extensaoMiniatura' => $anexo['extensao']]); ?>
+                        <div class="flex flex-col gap-2 p-3">
+                            <p class="text-label-md"><?= e($anexo['nome']) ?></p>
+                            <?= component('button', ['label' => 'Baixar ' . $anexo['nome'], 'variant' => 'outline', 'size' => 'sm', 'href' => $anexo['url']]) ?>
+                        </div>
+                    </li>
                 <?php } ?>
-                <?php if ($anexos === []) { ?>
-                    <p class="text-body-md text-muted">Nenhum arquivo compartilhado nesta OS.</p>
-                <?php } ?>
-            </div>
+            </ul>
+            <?php if ($anexos === []) { ?>
+                <p class="mt-3 text-body-md text-muted">Nenhum arquivo compartilhado nesta OS.</p>
+            <?php } ?>
         </section>
         <p class="text-caption text-muted">Este link é privado. Compartilhe apenas com pessoas autorizadas.</p>
     </main>

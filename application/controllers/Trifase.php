@@ -55,6 +55,22 @@ class Trifase extends MY_Controller
         redirect('trifase/gerenciar/' . (int) $os->idOs);
     }
 
+    /** Miniaturas do painel também ficam atrás das permissões do módulo. */
+    public function miniatura($id = null, $anexoId = null)
+    {
+        $os = $this->ordem($id);
+        if (! in_array($this->input->method(true), ['GET', 'HEAD'], true)) {
+            show_error('Método não permitido.', 405);
+        }
+        $anexoId = filter_var($anexoId, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
+        $anexo = $anexoId !== false ? $this->db->where('os_id', (int) $os->idOs)->where('idAnexos', $anexoId)->get('anexos', 1)->row() : null;
+        $arquivo = $anexo ? trifasePublicoMiniatura($anexo) : null;
+        if ($arquivo === null) {
+            show_404('', false);
+        }
+        trifasePublicoEnviarArquivo($arquivo, $anexoId, true, $this->input->method(true) === 'HEAD');
+    }
+
     public function revogar($id = null)
     {
         $os = $this->ordemPost($id);

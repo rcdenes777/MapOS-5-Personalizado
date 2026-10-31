@@ -311,7 +311,8 @@ ou o armazenamento para publicar os links. Procedimento e limites completos em
 [docs/trifase/LINK_PUBLICO.md](trifase/LINK_PUBLICO.md).
 
 A ampliação das fotos do módulo Trifase usa uma janela na própria página. Copiar
-junto `views/trifase/galeria.php` e `assets/js/modules/trifase/galeria.js` ao
+junto `views/trifase/galeria.php` e os módulos `assets/js/modules/trifase/galeria.js`
+e `galeria-zoom.js` ao
 atualizar os arquivos. A página pública inclui o carregador da v5 com nonce por
 resposta; imagens, downloads e erros continuam sem scripts. Não há nova variável
 de ambiente ou migration para essa alteração.
@@ -325,3 +326,13 @@ o servidor Nginx deve aceitar `client_max_body_size 210M`. O envio completo
 Instalações com `UPLOAD_MAX_KB` explícito mantêm o valor configurado; ajuste-o
 para 204800 para usar o novo limite. Reinicie/recarregue somente os serviços
 da instalação que está sendo atualizada. O limite de pixels de fotos permanece.
+
+Vídeos MP4 e WebM agora são aceitos nos anexos. Atualizar o helper de storage,
+os controllers e componentes Trifase, a entrada de permissão `Trifase.video`
+e as views da OS. O player usa as rotas autenticadas
+`trifase/video/<os>/<anexo>` e públicas `publico/video/<token>/<anexo>`, com suporte
+a Range. Caso use proxy, preservar os cabeçalhos Range e If-Range e permitir
+as respostas 206/416; manter tokens fora dos logs, inclusive avisos de buffering
+(`fastcgi_max_temp_file_size 0;` no Nginx/FastCGI). A CSP pública passa a admitir
+`media-src 'self'`. Não expor URLs estáticas do armazenamento. Sem migration nova
+ou publicação automática de vídeos; codecs incompatíveis podem exigir download.

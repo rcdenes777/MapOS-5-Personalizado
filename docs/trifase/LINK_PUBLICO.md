@@ -29,7 +29,7 @@ usam POST com o CSRF padrão da v5. Não cria uma permissão administrativa para
 - Fotos aparecem em cartões com miniaturas tanto na seleção administrativa
   quanto na página pública. Clicar na miniatura abre a imagem maior em uma janela modal na própria
   página. Arquivos sem prévia de imagem (PDF, TXT etc.) mostram ícone e extensão,
-  com download. Vídeos, recebimentos parciais e laudos públicos são etapas separadas.
+  com download. Vídeos MP4 e WebM têm reprodução em janela; recebimentos parciais e laudos públicos seguem como etapas separadas.
 - Miniaturas reutilizam o arquivo criado no upload. Se ele não existir ou
   estiver inválido, usam a imagem original verificada, respeitando o limite
   de pixels configurado. Arquivo sem imagem válida recebe um ícone, sem imagem
@@ -63,10 +63,12 @@ O módulo usa o roteamento padrão do CI3, sem editar `routes.php`:
 | `trifase/revogar/<os>` | POST, login, vOs + eOs + CSRF |
 | `trifase/anexos/<os>` | POST, login, vOs + eOs + CSRF |
 | `trifase/miniatura/<os>/<anexo>` | GET/HEAD, login, vOs + eOs e vínculo do anexo à OS |
+| `trifase/video/<os>/<anexo>` | GET/HEAD e Range, login, vOs + eOs e vínculo à OS |
 | `publico/os/<token>` | GET/HEAD, token vigente |
 | `publico/anexo/<token>/<anexo>` | GET/HEAD, token vigente e anexo publicado na OS |
 | `publico/miniatura/<token>/<anexo>` | GET/HEAD, mesmas verificações, somente imagem raster válida |
 | `publico/imagem/<token>/<anexo>` | GET/HEAD, imagem original inline com as mesmas verificações |
+| `publico/video/<token>/<anexo>` | GET/HEAD e Range, token vigente, vídeo verificado e publicado na OS |
 
 O prefixo `index.php` acompanha `config['index_page']`. Não desative o CSRF nem
 inclua rotas Trifase em `csrf_exclude_uris`. Não exponha o painel para viabilizar
@@ -216,3 +218,45 @@ Verificação: sete casos da galeria e os 21 arquivos JS passaram; 1.616 testes 
 (7.369 assertions, um aviso antigo de depreciação), PHPStan sem erros e build
 concluído. No navegador, lupa no painel e no cliente, limite de 800%, redução,
 ajuste sem recorte, rolagem horizontal/vertical e Esc funcionaram sem criar abas.
+
+
+### Vídeos e limite de envio
+
+- Anexos aceitam **MP4** (`video/mp4`) e **WebM** (`video/webm`), além dos
+  formatos anteriores. O conteúdo real precisa corresponder à extensão.
+- O limite padrão é **200 MiB por arquivo** (204800 KB). O envio completo,
+  incluindo vários arquivos e o formulário, deve caber em **210 MiB** no PHP e
+  no Nginx. Configure os três limites juntos conforme a seção de migração.
+  A mesma regra de tamanho vale para imagens e documentos; fotos mantêm o
+  limite independente de 40 megapixels para proteger a memória.
+- O cartão **Reproduzir vídeo** abre o player na própria página. Ele funciona
+  na aba Anexos da OS e no painel Trifase para usuários com vOs + eOs, e no
+  link público apenas para vídeos explicitamente selecionados. O módulo
+  continua desativado por padrão; o upload não publica o arquivo.
+- Os controles nativos permitem reproduzir, pausar, alterar volume, avançar e
+  usar tela cheia. Não há autoplay nem carregamento de todos os vídeos da
+  galeria; a fonte só é atribuída ao abrir a janela. Fechar pausa e remove a
+  fonte. O navegador precisa suportar o codec do arquivo; não há conversão
+  automática. Quando não consegue reproduzir, o player oferece download.
+- Vídeos usam cartões identificados por formato, sem geração de imagem de
+  capa ou dependência de FFmpeg no servidor.
+- O endpoint aceita um intervalo de bytes por resposta (206), inclusive
+  sufixos. Intervalos inválidos ou múltiplos recebem 416. HEAD retorna os
+  metadados sem corpo e ignora Range; If-Range sem validador disponível retorna
+  o arquivo inteiro. A cópia é feita em blocos de 1 MiB e libera o bloqueio da
+  sessão antes do envio. Cada pedido de trecho revalida o acesso. Revogar não
+  apaga trechos já recebidos pelo navegador.
+- Copiar também `helpers/trifase_video_helper.php`, a view `trifase/video.php`
+  e o módulo `assets/js/modules/trifase/video.js`. O módulo é novo, evitando
+  depender da atualização do JavaScript anterior em cache. A política da
+  página pública permite somente mídia da própria origem. Sem nova migration.
+
+Validação final: 1.625 testes PHP / 7.439 assertions, sem falhas, com a
+depreciação preexistente de TemaCorTest; PHPStan sem erros; 22 arquivos de
+testes JS passaram. Em laboratório MySQL isolado, 24 verificações HTTP
+confirmaram uploads reais de MP4/WebM, aceitação de exatamente 200 MiB,
+rejeição do excedente e de conteúdo falso, Range, HEAD, MIME, no-store, outra
+OS, usuário sem eOs, token inválido, anexo privado e revogação. Sete verificações
+adicionais cobriram telas administrativas e If-Range nos dois formatos.
+Reprodução real de MP4/H.264 e WebM/VP9 foi conferida no navegador com vídeos
+artificiais. Nenhum arquivo foi publicado na OS real para produzir os testes.

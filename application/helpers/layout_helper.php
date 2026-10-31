@@ -263,6 +263,12 @@ if (! function_exists('layoutBreadcrumb')) {
         [$controller, $metodo, $parametro] = array_pad(array_map(static fn ($s) => (string) $s, $segmentos), 3, '');
 
         $itens = [['label' => 'Início', 'url' => $siteUrl('')]];
+        if (strtolower($controller) === 'trifase_financeiro') {
+            return array_merge($itens, [
+                ['label' => 'Ordens de serviço', 'url' => $siteUrl('os')],
+                ['label' => 'Financeiro da OS'],
+            ]);
+        }
 
         // /mapos (sem método) é o painel inicial, não o módulo "Sistema".
         $ehPainel = strtolower($controller) === 'mapos' && in_array(strtolower($metodo), ['', 'index'], true);

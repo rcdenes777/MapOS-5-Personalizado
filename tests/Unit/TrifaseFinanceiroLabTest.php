@@ -164,6 +164,35 @@ final class TrifaseFinanceiroLabTest extends MaposTestCase
         }
     }
 
+    public function testMudancaOperacionalPreservaFinanceiroERegistraHistorico(): void
+    {
+        $this->db->query('CREATE TABLE os_historico (id INTEGER PRIMARY KEY AUTOINCREMENT, os_id INTEGER, status_anterior TEXT, status_novo TEXT, usuarios_id INTEGER, data_hora TEXT)');
+        $this->db->data_cache = []; // DDL da fixture invalida a lista de tabelas já consultada pela migração.
+        $this->f->formalizar(1, 50000, 0, '2026-11-15', 7);
+        $this->rec(20000, 'entrada');
+        $antes = $this->f->resumo(1);
+        $this->f->alterarAndamento(1, 'Finalizado', 7);
+        $this->assertSame($antes, $this->f->resumo(1));
+        $this->assertSame('Finalizado', $this->db->where('idOs', 1)->get('os')->row()->status);
+        $h = $this->db->get('os_historico')->row();
+        $this->assertSame('Em Andamento', $h->status_anterior);
+        $this->assertSame('Finalizado', $h->status_novo);
+        $this->assertSame(7, (int) $h->usuarios_id);
+        $this->expectException(DomainException::class);
+        $this->f->alterarAndamento(1, 'Faturado', 7);
+    }
+
+    public function testAndamentoSemHistoricoNaoMudaNada(): void
+    {
+        $this->f->formalizar(1, 50000, 0, '2026-11-15', 7);
+        try {
+            $this->f->alterarAndamento(1, 'Finalizado', 7);
+            $this->fail('Alterou sem histórico.');
+        } catch (DomainException $e) {
+            $this->verificar(0, 50000);
+        }
+    }
+
     public function testFormalizacaoDuplicadaOuCanceladaNaoCriaReceitaExtra(): void
     {
         $this->f->formalizar(1, 50000, 0, '2026-11-15', 7);

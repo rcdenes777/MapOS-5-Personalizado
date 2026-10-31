@@ -61,6 +61,7 @@ if (! defined('PERMISSOES_SISTEMA')) {
         'cSistema' => ['Configurações do sistema', 'Preferências, atualização do banco e do Map-OS.'],
         'cEmail' => ['Fila de e-mails', 'Ver e limpar a fila de envio.'],
         'cAuditoria' => ['Auditoria', 'Ver o registro das ações dos usuários.'],
+        'estornarRecebimento' => ['Estornar recebimento de OS', 'Corrigir registros financeiros Trifase, preservando o histórico. Não executa reembolso bancário.'],
         'cBackup' => ['Backup', 'Baixar a cópia do banco de dados.'],
     ]);
 }

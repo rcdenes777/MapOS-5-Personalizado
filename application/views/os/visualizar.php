@@ -21,6 +21,7 @@
  * @var bool        $controle_estoque
  * @var array<string, string> $gateways
  */
+require_once APPPATH . 'helpers/trifase_financeiro_helper.php';
 $idOs = (int) $os->idOs;
 $fechada = (int) $os->faturado === 1 || $os->status === 'Faturado' || $os->status === 'Cancelado';
 $caixa = 'rounded-xl border border-border bg-surface p-4 sm:p-6';
@@ -48,6 +49,13 @@ $textos = [
 
 ?>
 <div class="flex flex-col gap-4 pt-2 pb-8" <?= js_module('os/tela') ?> data-os-aba="<?= e($aba) ?>">
+    <?php if (trifaseFinanceiroHabilitado() && trifaseFinanceiroOsGerida($this->db, $idOs) && $this->permission->checkPermission($this->session->userdata('permissao'), 'eOs')) { ?>
+        <form method="post" action="<?= e(site_url('trifase_financeiro/andamento/' . $idOs)) ?>" class="flex flex-wrap items-end gap-3">
+            <input type="hidden" name="<?= e($this->security->get_csrf_token_name()) ?>" value="<?= e($this->security->get_csrf_hash()) ?>">
+            <?= component('select', ['name' => 'status', 'label' => 'Andamento do serviço', 'selected' => $os->status, 'options' => ['Aberto' => 'Aberto', 'Em Andamento' => 'Em Andamento', 'Aguardando Peças' => 'Aguardando Peças', 'Finalizado' => 'Finalizado']]) ?>
+            <?= component('button', ['label' => 'Atualizar andamento', 'variant' => 'outline', 'type' => 'submit']) ?>
+        </form>
+    <?php } ?>
     <header class="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
         <div class="min-w-0">
             <div class="flex flex-wrap items-center gap-3">
@@ -58,6 +66,9 @@ $textos = [
         </div>
         <div class="flex flex-wrap gap-2">
             <?php $this->load->view('trifase/atalho', ['trifaseOsId' => $idOs]); ?>
+            <?php if (trifaseFinanceiroHabilitado() && $this->permission->checkPermission($this->session->userdata('permissao'), 'vLancamento')) { ?>
+                <?= component('button', ['label' => 'Financeiro da OS', 'variant' => 'outline', 'icon' => 'banknote', 'href' => site_url('trifase_financeiro/visualizar/' . $idOs)]) ?>
+            <?php } ?>
             <?php if ($pode['faturar']) { ?>
                 <?= component('button', ['label' => 'Faturar', 'icon' => 'circle-dollar-sign', 'variant' => 'outline', 'attrs' => ['data-modal-abrir' => 'faturar-os']]) ?>
             <?php } ?>

@@ -87,6 +87,29 @@ class Trifase_financeiro_model extends CI_Model
         return ['total_c' => $total, 'recebido_c' => $recebido, 'saldo_c' => $total - $recebido, 'situacao' => $recebido === 0 ? 'Pendente' : ($recebido === $total ? 'Quitado' : 'Parcialmente pago')];
     }
 
+    public function historico(int $osId): array
+    {
+        return $this->eventos($osId);
+    }
+
+    public function alterarAndamento(int $osId, string $status, int $usuario): void
+    {
+        if ($usuario <= 0 || ! in_array($status, ['Orçamento', 'Negociação', 'Aberto', 'Aprovado', 'Em Andamento', 'Aguardando Peças', 'Finalizado'], true)) {
+            throw new DomainException('Andamento inválido. Cancelamento exige conciliação financeira.');
+        }
+        $this->transacao($osId, function ($os) use ($osId, $status, $usuario) {
+            $this->exigirObrigacao($osId);
+            if ($os->status !== $status) {
+                if (! $this->db->table_exists('os_historico')) {
+                    throw new DomainException('Histórico da OS indisponível.');
+                }
+                $this->gravar('os_historico', ['os_id' => $osId, 'status_anterior' => $os->status, 'status_novo' => $status, 'usuarios_id' => $usuario, 'data_hora' => date('Y-m-d H:i:s')]);
+                $this->atualizar('os', ['status' => $status], ['idOs' => $osId]);
+            }
+            return $this->resumo($osId);
+        });
+    }
+
     private function saldoNativo(int $osId, int $usuario): void
     {
         $o = $this->exigirObrigacao($osId);

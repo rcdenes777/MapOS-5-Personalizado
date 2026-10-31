@@ -362,18 +362,30 @@ antes do envio e pode antecipar o vencimento se o novo padrão for menor.
 A renovação exige POST, CSRF e `vOs` + `eOs`; não reativa links expirados ou
 revogados. Não há nova migração para estas configurações.
 
-### Experimento financeiro isolado (não instalar)
+### Trifase: financeiro separado do andamento
 
-A branch de laboratório adiciona a prova descrita em `docs/trifase/FINANCEIRO_LAB.md`.
-A migração `20261031120000_trifase_financeiro_lab` é exclusiva desse experimento:
-não aplicar em bases reais ou na prévia. Ainda faltam integração HTTP, permissões,
-tratamento do legado e procedimento de reversão. Não fazer upgrade usando esta
-branch como distribuição pronta.
+Entrega controlada para a prévia 8200, com ativação explícita por instalação:
+`TRIFASE_FINANCEIRO_ENABLED=true`. O padrão continua false. Aplicar, nesta ordem,
+as migrações aditivas `20261031120000_trifase_financeiro_lab`,
+`20261031130000_trifase_tecnico_garantia` e `20261031140000_trifase_integridade`.
+O sufixo histórico `_lab` da primeira não deve ser renomeado.
 
+Antes: backup de arquivos, ambiente/chave e banco; restauração conferida em cópia
+isolada; ensaio das migrações. Elas criam tabelas/vínculos próprios sem converter
+OS antigas ou pagamentos. Interromper gravações durante a atualização e conferir
+conteúdo das tabelas existentes, anexos e tokens antes de liberar a prévia.
 
-A jornada HTTP do experimento financeiro agora existe, mas continua restrita ao
-laboratório: variável TRIFASE_FINANCEIRO_ENABLED=false por padrão, controller
-Trifase_financeiro e permissão específica estornarRecebimento (negada a grupos
-existentes até concessão explícita). Registros geridos ficam protegidos também
-nos caminhos antigos; desligar o módulo não é rollback. Não instalar em base real.
-Ver docs/trifase/FINANCEIRO_LAB.md para validações e pendências antes da adoção.
+Recebimentos e saldo têm situação independente do andamento. A edição técnica
+continua disponível depois do faturamento, enquanto itens/valores ficam protegidos.
+A garantia de registros geridos começa na conclusão registrada; datas do legado
+não são inferidas. Conciliação antiga é individual, explícita e limitada a vínculo
+pendente seguro, reutilizando o lançamento. Pagamentos antigos exigem revisão.
+
+A permissão `estornarRecebimento` começa negada aos grupos existentes e deve ser
+concedida explicitamente pelo administrador. Desativar não desfaz recebimentos nem
+remove proteção de registros geridos. Não usar down destrutivo. Preservar histórico
+e conciliar operações posteriores antes de restaurar um backup.
+
+Consultar `docs/trifase/FINANCEIRO_LAB.md` para integração, permissões, evidências,
+limites e pontos a revisar em atualizações upstream. Produção permanece fora desta
+entrega; sem conversão em lote, reembolso bancário ou alteração do MapOS 4.55.2.

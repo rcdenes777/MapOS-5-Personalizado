@@ -369,5 +369,6 @@ foreach ($exclusoes as $tipo => [$rota, $titulo, $consequencia]) { ?>
 <?php
 if (function_exists('trifasePublicoHabilitado') && trifasePublicoHabilitado() && $this->permission->checkPermission($this->session->userdata('permissao'), 'eOs')) {
     $this->load->view('trifase/video');
+    $this->load->view('trifase/galeria');
 }
 ?>

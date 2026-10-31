@@ -183,4 +183,20 @@ final class TrifasePublicoTest extends MaposTestCase
         $this->assertSame('123', $cabecalhos['Content-Length']);
         $this->assertStringContainsString("script-src 'none'", $cabecalhos['Content-Security-Policy']);
     }
+
+    public function testGaleriaUsaNonceSemLiberarScriptsEmDownloads(): void
+    {
+        $nonce = base64_encode(random_bytes(18));
+        $h = trifasePublicoCabecalhos($nonce);
+        $this->assertStringContainsString("script-src 'nonce-" . $nonce . "' 'strict-dynamic'", $h['Content-Security-Policy']);
+        $this->assertStringNotContainsString('unsafe-inline', $h['Content-Security-Policy']);
+        $this->assertStringNotContainsString('unsafe-eval', $h['Content-Security-Policy']);
+        $this->assertStringContainsString("script-src 'none'", trifasePublicoArquivoCabecalhos('imagem.png', 'png', 1, true)['Content-Security-Policy']);
+    }
+
+    public function testNonceInvalidoEhRecusado(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        trifasePublicoCabecalhos("' unsafe-inline");
+    }
 }

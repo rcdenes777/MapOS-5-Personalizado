@@ -6,6 +6,7 @@
     <meta name="robots" content="noindex, nofollow, noarchive">
     <title><?= e('Acompanhar OS #' . $os['id']) ?></title>
     <link rel="stylesheet" href="<?= e($basePublica . 'assets/dist/app.css') ?>">
+    <script type="module" nonce="<?= e($noncePublico) ?>" src="<?= e($basePublica . 'assets/js/app.js') ?>"></script>
 </head>
 <body class="bg-canvas text-text">
     <main class="mx-auto flex max-w-3xl flex-col gap-4 p-4 sm:p-6">
@@ -30,7 +31,7 @@
             <ul class="mt-3 grid grid-cols-1 gap-4 sm:grid-cols-2" aria-label="Anexos compartilhados">
                 <?php foreach ($anexos as $anexo) { ?>
                     <li class="flex min-w-0 flex-col overflow-hidden rounded-card border border-border bg-surface">
-                        <?php $this->load->view('trifase/miniatura', ['nomeMiniatura' => $anexo['nome'], 'urlMiniatura' => $anexo['miniatura'], 'urlImagem' => $anexo['imagem'], 'extensaoMiniatura' => $anexo['extensao']]); ?>
+                        <?php $this->load->view('trifase/miniatura', ['nomeMiniatura' => $anexo['nome'], 'urlMiniatura' => $anexo['miniatura'], 'urlImagem' => $anexo['imagem'], 'urlDownload' => $anexo['url'], 'extensaoMiniatura' => $anexo['extensao']]); ?>
                         <div class="flex flex-col gap-2 p-3">
                             <p class="text-label-md"><?= e($anexo['nome']) ?></p>
                             <?= component('button', ['label' => 'Baixar ' . $anexo['nome'], 'variant' => 'outline', 'size' => 'sm', 'href' => $anexo['url']]) ?>
@@ -44,5 +45,6 @@
         </section>
         <p class="text-caption text-muted">Este link é privado. Compartilhe apenas com pessoas autorizadas.</p>
     </main>
+    <?php $this->load->view('trifase/galeria'); ?>
 </body>
 </html>

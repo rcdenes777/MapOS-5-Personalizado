@@ -2,7 +2,7 @@
 
 Implementado na branch local `v5-trifase`, sobre a tag oficial `v5.2.2`
 (`9a4c5dc3835b52c12616a73ab60635e96e23ad7a`). Não publicado no GitHub nem
-instalado no MapOS de trabalho ou na prévia já existente.
+instalado no MapOS de trabalho. Aplicado e validado somente na prévia local 8200.
 
 ## Comportamento
 
@@ -27,8 +27,8 @@ usam POST com o CSRF padrão da v5. Não cria uma permissão administrativa para
   Desmarcar e salvar remove o acesso sem precisar trocar o link. Todo download
   verifica novamente token, OS e publicação do anexo.
 - Fotos aparecem em cartões com miniaturas tanto na seleção administrativa
-  quanto na página pública. Clicar na miniatura abre a imagem maior em outra
-  aba. Arquivos sem prévia de imagem (PDF, TXT etc.) mostram ícone e extensão,
+  quanto na página pública. Clicar na miniatura abre a imagem maior em uma janela modal na própria
+  página. Arquivos sem prévia de imagem (PDF, TXT etc.) mostram ícone e extensão,
   com download. Vídeos, recebimentos parciais e laudos públicos são etapas separadas.
 - Miniaturas reutilizam o arquivo criado no upload. Se ele não existir ou
   estiver inválido, usam a imagem original verificada, respeitando o limite
@@ -156,7 +156,7 @@ de produção ou dados reais. Esses ambientes não foram alterados.
 Miniaturas foram adicionadas em arquivos próprios do módulo e aplicadas somente
 à prévia local 8200, sem nova migration, troca de token ou alteração na seleção
 de publicação. O trecho `views/trifase/miniatura.php` é compartilhado pelas duas
-telas. A imagem original abre em outra aba; o download continua separado.
+telas. A ampliação agora usa uma janela na própria página; o download continua separado.
 
 - Nove testes novos de filesystem/cabeçalhos: prioridade da thumb, fallback,
   MIME falso, original ausente, arquivo sem prévia, caminhos e symlinks externos,
@@ -172,3 +172,24 @@ telas. A imagem original abre em outra aba; o download continua separado.
 
 A inspeção usou a seleção já definida pelo usuário. Nenhum arquivo foi publicado
 automaticamente para produzir a demonstração.
+
+### Atualização: janela de imagens
+
+A ampliação usa o componente modal nativo da v5, com módulo ES próprio em
+`assets/js/modules/trifase/galeria.js`, compartilhado pelo painel e pela página
+pública. Clicar na miniatura não navega nem cria outra aba. O botão de fechar,
+Esc e o clique fora da caixa fecham a janela e devolvem o foco à miniatura.
+A rolagem da página fica bloqueada enquanto a janela está aberta. Falhas de
+carregamento apresentam uma mensagem, sem inserir HTML a partir dos dados.
+
+A página pública válida autoriza o carregador JS por nonce aleatório novo a
+cada resposta e `strict-dynamic`; não usa scripts inline nem libera origens
+externas por lista ampla. Imagens, downloads e respostas de erro continuam com
+`script-src 'none'`. As URLs da imagem e do download têm de ser da mesma origem.
+
+Validação: 1.616 testes PHP, 7.368 assertions, sem falhas; permanece o aviso antigo
+de TemaCorTest. PHPStan sem erros; 21 arquivos de testes JS, incluindo cinco
+casos do modal, passaram. Na prévia foram testados clique real nas duas telas,
+foto carregada, quantidade de abas inalterada, fechamento pelo botão, Esc e
+fundo, foco restaurado, 19 verificações HTTP dos anexos e nonces distintos em
+respostas consecutivas. Não houve alteração no banco ou na seleção publicada.

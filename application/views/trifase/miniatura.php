@@ -1,7 +1,7 @@
 <?php
 /** Trecho compartilhado: o controller de destino sempre revalida o acesso. */
 if ($urlMiniatura !== null) { ?>
-    <a href="<?= e($urlImagem) ?>" target="_blank" rel="noopener noreferrer" class="relative flex aspect-[8/5] items-center justify-center overflow-hidden bg-surface-subtle focus-visible:outline-3 focus-visible:-outline-offset-3 focus-visible:outline-ring" aria-label="<?= e('Ampliar ' . $nomeMiniatura) ?>">
+    <a href="<?= e($urlImagem) ?>" data-trifase-imagem data-trifase-nome="<?= e($nomeMiniatura) ?>" data-trifase-download="<?= e($urlDownload) ?>" class="relative flex aspect-[8/5] items-center justify-center overflow-hidden bg-surface-subtle focus-visible:outline-3 focus-visible:-outline-offset-3 focus-visible:outline-ring" aria-label="<?= e('Ampliar ' . $nomeMiniatura) ?>" aria-haspopup="dialog" aria-controls="trifase-galeria">
         <img src="<?= e($urlMiniatura) ?>" alt="<?= e($nomeMiniatura) ?>" loading="lazy" decoding="async" class="absolute inset-0 size-full object-contain">
     </a>
 <?php } else { ?>

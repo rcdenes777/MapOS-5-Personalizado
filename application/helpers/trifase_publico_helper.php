@@ -39,8 +39,13 @@ function trifasePublicoUrl(string $token, string $padrao, string $index = 'index
 }
 
 /** @return array<string, string> */
-function trifasePublicoCabecalhos(): array
+function trifasePublicoCabecalhos(?string $nonce = null): array
 {
+    if ($nonce !== null && ! preg_match('/\A[A-Za-z0-9+\/]{24}\z/D', $nonce)) {
+        throw new InvalidArgumentException('Nonce inválido.');
+    }
+    $scripts = $nonce === null ? "'none'" : "'nonce-" . $nonce . "' 'strict-dynamic'";
+
     return [
         'Cache-Control' => 'private, no-store, max-age=0',
         'Pragma' => 'no-cache',
@@ -48,7 +53,7 @@ function trifasePublicoCabecalhos(): array
         'X-Robots-Tag' => 'noindex, nofollow, noarchive',
         'X-Content-Type-Options' => 'nosniff',
         'X-Frame-Options' => 'DENY',
-        'Content-Security-Policy' => "default-src 'none'; style-src 'self'; img-src 'self'; font-src 'self'; script-src 'none'; frame-ancestors 'none'; base-uri 'none'; form-action 'none'",
+        'Content-Security-Policy' => "default-src 'none'; style-src 'self'; img-src 'self'; font-src 'self'; script-src " . $scripts . "; frame-ancestors 'none'; base-uri 'none'; form-action 'none'",
     ];
 }
 

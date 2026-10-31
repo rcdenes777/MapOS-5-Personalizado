@@ -49,7 +49,14 @@ class Publico extends CI_Controller
                 'extensao' => strtoupper(pathinfo((string) $anexo->anexo, PATHINFO_EXTENSION)),
             ];
         }
-        $this->load->view('trifase/publico', ['os' => trifasePublicoDados($os), 'anexos' => $anexos, 'basePublica' => $base]);
+        // Apenas a página válida recebe o script da galeria com nonce novo.
+        // Erros e respostas binárias continuam sem execução de scripts.
+        $nonce = base64_encode(random_bytes(18));
+        foreach (trifasePublicoCabecalhos($nonce) as $nome => $valor) {
+            $this->output->set_header($nome . ': ' . $valor);
+            header($nome . ': ' . $valor);
+        }
+        $this->load->view('trifase/publico', ['os' => trifasePublicoDados($os), 'anexos' => $anexos, 'basePublica' => $base, 'noncePublico' => $nonce]);
     }
 
     public function anexo($token = null, $id = null)

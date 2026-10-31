@@ -309,3 +309,9 @@ módulo ligado e token vigente. Os anexos precisam de publicação explícita.
 Revisar proxy, HTTPS e logs antes de qualquer acesso externo; não expor o painel
 ou o armazenamento para publicar os links. Procedimento e limites completos em
 [docs/trifase/LINK_PUBLICO.md](trifase/LINK_PUBLICO.md).
+
+A ampliação das fotos do módulo Trifase usa uma janela na própria página. Copiar
+junto `views/trifase/galeria.php` e `assets/js/modules/trifase/galeria.js` ao
+atualizar os arquivos. A página pública inclui o carregador da v5 com nonce por
+resposta; imagens, downloads e erros continuam sem scripts. Não há nova variável
+de ambiente ou migration para essa alteração.

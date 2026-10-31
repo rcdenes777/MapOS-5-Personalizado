@@ -11,7 +11,7 @@
  * migration mover os arquivos.
  */
 if (! defined('ARMAZENAMENTO_LIMITE_PADRAO_KB')) {
-    define('ARMAZENAMENTO_LIMITE_PADRAO_KB', 10240);
+    define('ARMAZENAMENTO_LIMITE_PADRAO_KB', 204800);
 }
 
 if (! function_exists('armazenamentoRaiz')) {
@@ -45,7 +45,7 @@ if (! function_exists('armazenamentoCaminhoAbsoluto')) {
 }
 
 if (! function_exists('armazenamentoLimiteKb')) {
-    /** Tamanho máximo de um upload em KB: UPLOAD_MAX_KB, ou 10 MB. */
+    /** Tamanho máximo de um upload em KB: UPLOAD_MAX_KB, ou 200 MB. */
     function armazenamentoLimiteKb(): int
     {
         $valor = (int) ($_ENV['UPLOAD_MAX_KB'] ?? 0);

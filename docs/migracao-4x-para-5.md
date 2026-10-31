@@ -70,7 +70,7 @@ Compare o seu `.env` com o `application/.env.example` da v5 e acrescente o que f
 | Variável | Para que serve | Padrão |
 | --- | --- | --- |
 | `STORAGE_PATH` | Pasta dos anexos de OS e dos arquivos. **Aponte para fora da pasta pública.** | vazio: `application/storage` |
-| `UPLOAD_MAX_KB` | Tamanho máximo de cada upload, em KB. | `10240` (10 MB) |
+| `UPLOAD_MAX_KB` | Tamanho máximo de cada upload, em KB. | `204800` (200 MB) |
 | `UPLOAD_MAX_PIXELS` | Limite de pixels (largura × altura) de uma imagem enviada, para proteger a memória ao gerar miniaturas e PDFs. | `40000000` (40 megapixels) |
 | `APP_SECURITY_HEADERS` | Liga ou desliga os cabeçalhos de segurança. | `true` |
 | `APP_HSTS_MAX_AGE` | Duração do HSTS (só em HTTPS). `0` desliga. | `31536000` |
@@ -315,3 +315,13 @@ junto `views/trifase/galeria.php` e `assets/js/modules/trifase/galeria.js` ao
 atualizar os arquivos. A página pública inclui o carregador da v5 com nonce por
 resposta; imagens, downloads e erros continuam sem scripts. Não há nova variável
 de ambiente ou migration para essa alteração.
+
+### Trifase: anexos de até 200 MB
+
+O limite padrão por arquivo é 204800 KB (200 MiB), configurável em
+`UPLOAD_MAX_KB`. PHP deve usar `upload_max_filesize=200M` e `post_max_size=210M`;
+o servidor Nginx deve aceitar `client_max_body_size 210M`. O envio completo
+(incluindo todos os arquivos e o formulário) precisa caber nos 210 MiB.
+Instalações com `UPLOAD_MAX_KB` explícito mantêm o valor configurado; ajuste-o
+para 204800 para usar o novo limite. Reinicie/recarregue somente os serviços
+da instalação que está sendo atualizada. O limite de pixels de fotos permanece.

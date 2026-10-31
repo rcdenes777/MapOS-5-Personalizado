@@ -60,7 +60,7 @@ final class ArmazenamentoTest extends MaposTestCase
 
     public function testLimiteConfiguravel(): void
     {
-        $this->assertSame(10240, armazenamentoLimiteKb());
+        $this->assertSame(204800, armazenamentoLimiteKb());
 
         $_ENV['UPLOAD_MAX_KB'] = '2048';
         $this->assertSame(2048, armazenamentoLimiteKb());
@@ -68,7 +68,7 @@ final class ArmazenamentoTest extends MaposTestCase
         $this->assertSame('pdf|png', armazenamentoConfigUpload('/x', ['pdf', 'png'])['allowed_types']);
 
         $_ENV['UPLOAD_MAX_KB'] = 'abc';
-        $this->assertSame(10240, armazenamentoLimiteKb());
+        $this->assertSame(204800, armazenamentoLimiteKb());
     }
 
     public function testPastaProtegidaEFechadaParaOWeb(): void

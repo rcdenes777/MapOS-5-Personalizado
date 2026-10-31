@@ -1,6 +1,10 @@
 # Trifase na v5 — avaliação e etapa 0
 
-Data: 31/10/2026. Estado: preparação local; funcionalidades ainda não implementadas.
+Data: 31/10/2026. Registro histórico da preparação inicial (etapa 0).
+
+Atualização: o link público foi implementado e testado na branch local. O estado
+atual, a arquitetura modular e as evidências estão em [LINK_PUBLICO.md](LINK_PUBLICO.md).
+Recebimentos parciais e galeria de vídeos continuam como etapas futuras.
 
 ## Base e isolamento
 

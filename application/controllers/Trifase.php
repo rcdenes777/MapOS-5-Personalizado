@@ -27,6 +27,7 @@ class Trifase extends MY_Controller
     {
         $os = $this->ordem($id);
         $this->data['osPublica'] = $os;
+        $this->data['prazoPublicoDias'] = trifasePublicoValidadeDias();
         $this->data['estadoPublico'] = $this->publico_model->estado((int) $os->idOs);
         $this->data['anexosPublicos'] = $this->publico_model->anexos((int) $os->idOs);
         $token = $this->publico_model->tokenAtivo((int) $os->idOs);
@@ -86,6 +87,19 @@ class Trifase extends MY_Controller
         }
         $range = $this->input->get_request_header('If-Range') ? null : $this->input->get_request_header('Range');
         trifaseVideoEnviar($arquivo, $anexoId, $this->input->method(true) === 'HEAD', $range);
+    }
+
+    public function renovar($id = null)
+    {
+        $os = $this->ordemPost($id);
+        try {
+            $this->publico_model->renovar((int) $os->idOs, (int) $this->session->userdata('id_admin'));
+            $this->session->set_flashdata('success', 'Validade renovada. O endereço do link e os anexos compartilhados continuam iguais.');
+            log_info('Renovou validade do link público da OS: ' . (int) $os->idOs);
+        } catch (DomainException | RuntimeException $erro) {
+            $this->session->set_flashdata('error', $erro->getMessage());
+        }
+        redirect('trifase/gerenciar/' . (int) $os->idOs);
     }
 
     public function revogar($id = null)

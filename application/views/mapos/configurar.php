@@ -21,7 +21,7 @@
 $erroGeral = $erros['_geral'] ?? null;
 $errosDeCampo = array_diff_key($erros, ['_geral' => true]);
 $caixa = 'rounded-xl border border-border bg-surface p-4 sm:p-6';
-$icones = ['geral' => 'settings', 'os' => 'wrench', 'vendas' => 'shopping-cart', 'financeiro' => 'circle-dollar-sign', 'email' => 'mail', 'pagamentos' => 'banknote', 'api' => 'key-round', 'sistema' => 'download'];
+$icones = ['geral' => 'settings', 'os' => 'wrench', 'vendas' => 'shopping-cart', 'financeiro' => 'circle-dollar-sign', 'email' => 'mail', 'pagamentos' => 'banknote', 'api' => 'key-round', 'link-publico' => 'external-link', 'sistema' => 'download'];
 $curtos = ['os' => 'OS', 'vendas' => 'Vendas', 'pagamentos' => 'Gateways', 'sistema' => 'Atualizar'];
 
 $abas = [];
@@ -74,6 +74,10 @@ foreach ($campos as $nome => $def) {
         <?= component('alert', ['variant' => 'danger', 'message' => $erroGeral]) ?>
     <?php } elseif ($errosDeCampo !== []) { ?>
         <?= component('alert', ['variant' => 'danger', 'message' => count($errosDeCampo) === 1 ? 'Confira o campo destacado.' : 'Confira os ' . count($errosDeCampo) . ' campos destacados.']) ?>
+    <?php } ?>
+
+    <?php if ($aba === 'link-publico') { ?>
+        <?= component('alert', ['variant' => 'info', 'message' => 'O cliente vê somente o andamento, a descrição do equipamento e os anexos selecionados na OS. Não vê dados pessoais, anotações internas ou valores financeiros. Esta configuração é independente da API.']) ?>
     <?php } ?>
 
     <?php if ($aba === 'sistema') { ?>

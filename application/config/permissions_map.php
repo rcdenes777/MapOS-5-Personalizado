@@ -37,6 +37,7 @@ $config['permissions_map'] = [
         'gerenciar' => ['todas' => ['vOs', 'eOs']],
         'gerar' => ['todas' => ['vOs', 'eOs']],
         'revogar' => ['todas' => ['vOs', 'eOs']],
+        'renovar' => ['todas' => ['vOs', 'eOs']],
         'anexos' => ['todas' => ['vOs', 'eOs']],
         'miniatura' => ['todas' => ['vOs', 'eOs']],
         'video' => ['todas' => ['vOs', 'eOs']],

@@ -19,7 +19,7 @@ $id = (int) $osPublica->idOs;
     <?php } ?>
     <section class="rounded-card border border-border bg-surface p-4">
         <h2 class="text-heading-sm text-text">Acesso do cliente</h2>
-        <p class="my-3 text-body-md text-muted"><?= e($estadoPublico ? 'Link ativo até ' . date('d/m/Y H:i', (int) $estadoPublico->expira_em) . '. Gerar outro invalida o anterior imediatamente.' : 'Nenhum link ativo. Os links expiram após 120 dias.') ?></p>
+        <p class="my-3 text-body-md text-muted"><?= e($estadoPublico ? 'Link ativo até ' . date('d/m/Y H:i', (int) $estadoPublico->expira_em) . '. Gerar outro invalida o anterior imediatamente.' : 'Nenhum link ativo. Novos links valem ' . $prazoPublicoDias . ' dias.') ?></p>
         <?php if ($estadoPublico && ! $linkPublicoAtivo) { ?>
             <?= component('alert', ['variant' => 'info', 'message' => 'Este link foi criado antes da atualização ou sua cópia não pôde ser recuperada. Ele continua ativo até a data indicada. Gere outro apenas se precisar de um novo endereço para copiar.']) ?>
         <?php } ?>
@@ -28,6 +28,11 @@ $id = (int) $osPublica->idOs;
             <?= component('button', ['label' => $estadoPublico ? 'Gerar novo link e invalidar anterior' : 'Gerar link público', 'type' => 'submit']) ?>
         </form>
         <?php if ($estadoPublico) { ?>
+            <form method="post" action="<?= e(site_url('trifase/renovar/' . $id)) ?>" class="mt-3">
+                <input type="hidden" name="<?= e($this->security->get_csrf_token_name()) ?>" value="<?= e($this->security->get_csrf_hash()) ?>">
+                <p class="mb-2 text-caption text-muted"><?= e('Aplica o prazo padrão de ' . $prazoPublicoDias . ' dias a partir de hoje, mantendo o mesmo endereço e os anexos selecionados.') ?></p>
+                <?= component('button', ['label' => 'Renovar validade até ' . date('d/m/Y', time() + $prazoPublicoDias * 86400), 'variant' => 'outline', 'type' => 'submit']) ?>
+            </form>
             <form method="post" action="<?= e(site_url('trifase/revogar/' . $id)) ?>" class="mt-3">
                 <input type="hidden" name="<?= e($this->security->get_csrf_token_name()) ?>" value="<?= e($this->security->get_csrf_hash()) ?>">
                 <?= component('button', ['label' => 'Revogar acesso público', 'variant' => 'outline', 'type' => 'submit']) ?>

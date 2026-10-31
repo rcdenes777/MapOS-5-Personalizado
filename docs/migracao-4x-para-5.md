@@ -348,3 +348,16 @@ controller e view atualizados. `APP_ENCRYPTION_KEY` deve estar configurada e
 ser preservada junto ao backup privado: ela protege a cópia recuperável.
 Tokens antigos cujo endereço não é conhecido continuam ativos sem cópia
 recuperável; o painel explica essa situação, sem invalidá-los automaticamente.
+
+## Configuração do link público
+
+Em **Configurações > Link público**, usuários com `cSistema` podem ativar o
+módulo e definir `TRIFASE_PUBLICO_VALIDADE_DIAS` entre 1 e 365 dias (padrão 120).
+É independente da API. Desligar bloqueia o acesso público; religar permite os
+links ainda válidos. Não apaga tokens nem publicações.
+
+Alterar o padrão só afeta novos links. Na OS, **Renovar validade até…** aplica
+o padrão a partir de hoje, mantendo endereço e anexos. A data proposta aparece
+antes do envio e pode antecipar o vencimento se o novo padrão for menor.
+A renovação exige POST, CSRF e `vOs` + `eOs`; não reativa links expirados ou
+revogados. Não há nova migração para estas configurações.

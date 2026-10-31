@@ -53,6 +53,22 @@ final class ConfiguracoesTest extends MaposTestCase
         $this->assertArrayNotHasKey('app_theme', $config, 'O app_theme não é mais gravado (os tema-*.css saíram na #2855).');
     }
 
+    public function testConfiguracaoPublicaIsoladaEValidadeLimitada(): void
+    {
+        [$config, $env, $erros] = configuracaoDadosDoFormulario('link-publico', ['TRIFASE_PUBLICO_ENABLED' => 'true', 'TRIFASE_PUBLICO_VALIDADE_DIAS' => '120', 'API_ENABLED' => 'true']);
+        $this->assertSame([], $config);
+        $this->assertSame([], $erros);
+        $this->assertSame(['TRIFASE_PUBLICO_ENABLED' => 'true', 'TRIFASE_PUBLICO_VALIDADE_DIAS' => '120'], $env);
+        foreach (['', '0', '366', '-1', '1.5', 'abc', []] as $valor) {
+            [, , $erros] = configuracaoDadosDoFormulario('link-publico', ['TRIFASE_PUBLICO_VALIDADE_DIAS' => $valor]);
+            $this->assertArrayHasKey('TRIFASE_PUBLICO_VALIDADE_DIAS', $erros);
+        }
+        foreach (['1', '365'] as $valor) {
+            [, , $erros] = configuracaoDadosDoFormulario('link-publico', ['TRIFASE_PUBLICO_VALIDADE_DIAS' => $valor]);
+            $this->assertSame([], $erros);
+        }
+    }
+
     public function testErrosPorCampo(): void
     {
         [, , $erros] = configuracaoDadosDoFormulario('geral', ['app_name' => '  ', 'per_page' => '7', 'app_tema_modo' => 'roxo', 'app_tema_cor' => 'rosa']);

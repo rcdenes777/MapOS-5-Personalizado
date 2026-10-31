@@ -8,6 +8,14 @@ function trifasePublicoHabilitado(): bool
     return filter_var($_ENV['TRIFASE_PUBLICO_ENABLED'] ?? false, FILTER_VALIDATE_BOOLEAN);
 }
 
+/** Padrão para emissão/renovação explícita; nunca altera links durante leitura. */
+function trifasePublicoValidadeDias(): int
+{
+    $dias = filter_var($_ENV['TRIFASE_PUBLICO_VALIDADE_DIAS'] ?? 120, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1, 'max_range' => 365]]);
+
+    return $dias !== false ? $dias : 120;
+}
+
 function trifasePublicoTokenValido(mixed $token): bool
 {
     return is_string($token) && preg_match('/\A[a-f0-9]{64}\z/D', $token) === 1;

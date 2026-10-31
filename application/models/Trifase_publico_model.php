@@ -70,7 +70,8 @@ class Trifase_publico_model extends CI_Model
     {
         return $this->transacao($id, function () use ($id, $usuario): string {
             $token = bin2hex(random_bytes(32));
-            $dados = ['token_hash' => hash('sha256', $token), 'token_cifrado' => $this->tokens()->cifrar($token, $id), 'validade_dias' => self::VALIDADE_DIAS, 'expira_em' => time() + self::VALIDADE_DIAS * 86400, 'usuario_id' => $usuario];
+            $dias = trifasePublicoValidadeDias();
+            $dados = ['token_hash' => hash('sha256', $token), 'token_cifrado' => $this->tokens()->cifrar($token, $id), 'validade_dias' => $dias, 'expira_em' => time() + $dias * 86400, 'usuario_id' => $usuario];
             if ($this->db->where('os_id', $id)->count_all_results('trifase_publico_links') > 0) {
                 $ok = $this->db->where('os_id', $id)->update('trifase_publico_links', $dados);
             } else {
@@ -81,6 +82,21 @@ class Trifase_publico_model extends CI_Model
             }
 
             return $token;
+        });
+    }
+
+    /** Define novo vencimento a partir de hoje, mantendo token e anexos. */
+    public function renovar(int $id, int $usuario): void
+    {
+        $this->transacao($id, function () use ($id, $usuario): void {
+            $link = $this->db->where('os_id', $id)->where('token_hash IS NOT NULL', null, false)->where('expira_em >', time())->get('trifase_publico_links', 1)->row();
+            if (! $link) {
+                throw new DomainException('Não há link ativo para renovar.');
+            }
+            $dias = trifasePublicoValidadeDias();
+            if (! $this->db->where('os_id', $id)->update('trifase_publico_links', ['expira_em' => time() + $dias * 86400, 'validade_dias' => $dias, 'usuario_id' => $usuario])) {
+                throw new RuntimeException('Não foi possível renovar a validade.');
+            }
         });
     }
 

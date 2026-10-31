@@ -17,6 +17,7 @@ if (! defined('CONFIG_ABAS')) {
         'email' => 'E-mail',
         'pagamentos' => 'Pagamentos',
         'api' => 'API',
+        'link-publico' => 'Link público',
         'sistema' => 'Atualizações',
     ]);
 }
@@ -117,6 +118,10 @@ if (! function_exists('configuracaoCampos')) {
                 'PAYMENT_GATEWAYS_ASAAS_CREDENTIAIS_API_KEY' => ['destino' => 'env', 'tipo' => 'segredo', 'rotulo' => 'Chave da API', 'max' => 255],
                 'PAYMENT_GATEWAYS_ASAAS_BOLETO_EXPIRATION' => ['destino' => 'env', 'tipo' => 'opcao', 'rotulo' => 'Vencimento do boleto', 'opcoes' => configuracaoDiasDeBoleto()],
             ],
+            'link-publico' => [
+                'TRIFASE_PUBLICO_ENABLED' => ['destino' => 'env', 'tipo' => 'bool_env', 'rotulo' => 'Link público ligado', 'ajuda' => 'Desligar bloqueia todos os links públicos. Ao ligar novamente, os que ainda estiverem válidos voltam a funcionar.'],
+                'TRIFASE_PUBLICO_VALIDADE_DIAS' => ['destino' => 'env', 'tipo' => 'numero', 'rotulo' => 'Validade padrão dos links (dias)', 'obrigatorio' => true, 'min_valor' => 1, 'max_valor' => 365, 'padrao' => '120', 'max' => 3, 'ajuda' => 'De 1 a 365 dias. Vale para novos links. Os existentes mantêm a data atual; use Renovar validade na OS para aplicar o novo prazo sem trocar o endereço.'],
+            ],
             'api' => [
                 'API_ENABLED' => ['destino' => 'env', 'tipo' => 'bool_env', 'rotulo' => 'API ligada', 'ajuda' => 'Usada pelo aplicativo do Map-OS.'],
                 'API_TOKEN_EXPIRE_TIME' => ['destino' => 'env', 'tipo' => 'opcao', 'rotulo' => 'Validade do token de acesso (usuários: no máximo 1 hora)', 'opcoes' => ['60' => '1 minuto', '3600' => '1 hora', '86400' => '1 dia', '604800' => '1 semana', '2592000' => '1 mês']],
@@ -173,6 +178,13 @@ if (! function_exists('configuracaoDadosDoFormulario')) {
                     if ($texto !== '' && (! ctype_digit($texto) || strlen($texto) > ($campo['max'] ?? 10))) {
                         $erros[$nome] = 'Use só números.';
                         break;
+                    }
+                    if (isset($campo['min_valor'], $campo['max_valor'])) {
+                        if ($texto === '' || (int) $texto < $campo['min_valor'] || (int) $texto > $campo['max_valor']) {
+                            $erros[$nome] = 'Informe de ' . $campo['min_valor'] . ' a ' . $campo['max_valor'] . ' dias.';
+                            break;
+                        }
+                        $texto = (string) (int) $texto;
                     }
                     $valor = $texto;
                     break;
@@ -285,6 +297,9 @@ if (! function_exists('configuracaoValores')) {
         foreach (configuracaoCampos($aba) as $nome => $campo) {
             $atual = $campo['destino'] === 'env' ? ($env[$nome] ?? '') : ($configuracao[$nome] ?? '');
 
+            if ($atual === '' && isset($campo['padrao'])) {
+                $atual = $campo['padrao'];
+            }
             $valores[$nome] = match ($campo['tipo']) {
                 'segredo' => ['definido' => (string) $atual !== ''],
                 'gerar_jwt' => false,

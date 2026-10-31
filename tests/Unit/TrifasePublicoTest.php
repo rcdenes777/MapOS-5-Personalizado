@@ -85,6 +85,39 @@ final class TrifasePublicoTest extends MaposTestCase
         $this->assertSame(1, $this->db->count_all('trifase_publico_links'));
     }
 
+    public function testAlterarPadraoNaoMudaLinkExistenteERenovarPreservaEnderecoEAnexos(): void
+    {
+        $anterior = $_ENV['TRIFASE_PUBLICO_VALIDADE_DIAS'] ?? null;
+        try {
+            $_ENV['TRIFASE_PUBLICO_VALIDADE_DIAS'] = '120';
+            $token = $this->modelo->gerar(1, 7);
+            $this->modelo->publicarAnexos(1, [11]);
+            $antes = $this->db->where('os_id', 1)->get('trifase_publico_links')->row();
+            $_ENV['TRIFASE_PUBLICO_VALIDADE_DIAS'] = '7';
+            $this->assertSame($antes->expira_em, $this->modelo->estado(1)->expira_em);
+            $this->modelo->gerar(2, 7);
+            $this->assertSame(7, (int) $this->db->where('os_id', 2)->get('trifase_publico_links')->row()->validade_dias);
+            $this->modelo->renovar(1, 8);
+            $depois = $this->db->where('os_id', 1)->get('trifase_publico_links')->row();
+            $this->assertSame($antes->token_hash, $depois->token_hash);
+            $this->assertSame($antes->token_cifrado, $depois->token_cifrado);
+            $this->assertSame($token, $this->modelo->tokenAtivo(1));
+            $this->assertNotNull($this->modelo->resolver($token));
+            $this->assertNotNull($this->modelo->anexoPublicado(1, 11));
+            $this->assertSame(7, (int) $depois->validade_dias);
+            $this->assertEqualsWithDelta(time() + 7 * 86400, (int) $depois->expira_em, 2);
+            $this->db->where('os_id', 1)->update('trifase_publico_links', ['expira_em' => time() - 1]);
+            $this->expectException(DomainException::class);
+            $this->modelo->renovar(1, 8);
+        } finally {
+            if ($anterior === null) {
+                unset($_ENV['TRIFASE_PUBLICO_VALIDADE_DIAS']);
+            } else {
+                $_ENV['TRIFASE_PUBLICO_VALIDADE_DIAS'] = $anterior;
+            }
+        }
+    }
+
     public function testRevogarUmaOsNaoAfetaOutra(): void
     {
         $um = $this->modelo->gerar(1, 7);

@@ -10,7 +10,7 @@ Na tela de uma OS, **Link público** abre a administração do compartilhamento.
 Exige usuário logado com **vOs e eOs**, inclusive para ver a tela. Alterações
 usam POST com o CSRF padrão da v5. Não cria uma permissão administrativa paralela.
 
-- **Gerar link público** cria um token aleatório de 256 bits, válido por 120 dias.
+- **Gerar link público** cria um token aleatório de 256 bits, válido pelo prazo configurado (padrão 120 dias).
 - Existe um único link vigente por OS. **Gerar novo link e invalidar anterior**
   troca o token imediatamente; **Revogar acesso público** encerra o acesso.
 - O banco guarda o SHA-256 usado na leitura pública e uma cópia criptografada
@@ -325,3 +325,16 @@ recuperar token antigo conhecido. Vinte verificações HTTP cobriram retorno
 da OS, recarga, mesma URL, 120 dias, perfil sem eOs, anonimato, renovação e
 revogação. A prévia usa somente a recuperação do endereço informado pelo
 usuário, sem gerar outro link ou mudar os anexos publicados.
+
+## Configuração do link público
+
+Em **Configurações > Link público**, usuários com `cSistema` podem ativar o
+módulo e definir `TRIFASE_PUBLICO_VALIDADE_DIAS` entre 1 e 365 dias (padrão 120).
+É independente da API. Desligar bloqueia o acesso público; religar permite os
+links ainda válidos. Não apaga tokens nem publicações.
+
+Alterar o padrão só afeta novos links. Na OS, **Renovar validade até…** aplica
+o padrão a partir de hoje, mantendo endereço e anexos. A data proposta aparece
+antes do envio e pode antecipar o vencimento se o novo padrão for menor.
+A renovação exige POST, CSRF e `vOs` + `eOs`; não reativa links expirados ou
+revogados. Não há nova migração para estas configurações.

@@ -16,7 +16,7 @@ class Migration_persist_trifase_publico_token extends CI_Migration
             }
         }
         // Marcador atualizado junto do prazo: repetir após falha não soma mais 90 dias.
-        if (! $this->db->where('validade_dias', 30)->where('token_hash IS NOT NULL', null, false)->where('expira_em >', time())
+        if (! $this->db->where('validade_dias', 30)->where('token_hash IS NOT NULL', null, false)->where('token_cifrado IS NULL', null, false)->where('expira_em >', time())
             ->set('expira_em', 'expira_em + 7776000', false)->set('validade_dias', 120)->update('trifase_publico_links')) {
             throw new RuntimeException('Não foi possível ampliar a validade dos links.');
         }

@@ -31,7 +31,9 @@ final class TrifasePrazoMigrationTest extends MaposTestCase
             }
         };
         $m->up();
+        $this->db->insert('trifase_publico_links', ['os_id' => 3, 'token_hash' => str_repeat('c', 64), 'expira_em' => $expira, 'token_cifrado' => 'cifrado', 'validade_dias' => 30]);
         $m->up();
+        $this->assertSame($expira, (int) $this->db->where('os_id', 3)->get('trifase_publico_links')->row()->expira_em);
         $linha = $this->db->where('os_id', 1)->get('trifase_publico_links')->row();
         $this->assertSame($expira + 90 * 86400, (int) $linha->expira_em);
         $this->assertSame(str_repeat('a', 64), $linha->token_hash);

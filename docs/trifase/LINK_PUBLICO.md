@@ -235,11 +235,14 @@ ajuste sem recorte, rolagem horizontal/vertical e Esc funcionaram sem criar abas
   continua desativado por padrão; o upload não publica o arquivo.
 - Os controles nativos permitem reproduzir, pausar, alterar volume, avançar e
   usar tela cheia. Não há autoplay nem carregamento de todos os vídeos da
-  galeria; a fonte só é atribuída ao abrir a janela. Fechar pausa e remove a
+  galeria no player; a fonte do player só é atribuída ao abrir a janela. Fechar pausa e remove a
   fonte. O navegador precisa suportar o codec do arquivo; não há conversão
   automática. Quando não consegue reproduzir, o player oferece download.
-- Vídeos usam cartões identificados por formato, sem geração de imagem de
-  capa ou dependência de FFmpeg no servidor.
+- Vídeos usam cartões com um quadro pausado como miniatura, identificado pelo
+  formato. O navegador busca metadados e o quadro inicial somente quando o
+  cartão fica visível, pela mesma rota protegida do player. Não há geração de
+  JPEG no servidor nem dependência de FFmpeg. Se o codec não puder ser exibido,
+  permanece o ícone com a ação Reproduzir.
 - O endpoint aceita um intervalo de bytes por resposta (206), inclusive
   sufixos. Intervalos inválidos ou múltiplos recebem 416. HEAD retorna os
   metadados sem corpo e ignora Range; If-Range sem validador disponível retorna
@@ -260,3 +263,27 @@ OS, usuário sem eOs, token inválido, anexo privado e revogação. Sete verific
 adicionais cobriram telas administrativas e If-Range nos dois formatos.
 Reprodução real de MP4/H.264 e WebM/VP9 foi conferida no navegador com vídeos
 artificiais. Nenhum arquivo foi publicado na OS real para produzir os testes.
+
+
+### Correção: miniatura e janela após envio de anexo
+
+A view `os/partes/anexos.php` carrega seu próprio helper Trifase. Ela também é
+renderizada pela resposta AJAX de `os/anexar`, sem passar pelo cabeçalho da OS.
+Isso garante que o cartão recém-enviado já tenha `data-trifase-video` e a rota
+do player, em vez do antigo link com `target="_blank"`. Fotos com miniatura na
+aba Anexos também usam a janela da galeria, incluindo a lupa.
+
+Copiar o novo módulo `assets/js/modules/trifase/miniatura-video.js` junto da
+view compartilhada: ele mostra um quadro pausado, mudo e sem autoplay ou
+controles embutidos no cartão. Clicar abre a janela com os controles completos.
+Falha ou codec incompatível mantém o ícone e o acesso ao player/download.
+Sem migration, alteração de token ou publicação automática.
+
+Validação desta correção: 1.626 testes PHP / 7.444 assertions, sem falhas
+(uma depreciação preexistente); PHPStan sem erros; 23 arquivos JS passaram;
+build sem alterações nos CSS gerados. O teste PHP renderiza o trecho em um
+processo separado, sem o cabeçalho, e exige a rota do player sem target blank.
+Na prévia 8200 o MP4 já existente exibiu quadro em 0,1 s, abriu em janela com
+readyState 4 e duração reconhecida, e o número de abas permaneceu um. A foto
+também abriu na janela com a lupa. Nenhum anexo foi enviado ou publicado pelo
+teste na instalação do usuário.

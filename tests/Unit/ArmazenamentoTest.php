@@ -64,11 +64,25 @@ final class ArmazenamentoTest extends MaposTestCase
 
         $_ENV['UPLOAD_MAX_KB'] = '2048';
         $this->assertSame(2048, armazenamentoLimiteKb());
-        $this->assertSame(2048, armazenamentoConfigUpload('/x', ['pdf', 'png'])['max_size']);
+        $this->assertSame(2049, armazenamentoConfigUpload('/x', ['pdf', 'png'])['max_size']);
         $this->assertSame('pdf|png', armazenamentoConfigUpload('/x', ['pdf', 'png'])['allowed_types']);
 
         $_ENV['UPLOAD_MAX_KB'] = 'abc';
         $this->assertSame(204800, armazenamentoLimiteKb());
+    }
+
+    public function testLimiteAceitaTamanhoExatoERejeitaUmByteAcima(): void
+    {
+        $_ENV['UPLOAD_MAX_KB'] = '1';
+        $pasta = armazenamentoPasta('anexos/limite');
+        $arquivo = $pasta . '/teste.txt';
+        $dados = ['file_ext' => '.txt', 'full_path' => $arquivo];
+        file_put_contents($arquivo, str_repeat('a', 1024));
+        $this->assertNull(armazenamentoValidarEnvio($dados));
+        file_put_contents($arquivo, str_repeat('a', 1025));
+        clearstatcache(true, $arquivo);
+        $this->assertNotNull(armazenamentoValidarEnvio($dados));
+        $this->assertFileDoesNotExist($arquivo);
     }
 
     public function testPastaProtegidaEFechadaParaOWeb(): void
@@ -262,7 +276,7 @@ final class ArmazenamentoTest extends MaposTestCase
     public function testUploadDaApiNaoDependeDeOutroControllerEUsaMensagensEmPortugues(): void
     {
         $formatos = armazenamentoExtensoesAnexo();
-        $this->assertSame(['jpg', 'jpeg', 'png', 'gif', 'pdf', 'cdr', 'docx', 'txt'], $formatos);
+        $this->assertSame(['jpg', 'jpeg', 'png', 'gif', 'pdf', 'cdr', 'docx', 'txt', 'mp4', 'webm'], $formatos);
         $this->assertSame(implode('|', $formatos), armazenamentoConfigUpload('/x', $formatos)['allowed_types']);
 
         $api = (string) file_get_contents(APPPATH . 'controllers/api/v1/OsController.php');

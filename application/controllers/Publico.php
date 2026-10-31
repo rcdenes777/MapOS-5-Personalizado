@@ -2,7 +2,7 @@
 
 defined('BASEPATH') or exit('No direct script access allowed');
 
-require_once APPPATH . 'helpers/trifase_publico_helper.php';
+require_once APPPATH . 'helpers/trifase_video_helper.php';
 
 /** Leitura por capacidade (token), independente do login de cliente e da API. */
 class Publico extends CI_Controller
@@ -46,6 +46,7 @@ class Publico extends CI_Controller
                 'url' => $prefixo . 'publico/anexo/' . $token . '/' . (int) $anexo->idAnexos,
                 'miniatura' => trifasePublicoMiniatura($anexo) !== null ? $prefixo . 'publico/miniatura/' . $token . '/' . (int) $anexo->idAnexos : null,
                 'imagem' => trifasePublicoMiniatura($anexo, false) !== null ? $prefixo . 'publico/imagem/' . $token . '/' . (int) $anexo->idAnexos : null,
+                'video' => trifaseVideoArquivo($anexo) !== null ? $prefixo . 'publico/video/' . $token . '/' . (int) $anexo->idAnexos : null,
                 'extensao' => strtoupper(pathinfo((string) $anexo->anexo, PATHINFO_EXTENSION)),
             ];
         }
@@ -72,6 +73,20 @@ class Publico extends CI_Controller
     public function imagem($token = null, $id = null)
     {
         $this->entregar($token, $id, 'imagem');
+    }
+
+    public function video($token = null, $id = null)
+    {
+        $os = $this->publico_model->resolver($token);
+        $id = filter_var($id, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
+        $anexo = $os && $id !== false ? $this->publico_model->anexoPublicado((int) $os->idOs, $id) : null;
+        $arquivo = $anexo ? trifaseVideoArquivo($anexo) : null;
+        if ($arquivo === null) {
+            show_404('', false);
+        }
+        // Não há validadores de cache para If-Range: responder o arquivo inteiro.
+        $range = $this->input->get_request_header('If-Range') ? null : $this->input->get_request_header('Range');
+        trifaseVideoEnviar($arquivo, $id, $this->input->method(true) === 'HEAD', $range);
     }
 
     private function entregar($token, $id, string $modo): void

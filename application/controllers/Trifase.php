@@ -2,7 +2,7 @@
 
 defined('BASEPATH') or exit('No direct script access allowed');
 
-require_once APPPATH . 'helpers/trifase_publico_helper.php';
+require_once APPPATH . 'helpers/trifase_video_helper.php';
 
 /** Administração do módulo; todas as rotas passam pelo painel e pelo CSRF. */
 class Trifase extends MY_Controller
@@ -69,6 +69,23 @@ class Trifase extends MY_Controller
             show_404('', false);
         }
         trifasePublicoEnviarArquivo($arquivo, $anexoId, true, $this->input->method(true) === 'HEAD');
+    }
+
+    /** Cada requisição, inclusive Range/HEAD, revalida login e vínculo à OS. */
+    public function video($id = null, $anexoId = null)
+    {
+        $os = $this->ordem($id);
+        if (! in_array($this->input->method(true), ['GET', 'HEAD'], true)) {
+            show_error('Método não permitido.', 405);
+        }
+        $anexoId = filter_var($anexoId, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
+        $anexo = $anexoId !== false ? $this->db->where('os_id', (int) $os->idOs)->where('idAnexos', $anexoId)->get('anexos', 1)->row() : null;
+        $arquivo = $anexo ? trifaseVideoArquivo($anexo) : null;
+        if ($arquivo === null) {
+            show_404('', false);
+        }
+        $range = $this->input->get_request_header('If-Range') ? null : $this->input->get_request_header('Range');
+        trifaseVideoEnviar($arquivo, $anexoId, $this->input->method(true) === 'HEAD', $range);
     }
 
     public function revogar($id = null)

@@ -53,7 +53,7 @@ function trifasePublicoCabecalhos(?string $nonce = null): array
         'X-Robots-Tag' => 'noindex, nofollow, noarchive',
         'X-Content-Type-Options' => 'nosniff',
         'X-Frame-Options' => 'DENY',
-        'Content-Security-Policy' => "default-src 'none'; style-src 'self'; img-src 'self'; font-src 'self'; script-src " . $scripts . "; frame-ancestors 'none'; base-uri 'none'; form-action 'none'",
+        'Content-Security-Policy' => "default-src 'none'; style-src 'self'; img-src 'self'; media-src 'self'; font-src 'self'; script-src " . $scripts . "; frame-ancestors 'none'; base-uri 'none'; form-action 'none'",
     ];
 }
 
@@ -82,11 +82,13 @@ function trifasePublicoEhImagem(?string $arquivo): bool
         return false;
     }
     $extensao = strtolower(pathinfo($arquivo, PATHINFO_EXTENSION));
+    // Não interpretar vídeos/documentos grandes como imagem: pode esgotar memória.
+    if (! in_array($extensao, ['jpg', 'jpeg', 'png', 'gif'], true) || ! armazenamentoMimePermitido($arquivo, $extensao)) {
+        return false;
+    }
     $dimensoes = @getimagesize($arquivo);
 
     return is_array($dimensoes) && $dimensoes[0] > 0 && $dimensoes[1] > 0
-        && in_array($extensao, ['jpg', 'jpeg', 'png', 'gif'], true)
-        && armazenamentoMimePermitido($arquivo, $extensao)
         && ! armazenamentoImagemGrandeDemais($arquivo, $extensao);
 }
 

@@ -69,6 +69,8 @@ if (! function_exists('armazenamentoTipos')) {
             'png' => ['mimes' => ['image/png'], 'mime' => 'image/png', 'inline' => true],
             'gif' => ['mimes' => ['image/gif'], 'mime' => 'image/gif', 'inline' => true],
             'bmp' => ['mimes' => ['image/bmp', 'image/x-ms-bmp', 'image/x-bmp'], 'mime' => 'image/bmp', 'inline' => false],
+            'mp4' => ['mimes' => ['video/mp4'], 'mime' => 'video/mp4', 'inline' => true],
+            'webm' => ['mimes' => ['video/webm'], 'mime' => 'video/webm', 'inline' => true],
             'pdf' => ['mimes' => ['application/pdf'], 'mime' => 'application/pdf', 'inline' => true],
             'txt' => ['mimes' => ['text/plain'], 'mime' => 'text/plain', 'inline' => false],
             'docx' => ['mimes' => ['application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'application/zip', 'application/octet-stream'], 'mime' => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'inline' => false],
@@ -85,7 +87,7 @@ if (! function_exists('armazenamentoExtensoesAnexo')) {
      */
     function armazenamentoExtensoesAnexo(): array
     {
-        return ['jpg', 'jpeg', 'png', 'gif', 'pdf', 'cdr', 'docx', 'txt'];
+        return ['jpg', 'jpeg', 'png', 'gif', 'pdf', 'cdr', 'docx', 'txt', 'mp4', 'webm'];
     }
 }
 
@@ -225,7 +227,8 @@ if (! function_exists('armazenamentoConfigUpload')) {
         return [
             'upload_path' => $pasta,
             'allowed_types' => implode('|', $extensoes),
-            'max_size' => armazenamentoLimiteKb(),
+            // CI compara KB arredondados com <; a checagem abaixo usa bytes exatos.
+            'max_size' => armazenamentoLimiteKb() + 1,
             'encrypt_name' => true,
             'file_ext_tolower' => true,
         ];
@@ -267,6 +270,12 @@ if (! function_exists('armazenamentoValidarEnvio')) {
     {
         $extensao = strtolower(ltrim((string) ($dados['file_ext'] ?? ''), '.'));
         $caminho = (string) ($dados['full_path'] ?? '');
+
+        if (is_file($caminho) && filesize($caminho) > armazenamentoLimiteKb() * 1024) {
+            @unlink($caminho);
+
+            return 'O arquivo excede o tamanho máximo permitido.';
+        }
 
         if (! armazenamentoMimePermitido($caminho, $extensao)) {
             if (is_file($caminho)) {

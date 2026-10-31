@@ -4,6 +4,8 @@ if (! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
+require_once APPPATH . 'helpers/trifase_financeiro_helper.php';
+
 class Financeiro_model extends CI_Model
 {
     /**
@@ -64,7 +66,7 @@ class Financeiro_model extends CI_Model
      */
     private function aplicarFiltros(array $filtros, string $hoje): void
     {
-        $this->db->from('lancamentos');
+        $this->db->from('lancamentos')->where(trifaseFinanceiroFiltro($this->db), null, false);
 
         $pesquisa = $filtros['pesquisa'] ?? '';
         if ($pesquisa !== '') {
@@ -172,7 +174,7 @@ class Financeiro_model extends CI_Model
         return $this->db
             ->select('lancamentos.idLancamentos, lancamentos.tipo, lancamentos.descricao, lancamentos.cliente_fornecedor, lancamentos.data_vencimento')
             ->select('(' . self::LIQUIDO . ') AS liquido', false)
-            ->from('lancamentos')
+            ->from('lancamentos')->where(trifaseFinanceiroFiltro($this->db), null, false)
             ->group_start()->where('lancamentos.baixado', 0)->or_where('lancamentos.baixado IS NULL', null, false)->group_end()
             ->order_by('lancamentos.data_vencimento', 'ASC')
             ->order_by('lancamentos.idLancamentos', 'ASC')
@@ -192,7 +194,7 @@ class Financeiro_model extends CI_Model
         return $this->db
             ->select('SUBSTR(lancamentos.data_pagamento, 1, 7) AS mes, lancamentos.tipo', false)
             ->select('SUM(' . self::LIQUIDO . ') AS total', false)
-            ->from('lancamentos')
+            ->from('lancamentos')->where(trifaseFinanceiroFiltro($this->db), null, false)
             ->where('lancamentos.baixado', 1)
             ->where('lancamentos.data_pagamento >=', $ano . '-01-01')
             ->where('lancamentos.data_pagamento <=', $ano . '-12-31')
@@ -216,7 +218,7 @@ class Financeiro_model extends CI_Model
         $linhas = $this->db
             ->select('SUBSTR(lancamentos.data_pagamento, 1, 7) AS mes, lancamentos.tipo', false)
             ->select('SUM(' . self::LIQUIDO . ') AS total', false)
-            ->from('lancamentos')
+            ->from('lancamentos')->where(trifaseFinanceiroFiltro($this->db), null, false)
             ->where('lancamentos.baixado', 1)
             ->where('lancamentos.data_pagamento >=', $inicio)
             ->where('lancamentos.data_pagamento <=', $hoje)
@@ -257,7 +259,7 @@ class Financeiro_model extends CI_Model
     {
         return $this->db
             ->select('lancamentos.*, usuarios.nome AS modificado_por')
-            ->from('lancamentos')
+            ->from('lancamentos')->where(trifaseFinanceiroFiltro($this->db), null, false)
             ->join('usuarios', 'usuarios.idUsuarios = lancamentos.usuarios_id', 'left')
             ->where('lancamentos.idLancamentos', $id)
             ->limit(1)
@@ -312,6 +314,9 @@ class Financeiro_model extends CI_Model
     /** Atualiza o lançamento (linha existente) e devolve se deu certo. */
     public function atualizar(int $id, array $dados): bool
     {
+        if (trifaseFinanceiroGerido($this->db, $id)) {
+            throw new DomainException('Use as operações financeiras da OS para este lançamento.');
+        }
         $this->db->where('idLancamentos', $id)->update('lancamentos', $dados);
 
         return $this->db->affected_rows() >= 0;
@@ -325,6 +330,9 @@ class Financeiro_model extends CI_Model
      */
     public function excluir(int $id, ?int $usuario): bool
     {
+        if (trifaseFinanceiroGerido($this->db, $id)) {
+            throw new DomainException('Use as operações financeiras da OS para este lançamento.');
+        }
         $this->db->trans_begin();
 
         $this->db->set('lancamentos_id', null)->set('faturado', 0)->set('status', 'Finalizado')

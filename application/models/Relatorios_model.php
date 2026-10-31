@@ -1,5 +1,7 @@
 <?php
 
+require_once APPPATH . 'helpers/trifase_financeiro_helper.php';
+
 class Relatorios_model extends CI_Model
 {
     public function __construct()
@@ -385,6 +387,7 @@ class Relatorios_model extends CI_Model
         $this->db->where('data_vencimento >=', $primeiroDiaMes->format('Y-m-d'));
         $this->db->where('data_vencimento <=', $ultimodiaMes->format('Y-m-d'));
         $this->db->order_by('data_vencimento', 'asc');
+        $this->db->where(trifaseFinanceiroFiltro($this->db), null, false);
         $result = $this->db->get('lancamentos');
         if ($array) {
             return $result->result_array();
@@ -421,6 +424,7 @@ class Relatorios_model extends CI_Model
         }
 
         $this->db->order_by('data_vencimento', 'asc');
+        $this->db->where(trifaseFinanceiroFiltro($this->db), null, false);
         $result = $this->db->get('lancamentos');
         if ($array) {
             return $result->result_array();

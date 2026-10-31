@@ -29,7 +29,8 @@ class Trifase extends MY_Controller
         $this->data['osPublica'] = $os;
         $this->data['estadoPublico'] = $this->publico_model->estado((int) $os->idOs);
         $this->data['anexosPublicos'] = $this->publico_model->anexos((int) $os->idOs);
-        $this->data['novoLinkPublico'] = $this->session->flashdata('trifase_link');
+        $token = $this->publico_model->tokenAtivo((int) $os->idOs);
+        $this->data['linkPublicoAtivo'] = $token !== null ? trifasePublicoUrl($token, base_url(), (string) config_item('index_page')) : null;
         $this->data['view'] = 'trifase/gerenciar';
         $this->data['menuOs'] = 'OS';
 
@@ -42,9 +43,8 @@ class Trifase extends MY_Controller
         try {
             // Valida configuração antes de substituir um link vigente.
             trifasePublicoBase(base_url());
-            $token = $this->publico_model->gerar((int) $os->idOs, (int) $this->session->userdata('id_admin'));
-            $url = trifasePublicoUrl($token, base_url(), (string) config_item('index_page'));
-            $this->session->set_flashdata('trifase_link', $url);
+            $this->publico_model->gerar((int) $os->idOs, (int) $this->session->userdata('id_admin'));
+            // A cópia cifrada permite recuperar o mesmo link ao voltar à tela.
             $this->session->set_flashdata('success', 'Novo link criado. Links anteriores desta OS deixaram de funcionar.');
             log_info('Gerou link público da OS: ' . (int) $os->idOs);
         } catch (DomainException $erro) {

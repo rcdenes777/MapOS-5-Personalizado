@@ -8,18 +8,21 @@ $id = (int) $osPublica->idOs;
         <?= component('button', ['label' => 'Voltar à OS', 'variant' => 'outline', 'href' => site_url('os/visualizar/' . $id)]) ?>
     </header>
     <?= component('alert', ['variant' => 'info', 'message' => 'Quem receber o link poderá ver o andamento, a descrição do equipamento e os anexos selecionados abaixo. Não compartilhe arquivos internos.']) ?>
-    <?php if ($novoLinkPublico) { ?>
+    <?php if ($linkPublicoAtivo) { ?>
         <section class="rounded-card border border-border bg-surface p-4">
-            <?= component('input', ['name' => 'link_publico', 'label' => 'Copie e envie este link ao cliente', 'value' => $novoLinkPublico, 'readonly' => true, 'help' => 'Exibido somente agora. Guarde o link antes de sair desta tela.']) ?>
+            <?= component('input', ['name' => 'link_publico', 'label' => 'Copie e envie este link ao cliente', 'value' => $linkPublicoAtivo, 'readonly' => true, 'help' => 'Este é o link ativo desta OS. Ele continuará disponível aqui quando você voltar.']) ?>
             <div class="mt-3 flex flex-wrap gap-2">
-                <?= component('button', ['label' => 'Abrir link', 'variant' => 'outline', 'href' => $novoLinkPublico, 'attrs' => ['target' => '_blank', 'rel' => 'noopener noreferrer']]) ?>
-                <?= component('button', ['label' => 'Compartilhar no WhatsApp', 'variant' => 'outline', 'href' => 'https://wa.me/?text=' . rawurlencode('Acompanhe sua OS: ' . $novoLinkPublico), 'attrs' => ['target' => '_blank', 'rel' => 'noopener noreferrer']]) ?>
+                <?= component('button', ['label' => 'Abrir link', 'variant' => 'outline', 'href' => $linkPublicoAtivo, 'attrs' => ['target' => '_blank', 'rel' => 'noopener noreferrer']]) ?>
+                <?= component('button', ['label' => 'Compartilhar no WhatsApp', 'variant' => 'outline', 'href' => 'https://wa.me/?text=' . rawurlencode('Acompanhe sua OS: ' . $linkPublicoAtivo), 'attrs' => ['target' => '_blank', 'rel' => 'noopener noreferrer']]) ?>
             </div>
         </section>
     <?php } ?>
     <section class="rounded-card border border-border bg-surface p-4">
         <h2 class="text-heading-sm text-text">Acesso do cliente</h2>
-        <p class="my-3 text-body-md text-muted"><?= e($estadoPublico ? 'Link ativo até ' . date('d/m/Y H:i', (int) $estadoPublico->expira_em) . '. Gerar outro invalida o anterior imediatamente.' : 'Nenhum link ativo. Os links expiram após 30 dias.') ?></p>
+        <p class="my-3 text-body-md text-muted"><?= e($estadoPublico ? 'Link ativo até ' . date('d/m/Y H:i', (int) $estadoPublico->expira_em) . '. Gerar outro invalida o anterior imediatamente.' : 'Nenhum link ativo. Os links expiram após 120 dias.') ?></p>
+        <?php if ($estadoPublico && ! $linkPublicoAtivo) { ?>
+            <?= component('alert', ['variant' => 'info', 'message' => 'Este link foi criado antes da atualização ou sua cópia não pôde ser recuperada. Ele continua ativo até a data indicada. Gere outro apenas se precisar de um novo endereço para copiar.']) ?>
+        <?php } ?>
         <form method="post" action="<?= e(site_url('trifase/gerar/' . $id)) ?>" class="inline">
             <input type="hidden" name="<?= e($this->security->get_csrf_token_name()) ?>" value="<?= e($this->security->get_csrf_hash()) ?>">
             <?= component('button', ['label' => $estadoPublico ? 'Gerar novo link e invalidar anterior' : 'Gerar link público', 'type' => 'submit']) ?>

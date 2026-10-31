@@ -336,3 +336,15 @@ as respostas 206/416; manter tokens fora dos logs, inclusive avisos de buffering
 (`fastcgi_max_temp_file_size 0;` no Nginx/FastCGI). A CSP pública passa a admitir
 `media-src 'self'`. Não expor URLs estáticas do armazenamento. Sem migration nova
 ou publicação automática de vídeos; codecs incompatíveis podem exigir download.
+
+### Trifase: link recuperável e prazo de 120 dias
+
+Aplicar `20261031010000_persist_trifase_publico_token` após backup do banco e
+dos arquivos. Ela adiciona duas colunas à tabela de links do módulo e amplia
+links antigos ativos em 90 dias, sem trocar hashes ou anexos; não reativa
+expirados/revogados. Novos links valem 120 dias e ficam disponíveis no painel
+mesmo após sair da tela. Copiar também `libraries/Trifase_token.php`, o model,
+controller e view atualizados. `APP_ENCRYPTION_KEY` deve estar configurada e
+ser preservada junto ao backup privado: ela protege a cópia recuperável.
+Tokens antigos cujo endereço não é conhecido continuam ativos sem cópia
+recuperável; o painel explica essa situação, sem invalidá-los automaticamente.

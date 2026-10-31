@@ -10,12 +10,13 @@ Na tela de uma OS, **Link público** abre a administração do compartilhamento.
 Exige usuário logado com **vOs e eOs**, inclusive para ver a tela. Alterações
 usam POST com o CSRF padrão da v5. Não cria uma permissão administrativa paralela.
 
-- **Gerar link público** cria um token aleatório de 256 bits, válido por 30 dias.
+- **Gerar link público** cria um token aleatório de 256 bits, válido por 120 dias.
 - Existe um único link vigente por OS. **Gerar novo link e invalidar anterior**
   troca o token imediatamente; **Revogar acesso público** encerra o acesso.
-- O banco guarda apenas SHA-256 do token. Por isso o link completo aparece
-  somente na resposta à geração: copie antes de sair da tela. Recarregar a tela
-  não recupera o token; se necessário, gere outro.
+- O banco guarda o SHA-256 usado na leitura pública e uma cópia criptografada
+  com AES-256-GCM, vinculada à OS e à chave da instalação. O painel autorizado
+  recupera o mesmo link ao voltar ou recarregar. Ler a tela não renova o prazo
+  nem substitui o token; somente a ação explícita de gerar outro faz isso.
 - A tela oferece abrir o link e compartilhar pelo WhatsApp. Nenhuma mensagem
   é enviada automaticamente. O link é uma credencial de leitura: quem o tiver
   poderá acompanhar aquela OS até expirar ou ser revogado.
@@ -287,3 +288,40 @@ Na prévia 8200 o MP4 já existente exibiu quadro em 0,1 s, abriu em janela com
 readyState 4 e duração reconhecida, e o número de abas permaneceu um. A foto
 também abriu na janela com a lupa. Nenhum anexo foi enviado ou publicado pelo
 teste na instalação do usuário.
+
+
+### Link sempre disponível e validade de 120 dias
+
+A migration `20261031010000_persist_trifase_publico_token` acrescenta
+`token_cifrado` e `validade_dias` somente à tabela do módulo. A cópia é
+autenticada por AES-256-GCM com nonce aleatório, chave derivada de
+`APP_ENCRYPTION_KEY` e vínculo criptográfico à OS. O hash também é conferido
+antes de revelar o endereço no painel com vOs + eOs. A área pública continua
+validando só hash, prazo e anexos selecionados; não recebe o conteúdo cifrado.
+
+Links novos valem 120 dias. Links antigos ainda vigentes recebem mais 90 dias
+para completar 120 desde a emissão. Expirados e revogados não são reativados.
+O marcador de validade torna a ampliação idempotente, inclusive ao repetir a
+migration. Abrir a tela, voltar da OS ou copiar o link não altera sua validade.
+Revogar limpa hash e cópia cifrada; substituir troca ambos e invalida o anterior.
+
+Um hash antigo sozinho não permite reconstruir o token. Quando o endereço
+ainda é conhecido, a recuperação administrativa `guardarTokenExistente`
+valida o hash/OS/prazo e guarda a cópia cifrada sem mudar URL ou seleção.
+Endereços antigos desconhecidos permanecem válidos e aparecem como ativos, com
+aviso de que não podem ser recuperados; não são substituídos automaticamente.
+
+Preservar a chave da instalação junto do backup privado do banco. Trocar a
+chave impede recuperar cópias anteriores, embora a leitura pública por hash
+ainda funcione; não apagar arquivos `.env` em atualizações. Rollback da
+migration remove as colunas extras, sem encurtar o prazo já concedido. Para
+voltar exatamente ao estado anterior, restaurar a cópia de banco e arquivos
+feita antes da atualização, em vez de alternar upgrades/rollbacks repetidamente.
+
+Validação: 1.632 testes PHP / 7.477 assertions, uma depreciação preexistente;
+PHPStan sem erros; testes JS e build sem falhas. Em MySQL isolado, repetir a
+migration preservou hash e seleção, ampliou o prazo uma única vez e permitiu
+recuperar token antigo conhecido. Vinte verificações HTTP cobriram retorno
+da OS, recarga, mesma URL, 120 dias, perfil sem eOs, anonimato, renovação e
+revogação. A prévia usa somente a recuperação do endereço informado pelo
+usuário, sem gerar outro link ou mudar os anexos publicados.

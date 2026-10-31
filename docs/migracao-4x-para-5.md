@@ -369,3 +369,11 @@ A migração `20261031120000_trifase_financeiro_lab` é exclusiva desse experime
 não aplicar em bases reais ou na prévia. Ainda faltam integração HTTP, permissões,
 tratamento do legado e procedimento de reversão. Não fazer upgrade usando esta
 branch como distribuição pronta.
+
+
+A jornada HTTP do experimento financeiro agora existe, mas continua restrita ao
+laboratório: variável TRIFASE_FINANCEIRO_ENABLED=false por padrão, controller
+Trifase_financeiro e permissão específica estornarRecebimento (negada a grupos
+existentes até concessão explícita). Registros geridos ficam protegidos também
+nos caminhos antigos; desligar o módulo não é rollback. Não instalar em base real.
+Ver docs/trifase/FINANCEIRO_LAB.md para validações e pendências antes da adoção.

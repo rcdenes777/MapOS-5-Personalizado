@@ -87,6 +87,10 @@ function trifaseVideoEnviar(string $arquivo, int $id, bool $head, ?string $range
         show_404('', false);
         exit;
     }
+    // A reprodução não deve manter o bloqueio da sessão do painel.
+    if (session_status() === PHP_SESSION_ACTIVE) {
+        session_write_close();
+    }
     $total = (int) filesize($arquivo);
     $plano = trifaseVideoPlano($total, $range, $head);
     $cabecalhos = array_replace(trifasePublicoArquivoCabecalhos('anexo-' . $id . '.' . pathinfo($arquivo, PATHINFO_EXTENSION), pathinfo($arquivo, PATHINFO_EXTENSION), $total, true), $plano['cabecalhos']);

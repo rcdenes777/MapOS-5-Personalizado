@@ -46,6 +46,20 @@ final class TrifaseVideoTest extends MaposTestCase
         fclose($destino);
     }
 
+    public function testVideoDe200MbNaoEhInterpretadoComoImagem(): void
+    {
+        $arquivo = sys_get_temp_dir() . '/trifase-video-grande-' . bin2hex(random_bytes(6)) . '.mp4';
+        copy(MAPOS_ROOT . '/tests/fixtures/trifase/video.mp4', $arquivo);
+        try {
+            $f = fopen($arquivo, 'r+b');
+            ftruncate($f, 209715200);
+            fclose($f);
+            $this->assertFalse(trifasePublicoEhImagem($arquivo));
+        } finally {
+            unlink($arquivo);
+        }
+    }
+
     public function testMimeRealDosVideosENomeFalso(): void
     {
         $raiz = sys_get_temp_dir() . '/trifase-video-' . bin2hex(random_bytes(6));

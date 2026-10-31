@@ -25,3 +25,14 @@ function trifaseFinanceiroOsGerida(object $db, int $id): bool
     return $db->table_exists('trifase_financeiro_obrigacoes')
         && $db->where('os_id', $id)->count_all_results('trifase_financeiro_obrigacoes') > 0;
 }
+
+require_once APPPATH . 'libraries/Trifase_os_lock.php';
+
+/** Enriquece consultas de OS sem mudar a regra nem as datas do legado. */
+function trifaseGarantiaJoin(object $db): void
+{
+    if ($db->table_exists('trifase_financeiro_obrigacoes') && $db->field_exists('garantia_inicio', 'trifase_financeiro_obrigacoes')) {
+        $db->select('tf_garantia.garantia_inicio AS trifase_garantia_inicio, CASE WHEN tf_garantia.os_id IS NULL THEN 0 ELSE 1 END AS trifase_financeiro_gerida', false);
+        $db->join('trifase_financeiro_obrigacoes tf_garantia', 'tf_garantia.os_id = os.idOs', 'left');
+    }
+}

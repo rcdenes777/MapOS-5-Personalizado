@@ -4,6 +4,7 @@ require_once APPPATH . 'models/Trifase_financeiro_model.php';
 require_once APPPATH . 'models/Financeiro_model.php';
 require_once APPPATH . 'models/Relatorios_model.php';
 require_once APPPATH . 'database/migrations/20261031120000_trifase_financeiro_lab.php';
+require_once APPPATH . 'database/migrations/20261031130000_trifase_tecnico_garantia.php';
 require_once BASEPATH . 'database/DB_forge.php';
 require_once BASEPATH . 'database/drivers/sqlite3/sqlite3_forge.php';
 
@@ -15,8 +16,9 @@ final class TrifaseFinanceiroLabTest extends MaposTestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->db->query('CREATE TABLE os (idOs INTEGER PRIMARY KEY, status TEXT, faturado INTEGER DEFAULT 0, lancamento INTEGER, clientes_id INTEGER)');
+        $this->db->query('CREATE TABLE os (idOs INTEGER PRIMARY KEY, status TEXT, faturado INTEGER DEFAULT 0, lancamento INTEGER, clientes_id INTEGER, descricaoProduto TEXT, defeito TEXT, observacoes TEXT, laudoTecnico TEXT, dataFinal TEXT, garantia INTEGER)');
         $this->db->query('CREATE TABLE lancamentos (idLancamentos INTEGER PRIMARY KEY AUTOINCREMENT, descricao TEXT, valor DECIMAL, desconto DECIMAL, valor_desconto DECIMAL, tipo_desconto TEXT, data_vencimento TEXT, data_pagamento TEXT, baixado INTEGER, clientes_id INTEGER, cliente_fornecedor TEXT, forma_pgto TEXT, tipo TEXT, usuarios_id INTEGER)');
+        $this->db->query('CREATE TABLE anotacoes_os (idAnotacoes INTEGER PRIMARY KEY AUTOINCREMENT, os_id INTEGER, anotacao TEXT, data_hora TEXT)');
         $this->db->query('CREATE TABLE usuarios (idUsuarios INTEGER PRIMARY KEY, nome TEXT)');
         $this->db->insert('usuarios', ['idUsuarios' => 7, 'nome' => 'Usuário fictício']);
         $this->db->insert('os', ['idOs' => 1, 'status' => 'Em Andamento', 'clientes_id' => 1]);
@@ -28,6 +30,13 @@ final class TrifaseFinanceiroLabTest extends MaposTestCase
         $m->dbforge = new CI_DB_sqlite3_forge($this->db);
         $m->up();
         $m->up();
+        $g = new class() extends Migration_trifase_tecnico_garantia {
+            public object $dbforge;
+        };
+        $g->db = $this->db;
+        $g->dbforge = new CI_DB_sqlite3_forge($this->db);
+        $g->up();
+        $g->up();
         $this->f = new Trifase_financeiro_model();
         $this->f->db = $this->db;
         $this->n = new Financeiro_model();
@@ -191,6 +200,73 @@ final class TrifaseFinanceiroLabTest extends MaposTestCase
         } catch (DomainException $e) {
             $this->verificar(0, 50000);
         }
+    }
+
+    public function testEdicaoTecnicaNaoMudaFinanceiroERejeitaCamposFinanceiros(): void
+    {
+        $this->f->formalizar(1, 50000, 0, '2026-11-15', 7);
+        $this->rec(20000, 'entrada');
+        $antes = $this->f->resumo(1);
+        $this->f->salvarTecnico(1, ['laudoTecnico' => '<script>alert(1)</script> Fonte revisada', 'observacoes' => 'Teste interno', 'dataFinal' => '2026-12-01'], 7);
+        $this->assertSame($antes, $this->f->resumo(1));
+        $os = $this->db->where('idOs', 1)->get('os')->row();
+        $this->assertSame('2026-12-01', $os->dataFinal);
+        $this->assertStringNotContainsString('<script>', $os->laudoTecnico);
+        $this->assertSame(1, $this->db->count_all('anotacoes_os'));
+        $this->expectException(DomainException::class);
+        $this->f->salvarTecnico(1, ['valorTotal' => '1', 'faturado' => 0], 7);
+    }
+
+    public function testGarantiaComecaNaConclusaoENaoMudaComPrevisaoPagamentoOuReabertura(): void
+    {
+        $this->db->query('CREATE TABLE os_historico (id INTEGER PRIMARY KEY AUTOINCREMENT, os_id INTEGER, status_anterior TEXT, status_novo TEXT, usuarios_id INTEGER, data_hora TEXT)');
+        $this->db->data_cache = [];
+        $this->f->formalizar(1, 50000, 0, '2026-11-15', 7);
+        $this->assertNull($this->f->metadados(1)->garantia_inicio);
+        $this->rec(20000, 'entrada');
+        $this->assertNull($this->f->metadados(1)->garantia_inicio);
+        $this->f->alterarAndamento(1, 'Finalizado', 7);
+        $inicio = date('Y-m-d');
+        $this->assertSame($inicio, $this->f->metadados(1)->garantia_inicio);
+        $this->f->salvarTecnico(1, ['dataFinal' => '2027-01-01'], 7);
+        $this->f->alterarAndamento(1, 'Em Andamento', 7);
+        $this->assertSame($inicio, $this->f->metadados(1)->garantia_inicio);
+        $this->assertSame(date('Y-m-d', strtotime($inicio . ' +30 days')), osVencimentoGarantia('2027-01-01', 30, 'Em Andamento', $inicio, true));
+        $this->assertNull(osVencimentoGarantia('2027-01-01', 30, 'Finalizado', null, true));
+        $this->expectException(DomainException::class);
+        $this->f->registrarConclusao(1, $inicio, 7);
+    }
+
+    public function testLegadoPendenteReutilizaMesmoLancamentoSemAlterarDatasOuValores(): void
+    {
+        $this->db->query('CREATE TABLE os_historico (id INTEGER PRIMARY KEY AUTOINCREMENT, os_id INTEGER, status_anterior TEXT, status_novo TEXT, usuarios_id INTEGER, data_hora TEXT)');
+        $this->db->data_cache = [];
+        $this->db->insert('lancamentos', ['idLancamentos' => 10, 'descricao' => 'Fatura de OS - #1', 'valor' => 550, 'desconto' => 50, 'valor_desconto' => 500, 'data_vencimento' => '2026-10-15', 'baixado' => 0, 'clientes_id' => 1, 'tipo' => 'receita']);
+        $this->db->where('idOs', 1)->update('os', ['faturado' => 1, 'lancamento' => 10, 'status' => 'Faturado', 'dataFinal' => '2026-10-10']);
+        $antes = $this->db->where('idLancamentos', 10)->get('lancamentos')->row_array();
+        $this->assertTrue($this->f->legado(1)['elegivel']);
+        $this->f->conciliarLegado(1, 'Em Andamento', 7);
+        $this->assertSame($antes, $this->db->where('idLancamentos', 10)->get('lancamentos')->row_array());
+        $this->assertSame(1, $this->db->count_all('lancamentos'));
+        $this->assertSame(10, (int) $this->db->where('idOs', 1)->get('os')->row()->lancamento);
+        $this->assertSame('2026-10-10', $this->db->where('idOs', 1)->get('os')->row()->dataFinal);
+        $this->assertNull($this->f->metadados(1)->garantia_inicio);
+        $this->assertSame('legado', $this->f->metadados(1)->origem);
+        $this->verificar(0, 50000, 55000, 5000);
+        $this->expectException(DomainException::class);
+        $this->f->conciliarLegado(1, 'Em Andamento', 7);
+    }
+
+    public function testLegadoPagoOuSemVinculoNaoEhMigradoNemInferidoPorDescricao(): void
+    {
+        $this->db->where('idOs', 1)->update('os', ['faturado' => 1, 'status' => 'Faturado']);
+        $this->db->insert('lancamentos', ['idLancamentos' => 10, 'descricao' => 'Fatura de OS - #1', 'valor' => 500, 'valor_desconto' => 500, 'data_vencimento' => '2026-10-15', 'baixado' => 1, 'data_pagamento' => '2026-10-15', 'clientes_id' => 1, 'tipo' => 'receita']);
+        $this->assertFalse($this->f->legado(1)['elegivel']);
+        $this->db->where('idOs', 1)->update('os', ['lancamento' => 10]);
+        $this->assertFalse($this->f->legado(1)['elegivel']);
+        $this->assertSame(0, $this->db->count_all('trifase_financeiro_obrigacoes'));
+        $this->expectException(DomainException::class);
+        $this->f->conciliarLegado(1, 'Faturado', 7);
     }
 
     public function testFormalizacaoDuplicadaOuCanceladaNaoCriaReceitaExtra(): void

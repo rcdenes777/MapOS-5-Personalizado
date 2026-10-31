@@ -1,6 +1,6 @@
 <?php
 
-/** Somente laboratório: esquema aditivo, sem converter registros existentes. */
+/** Esquema aditivo Trifase, sem converter registros existentes. */
 class Migration_trifase_financeiro_lab extends CI_Migration
 {
     public function up()

@@ -2,25 +2,41 @@
 
 defined('BASEPATH') or exit('No direct script access allowed');
 
-/** Prova de integração isolada; não publicada nem conectada às rotas da aplicação. */
+require_once APPPATH . 'libraries/Trifase_os_lock.php';
+
+/** Regras financeiras e técnicas da extensão Trifase. */
 class Trifase_financeiro_model extends CI_Model
 {
-    /** Formalização recebe totais já calculados pelo servidor, nunca pelo cliente HTTP. */
+    /** Entrada interna para ensaios com totais explícitos; não exposta por HTTP. */
     public function formalizar(int $osId, int $bruto, int $desconto, string $vencimento, int $usuario): array
+    {
+        return $this->transacao($osId, fn ($os) => $this->formalizarBloqueada($os, $bruto, $desconto, $vencimento, $usuario));
+    }
+
+    /** Calcula itens/descontos somente depois de obter a mesma trava dos editores. */
+    public function formalizarCalculado(int $osId, string $vencimento, int $usuario, callable $calcular): array
+    {
+        return $this->transacao($osId, function ($os) use ($vencimento, $usuario, $calcular) {
+            $t = $calcular($os);
+            return $this->formalizarBloqueada($os, financeiroCentavos(number_format($t['bruto'], 2, '.', '')), financeiroCentavos(number_format($t['desconto'], 2, '.', '')), $vencimento, $usuario);
+        });
+    }
+
+    private function formalizarBloqueada(object $os, int $bruto, int $desconto, string $vencimento, int $usuario): array
     {
         $this->dataValida($vencimento);
         if ($usuario <= 0 || $bruto <= 0 || $bruto > 999999999 || $desconto < 0 || $desconto >= $bruto) {
             throw new DomainException('Total inválido.');
         }
-        return $this->transacao($osId, function ($os) use ($osId, $bruto, $desconto, $vencimento, $usuario) {
-            if ((int) $os->faturado !== 0 || $os->status === 'Cancelado' || $this->obrigacao($osId)) {
-                throw new DomainException('OS já faturada ou cancelada.');
-            }
-            $principal = $this->lancamento($osId, $bruto, $desconto, $vencimento, null, '', $usuario);
-            $this->gravar('trifase_financeiro_obrigacoes', ['os_id' => $osId, 'bruto_c' => $bruto, 'desconto_c' => $desconto, 'vencimento' => $vencimento, 'principal_id' => $principal, 'usuario_id' => $usuario]);
-            $this->atualizar('os', ['faturado' => 1, 'lancamento' => $principal], ['idOs' => $osId]);
-            return $this->resumo($osId);
-        });
+        $osId = (int) $os->idOs;
+        if ((int) $os->faturado !== 0 || in_array($os->status, ['Faturado', 'Cancelado'], true) || $this->obrigacao($osId)) {
+            throw new DomainException('OS já faturada ou cancelada.');
+        }
+        $principal = $this->lancamento($osId, $bruto, $desconto, $vencimento, null, '', $usuario, false);
+        $this->gravar('trifase_financeiro_obrigacoes', ['os_id' => $osId, 'bruto_c' => $bruto, 'desconto_c' => $desconto, 'vencimento' => $vencimento, 'principal_id' => $principal, 'usuario_id' => $usuario]);
+        $this->gravar('trifase_financeiro_projecoes', ['lancamento_id' => $principal, 'os_id' => $osId, 'ativo' => 1]);
+        $this->atualizar('os', ['faturado' => 1, 'lancamento' => $principal], ['idOs' => $osId]);
+        return $this->resumo($osId);
     }
 
     public function receber(int $osId, int $valor, string $data, string $forma, string $chave, int $usuario): array
@@ -105,7 +121,138 @@ class Trifase_financeiro_model extends CI_Model
                 }
                 $this->gravar('os_historico', ['os_id' => $osId, 'status_anterior' => $os->status, 'status_novo' => $status, 'usuarios_id' => $usuario, 'data_hora' => date('Y-m-d H:i:s')]);
                 $this->atualizar('os', ['status' => $status], ['idOs' => $osId]);
+                $o = $this->exigirObrigacao($osId);
+                if ($status === 'Finalizado' && property_exists($o, 'garantia_inicio') && empty($o->garantia_inicio)) {
+                    $this->atualizar('trifase_financeiro_obrigacoes', ['garantia_inicio' => date('Y-m-d')], ['os_id' => $osId]);
+                }
             }
+            return $this->resumo($osId);
+        });
+    }
+
+    public function salvarTecnico(int $osId, array $dados, int $usuario): void
+    {
+        if ($usuario <= 0 || array_diff(array_keys($dados), ['descricaoProduto', 'defeito', 'observacoes', 'laudoTecnico', 'dataFinal']) !== []) {
+            throw new DomainException('O formulário técnico não altera valores ou vínculos financeiros.');
+        }
+        foreach (['descricaoProduto', 'defeito', 'observacoes', 'laudoTecnico'] as $campo) {
+            if (isset($dados[$campo])) {
+                if (! is_string($dados[$campo]) || strlen($dados[$campo]) > 60000) {
+                    throw new DomainException('Texto inválido ou muito extenso.');
+                }
+                $dados[$campo] = osTextoParaGravar($dados[$campo]);
+            }
+        }
+        if (isset($dados['dataFinal'])) {
+            $this->dataValida($dados['dataFinal']);
+        }
+        $this->transacao($osId, function ($os) use ($osId, $dados, $usuario) {
+            $o = $this->obrigacao($osId);
+            if (! $o && isset($dados['dataFinal']) && $dados['dataFinal'] !== $os->dataFinal) {
+                throw new DomainException('A data final desta OS antiga também referencia a garantia. Concilie antes de alterá-la.');
+            }
+            if ($os->status === 'Cancelado') {
+                throw new DomainException('OS cancelada não aceita edição técnica.');
+            }
+            if ($dados !== []) {
+                $this->atualizar('os', $dados, ['idOs' => $osId]);
+                $this->historicoTecnico($osId, 'Dados técnicos atualizados.', $usuario);
+            }
+            return $o ? $this->resumo($osId) : [];
+        });
+    }
+
+    public function metadados(int $osId): object
+    {
+        return $this->exigirObrigacao($osId);
+    }
+
+    public function registrarConclusao(int $osId, string $data, int $usuario): void
+    {
+        $this->dataValida($data);
+        if ($usuario <= 0 || $data > date('Y-m-d')) {
+            throw new DomainException('A conclusão deve ser uma data já ocorrida.');
+        }
+        $this->transacao($osId, function ($os) use ($osId, $data, $usuario) {
+            $o = $this->exigirObrigacao($osId);
+            if ($os->status !== 'Finalizado' || ! empty($o->garantia_inicio)) {
+                throw new DomainException('A conclusão só pode ser registrada uma vez, em uma OS finalizada.');
+            }
+            $this->atualizar('trifase_financeiro_obrigacoes', ['garantia_inicio' => $data], ['os_id' => $osId]);
+            $this->historicoTecnico($osId, 'Conclusão registrada: ' . $data, $usuario);
+            return $this->resumo($osId);
+        });
+    }
+
+    private function historicoTecnico(int $osId, string $texto, int $usuario): void
+    {
+        $this->gravar('anotacoes_os', ['os_id' => $osId, 'anotacao' => '[Operador #' . $usuario . '] ' . $texto, 'data_hora' => date('Y-m-d H:i:s')]);
+    }
+
+    /** Relatório de conciliação: nunca vincula lançamentos por semelhança de texto. */
+    public function legado(int $osId): array
+    {
+        $os = $this->db->where('idOs', $osId)->get('os')->row();
+        $erro = null;
+        $l = null;
+        if (! $os || (int) $os->faturado !== 1 || $this->obrigacao($osId)) {
+            $erro = 'OS sem faturamento legado elegível.';
+        } elseif ($os->status === 'Cancelado') {
+            $erro = 'OS cancelada exige conciliação manual.';
+        } elseif (empty($os->lancamento)) {
+            $erro = 'Vínculo financeiro ausente; não será inferido pela descrição.';
+        } else {
+            $l = $this->db->where('idLancamentos', $os->lancamento)->get('lancamentos')->row();
+            if (! $l || $l->tipo !== 'receita' || (int) $l->clientes_id !== (int) $os->clientes_id) {
+                $erro = 'Lançamento inexistente ou incompatível com o cliente da OS.';
+            } elseif ((int) $l->baixado !== 0 || ! empty($l->data_pagamento)) {
+                $erro = 'Pagamento antigo exige conferência manual; não será recriado ou duplicado.';
+            } elseif (financeiroLiquido($l) <= 0 || financeiroLiquido($l) > (float) $l->valor || (float) $l->valor > 9999999.99) {
+                $erro = 'Valores antigos inconsistentes.';
+            } elseif ($this->db->where('lancamento', $l->idLancamentos)->count_all_results('os') !== 1) {
+                $erro = 'Lançamento compartilhado entre OS.';
+            } elseif ($this->db->table_exists('vendas') && $this->db->where('lancamentos_id', $l->idLancamentos)->count_all_results('vendas') > 0) {
+                $erro = 'Lançamento também vinculado a venda.';
+            } elseif ($this->db->table_exists('cobrancas') && $this->db->where('os_id', $osId)->count_all_results('cobrancas') > 0) {
+                $erro = 'Cobrança externa deve ser conciliada antes.';
+            } else {
+                $iguais = $this->db->where_in('descricao', osDescricoesDaFatura($osId))->where('idLancamentos !=', $l->idLancamentos)->count_all_results('lancamentos');
+                if ($iguais > 0) {
+                    $erro = 'Existem outros lançamentos com a descrição histórica desta OS; confira possíveis duplicidades.';
+                }
+            }
+        }
+        return ['os' => $os, 'lancamento' => $l, 'elegivel' => $erro === null, 'motivo' => $erro];
+    }
+
+    public function conciliarLegado(int $osId, string $status, int $usuario): array
+    {
+        if ($usuario <= 0 || ! in_array($status, ['Orçamento', 'Negociação', 'Aberto', 'Aprovado', 'Em Andamento', 'Aguardando Peças', 'Finalizado'], true)) {
+            throw new DomainException('Informe o andamento real; Faturado não determina conclusão.');
+        }
+        return $this->transacao($osId, function ($os) use ($osId, $status, $usuario) {
+            if (! empty($os->lancamento)) {
+                $sufixo = $this->db->dbdriver === 'mysqli' ? ' FOR UPDATE' : '';
+                $this->db->query('SELECT idLancamentos FROM lancamentos WHERE idLancamentos = ?' . $sufixo, [$os->lancamento]);
+            }
+            $a = $this->legado($osId);
+            if (! $a['elegivel']) {
+                throw new DomainException($a['motivo']);
+            }
+            $l = $a['lancamento'];
+            $this->dataValida((string) $l->data_vencimento);
+            $bruto = financeiroCentavos(number_format((float) $l->valor, 2, '.', ''));
+            $liquido = financeiroCentavos(number_format(financeiroLiquido($l), 2, '.', ''));
+            $this->gravar('trifase_financeiro_obrigacoes', ['os_id' => $osId, 'bruto_c' => $bruto, 'desconto_c' => $bruto - $liquido, 'vencimento' => $l->data_vencimento, 'principal_id' => $l->idLancamentos, 'usuario_id' => $usuario, 'origem' => 'legado']);
+            $this->gravar('trifase_financeiro_projecoes', ['lancamento_id' => $l->idLancamentos, 'os_id' => $osId, 'ativo' => 1]);
+            if ($os->status !== $status) {
+                if (! $this->db->table_exists('os_historico')) {
+                    throw new DomainException('Histórico indisponível.');
+                }
+                $this->gravar('os_historico', ['os_id' => $osId, 'status_anterior' => $os->status, 'status_novo' => $status, 'usuarios_id' => $usuario, 'data_hora' => date('Y-m-d H:i:s')]);
+                $this->atualizar('os', ['status' => $status], ['idOs' => $osId]);
+            }
+            $this->historicoTecnico($osId, 'Faturamento legado conciliado pelo vínculo #' . $l->idLancamentos . '; valores e vencimento preservados. Conclusão não inferida.', $usuario);
             return $this->resumo($osId);
         });
     }
@@ -173,11 +320,13 @@ class Trifase_financeiro_model extends CI_Model
         return intdiv($centavos, 100) . '.' . str_pad((string) ($centavos % 100), 2, '0', STR_PAD_LEFT);
     }
 
-    private function lancamento(int $osId, int $bruto, int $desconto, string $vencimento, ?string $pagamento, string $forma, int $usuario): int
+    private function lancamento(int $osId, int $bruto, int $desconto, string $vencimento, ?string $pagamento, string $forma, int $usuario, bool $projetar = true): int
     {
         $os = $this->db->where('idOs', $osId)->get('os')->row();
         $id = $this->gravar('lancamentos', ['descricao' => 'Fatura de OS - #' . $osId . ($pagamento ? ' - Recebimento' : ' - Saldo'), 'valor' => $this->decimal($bruto), 'desconto' => $this->decimal($desconto), 'valor_desconto' => $this->decimal($bruto - $desconto), 'tipo_desconto' => 'real', 'data_vencimento' => $vencimento, 'data_pagamento' => $pagamento, 'baixado' => $pagamento ? 1 : 0, 'clientes_id' => $os->clientes_id, 'cliente_fornecedor' => 'OS #' . $osId, 'forma_pgto' => $forma, 'tipo' => 'receita', 'usuarios_id' => $usuario]);
-        $this->gravar('trifase_financeiro_projecoes', ['lancamento_id' => $id, 'os_id' => $osId, 'ativo' => 1]);
+        if ($projetar) {
+            $this->gravar('trifase_financeiro_projecoes', ['lancamento_id' => $id, 'os_id' => $osId, 'ativo' => 1]);
+        }
         return $id;
     }
 
@@ -198,24 +347,13 @@ class Trifase_financeiro_model extends CI_Model
 
     private function transacao(int $osId, callable $acao): array
     {
-        if ($osId <= 0 || ! $this->db->trans_begin()) {
-            throw new DomainException('OS inválida.');
-        }
+        $lock = new Trifase_os_lock($this->db, $osId);
         try {
-            $lock = match ($this->db->dbdriver) {
-                'mysqli' => ' FOR UPDATE', 'sqlite3' => '', default => throw new RuntimeException('Driver não suportado.')
-            };
-            $os = $this->db->query('SELECT idOs, status, faturado, clientes_id FROM os WHERE idOs = ?' . $lock, [$osId])->row();
-            if (! $os) {
-                throw new DomainException('OS inexistente.');
-            }
-            $retorno = $acao($os);
-            if (! $this->db->trans_status() || ! $this->db->trans_commit()) {
-                throw new RuntimeException('Falha na transação financeira.');
-            }
+            $retorno = $acao($lock->os);
+            $lock->finalizar(true);
             return $retorno;
         } catch (Throwable $erro) {
-            $this->db->trans_rollback();
+            $lock->finalizar(false);
             throw $erro;
         }
     }

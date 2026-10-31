@@ -389,7 +389,7 @@ class Mine extends CI_Controller
             'anexos' => $this->os_model->getAnexos($idOs),
             // Os trechos do painel (os/partes/*) sem as ações de edição.
             'pode' => ['editar' => false],
-            'garantia_ate' => osVencimentoGarantia($os->dataFinal, $os->garantia, $os->status),
+            'garantia_ate' => osGarantiaDoRegistro($os),
             'pix' => $pixPayload === null ? null : [
                 'payload' => $pixPayload,
                 'qr' => $this->os_model->getQrCode($idOs, $pixKey, $emitente),

@@ -228,6 +228,7 @@ class Os_model extends CI_Model
     public function getById($id)
     {
         $this->db->select('os.*, clientes.*, clientes.celular as celular_cliente, clientes.telefone as telefone_cliente, clientes.contato as contato_cliente, garantias.refGarantia, garantias.textoGarantia, usuarios.telefone as telefone_usuario, usuarios.email as email_usuario, usuarios.nome');
+        trifaseGarantiaJoin($this->db);
         $this->db->from('os');
         $this->db->join('clientes', 'clientes.idClientes = os.clientes_id');
         $this->db->join('usuarios', 'usuarios.idUsuarios = os.usuarios_id');
@@ -508,6 +509,22 @@ class Os_model extends CI_Model
         return ['totalServico' => $totalServico, 'totalProdutos' => $totalProdutos, 'valor_desconto' => $valorDesconto, 'descontoItens' => $descontoItens];
     }
 
+    public function isEditableTecnico(int $id): bool
+    {
+        $gerida = trifaseFinanceiroOsGerida($this->db, $id);
+        if (! $gerida && ! trifaseFinanceiroHabilitado()) {
+            return $this->isEditable($id);
+        }
+        if (! $this->permission->checkPermission($this->session->userdata('permissao'), 'eOs')) {
+            return false;
+        }
+        $os = $this->getById($id);
+        if (! $os) {
+            return false;
+        }
+        return $os->status !== 'Cancelado';
+    }
+
     public function isEditable($id = null)
     {
         if (trifaseFinanceiroOsGerida($this->db, (int) $id)) {
@@ -517,6 +534,9 @@ class Os_model extends CI_Model
             return false;
         }
         if ($os = $this->getById($id)) {
+            if (trifaseFinanceiroHabilitado() && (int) $os->faturado === 1) {
+                return false;
+            }
             $osT = (int) ($os->status === 'Faturado' || $os->status === 'Cancelado' || $os->faturado == 1);
             if ($osT) {
                 return $this->data['configuration']['control_editos'] == '1';

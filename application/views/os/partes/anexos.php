@@ -14,7 +14,7 @@ $galeriaTrifase = trifasePublicoHabilitado() && $this->permission->checkPermissi
 if ($anexos === []) { ?>
     <?= component('empty-state', [
         'title' => 'Nenhum anexo',
-        'message' => $pode['editar'] ? 'Fotos do equipamento, laudos e notas fiscais enviados pelo formulário acima aparecem aqui.' : 'Esta OS não tem anexos.',
+        'message' => ($pode['editar_tecnico'] ?? $pode['editar']) ? 'Fotos do equipamento, laudos e notas fiscais enviados pelo formulário acima aparecem aqui.' : 'Esta OS não tem anexos.',
         'icon' => 'paperclip',
     ]) ?>
 <?php return;
@@ -56,7 +56,7 @@ if ($anexos === []) { ?>
                     <?php if (! $ausente) { ?>
                         <?= component('button', ['label' => 'Baixar ' . $nome, 'icon' => 'download', 'icon_only' => true, 'variant' => 'ghost', 'size' => 'sm', 'href' => site_url('os/downloadanexo/' . (int) $anexo->idAnexos)]) ?>
                     <?php } ?>
-                    <?php if ($pode['editar']) { ?>
+                    <?php if (($pode['editar_tecnico'] ?? $pode['editar'])) { ?>
                         <?= component('button', [
                             'label' => 'Excluir ' . $nome,
                             'icon' => 'trash-2',

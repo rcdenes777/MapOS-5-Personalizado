@@ -66,6 +66,9 @@ $textos = [
         </div>
         <div class="flex flex-wrap gap-2">
             <?php $this->load->view('trifase/atalho', ['trifaseOsId' => $idOs]); ?>
+            <?php if (trifaseFinanceiroHabilitado() && (trifaseFinanceiroOsGerida($this->db, $idOs) || (int) $os->faturado === 1) && ($pode['editar_tecnico'] ?? false)) { ?>
+                <?= component('button', ['label' => 'Editar dados técnicos', 'variant' => 'outline', 'icon' => 'pencil', 'href' => site_url('trifase_financeiro/tecnico/' . $idOs)]) ?>
+            <?php } ?>
             <?php if (trifaseFinanceiroHabilitado() && $this->permission->checkPermission($this->session->userdata('permissao'), 'vLancamento')) { ?>
                 <?= component('button', ['label' => 'Financeiro da OS', 'variant' => 'outline', 'icon' => 'banknote', 'href' => site_url('trifase_financeiro/visualizar/' . $idOs)]) ?>
             <?php } ?>
@@ -102,7 +105,7 @@ $textos = [
     </header>
 
     <?php if ($fechada && ! $pode['editar']) { ?>
-        <?= component('alert', ['variant' => 'info', 'message' => 'Esta OS está ' . ($os->status === 'Cancelado' ? 'cancelada' : 'faturada') . ': produtos, serviços, anexos, anotações e desconto não podem mais ser alterados.']) ?>
+        <?= component('alert', ['variant' => 'info', 'message' => (($pode['editar_tecnico'] ?? false) ? 'O faturamento protege produtos, serviços e descontos. Dados técnicos, anexos e anotações continuam editáveis com sua permissão.' : 'Esta OS está ' . ($os->status === 'Cancelado' ? 'cancelada' : 'faturada') . ': seus dados não podem mais ser alterados.')]) ?>
     <?php } ?>
 
     <div data-os-parte="abas"><?php $this->load->view('os/partes/abas'); ?></div>
@@ -210,7 +213,7 @@ $textos = [
         <?php } ?>
         <div data-os-parte="<?= e($aba) ?>"><?php $this->load->view('os/partes/' . $aba); ?></div>
     <?php } elseif ($aba === 'anexos') { ?>
-        <?php if ($pode['editar']) { ?>
+        <?php if (($pode['editar_tecnico'] ?? $pode['editar'])) { ?>
             <section class="<?= e($caixa) ?>" aria-labelledby="secao-anexar">
                 <h2 id="secao-anexar" class="text-heading-sm text-text">Anexar arquivos</h2>
                 <form method="post" action="<?= e(site_url('os/anexar')) ?>" enctype="multipart/form-data" novalidate
@@ -233,7 +236,7 @@ $textos = [
         <?php } ?>
         <div data-os-parte="anexos"><?php $this->load->view('os/partes/anexos'); ?></div>
     <?php } elseif ($aba === 'anotacoes') { ?>
-        <?php if ($pode['editar']) { ?>
+        <?php if (($pode['editar_tecnico'] ?? $pode['editar'])) { ?>
             <section class="<?= e($caixa) ?>" aria-labelledby="secao-anotar">
                 <h2 id="secao-anotar" class="text-heading-sm text-text">Nova anotação</h2>
                 <form method="post" action="<?= e(site_url('os/adicionarAnotacao')) ?>" novalidate class="mt-4 flex flex-col gap-3" data-os-acao="anotacao" data-os-limpar>
@@ -267,13 +270,16 @@ $textos = [
 // (data-valor-id, data-valor-nome), e um formulário oculto que o módulo
 // os/tela envia sem recarregar.
 $exclusoes = [];
-if ($pode['editar']) {
+if (($pode['editar_tecnico'] ?? $pode['editar'])) {
     $exclusoes = [
         'produto' => ['os/excluirProduto', 'Excluir produto?', ' sai da OS.' . ($controle_estoque ? ' A quantidade volta ao estoque.' : '') . ' O desconto da OS, se houver, é removido.'],
         'servico' => ['os/excluirServico', 'Excluir serviço?', ' sai da OS. O desconto da OS, se houver, é removido.'],
         'anexo' => ['os/excluirAnexo', 'Excluir anexo?', ' será apagado do servidor. Essa ação não pode ser desfeita.'],
         'anotacao' => ['os/excluirAnotacao', 'Excluir anotação?', ' será removida da OS. Essa ação não pode ser desfeita.'],
     ];
+}
+if (! $pode['editar']) {
+    unset($exclusoes['produto'], $exclusoes['servico']);
 }
 foreach ($exclusoes as $tipo => [$rota, $titulo, $consequencia]) { ?>
     <form id="<?= e('form-excluir-' . $tipo) ?>" method="post" action="<?= e(site_url($rota)) ?>" hidden data-os-acao="<?= e($tipo) ?>">

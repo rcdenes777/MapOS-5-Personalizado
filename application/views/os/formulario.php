@@ -53,6 +53,9 @@ $texto = static fn (string $nome, string $label, ?string $ajuda = null) => [
 ];
 
 $statusOpcoes = array_combine(array_keys(OS_STATUS_VARIANTES), array_keys(OS_STATUS_VARIANTES));
+if (function_exists('trifaseFinanceiroHabilitado') && trifaseFinanceiroHabilitado()) {
+    unset($statusOpcoes['Faturado']);
+}
 ?>
 <div class="flex max-w-4xl flex-col gap-4 pt-2 pb-8" <?= js_module('os/formulario') ?>>
     <header class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">

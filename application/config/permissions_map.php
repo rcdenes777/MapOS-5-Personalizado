@@ -39,6 +39,9 @@ $config['permissions_map'] = [
         'receber' => ['todas' => ['vOs', 'vLancamento', 'aLancamento']],
         'estornar' => ['todas' => ['vOs', 'vLancamento', 'estornarRecebimento']],
         'andamento' => ['todas' => ['vOs', 'eOs']],
+        'tecnico' => ['todas' => ['vOs', 'eOs']],
+        'conclusao' => ['todas' => ['vOs', 'eOs']],
+        'conciliar' => ['todas' => ['vOs', 'vLancamento', 'eOs', 'eLancamento']],
     ],
     'Trifase' => [
         'gerenciar' => ['todas' => ['vOs', 'eOs']],

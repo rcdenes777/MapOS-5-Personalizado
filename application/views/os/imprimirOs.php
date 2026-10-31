@@ -1,4 +1,5 @@
 <?php
+$garantiaAte = osGarantiaDoRegistro($result);
 $totalServico  = 0;
 $totalProdutos = 0;
 ?>
@@ -57,7 +58,7 @@ $totalProdutos = 0;
                                     <?php if ($result->garantia) : ?>
                                         <th class="text-center">GARANTIA</th>
                                     <?php endif; ?>
-                                    <?php if (in_array($result->status, ['Finalizado', 'Faturado'])) : ?>
+                                    <?php if (($garantiaAte !== null || in_array($result->status, ['Finalizado', 'Faturado']))) : ?>
                                         <th class="text-center">VENC. GARANTIA</th>
                                     <?php endif; ?>
                                 </tr>
@@ -70,8 +71,8 @@ $totalProdutos = 0;
                                     <?php if ($result->garantia) : ?>
                                         <td class="text-center"><?= e($result->garantia . ' dia(s)') ?></td>
                                     <?php endif; ?>
-                                    <?php if (in_array($result->status, ['Finalizado', 'Faturado'])) : ?>
-                                        <td class="text-center"><?= e(dateInterval($result->dataFinal, $result->garantia)) ?></td>
+                                    <?php if (($garantiaAte !== null || in_array($result->status, ['Finalizado', 'Faturado']))) : ?>
+                                        <td class="text-center"><?= e(($garantiaAte !== null ? dataBr($garantiaAte) : 'Conclusão não registrada')) ?></td>
                                     <?php endif; ?>
                                 </tr>
                             </tbody>
@@ -312,7 +313,7 @@ $totalProdutos = 0; ?>
                                         <?php if ($result->garantia) : ?>
                                             <th class="text-center">GARANTIA</th>
                                         <?php endif; ?>
-                                        <?php if (in_array($result->status, ['Finalizado', 'Faturado'])) : ?>
+                                        <?php if (($garantiaAte !== null || in_array($result->status, ['Finalizado', 'Faturado']))) : ?>
                                             <th class="text-center">VENC. GARANTIA</th>
                                         <?php endif; ?>
                                     </tr>
@@ -325,8 +326,8 @@ $totalProdutos = 0; ?>
                                         <?php if ($result->garantia) : ?>
                                             <td class="text-center"><?= e($result->garantia . ' dia(s)') ?></td>
                                         <?php endif; ?>
-                                        <?php if (in_array($result->status, ['Finalizado', 'Faturado'])) : ?>
-                                            <td class="text-center"><?= e(dateInterval($result->dataFinal, $result->garantia)) ?></td>
+                                        <?php if (($garantiaAte !== null || in_array($result->status, ['Finalizado', 'Faturado']))) : ?>
+                                            <td class="text-center"><?= e(($garantiaAte !== null ? dataBr($garantiaAte) : 'Conclusão não registrada')) ?></td>
                                         <?php endif; ?>
                                     </tr>
                                 </tbody>

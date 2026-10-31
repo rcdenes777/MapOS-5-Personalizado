@@ -8,6 +8,7 @@ require_once APPPATH . 'helpers/trifase_financeiro_helper.php';
 
 class Os extends MY_Controller
 {
+    private ?Trifase_os_lock $financeiroLock = null;
     /** Filtros da listagem, na query string (listagemFiltros()). */
     public const FILTROS = [
         'pesquisa' => 'texto',
@@ -238,6 +239,26 @@ class Os extends MY_Controller
      */
     private function salvarOs(object $os, array $dados): ?int
     {
+        if (! trifaseFinanceiroHabilitado()) {
+            return $this->salvarOsSemTrava($os, $dados);
+        }
+        $lock = new Trifase_os_lock($this->db, (int) $os->idOs);
+        try {
+            if ((int) $lock->os->faturado === 1 || trifaseFinanceiroOsGerida($this->db, (int) $os->idOs)) {
+                $lock->finalizar(false);
+                return null;
+            }
+            $resultado = $this->salvarOsSemTrava($lock->os, $dados);
+            $lock->finalizar($resultado !== null);
+            return $resultado;
+        } catch (Throwable $e) {
+            $lock->finalizar(false);
+            throw $e;
+        }
+    }
+
+    private function salvarOsSemTrava(object $os, array $dados): ?int
+    {
         $idOs = (int) $os->idOs;
         $antes = strtolower((string) $os->status);
         $depois = strtolower((string) $dados['status']);
@@ -393,9 +414,10 @@ class Os extends MY_Controller
                 'telefone' => $telefone,
                 'texto' => osTextoWhatsApp($configuracao['notifica_whats'] ?? '', $troca),
             ],
-            'garantia_ate' => osVencimentoGarantia($os->dataFinal, $os->garantia, $os->status),
+            'garantia_ate' => osGarantiaDoRegistro($os),
             'pode' => [
                 'editar' => $editavel,
+                'editar_tecnico' => $this->os_model->isEditableTecnico($idOs),
                 'faturar' => ! trifaseFinanceiroHabilitado() && $editavel && (int) $os->faturado === 0 && $os->status !== 'Cancelado',
                 'excluir' => $editavel && $this->permite('dOs'),
                 'cobrar' => ! trifaseFinanceiroOsGerida($this->db, $idOs) && $this->permite('aCobranca') && ! $cobrancas && $totais['total'] > 0,
@@ -429,6 +451,15 @@ class Os extends MY_Controller
     /** Resposta JSON dos endpoints da tela da OS. */
     private function responderJson(int $status, array $corpo): void
     {
+        if ($this->financeiroLock !== null) {
+            try {
+                $this->financeiroLock->finalizar($status < 400);
+            } catch (RuntimeException $e) {
+                $status = 500;
+                $corpo = ['result' => false, 'message' => 'Não foi possível confirmar todas as alterações.'];
+            }
+            $this->financeiroLock = null;
+        }
         $this->output
             ->set_status_header($status)
             ->set_content_type('application/json', 'utf-8')
@@ -440,9 +471,21 @@ class Os extends MY_Controller
      * (404 ou 403) já montada. Vale para todos os endpoints de itens: na v4
      * só o desconto e o faturamento conferiam se a OS era editável.
      */
-    private function osParaAlterar(): ?object
+    private function osParaAlterar(bool $tecnica = false): ?object
     {
         $id = (int) $this->input->post('idOs');
+        if (! $tecnica && trifaseFinanceiroHabilitado()) {
+            try {
+                $this->financeiroLock = new Trifase_os_lock($this->db, $id);
+                if ((int) $this->financeiroLock->os->faturado === 1 || $this->financeiroLock->os->status === 'Cancelado') {
+                    $this->responderJson(403, ['result' => false, 'message' => 'Valores de OS faturada ou cancelada não podem ser alterados.']);
+                    return null;
+                }
+            } catch (DomainException $e) {
+                $this->responderJson(404, ['result' => false, 'message' => 'OS não encontrada.']);
+                return null;
+            }
+        }
         $os = $id > 0 ? $this->os_model->getById($id) : null;
 
         if (! $os) {
@@ -451,7 +494,7 @@ class Os extends MY_Controller
             return null;
         }
 
-        if (! $this->os_model->isEditable($id)) {
+        if (! ($tecnica ? $this->os_model->isEditableTecnico($id) : $this->os_model->isEditable($id))) {
             $this->responderJson(403, ['result' => false, 'message' => 'Esta OS está faturada ou cancelada e não pode mais ser alterada.']);
 
             return null;
@@ -701,14 +744,19 @@ class Os extends MY_Controller
 
     public function excluir()
     {
+        $lock = null;
         if (! $this->permission->checkPermission($this->session->userdata('permissao'), 'dOs')) {
             $this->session->set_flashdata('error', 'Você não tem permissão para excluir O.S.');
             redirect(base_url());
         }
 
         $id = (int) $this->input->post('id');
+        $lock = trifaseFinanceiroHabilitado() && $id > 0 ? new Trifase_os_lock($this->db, $id) : null;
         if (trifaseFinanceiroOsGerida($this->db, $id)) {
-            $this->session->set_flashdata('error', 'OS com histórico financeiro Trifase não pode ser excluída neste laboratório.');
+            $this->session->set_flashdata('error', 'OS com histórico financeiro Trifase não pode ser excluída.');
+            if ($lock !== null) {
+                $lock->finalizar(false);
+            }
             redirect('os/visualizar/' . $id);
         }
         // Volta para a listagem com os mesmos filtros (só os permitidos).
@@ -719,6 +767,9 @@ class Os extends MY_Controller
             $os = $this->os_model->getById($id);
             if ($os == null) {
                 $this->session->set_flashdata('error', 'Erro ao tentar excluir OS.');
+                if ($lock !== null) {
+                    $lock->finalizar(false);
+                }
                 redirect($listagem);
             }
         }
@@ -728,6 +779,9 @@ class Os extends MY_Controller
                 $this->os_model->delete('cobrancas', 'os_id', $id);
             } else {
                 $this->session->set_flashdata('error', 'Existe uma cobrança associada a esta OS, deve cancelar e/ou excluir a cobrança primeiro!');
+                if ($lock !== null) {
+                    $lock->finalizar(false);
+                }
                 redirect($listagem);
             }
         }
@@ -736,6 +790,9 @@ class Os extends MY_Controller
         if ((int) $osStockRefund->faturado === 1
             && $this->os_model->faturaBaixada($id, isset($osStockRefund->lancamento) ? (int) $osStockRefund->lancamento : null)) {
             $this->session->set_flashdata('error', 'A fatura desta OS já tem pagamento baixado: estorne o recebimento antes de excluir a OS.');
+            if ($lock !== null) {
+                $lock->finalizar(false);
+            }
             redirect($listagem);
         }
 
@@ -764,6 +821,9 @@ class Os extends MY_Controller
 
         log_info('Removeu uma OS. ID: ' . $id);
         $this->session->set_flashdata('success', 'OS excluída com sucesso!');
+        if ($lock !== null) {
+            $lock->finalizar(true);
+        }
         redirect($listagem);
     }
 
@@ -1089,7 +1149,7 @@ class Os extends MY_Controller
             return;
         }
 
-        $os = $this->osParaAlterar();
+        $os = $this->osParaAlterar(true);
         if (! $os) {
             return;
         }
@@ -1207,7 +1267,7 @@ class Os extends MY_Controller
             return;
         }
 
-        $os = $this->osParaAlterar();
+        $os = $this->osParaAlterar(true);
         if (! $os) {
             return;
         }
@@ -1446,7 +1506,7 @@ class Os extends MY_Controller
             return;
         }
 
-        $os = $this->osParaAlterar();
+        $os = $this->osParaAlterar(true);
         if (! $os) {
             return;
         }
@@ -1486,7 +1546,7 @@ class Os extends MY_Controller
             return;
         }
 
-        $os = $this->osParaAlterar();
+        $os = $this->osParaAlterar(true);
         if (! $os) {
             return;
         }

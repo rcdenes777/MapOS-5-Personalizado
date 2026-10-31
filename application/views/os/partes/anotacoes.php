@@ -28,7 +28,7 @@ if ($anotacoes === []) { ?>
                 <p class="text-body-md whitespace-pre-line [overflow-wrap:anywhere] text-text"><?= e($texto) ?></p>
                 <p class="mt-1 text-caption text-muted"><?= e(trim(($autor ? $autor . ' · ' : '') . $quando, ' ·')) ?></p>
             </div>
-            <?php if ($pode['editar']) { ?>
+            <?php if (($pode['editar_tecnico'] ?? $pode['editar'])) { ?>
                 <?= component('button', [
                     'label' => 'Excluir anotação de ' . $quando,
                     'icon' => 'trash-2',

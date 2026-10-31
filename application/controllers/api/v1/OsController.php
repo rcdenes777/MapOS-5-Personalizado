@@ -8,6 +8,7 @@ require_once APPPATH . 'helpers/trifase_financeiro_helper.php';
 
 class OsController extends REST_Controller
 {
+    private ?Trifase_os_lock $financeiroLock = null;
     public function __construct()
     {
         parent::__construct();
@@ -15,6 +16,32 @@ class OsController extends REST_Controller
         $this->load->model('os_model');
         $this->load->model('Api_model');
         $this->load->helper(['os', 'api']);
+    }
+
+    public function response($data = null, $http_code = null, $continue = false)
+    {
+        if ($this->financeiroLock !== null) {
+            try {
+                $this->financeiroLock->finalizar(($http_code ?? 200) < 400 && (! is_array($data) || ($data['status'] ?? true) !== false));
+            } catch (RuntimeException $e) {
+                $http_code = 500;
+                $data = ['status' => false, 'message' => 'Não foi possível confirmar a alteração.'];
+            }
+            $this->financeiroLock = null;
+        }
+        return parent::response($data, $http_code, $continue);
+    }
+
+    private function travarFinanceiro(int $id): void
+    {
+        if (! trifaseFinanceiroHabilitado() || $this->financeiroLock !== null) {
+            return;
+        }
+        try {
+            $this->financeiroLock = new Trifase_os_lock($this->db, $id);
+        } catch (DomainException $e) {
+            $this->response(['status' => false, 'message' => 'OS não encontrada.'], 404);
+        }
     }
 
     public function index_get($id = '')
@@ -157,6 +184,10 @@ class OsController extends REST_Controller
             $dataFinal = date('Y/m/d');
         }
 
+        if (trifaseFinanceiroHabilitado() && $this->post('status', true) === 'Faturado') {
+            $this->response(['status' => false, 'message' => 'Faturamento não é um andamento do serviço.'], 422);
+        }
+
         $data = [
             'dataInicial' => $dataInicial,
             'clientes_id' => $this->post('clientes_id', true),
@@ -231,6 +262,7 @@ class OsController extends REST_Controller
             ], REST_Controller::HTTP_UNAUTHORIZED);
         }
 
+        $this->travarFinanceiro((int) $id);
         if (trifaseFinanceiroOsGerida($this->db, (int) $id)) {
             $this->response(['status' => false, 'message' => 'Use as ações dedicadas do módulo Trifase para esta OS.'], 409);
             return;
@@ -242,6 +274,10 @@ class OsController extends REST_Controller
                 'status' => false,
                 'message' => 'Essa OS não existe',
             ], REST_Controller::HTTP_BAD_REQUEST);
+        }
+
+        if (trifaseFinanceiroHabilitado() && (int) $os->faturado === 1) {
+            $this->response(['status' => false, 'message' => 'Concilie o faturamento antigo antes de alterar esta OS.'], 409);
         }
 
         $_POST = (array) json_decode(file_get_contents('php://input'), true);
@@ -352,10 +388,6 @@ class OsController extends REST_Controller
 
     public function index_delete($id)
     {
-        if (trifaseFinanceiroOsGerida($this->db, (int) $id)) {
-            $this->response(['status' => false, 'message' => 'OS com histórico financeiro: exclusão bloqueada.'], 409);
-            return;
-        }
         $this->logged_user();
         if (! $this->permission->checkPermission($this->logged_user()->level, 'dOs')) {
             $this->response([
@@ -371,6 +403,11 @@ class OsController extends REST_Controller
             ], REST_Controller::HTTP_BAD_REQUEST);
         }
 
+        $this->travarFinanceiro((int) $id);
+        if (trifaseFinanceiroOsGerida($this->db, (int) $id)) {
+            $this->response(['status' => false, 'message' => 'OS com histórico financeiro: exclusão bloqueada.'], 409);
+            return;
+        }
         $os = $this->os_model->getByIdCobrancas($id);
         if ($os == null) {
             $os = $this->os_model->getById($id);
@@ -843,7 +880,7 @@ class OsController extends REST_Controller
             ], REST_Controller::HTTP_BAD_REQUEST);
         }
 
-        $this->osParaEditar($id, 'OS Faturada/Cancelada não pode ser alterada.');
+        $this->osParaEditar($id, 'OS cancelada não pode ser alterada.', 'OS não encontrada.', true);
 
         $data = [
             'anotacao' => "[{$this->logged_user()->usuario->nome}] " . $this->post('anotacao', true),
@@ -883,7 +920,7 @@ class OsController extends REST_Controller
             ], REST_Controller::HTTP_UNAUTHORIZED);
         }
 
-        $this->osParaEditar($id, 'OS Faturada/Cancelada não pode ser alterada.');
+        $this->osParaEditar($id, 'OS cancelada não pode ser alterada.', 'OS não encontrada.', true);
 
         if (! $this->os_model->getAnotacaoDaOs((int) $id, (int) $idAnotacao)) {
             $this->response([
@@ -1072,8 +1109,11 @@ class OsController extends REST_Controller
      * OS da URL para alterar: 404 se não existe e 403 se está faturada ou
      * cancelada (control_editos desligado), como no painel.
      */
-    private function osParaEditar($id, string $mensagemFechada, string $mensagemInexistente = 'OS não encontrada.'): object
+    private function osParaEditar($id, string $mensagemFechada, string $mensagemInexistente = 'OS não encontrada.', bool $tecnica = false): object
     {
+        if (! $tecnica && ctype_digit((string) $id)) {
+            $this->travarFinanceiro((int) $id);
+        }
         $os = ctype_digit((string) $id) ? $this->os_model->getById((int) $id) : null;
         if (! $os) {
             $this->response([
@@ -1082,7 +1122,10 @@ class OsController extends REST_Controller
             ], REST_Controller::HTTP_NOT_FOUND);
         }
 
-        if (! $this->isEditable((int) $id)) {
+        // A API usa a permissão JWT já conferida pelo endpoint, não a sessão do painel.
+        $tecnicoSeparado = $tecnica && (trifaseFinanceiroHabilitado() || trifaseFinanceiroOsGerida($this->db, (int) $id));
+        $editavel = $tecnicoSeparado ? $os->status !== 'Cancelado' : $this->isEditable((int) $id);
+        if (! $editavel) {
             $this->response([
                 'status' => false,
                 'message' => $mensagemFechada,

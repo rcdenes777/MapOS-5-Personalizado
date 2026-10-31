@@ -314,6 +314,11 @@ class Financeiro_model extends CI_Model
     /** Atualiza o lançamento (linha existente) e devolve se deu certo. */
     public function atualizar(int $id, array $dados): bool
     {
+        return $this->protegerVinculo($id, fn () => $this->atualizarSemTrava($id, $dados));
+    }
+
+    private function atualizarSemTrava(int $id, array $dados): bool
+    {
         if (trifaseFinanceiroGerido($this->db, $id)) {
             throw new DomainException('Use as operações financeiras da OS para este lançamento.');
         }
@@ -329,6 +334,11 @@ class Financeiro_model extends CI_Model
      * entra no histórico dela. Tudo numa transação.
      */
     public function excluir(int $id, ?int $usuario): bool
+    {
+        return $this->protegerVinculo($id, fn () => $this->excluirSemTrava($id, $usuario));
+    }
+
+    private function excluirSemTrava(int $id, ?int $usuario): bool
     {
         if (trifaseFinanceiroGerido($this->db, $id)) {
             throw new DomainException('Use as operações financeiras da OS para este lançamento.');
@@ -357,6 +367,26 @@ class Financeiro_model extends CI_Model
         $this->db->trans_commit();
 
         return true;
+    }
+
+    private function protegerVinculo(int $id, callable $acao): bool
+    {
+        if (! trifaseFinanceiroHabilitado()) {
+            return $acao();
+        }
+        $os = $this->db->select('idOs')->where('lancamento', $id)->get('os', 1)->row();
+        if (! $os) {
+            return $acao();
+        }
+        $lock = new Trifase_os_lock($this->db, (int) $os->idOs);
+        try {
+            $resultado = $acao();
+            $lock->finalizar($resultado);
+            return $resultado;
+        } catch (Throwable $e) {
+            $lock->finalizar(false);
+            throw $e;
+        }
     }
 
     private function osModel(): object

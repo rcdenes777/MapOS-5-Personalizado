@@ -4,6 +4,8 @@ if (! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
+require_once APPPATH . 'helpers/trifase_financeiro_helper.php';
+
 class Conecte_model extends CI_Model
 {
     /**
@@ -31,6 +33,7 @@ class Conecte_model extends CI_Model
     public function getLastOs($cliente, int $limite = 10)
     {
         $this->db->select('os.*, ' . self::USUARIO_CAMPOS_PUBLICOS);
+        trifaseGarantiaJoin($this->db);
         $this->db->from('os');
         $this->db->join('usuarios', 'os.usuarios_id = usuarios.idUsuarios', 'left');
         $this->db->where('clientes_id', $cliente);
@@ -102,6 +105,9 @@ class Conecte_model extends CI_Model
     public function getOs($table, $fields, $where, $perpage, $start, $one, $array, $cliente)
     {
         // $fields costuma vir como '*', o que traria usuarios.senha pelo join.
+        if ($table === 'os') {
+            trifaseGarantiaJoin($this->db);
+        }
         $this->db->select($fields === '*' ? 'os.*, ' . self::USUARIO_CAMPOS_PUBLICOS : $fields);
         $this->db->from($table);
         $this->db->join('usuarios', 'os.usuarios_id = usuarios.idUsuarios', 'left');
@@ -122,6 +128,7 @@ class Conecte_model extends CI_Model
     public function getById($id)
     {
         $this->db->select('os.*, clientes.*, clientes.celular as celular_cliente, garantias.refGarantia, garantias.textoGarantia, usuarios.telefone as telefone_usuario, usuarios.email as email_usuario, usuarios.nome');
+        trifaseGarantiaJoin($this->db);
         $this->db->from('os');
         $this->db->join('clientes', 'clientes.idClientes = os.clientes_id');
         $this->db->join('usuarios', 'usuarios.idUsuarios = os.usuarios_id');

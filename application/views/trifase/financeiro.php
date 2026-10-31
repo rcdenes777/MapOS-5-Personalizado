@@ -24,6 +24,9 @@ foreach ($financeiroEventos as $e) {
             <p class="my-3 text-body-md text-muted">O valor vem dos produtos, serviços e descontos da OS. Registrar a cobrança não finaliza o serviço.</p>
             <?php if ((int) $osFinanceira->faturado === 1) { ?>
                 <?= component('alert', ['variant' => 'warning', 'message' => 'Esta OS já possui faturamento anterior. A conversão exige conciliação; não será criada outra cobrança.']) ?>
+            <?php if ($permite('eOs') && $permite('eLancamento')) { ?>
+                    <div class="mt-3"><?= component('button', ['label' => 'Conferir faturamento antigo', 'variant' => 'outline', 'href' => site_url('trifase_financeiro/conciliar/' . $id)]) ?></div>
+                <?php } ?>
             <?php } elseif ($permite('eOs') && $permite('aLancamento')) { ?>
                 <form method="post" action="<?= e(site_url('trifase_financeiro/formalizar/' . $id)) ?>" class="flex flex-col gap-3" novalidate <?= js_module('formulario/padrao') ?>>
                     <input type="hidden" name="<?= e($csrfNome) ?>" value="<?= e($csrfValor) ?>">

@@ -45,7 +45,7 @@ if (! function_exists('conecteGarantiaOsPill')) {
      */
     function conecteGarantiaOsPill(object $os, ?string $hoje = null): ?array
     {
-        return vendaGarantiaPill(osVencimentoGarantia($os->dataFinal ?? null, $os->garantia ?? null, $os->status ?? null), $hoje);
+        return vendaGarantiaPill(osGarantiaDoRegistro($os), $hoje);
     }
 }
 

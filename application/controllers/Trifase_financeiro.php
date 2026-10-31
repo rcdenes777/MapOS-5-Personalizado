@@ -3,7 +3,7 @@
 defined('BASEPATH') or exit('No direct script access allowed');
 require_once APPPATH . 'helpers/trifase_financeiro_helper.php';
 
-/** Experimento financeiro: somente no laboratório com ativação explícita. */
+/** Extensão financeira com ativação explícita por instalação. */
 class Trifase_financeiro extends MY_Controller
 {
     public function __construct()
@@ -38,11 +38,12 @@ class Trifase_financeiro extends MY_Controller
         }
         $os = $this->postOrdem($id);
         return $this->executar($os, function () use ($os) {
-            if ($this->os_model->getCobrancas((int) $os->idOs)) {
-                throw new DomainException('Esta OS tem cobrança externa. Concilie a cobrança antes de usar este módulo.');
-            }
-            $t = $this->os_model->totais($os);
-            $this->financeiro_os->formalizar((int) $os->idOs, financeiroCentavos(number_format($t['bruto'], 2, '.', '')), financeiroCentavos(number_format($t['desconto'], 2, '.', '')), $this->texto('vencimento'), $this->usuario());
+            $this->financeiro_os->formalizarCalculado((int) $os->idOs, $this->texto('vencimento'), $this->usuario(), function ($bloqueada) {
+                if ($this->os_model->getCobrancas((int) $bloqueada->idOs)) {
+                    throw new DomainException('Esta OS tem cobrança externa. Concilie a cobrança antes de usar este módulo.');
+                }
+                return $this->os_model->totais($bloqueada);
+            });
         }, 'Cobrança registrada. O andamento do serviço foi preservado.');
     }
 
@@ -94,6 +95,83 @@ class Trifase_financeiro extends MY_Controller
             $this->session->set_flashdata('error', $e->getMessage());
         }
         redirect('os/visualizar/' . (int) $os->idOs);
+    }
+
+    public function tecnico($id = null)
+    {
+        if (! $this->permission->checkPermission($this->session->userdata('permissao'), 'vOs')
+            || ! $this->permission->checkPermission($this->session->userdata('permissao'), 'eOs')) {
+            show_error('Você não tem permissão para editar esta OS.', 403);
+        }
+        $os = $this->ordem($id);
+        $gerida = trifaseFinanceiroOsGerida($this->db, (int) $os->idOs);
+        if (! $gerida && (int) $os->faturado !== 1) {
+            show_error('Esta OS ainda não foi conciliada com o módulo financeiro.', 409);
+        }
+        $erro = null;
+        if ($this->input->method(true) === 'POST') {
+            try {
+                $post = $this->input->post();
+                unset($post[$this->security->get_csrf_token_name()]);
+                $this->financeiro_os->salvarTecnico((int) $os->idOs, $post, $this->usuario());
+                $this->session->set_flashdata('success', 'Dados técnicos salvos. Os valores e a conclusão registrada foram preservados.');
+                redirect('os/visualizar/' . (int) $os->idOs);
+            } catch (DomainException $e) {
+                $erro = $e->getMessage();
+                $this->output->set_status_header(422);
+            }
+        }
+        $this->data['osTecnica'] = $os;
+        $this->data['metaTecnica'] = $gerida ? $this->financeiro_os->metadados((int) $os->idOs) : (object) ['garantia_inicio' => null, 'origem' => 'legado_nao_conciliado'];
+        $this->data['erroTecnico'] = $erro;
+        $this->data['view'] = 'trifase/tecnico';
+        $this->data['menuOs'] = 'OS';
+        return $this->layout();
+    }
+
+    public function conclusao($id = null)
+    {
+        if (! $this->permission->checkPermission($this->session->userdata('permissao'), 'vOs')
+            || ! $this->permission->checkPermission($this->session->userdata('permissao'), 'eOs')) {
+            show_error('Você não tem permissão para registrar a conclusão.', 403);
+        }
+        $os = $this->postOrdem($id);
+        try {
+            $this->financeiro_os->registrarConclusao((int) $os->idOs, $this->texto('conclusao'), $this->usuario());
+            $this->session->set_flashdata('success', 'Conclusão registrada. Essa data será a referência da garantia.');
+        } catch (DomainException $e) {
+            $this->session->set_flashdata('error', $e->getMessage());
+        }
+        redirect('trifase_financeiro/tecnico/' . (int) $os->idOs);
+    }
+
+    public function conciliar($id = null)
+    {
+        if (! $this->permission->checkPermission($this->session->userdata('permissao'), 'vOs')
+            || ! $this->permission->checkPermission($this->session->userdata('permissao'), 'vLancamento')
+            || ! $this->permission->checkPermission($this->session->userdata('permissao'), 'eOs')
+            || ! $this->permission->checkPermission($this->session->userdata('permissao'), 'eLancamento')) {
+            show_error('Você não tem permissão para conciliar faturamento antigo.', 403);
+        }
+        $os = $this->ordem($id);
+        $erro = null;
+        if ($this->input->method(true) === 'POST') {
+            try {
+                if ($this->texto('confirmar') !== '1') {
+                    throw new DomainException('Confirme a conferência do lançamento e do andamento real.');
+                }
+                $this->financeiro_os->conciliarLegado((int) $os->idOs, $this->texto('status'), $this->usuario());
+                $this->session->set_flashdata('success', 'Vínculo conciliado sem duplicar receita. Confira a conclusão real antes de registrar a garantia.');
+                redirect('trifase_financeiro/visualizar/' . (int) $os->idOs);
+            } catch (DomainException $e) {
+                $erro = $e->getMessage();
+                $this->output->set_status_header(422);
+            }
+        }
+        $this->data['legadoFinanceiro'] = $this->financeiro_os->legado((int) $os->idOs);
+        $this->data['erroLegado'] = $erro;
+        $this->data['view'] = 'trifase/conciliar';
+        return $this->layout();
     }
 
     private function ordem($id): object

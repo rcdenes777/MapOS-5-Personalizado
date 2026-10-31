@@ -33,7 +33,7 @@ class Cobrancas extends MY_Controller
 
         $osId = $this->input->post('id');
         if ($this->input->post('tipo') === 'os' && is_scalar($osId) && ctype_digit((string) $osId)
-            && trifaseFinanceiroOsGerida($this->db, (int) $osId)) {
+            && (trifaseFinanceiroHabilitado() || trifaseFinanceiroOsGerida($this->db, (int) $osId))) {
             return $this->output->set_content_type('application/json')->set_status_header(409)
                 ->set_output(json_encode(['message' => 'Cobrança externa de OS gerida pelo Trifase não é suportada neste laboratório.']));
         }

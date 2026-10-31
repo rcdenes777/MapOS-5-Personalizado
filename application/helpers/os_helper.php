@@ -219,7 +219,7 @@ if (! function_exists('osDadosDoFormulario')) {
         }
 
         $status = $texto('status');
-        if (! array_key_exists($status, OS_STATUS_VARIANTES)) {
+        if (! array_key_exists($status, OS_STATUS_VARIANTES) || ($status === 'Faturado' && function_exists('trifaseFinanceiroHabilitado') && trifaseFinanceiroHabilitado())) {
             $erros['status'] = 'Escolha um status da lista.';
         }
 
@@ -802,14 +802,20 @@ if (! function_exists('osVencimentoGarantia')) {
      * Fim da garantia (data final da OS + dias de garantia), quando a garantia
      * já corre (OS Finalizada ou Faturada). Sem garantia, null.
      */
-    function osVencimentoGarantia(?string $dataFinal, $dias, ?string $status): ?string
+    function osVencimentoGarantia(?string $dataFinal, $dias, ?string $status, ?string $conclusao = null, bool $independente = false): ?string
     {
         $dias = is_numeric($dias) ? (int) $dias : 0;
-        $base = dataIsoParaYmd(substr((string) $dataFinal, 0, 10));
-        if ($dias <= 0 || $base === null || ! in_array($status, ['Finalizado', 'Faturado'], true)) {
+        $base = dataIsoParaYmd(substr((string) ($independente ? $conclusao : $dataFinal), 0, 10));
+        if ($dias <= 0 || $base === null || (! $independente && ! in_array($status, ['Finalizado', 'Faturado'], true))) {
             return null;
         }
 
         return date('Y-m-d', strtotime($base . ' +' . $dias . ' days'));
     }
+}
+
+
+function osGarantiaDoRegistro(object $os): ?string
+{
+    return osVencimentoGarantia($os->dataFinal ?? null, $os->garantia ?? null, $os->status ?? null, $os->trifase_garantia_inicio ?? null, (bool) ($os->trifase_financeiro_gerida ?? false));
 }

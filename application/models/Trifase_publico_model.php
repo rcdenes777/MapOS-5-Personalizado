@@ -3,10 +3,57 @@
 defined('BASEPATH') or exit('No direct script access allowed');
 
 require_once APPPATH . 'helpers/trifase_publico_helper.php';
+require_once APPPATH . 'libraries/Trifase_token.php';
 
 class Trifase_publico_model extends CI_Model
 {
-    public const VALIDADE_DIAS = 30;
+    public const VALIDADE_DIAS = 120;
+
+    public function __construct(private ?Trifase_token $tokens = null)
+    {
+        parent::__construct();
+    }
+
+    private function tokens(): Trifase_token
+    {
+        return $this->tokens ??= new Trifase_token();
+    }
+
+    /** Só o controller autorizado do painel chama esta leitura. */
+    public function tokenAtivo(int $id): ?string
+    {
+        $linha = $this->db->where('os_id', $id)->where('expira_em >', time())->get('trifase_publico_links', 1)->row();
+        if (! $linha || ! $linha->token_hash || ! $linha->token_cifrado) {
+            return null;
+        }
+        try {
+            $token = $this->tokens()->decifrar($linha->token_cifrado, $id);
+        } catch (RuntimeException $erro) {
+            return null;
+        }
+
+        return $token !== null && hash_equals($linha->token_hash, hash('sha256', $token)) ? $token : null;
+    }
+
+    /** Recuperação administrativa de token antigo conhecido, sem trocar sua URL. */
+    public function guardarTokenExistente(int $id, string $token): bool
+    {
+        if (! trifasePublicoTokenValido($token)) {
+            return false;
+        }
+
+        return $this->transacao($id, function () use ($id, $token): bool {
+            $linha = $this->db->where('os_id', $id)->where('expira_em >', time())->get('trifase_publico_links', 1)->row();
+            if (! $linha || ! is_string($linha->token_hash) || ! hash_equals($linha->token_hash, hash('sha256', $token))) {
+                return false;
+            }
+            if (! $this->db->where('os_id', $id)->update('trifase_publico_links', ['token_cifrado' => $this->tokens()->cifrar($token, $id)])) {
+                throw new RuntimeException('Não foi possível guardar o link existente.');
+            }
+
+            return true;
+        });
+    }
 
     public function ordem(int $id): ?object
     {
@@ -18,12 +65,12 @@ class Trifase_publico_model extends CI_Model
         return $this->db->select('expira_em')->where('os_id', $id)->where('token_hash IS NOT NULL', null, false)->where('expira_em >', time())->get('trifase_publico_links', 1)->row() ?: null;
     }
 
-    /** Um único slot por OS. Renovação substitui o hash; o token nunca é persistido. */
+    /** Um único slot por OS: hash público e cópia cifrada para o painel. */
     public function gerar(int $id, int $usuario): string
     {
         return $this->transacao($id, function () use ($id, $usuario): string {
             $token = bin2hex(random_bytes(32));
-            $dados = ['token_hash' => hash('sha256', $token), 'expira_em' => time() + self::VALIDADE_DIAS * 86400, 'usuario_id' => $usuario];
+            $dados = ['token_hash' => hash('sha256', $token), 'token_cifrado' => $this->tokens()->cifrar($token, $id), 'validade_dias' => self::VALIDADE_DIAS, 'expira_em' => time() + self::VALIDADE_DIAS * 86400, 'usuario_id' => $usuario];
             if ($this->db->where('os_id', $id)->count_all_results('trifase_publico_links') > 0) {
                 $ok = $this->db->where('os_id', $id)->update('trifase_publico_links', $dados);
             } else {
@@ -40,7 +87,7 @@ class Trifase_publico_model extends CI_Model
     public function revogar(int $id): void
     {
         $this->transacao($id, function () use ($id): void {
-            if (! $this->db->where('os_id', $id)->update('trifase_publico_links', ['token_hash' => null, 'expira_em' => null])) {
+            if (! $this->db->where('os_id', $id)->update('trifase_publico_links', ['token_hash' => null, 'token_cifrado' => null, 'expira_em' => null])) {
                 throw new RuntimeException('Não foi possível revogar o link.');
             }
         });

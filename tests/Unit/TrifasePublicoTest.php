@@ -12,14 +12,14 @@ final class TrifasePublicoTest extends MaposTestCase
         parent::setUp();
         $this->db->query('CREATE TABLE os (idOs INTEGER PRIMARY KEY, status TEXT, dataInicial TEXT, dataFinal TEXT, descricaoProduto TEXT)');
         $this->db->query('CREATE TABLE anexos (idAnexos INTEGER PRIMARY KEY, os_id INTEGER, anexo TEXT, path TEXT)');
-        $this->db->query('CREATE TABLE trifase_publico_links (os_id INTEGER PRIMARY KEY, token_hash TEXT UNIQUE, expira_em INTEGER, usuario_id INTEGER)');
+        $this->db->query('CREATE TABLE trifase_publico_links (os_id INTEGER PRIMARY KEY, token_hash TEXT UNIQUE, expira_em INTEGER, usuario_id INTEGER, token_cifrado TEXT, validade_dias INTEGER DEFAULT 30)');
         $this->db->query('CREATE TABLE trifase_publico_anexos (os_id INTEGER, anexo_id INTEGER, PRIMARY KEY (os_id, anexo_id))');
         $this->db->insert('os', ['idOs' => 1, 'status' => 'Em Andamento', 'dataInicial' => '2026-10-31', 'descricaoProduto' => '<p>Televisor &amp; som</p>']);
         $this->db->insert('os', ['idOs' => 2, 'status' => 'Aberto', 'dataInicial' => '2026-10-31', 'descricaoProduto' => 'Outra OS']);
         foreach ([[11, 1], [12, 1], [21, 2]] as [$id, $os]) {
             $this->db->insert('anexos', ['idAnexos' => $id, 'os_id' => $os, 'anexo' => 'arquivo.txt', 'path' => 'anexos']);
         }
-        $this->modelo = new Trifase_publico_model();
+        $this->modelo = new Trifase_publico_model(new Trifase_token(['chave' => str_repeat('teste-segredo-', 4)]));
         $this->modelo->db = $this->db;
     }
 
@@ -32,8 +32,47 @@ final class TrifasePublicoTest extends MaposTestCase
         $this->assertNotSame($token, $linha->token_hash);
         $this->assertSame(1, (int) $this->modelo->resolver($token)->idOs);
         $this->assertSame(7, (int) $linha->usuario_id);
-        $this->assertGreaterThan(time() + 29 * 86400, (int) $linha->expira_em);
+        $this->assertGreaterThan(time() + 119 * 86400, (int) $linha->expira_em);
         $this->assertNotNull($this->modelo->estado(1));
+    }
+
+    public function testLinkPersistenteContinuaIgualAoVoltarENaoGuardaTokenEmClaro(): void
+    {
+        $token = $this->modelo->gerar(1, 7);
+        $linha = $this->db->where('os_id', 1)->get('trifase_publico_links')->row();
+        $this->assertStringNotContainsString($token, $linha->token_cifrado);
+        $this->assertSame($token, $this->modelo->tokenAtivo(1));
+        $this->assertSame($token, $this->modelo->tokenAtivo(1));
+        $this->assertLessThanOrEqual(time() + 120 * 86400, (int) $linha->expira_em);
+        $this->modelo->revogar(1);
+        $this->assertNull($this->modelo->tokenAtivo(1));
+        $this->assertNull($this->db->where('os_id', 1)->get('trifase_publico_links')->row()->token_cifrado);
+    }
+
+    public function testTokenAntigoConhecidoEhPreservadoSemTrocarHashOuPrazo(): void
+    {
+        $token = $this->modelo->gerar(1, 7);
+        $antes = $this->db->where('os_id', 1)->get('trifase_publico_links')->row();
+        $this->db->where('os_id', 1)->update('trifase_publico_links', ['token_cifrado' => null]);
+        $this->assertNull($this->modelo->tokenAtivo(1));
+        $this->assertFalse($this->modelo->guardarTokenExistente(1, str_repeat('f', 64)));
+        $this->assertTrue($this->modelo->guardarTokenExistente(1, $token));
+        $depois = $this->db->where('os_id', 1)->get('trifase_publico_links')->row();
+        $this->assertSame($antes->token_hash, $depois->token_hash);
+        $this->assertSame($antes->expira_em, $depois->expira_em);
+        $this->assertSame($token, $this->modelo->tokenAtivo(1));
+    }
+
+    public function testCopiaAdulteradaExpiradaOuDeOutraOsNaoEhRevelada(): void
+    {
+        $token = $this->modelo->gerar(1, 7);
+        $this->modelo->gerar(2, 7);
+        $outra = $this->db->where('os_id', 2)->get('trifase_publico_links')->row();
+        $this->db->where('os_id', 1)->update('trifase_publico_links', ['token_cifrado' => $outra->token_cifrado]);
+        $this->assertNull($this->modelo->tokenAtivo(1));
+        $this->db->where('os_id', 1)->update('trifase_publico_links', ['expira_em' => time()]);
+        $this->assertFalse($this->modelo->guardarTokenExistente(1, $token));
+        $this->assertNull($this->modelo->tokenAtivo(1));
     }
 
     public function testRenovarInvalidaAnteriorEMantemUmSlot(): void

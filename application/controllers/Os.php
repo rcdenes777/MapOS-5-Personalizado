@@ -4,6 +4,8 @@ if (! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
+require_once APPPATH . 'helpers/trifase_financeiro_helper.php';
+
 class Os extends MY_Controller
 {
     /** Filtros da listagem, na query string (listagemFiltros()). */
@@ -394,9 +396,9 @@ class Os extends MY_Controller
             'garantia_ate' => osVencimentoGarantia($os->dataFinal, $os->garantia, $os->status),
             'pode' => [
                 'editar' => $editavel,
-                'faturar' => $editavel && (int) $os->faturado === 0 && $os->status !== 'Cancelado',
+                'faturar' => ! trifaseFinanceiroHabilitado() && $editavel && (int) $os->faturado === 0 && $os->status !== 'Cancelado',
                 'excluir' => $editavel && $this->permite('dOs'),
-                'cobrar' => $this->permite('aCobranca') && ! $cobrancas && $totais['total'] > 0,
+                'cobrar' => ! trifaseFinanceiroOsGerida($this->db, $idOs) && $this->permite('aCobranca') && ! $cobrancas && $totais['total'] > 0,
                 'ver_cobranca' => $this->permite('vCobranca'),
                 'ver_cliente' => $this->permite('vCliente'),
             ],
@@ -705,6 +707,10 @@ class Os extends MY_Controller
         }
 
         $id = (int) $this->input->post('id');
+        if (trifaseFinanceiroOsGerida($this->db, $id)) {
+            $this->session->set_flashdata('error', 'OS com histórico financeiro Trifase não pode ser excluída neste laboratório.');
+            redirect('os/visualizar/' . $id);
+        }
         // Volta para a listagem com os mesmos filtros (só os permitidos).
         $listagem = site_url('os/gerenciar') . listagemQuery($this->filtrosDaListagem());
 
@@ -1316,6 +1322,10 @@ class Os extends MY_Controller
      */
     public function faturar()
     {
+        if (trifaseFinanceiroHabilitado()) {
+            $this->responderJson(422, ['result' => false, 'message' => 'Use Financeiro da OS para registrar a cobrança sem mudar o andamento.']);
+            return;
+        }
         if (! $this->permission->checkPermission($this->session->userdata('permissao'), 'eOs')) {
             $this->responderJson(403, ['result' => false, 'message' => 'Você não tem permissão para editar O.S.']);
 

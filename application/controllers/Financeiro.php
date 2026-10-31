@@ -4,6 +4,8 @@ if (! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
+require_once APPPATH . 'helpers/trifase_financeiro_helper.php';
+
 class Financeiro extends MY_Controller
 {
     /** Filtros da listagem, na query string (listagemFiltros()). */
@@ -179,6 +181,9 @@ class Financeiro extends MY_Controller
      */
     private function formulario(?object $lancamento)
     {
+        if ($lancamento && trifaseFinanceiroGerido($this->db, (int) $lancamento->idLancamentos)) {
+            show_error('Use o Financeiro da OS para este lançamento.', 409);
+        }
         $editando = $lancamento !== null;
         $erros = [];
         $retorno = $this->filtrosDeRetorno();
@@ -295,6 +300,9 @@ class Financeiro extends MY_Controller
             redirect($listagem);
         }
 
+        if (trifaseFinanceiroGerido($this->db, (int) $id)) {
+            show_error('Use o Financeiro da OS para este lançamento.', 409);
+        }
         if (! $this->financeiro_model->excluir((int) $id, $this->usuarioLogado())) {
             $this->session->set_flashdata('error', 'Ocorreu um erro ao tentar excluir o lançamento.');
             redirect($listagem);

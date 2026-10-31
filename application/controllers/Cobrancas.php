@@ -4,6 +4,8 @@ if (! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
+require_once APPPATH . 'helpers/trifase_financeiro_helper.php';
+
 class Cobrancas extends MY_Controller
 {
     public function __construct()
@@ -29,6 +31,12 @@ class Cobrancas extends MY_Controller
                 ->set_output(json_encode(['message' => 'Você não tem permissão para adicionar cobrança!']));
         }
 
+        $osId = $this->input->post('id');
+        if ($this->input->post('tipo') === 'os' && is_scalar($osId) && ctype_digit((string) $osId)
+            && trifaseFinanceiroOsGerida($this->db, (int) $osId)) {
+            return $this->output->set_content_type('application/json')->set_status_header(409)
+                ->set_output(json_encode(['message' => 'Cobrança externa de OS gerida pelo Trifase não é suportada neste laboratório.']));
+        }
         $this->load->library('form_validation');
         if ($this->form_validation->run('cobrancas') == false) {
             return $this->output

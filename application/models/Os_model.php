@@ -2,6 +2,8 @@
 
 use Piggly\Pix\StaticPayload;
 
+require_once APPPATH . 'helpers/trifase_financeiro_helper.php';
+
 class Os_model extends CI_Model
 {
     /** Cache de historicoDisponivel(). */
@@ -508,6 +510,9 @@ class Os_model extends CI_Model
 
     public function isEditable($id = null)
     {
+        if (trifaseFinanceiroOsGerida($this->db, (int) $id)) {
+            return false;
+        }
         if (! $this->permission->checkPermission($this->session->userdata('permissao'), 'eOs')) {
             return false;
         }

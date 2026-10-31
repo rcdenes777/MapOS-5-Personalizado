@@ -4,6 +4,8 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 require APPPATH . '/libraries/REST_Controller.php';
 
+require_once APPPATH . 'helpers/trifase_financeiro_helper.php';
+
 class OsController extends REST_Controller
 {
     public function __construct()
@@ -229,6 +231,10 @@ class OsController extends REST_Controller
             ], REST_Controller::HTTP_UNAUTHORIZED);
         }
 
+        if (trifaseFinanceiroOsGerida($this->db, (int) $id)) {
+            $this->response(['status' => false, 'message' => 'Use as ações dedicadas do módulo Trifase para esta OS.'], 409);
+            return;
+        }
         $os = $this->os_model->getById($id);
 
         if (! $os) {
@@ -346,6 +352,10 @@ class OsController extends REST_Controller
 
     public function index_delete($id)
     {
+        if (trifaseFinanceiroOsGerida($this->db, (int) $id)) {
+            $this->response(['status' => false, 'message' => 'OS com histórico financeiro: exclusão bloqueada.'], 409);
+            return;
+        }
         $this->logged_user();
         if (! $this->permission->checkPermission($this->logged_user()->level, 'dOs')) {
             $this->response([
@@ -1236,6 +1246,9 @@ class OsController extends REST_Controller
 
     public function isEditable($id = null)
     {
+        if (trifaseFinanceiroOsGerida($this->db, (int) $id)) {
+            return false;
+        }
         if (! $this->permission->checkPermission($this->logged_user()->level, 'eOs')) {
             return false;
         }

@@ -14,3 +14,14 @@ function trifaseFinanceiroGerido(object $db, int $id): bool
     return $db->table_exists('trifase_financeiro_projecoes')
         && $db->where('lancamento_id', $id)->count_all_results('trifase_financeiro_projecoes') > 0;
 }
+
+function trifaseFinanceiroHabilitado(): bool
+{
+    return filter_var($_ENV['TRIFASE_FINANCEIRO_ENABLED'] ?? false, FILTER_VALIDATE_BOOLEAN);
+}
+
+function trifaseFinanceiroOsGerida(object $db, int $id): bool
+{
+    return $db->table_exists('trifase_financeiro_obrigacoes')
+        && $db->where('os_id', $id)->count_all_results('trifase_financeiro_obrigacoes') > 0;
+}

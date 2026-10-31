@@ -57,6 +57,7 @@ $textos = [
             <p class="text-caption [overflow-wrap:anywhere] text-muted"><?= e($os->nomeCliente . ' · Técnico: ' . $os->nome) ?></p>
         </div>
         <div class="flex flex-wrap gap-2">
+            <?php $this->load->view('trifase/atalho', ['trifaseOsId' => $idOs]); ?>
             <?php if ($pode['faturar']) { ?>
                 <?= component('button', ['label' => 'Faturar', 'icon' => 'circle-dollar-sign', 'variant' => 'outline', 'attrs' => ['data-modal-abrir' => 'faturar-os']]) ?>
             <?php } ?>

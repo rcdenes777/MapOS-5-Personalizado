@@ -290,3 +290,18 @@ Depois do rollback do banco, volte também os arquivos da 4.x, o `.env` anterior
 | O 2FA de um usuário deixou de abrir | A `APP_ENCRYPTION_KEY` foi trocada. Redefina o 2FA do usuário em Usuários → editar. |
 
 Dúvidas e problemas: [Discussions](https://github.com/RamonSilva20/mapos/discussions) ou contato@mapos.com.br. Falhas de segurança **não** vão em issue pública: veja o [SECURITY.md](../SECURITY.md).
+## Extensão opcional Trifase — link público da OS
+
+Na branch `v5-trifase`, há uma extensão adicional à versão oficial. Sua migration
+`20261031000000_create_trifase_publico` cria somente `trifase_publico_links` e
+`trifase_publico_anexos`; não importa links da v4 e não publica anexos existentes.
+Mesmo com as tabelas presentes, o módulo nasce desabilitado. Para ativar em
+ambiente isolado, configure `TRIFASE_PUBLICO_ENABLED=true` e, quando o domínio
+dos clientes for diferente do painel, `TRIFASE_PUBLIC_BASEURL`.
+
+As rotas `trifase/*` são administrativas, com vOs + eOs e POST/CSRF nas mudanças.
+As rotas `publico/os/<token>` e `publico/anexo/<token>/<id>` só atendem com o
+módulo ligado e token vigente. Os anexos precisam de publicação explícita.
+Revisar proxy, HTTPS e logs antes de qualquer acesso externo; não expor o painel
+ou o armazenamento para publicar os links. Procedimento e limites completos em
+[docs/trifase/LINK_PUBLICO.md](trifase/LINK_PUBLICO.md).

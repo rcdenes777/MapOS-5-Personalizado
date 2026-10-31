@@ -32,6 +32,13 @@ defined('BASEPATH') or exit('No direct script access allowed');
 */
 
 $config['permissions_map'] = [
+    // Extensão Trifase: exige leitura e edição, inclusive em OS já faturada.
+    'Trifase' => [
+        'gerenciar' => ['todas' => ['vOs', 'eOs']],
+        'gerar' => ['todas' => ['vOs', 'eOs']],
+        'revogar' => ['todas' => ['vOs', 'eOs']],
+        'anexos' => ['todas' => ['vOs', 'eOs']],
+    ],
     'Arquivos' => [
         'index' => 'vArquivo',
         'gerenciar' => 'vArquivo',

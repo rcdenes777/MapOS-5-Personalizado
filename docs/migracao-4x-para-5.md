@@ -361,3 +361,11 @@ o padrão a partir de hoje, mantendo endereço e anexos. A data proposta aparece
 antes do envio e pode antecipar o vencimento se o novo padrão for menor.
 A renovação exige POST, CSRF e `vOs` + `eOs`; não reativa links expirados ou
 revogados. Não há nova migração para estas configurações.
+
+### Experimento financeiro isolado (não instalar)
+
+A branch de laboratório adiciona a prova descrita em `docs/trifase/FINANCEIRO_LAB.md`.
+A migração `20261031120000_trifase_financeiro_lab` é exclusiva desse experimento:
+não aplicar em bases reais ou na prévia. Ainda faltam integração HTTP, permissões,
+tratamento do legado e procedimento de reversão. Não fazer upgrade usando esta
+branch como distribuição pronta.

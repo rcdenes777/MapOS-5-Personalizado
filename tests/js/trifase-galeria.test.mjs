@@ -1,13 +1,15 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import iniciar, { urlDaGaleria } from '../../assets/js/modules/trifase/galeria.js';
+import { urlDaGaleria } from '../../assets/js/modules/trifase/galeria.js';
+import iniciar from '../../assets/js/modules/trifase/galeria-zoom.js';
 
 function cenario() {
     function elemento(tag) {
         const listeners = {};
         const classes = new Set();
         return {
-            tagName: tag.toUpperCase(), dataset: {}, filhos: [], hidden: false,
+            tagName: tag.toUpperCase(), dataset: {}, filhos: [], hidden: false, style: {},
+            clientWidth: 800, clientHeight: 400, naturalWidth: 1200, naturalHeight: 800, scrollLeft: 0, scrollTop: 0,
             classList: { contains: c => classes.has(c), add: c => classes.add(c), remove: c => classes.delete(c) },
             setAttribute(k, v) { this[k] = v; },
             removeAttribute(k) { delete this[k]; },
@@ -30,11 +32,13 @@ function cenario() {
     const titulo = elemento('h2');
     const baixar = elemento('a');
     dialogo.lastElementChild = elemento('footer');
-    dialogo.querySelector = s => s === 'h2' ? titulo : baixar;
+    const ampliar = elemento('button'), reduzir = elemento('button'), ajustar = elemento('button');
+    dialogo.querySelector = s => ({ h2: titulo, '[data-trifase-baixar]': baixar, '[data-trifase-ampliar]': ampliar, '[data-trifase-reduzir]': reduzir, '[data-trifase-ajustar]': ajustar })[s];
     dialogo.querySelectorAll = () => [];
     dialogo.insertBefore = e => dialogo.filhos.push(e);
     iniciar(dialogo, doc);
-    const [imagem, estado] = dialogo.filhos[0].filhos;
+    const [nivel, area, estado] = dialogo.filhos[0].filhos;
+    const [imagem] = area.filhos;
     function clicar(href = '/index.php/publico/imagem/token/1', download = '/index.php/publico/anexo/token/1') {
         const gatilho = {
             dataset: { trifaseNome: 'Anexo #1', trifaseDownload: download },
@@ -45,7 +49,7 @@ function cenario() {
         doc.emitir('click', evento);
         return evento;
     }
-    return { doc, dialogo, titulo, baixar, imagem, estado, clicar };
+    return { doc, dialogo, titulo, baixar, imagem, estado, clicar, ampliar, reduzir, ajustar, area, nivel };
 }
 
 test('galeria: somente URLs http(s) da mesma origem e sem credenciais', () => {
@@ -94,4 +98,35 @@ test('galeria: preserva rolagem que já estava bloqueada antes da abertura', () 
     c.doc.documentElement.classList.add('overflow-hidden');
     c.clicar(); c.dialogo.close();
     assert.equal(c.doc.documentElement.classList.contains('overflow-hidden'), true);
+});
+
+
+test('galeria: lupa amplia até 8x, reduz e ajusta a imagem inteira', () => {
+    const c = cenario(); c.clicar();
+    assert.equal(c.ampliar.disabled, true);
+    c.ampliar.emitir('click');
+    c.imagem.emitir('load');
+    const larguraInicial = parseFloat(c.imagem.style.width);
+    assert.equal(c.reduzir.disabled, true);
+    c.ampliar.emitir('click');
+    assert.equal(parseFloat(c.imagem.style.width), larguraInicial * 2);
+    assert.match(c.nivel.textContent, /200%/);
+    c.ampliar.emitir('click'); c.ampliar.emitir('click'); c.ampliar.emitir('click');
+    assert.equal(parseFloat(c.imagem.style.width), larguraInicial * 8);
+    assert.equal(c.ampliar.disabled, true);
+    c.reduzir.emitir('click');
+    assert.match(c.nivel.textContent, /400%/);
+    c.ajustar.emitir('click');
+    assert.equal(parseFloat(c.imagem.style.width), larguraInicial);
+    assert.equal(c.area.scrollTop, 0);
+    assert.equal(c.area.scrollLeft, 0);
+    c.ampliar.emitir('click'); c.dialogo.close(); c.clicar(); c.imagem.emitir('load');
+    assert.match(c.nivel.textContent, /100%/);
+});
+
+test('galeria: erro desativa os controles de zoom', () => {
+    const c = cenario(); c.clicar(); c.imagem.emitir('load'); c.imagem.emitir('error');
+    assert.equal(c.ampliar.disabled, true);
+    assert.equal(c.reduzir.disabled, true);
+    assert.equal(c.ajustar.disabled, true);
 });

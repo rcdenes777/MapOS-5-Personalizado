@@ -193,3 +193,26 @@ casos do modal, passaram. Na prévia foram testados clique real nas duas telas,
 foto carregada, quantidade de abas inalterada, fechamento pelo botão, Esc e
 fundo, foco restaurado, 19 verificações HTTP dos anexos e nonces distintos em
 respostas consecutivas. Não houve alteração no banco ou na seleção publicada.
+
+
+### Atualização: lupa e zoom
+
+O rodapé da janela oferece **Ampliar** (lupa), **Reduzir** e **Ajustar**.
+O zoom vai de 100% a 800% em relação à imagem ajustada inicialmente; a área
+com rolagem permite alcançar todos os detalhes. Ajustar volta à foto inteira,
+e abrir outra imagem reinicia o zoom. Os controles ficam indisponíveis durante
+o carregamento ou se o arquivo falhar. O mesmo componente atende painel e cliente.
+
+A view carrega `trifase/galeria-zoom.js`, com URL própria para atualizar também
+navegadores que mantêm o módulo anterior em cache. O módulo reutiliza a validação
+de URLs de `galeria.js`; não muda as permissões nem os arquivos publicados.
+
+Para Nginx com FastCGI, configure `fastcgi_max_temp_file_size 0;` no bloco PHP,
+além de filtrar os access logs públicos: imagens grandes podem gerar avisos de
+buffering que contêm o endereço com token. Na prévia 8200 foi preservada a
+configuração anterior e aplicada essa opção, sem desativar os demais logs.
+
+Verificação: sete casos da galeria e os 21 arquivos JS passaram; 1.616 testes PHP
+(7.369 assertions, um aviso antigo de depreciação), PHPStan sem erros e build
+concluído. No navegador, lupa no painel e no cliente, limite de 800%, redução,
+ajuste sem recorte, rolagem horizontal/vertical e Esc funcionaram sem criar abas.

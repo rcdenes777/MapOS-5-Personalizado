@@ -404,3 +404,7 @@ A migração `20261102010000_trifase_equipamentos` acrescenta catálogo, unidade
 ## Extensão Trifase: orçamento publicado (opcional)
 
 A migração `20261102020000_trifase_orcamentos` cria versões e eventos de orçamento sem converter OS existentes. Após backup e ensaio em cópia, ative `TRIFASE_ORCAMENTOS_ENABLED=true` (defaultfalse) e conceda `publicarOrcamento` somente aos perfis que podem compartilhar preços pelo link. Consulta exige `vOs+vLancamento`; publicar/retirar também exige `eOs+publicarOrcamento`. O módulo público também deve estar ativo. Não excluir rotas do CSRF. Desligar a flag preserva histórico e bloqueio de exclusão de OS com versões. Ver `trifase/ORCAMENTOS_LAB.md`.
+
+## Extensão Trifase: conclusão técnica (opcional)
+
+A migração `20261102030000_trifase_atendimentos` cria referência técnica própria sem converter OS/obrigações existentes. Após backup e ensaio em cópia, `TRIFASE_ATENDIMENTOS_ENABLED=true` habilita conclusão/andamento sem cobrança, com `vOs+eOs`, POST e CSRF. Registros anteriores conservam a referência conhecida; registros próprios continuam protegidos e consultáveis com a flag desligada. Não apagar a tabela para reverter a aparência. Ver `trifase/ATENDIMENTOS_LAB.md` para regras de primeira conclusão, prazo e limitações da API.

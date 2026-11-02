@@ -16,7 +16,7 @@ $permite = fn (string $p): bool => $this->permission->checkPermission($this->ses
                     <?php } else { ?>
                         <p class="text-muted">Valores dos itens desta OS</p>
                         <p class="trifase-os-total-nao-formalizado"><?= e(dinheiro($totais['total'])) ?></p>
-                        <p class="text-muted"><?= e((int) $os->faturado === 1 ? 'Faturamento anterior: consulte o registro para conferir os pagamentos.' : 'Cobrança ainda não formalizada. Recebimentos e saldo não foram registrados.') ?></p>
+                        <p class="text-muted"><?= e((int) $os->faturado === 1 ? 'Faturamento anterior: consulte o registro para conferir os pagamentos.' : ($totais['total'] <= 0 ? 'Sem valor a cobrar nos itens atuais. Nenhum recebimento ou saldo registrado.' : 'Cobrança ainda não formalizada. Recebimentos e saldo não foram registrados.')) ?></p>
                         <?php if (trifaseFinanceiroHabilitado()) { ?>
                             <?= component('button', ['label' => 'Consultar financeiro', 'variant' => 'outline', 'href' => $financeiroUrl]) ?>
                         <?php } ?>

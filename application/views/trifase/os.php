@@ -40,7 +40,9 @@ if (($pilotoEquipamento ?? null) !== null
             <div><dt>Previsão de entrega</dt><dd><?= e(dataBr($os->dataFinal) ?: 'Não informada') ?></dd></div>
             <div><dt>Técnico responsável</dt><dd><?= e($os->nome) ?></dd></div>
         </dl>
-        <?php if (trifaseFinanceiroHabilitado() && trifaseFinanceiroOsGerida($this->db, $idOs) && $permite('eOs')) { ?>
+        <?php if (trifaseAtendimentoHabilitado() && $permite('eOs')) { ?>
+            <?php $this->load->view('trifase/andamento-tecnico'); ?>
+        <?php } elseif (trifaseFinanceiroHabilitado() && trifaseFinanceiroOsGerida($this->db, $idOs) && $permite('eOs')) { ?>
             <details class="trifase-os-adicionar">
                 <summary>Atualizar andamento</summary>
                 <form method="post" action="<?= e(site_url('trifase_financeiro/andamento/' . $idOs)) ?>" class="grid gap-3 p-3" <?= js_module('formulario/padrao') ?>>
@@ -132,7 +134,7 @@ if (($pilotoEquipamento ?? null) !== null
                             <summary>Registrar recebimento</summary>
                             <?php $this->load->view('trifase/formulario-recebimento', ['osFinanceira' => $os, 'financeiroChave' => $pilotoOperacao, 'financeiroValores' => ['valor' => '', 'data' => date('Y-m-d'), 'forma' => 'Pix'], 'recebimentoIntegrado' => true]); ?>
                         </details>
-                    <?php } elseif ($pilotoFinanceiro === null && (int) $os->faturado !== 1 && $permite('aLancamento') && $permite('eOs') && trifaseFinanceiroHabilitado() && $os->status !== 'Cancelado') { ?>
+                    <?php } elseif ($pilotoFinanceiro === null && (int) $os->faturado !== 1 && $permite('aLancamento') && $permite('eOs') && trifaseFinanceiroHabilitado() && $totais['total'] > 0 && $os->status !== 'Cancelado') { ?>
                         <details class="trifase-os-adicionar mt-4">
                             <summary>Registrar cobrança</summary>
                             <form method="post" action="<?= e(site_url('trifase_financeiro/formalizar/' . $idOs)) ?>" class="grid gap-3 p-3" data-os-acao="financeiro">

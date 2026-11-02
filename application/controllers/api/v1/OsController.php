@@ -8,6 +8,7 @@ require_once APPPATH . 'helpers/trifase_financeiro_helper.php';
 require_once APPPATH . 'helpers/trifase_entrega_helper.php';
 require_once APPPATH . 'helpers/trifase_equipamento_helper.php';
 require_once APPPATH . 'helpers/trifase_orcamento_helper.php';
+require_once APPPATH . 'helpers/trifase_atendimento_helper.php';
 
 class OsController extends REST_Controller
 {
@@ -37,7 +38,7 @@ class OsController extends REST_Controller
 
     private function travarFinanceiro(int $id): void
     {
-        if ((! trifaseFinanceiroHabilitado() && ! $this->db->table_exists('trifase_entregas_eventos') && ! $this->db->table_exists('trifase_os_equipamentos') && ! $this->db->table_exists('trifase_orcamento_versoes')) || $this->financeiroLock !== null) {
+        if ((! trifaseFinanceiroHabilitado() && ! $this->db->table_exists('trifase_entregas_eventos') && ! $this->db->table_exists('trifase_os_equipamentos') && ! $this->db->table_exists('trifase_orcamento_versoes') && ! $this->db->table_exists('trifase_atendimentos')) || $this->financeiroLock !== null) {
             return;
         }
         try {
@@ -148,6 +149,10 @@ class OsController extends REST_Controller
     public function index_post()
     {
         $this->logged_user();
+        if (trifaseAtendimentoHabilitado() && $this->post('status') === 'Finalizado') {
+            $this->response(['status' => false, 'message' => 'Crie o atendimento e registre a conclusão pelas ações técnicas dedicadas.'], 409);
+            return;
+        }
         if (! $this->permission->checkPermission($this->logged_user()->level, 'aOs')) {
             $this->response([
                 'status' => false,
@@ -266,6 +271,10 @@ class OsController extends REST_Controller
         }
 
         $this->travarFinanceiro((int) $id);
+        if (trifaseAtendimentoDaOs($this->db, (int) $id) !== null || (trifaseAtendimentoHabilitado() && $this->put('status') === 'Finalizado')) {
+            $this->response(['status' => false, 'message' => 'Use as ações técnicas dedicadas para concluir ou editar esta OS.'], 409);
+            return;
+        }
         if (trifaseFinanceiroOsGerida($this->db, (int) $id)) {
             $this->response(['status' => false, 'message' => 'Use as ações dedicadas do módulo Trifase para esta OS.'], 409);
             return;
@@ -411,6 +420,10 @@ class OsController extends REST_Controller
         }
 
         $this->travarFinanceiro((int) $id);
+        if (trifaseAtendimentoDaOs($this->db, (int) $id) !== null) {
+            $this->response(['status' => false, 'message' => 'OS com conclusão técnica registrada: exclusão bloqueada.'], 409);
+            return;
+        }
         if (trifaseOrcamentoTemHistorico($this->db, (int) $id)) {
             $this->response(['status' => false, 'message' => 'OS com histórico de orçamento: exclusão bloqueada.'], 409);
             return;

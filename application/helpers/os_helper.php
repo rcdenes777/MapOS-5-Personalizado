@@ -817,5 +817,5 @@ if (! function_exists('osVencimentoGarantia')) {
 
 function osGarantiaDoRegistro(object $os): ?string
 {
-    return osVencimentoGarantia($os->dataFinal ?? null, $os->garantia ?? null, $os->status ?? null, $os->trifase_garantia_inicio ?? null, (bool) ($os->trifase_financeiro_gerida ?? false));
+    return osVencimentoGarantia($os->dataFinal ?? null, $os->trifase_garantia_dias ?? $os->garantia ?? null, $os->status ?? null, $os->trifase_garantia_inicio ?? null, (bool) ($os->trifase_financeiro_gerida ?? false));
 }

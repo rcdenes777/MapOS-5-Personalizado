@@ -8,6 +8,7 @@ require_once APPPATH . 'helpers/trifase_financeiro_helper.php';
 require_once APPPATH . 'helpers/trifase_entrega_helper.php';
 require_once APPPATH . 'helpers/trifase_equipamento_helper.php';
 require_once APPPATH . 'helpers/trifase_orcamento_helper.php';
+require_once APPPATH . 'helpers/trifase_atendimento_helper.php';
 require_once APPPATH . 'helpers/trifase_interface_helper.php';
 
 class Os extends MY_Controller
@@ -280,13 +281,15 @@ class Os extends MY_Controller
     private function criarOs(array $dados): ?int
     {
         $comEquipamento = $this->equipamentoNovaOs !== null;
-        if ($comEquipamento && ! $this->db->trans_begin()) {
+        $comConclusao = trifaseAtendimentoHabilitado() && $dados['status'] === 'Finalizado';
+        $transacional = $comEquipamento || $comConclusao;
+        if ($transacional && ! $this->db->trans_begin()) {
             return null;
         }
         try {
             $id = $this->os_model->add('os', $dados + ['faturado' => 0], true);
             if (! is_numeric($id)) {
-                if ($comEquipamento) {
+                if ($transacional) {
                     $this->db->trans_rollback();
                 }
                 return null;
@@ -300,13 +303,21 @@ class Os extends MY_Controller
                     throw new DomainException('Identificador inválido. Recarregue o formulário.');
                 }
                 $this->equipamentos_os->vincular((int) $id, $entrada, (int) $this->usuarioLogado(), $operacao);
+            }
+            if ($comConclusao) {
+                require_once APPPATH . 'models/Trifase_atendimento_model.php';
+                $tecnico = new Trifase_atendimento_model();
+                $tecnico->db = $this->db;
+                $tecnico->registrarConclusao((int) $id, date('Y-m-d'), (int) $this->usuarioLogado());
+            }
+            if ($transacional) {
                 if (! $this->db->trans_status() || ! $this->db->trans_commit()) {
                     throw new RuntimeException('Não foi possível confirmar a nova OS e seu equipamento.');
                 }
             }
             return (int) $id;
         } catch (Throwable $e) {
-            if (! $comEquipamento) {
+            if (! $transacional) {
                 throw $e;
             }
             $this->db->trans_rollback();
@@ -328,7 +339,7 @@ class Os extends MY_Controller
      */
     private function salvarOs(object $os, array $dados): ?int
     {
-        if (! trifaseFinanceiroHabilitado() && ! $this->db->table_exists('trifase_orcamento_versoes') && trifaseEquipamentoDaOs($this->db, (int) $os->idOs) === null) {
+        if (! trifaseFinanceiroHabilitado() && ! $this->db->table_exists('trifase_orcamento_versoes') && ! $this->db->table_exists('trifase_atendimentos') && trifaseEquipamentoDaOs($this->db, (int) $os->idOs) === null) {
             return $this->salvarOsSemTrava($os, $dados);
         }
         $lock = new Trifase_os_lock($this->db, (int) $os->idOs);
@@ -341,6 +352,26 @@ class Os extends MY_Controller
             if (trifaseFinanceiroHabilitado() && ((int) $lock->os->faturado === 1 || trifaseFinanceiroOsGerida($this->db, (int) $os->idOs))) {
                 $lock->finalizar(false);
                 return null;
+            }
+            if (trifaseAtendimentoDaOs($this->db, (int) $os->idOs) !== null && (int) $dados['garantia'] !== (int) $lock->os->garantia) {
+                $lock->finalizar(false);
+                $this->erroEquipamentoNovaOs = 'O prazo registrado na conclusão não pode ser substituído pela edição da OS.';
+                return null;
+            }
+            if ((trifaseAtendimentoHabilitado() || trifaseAtendimentoDaOs($this->db, (int) $os->idOs) !== null) && $dados['status'] !== $lock->os->status && ! in_array($dados['status'], ['Cancelado', 'Faturado'], true)) {
+                require_once APPPATH . 'models/Trifase_atendimento_model.php';
+                $tecnico = new Trifase_atendimento_model();
+                $tecnico->db = $this->db;
+                $retrato = clone $lock->os;
+                $retrato->garantia = $dados['garantia'];
+                $retrato->dataInicial = $dados['dataInicial'];
+                try {
+                    $tecnico->prepararTransicao($retrato, $dados['status'], (int) $this->usuarioLogado());
+                } catch (DomainException $e) {
+                    $lock->finalizar(false);
+                    $this->erroEquipamentoNovaOs = $e->getMessage();
+                    return null;
+                }
             }
             $resultado = $this->salvarOsSemTrava($lock->os, $dados);
             $lock->finalizar($resultado !== null);
@@ -925,7 +956,12 @@ class Os extends MY_Controller
         }
 
         $id = (int) $this->input->post('id');
-        $lock = (trifaseFinanceiroHabilitado() || $this->db->table_exists('trifase_entregas_eventos') || $this->db->table_exists('trifase_os_equipamentos') || $this->db->table_exists('trifase_orcamento_versoes')) && $id > 0 ? new Trifase_os_lock($this->db, $id) : null;
+        $lock = (trifaseFinanceiroHabilitado() || $this->db->table_exists('trifase_entregas_eventos') || $this->db->table_exists('trifase_os_equipamentos') || $this->db->table_exists('trifase_orcamento_versoes') || $this->db->table_exists('trifase_atendimentos')) && $id > 0 ? new Trifase_os_lock($this->db, $id) : null;
+        if (trifaseAtendimentoDaOs($this->db, $id) !== null) {
+            $this->session->set_flashdata('error', 'OS com conclusão técnica registrada não pode ser excluída.');
+            $lock?->finalizar(false);
+            redirect('os/visualizar/' . $id);
+        }
         if (trifaseOrcamentoTemHistorico($this->db, $id)) {
             $this->session->set_flashdata('error', 'OS com histórico de orçamento não pode ser excluída.');
             $lock?->finalizar(false);

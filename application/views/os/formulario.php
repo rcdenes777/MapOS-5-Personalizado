@@ -146,7 +146,7 @@ if (function_exists('trifaseFinanceiroHabilitado') && trifaseFinanceiroHabilitad
                     'options' => $statusOpcoes,
                     'selected' => $valores['status'] !== '' ? $valores['status'] : null,
                     'error' => $errosDeCampo['status'] ?? null,
-                    'help' => $editando ? 'Cancelar a OS devolve os produtos ao estoque.' : null,
+                    'help' => (function_exists('trifaseAtendimentoHabilitado') && trifaseAtendimentoHabilitado()) ? 'Finalizar pela primeira vez registra a conclusão de hoje e o prazo concedido. Cancelar devolve produtos ao estoque.' : ($editando ? 'Cancelar a OS devolve os produtos ao estoque.' : null),
                 ]) ?>
                 <div class="hidden sm:block" aria-hidden="true"></div>
                 <?= component('input', [

@@ -95,3 +95,7 @@ Catálogo de marca/modelo separado da unidade do cliente, com selo/série/IMEI p
 ### Orçamento publicado e resposta
 
 Resumo mostra a versão e resposta declarada, com aviso quando publicação foi retirada ou itens mudaram. A prévia e o histórico comercial ficam em tela própria, protegida por permissões; ao publicar explicitamente, o link da OS oferece a versão ao cliente. Aprovação/recusa não muda status, financeiro ou entrega. Detalhes e limites em `ORCAMENTOS_LAB.md`.
+
+### Andamento técnico sem cobrança
+
+O resumo passa a permitir andamento/conclusão comvOs+eOs, inclusive sem receita e sem revelar financeiro ao técnico. Conclusão e prazo têm registro próprio; previsão não desloca a garantia. Totalzero não oferece registrar cobrança de zero. Integração nativa e limites em `ATENDIMENTOS_LAB.md`. Retorno em garantia ainda é recorte seguinte.

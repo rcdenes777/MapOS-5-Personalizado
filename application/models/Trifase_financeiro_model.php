@@ -3,6 +3,7 @@
 defined('BASEPATH') or exit('No direct script access allowed');
 
 require_once APPPATH . 'libraries/Trifase_os_lock.php';
+require_once APPPATH . 'helpers/trifase_atendimento_helper.php';
 
 /** Regras financeiras e técnicas da extensão Trifase. */
 class Trifase_financeiro_model extends CI_Model
@@ -147,6 +148,14 @@ class Trifase_financeiro_model extends CI_Model
 
     public function alterarAndamento(int $osId, string $status, int $usuario): void
     {
+        if (trifaseAtendimentoHabilitado() || trifaseAtendimentoDaOs($this->db, $osId) !== null) {
+            require_once APPPATH . 'models/Trifase_atendimento_model.php';
+            $tecnico = new Trifase_atendimento_model();
+            $tecnico->db = $this->db;
+            $tecnico->alterarAndamento($osId, $status, $usuario);
+            return;
+        }
+
         if ($usuario <= 0 || ! in_array($status, ['Orçamento', 'Negociação', 'Aberto', 'Aprovado', 'Em Andamento', 'Aguardando Peças', 'Finalizado'], true)) {
             throw new DomainException('Andamento inválido. Cancelamento exige conciliação financeira.');
         }
@@ -185,7 +194,7 @@ class Trifase_financeiro_model extends CI_Model
         }
         $this->transacao($osId, function ($os) use ($osId, $dados, $usuario) {
             $o = $this->obrigacao($osId);
-            if (! $o && isset($dados['dataFinal']) && $dados['dataFinal'] !== $os->dataFinal) {
+            if (! $o && trifaseAtendimentoDaOs($this->db, $osId) === null && isset($dados['dataFinal']) && $dados['dataFinal'] !== $os->dataFinal) {
                 throw new DomainException('A data final desta OS antiga também referencia a garantia. Concilie antes de alterá-la.');
             }
             if ($os->status === 'Cancelado') {
@@ -201,11 +210,23 @@ class Trifase_financeiro_model extends CI_Model
 
     public function metadados(int $osId): object
     {
-        return $this->exigirObrigacao($osId);
+        $o = $this->exigirObrigacao($osId);
+        if ($tecnico = trifaseAtendimentoDaOs($this->db, $osId)) {
+            $o->garantia_inicio = $tecnico->concluido_em;
+        }
+        return $o;
     }
 
     public function registrarConclusao(int $osId, string $data, int $usuario): void
     {
+        if (trifaseAtendimentoHabilitado() || trifaseAtendimentoDaOs($this->db, $osId) !== null) {
+            require_once APPPATH . 'models/Trifase_atendimento_model.php';
+            $tecnico = new Trifase_atendimento_model();
+            $tecnico->db = $this->db;
+            $tecnico->registrarConclusao($osId, $data, $usuario);
+            return;
+        }
+
         $this->dataValida($data);
         if ($usuario <= 0 || $data > date('Y-m-d')) {
             throw new DomainException('A conclusão deve ser uma data já ocorrida.');

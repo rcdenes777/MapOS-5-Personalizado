@@ -486,3 +486,14 @@ Map-OS doesn't use traditional photography — it uses **illustrated stickers an
 6. Keep `{colors.accent-lime}` scarce — one lime element per viewport. The signature only works because it's rare.
 7. Before adding anything orange, confirm it is an action or an active state. If it isn't, it probably wants `{colors.accent-violet-mid}` or a neutral.
 8. When polarizing a new surface, choose one canvas (`{colors.surface-canvas-dark}` or `{colors.surface-canvas-light}`) and commit to it; don't blend the two on a single page band.
+
+
+## Trifase — piloto da visualização de OS (02/11/2026)
+
+Extensão visual opt-in, baseada no protótipo azul/prata aprovado. Só a visualização de resumo da OS recebe `data-trifase-ui="piloto"`; restantes rotas e apresentação clássica conservam seu tema. Flag de instalação `TRIFASE_UI_PILOTO_ENABLED`, ausente/desligada por padrão. Não modifica preferências de tema dos usuários. Em modo escuro preserva a paleta escura existente; a variante azul/prata aplica-se ao modo claro.
+
+Tokens de cor ficam em assets/src/tokens.css sob esse atributo: texto#163552, secundário#3e5970, fundo prata#f0f5fa, superfície branca, fundo sutil#eaf1f7, borda#c7d4e2; ação#2472ad com branco e link#21629a. Sidebar azul#102e4c com texto#f1f6fc e secundário#bacde0. Paleta de status continua semântica. Contrastes recalculados: texto/superfície12,61:1, secundário/superfície7,32:1, secundário/prata6,68:1, branco/ação5,14:1, link/superfície6,41:1, sidebar/texto12,74:1 e sidebar/secundário8,50:1; borda sutil não identifica input, que conserva token próprio#688298.
+
+Composição: cabeçalho, andamento/datas, coluna principal de equipamento e atendimento, peças/serviços e anexos; lateral de financeiro, compartilhamento e dados. Em telas menores a lateral segue o conteúdo principal; sem largura fixa na página. Tipografia do corpo17px/18px, títulos28px/32px e seções20px/22px conforme breakpoint; não multiplicar todos os tokens globais. Ações de toque com mínimo44px, textos longos quebram e campos vazios permanecem visíveis. Sem animação decorativa.
+
+Peças e serviços aparecem juntos no resumo; gerenciar itens, editar OS, atualizar andamento e anexar levam às funções existentes. “Mais ações” abre a apresentação clássica, que permanece acessível também por `?apresentacao=classica`. Financeiro e preços nesta vista exigem vLancamento; compartilhamento exige vOs+eOs. Não inventar recebido/saldo zero na ausência de obrigação. Anexos na visão resumida são de consulta; exclusão/envio continuam na tela própria, com seus diálogos e proteções. Fotos/vídeos reutilizam os modais existentes. Novas entidades de selo, retirada e retorno não fazem parte deste piloto.

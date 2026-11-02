@@ -557,3 +557,47 @@
     --mapos-primary-tint: #391f26;
   }
 }
+
+/* Trifase: somente a visualização opt-in da OS. Modos existentes preservados. */
+:root[data-trifase-ui="piloto"] {
+  --trifase-body: 1.0625rem;
+  --trifase-title: 1.75rem;
+  --trifase-section-title: 1.25rem;
+  --trifase-balance: 2.25rem;
+  --trifase-gap: 1.25rem;
+  --trifase-padding: 1.25rem;
+  --trifase-radius: 0.875rem;
+}
+:root[data-trifase-ui="piloto"]:not(.dark) {
+  --mapos-bg: #f0f5fa;
+  --mapos-surface: #ffffff;
+  --mapos-surface-subtle: #eaf1f7;
+  --mapos-text: #163552;
+  --mapos-muted: #3e5970;
+  --mapos-border: #c7d4e2;
+  --mapos-input: #688298;
+  --mapos-primary: #2472ad;
+  --mapos-primary-hover: #1e6296;
+  --mapos-primary-pressed: #195581;
+  --mapos-primary-strong: #21629a;
+  --mapos-primary-tint: #deebf6;
+  --mapos-on-primary: #ffffff;
+  --mapos-sidebar-bg: #102e4c;
+  --mapos-sidebar-hover: #1d4365;
+  --mapos-sidebar-text: #f1f6fc;
+  --mapos-sidebar-muted: #bacde0;
+  --mapos-sidebar-border: #466480;
+  --mapos-sidebar-active-bg: #244f74;
+  --mapos-sidebar-active-text: #ffffff;
+  --mapos-sidebar-accent: #c0d5e8;
+  --mapos-sidebar-accent-ink: #163552;
+}
+@media (min-width: 64rem) {
+  :root[data-trifase-ui="piloto"] {
+    --trifase-body: 1.125rem;
+    --trifase-title: 2rem;
+    --trifase-section-title: 1.375rem;
+    --trifase-balance: 2.5rem;
+    --trifase-padding: 1.5rem;
+  }
+}

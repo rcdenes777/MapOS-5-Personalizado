@@ -39,3 +39,10 @@ Estas são integrações explícitas a revisar ao atualizar upstream. Não é pl
 - Contrastes da nova paleta recalculados em DESIGN.md. Não é certificação WCAG ou teste de aparelho físico. A API fullPage apresentou corte em capturas mobile; usar evidência do viewport nativo e medições DOM, sem tratar captura cortada como defeito ou aprovação do layout.
 
 Relatórios e capturas locais em `outputs/ui-piloto/` no workspace. Continuar pela operação da OS na nova apresentação após avaliação do piloto; equipamento/selo, entrega, retorno, decisão versionada e bateria funcional completa continuam em etapas posteriores.
+
+
+### Lista inicial de produtos e serviços — 02/11/2026
+
+Os campos de inclusão de itens na OS passam a listar ao focar/clicar, com filtragem progressiva e no máximo25opções por resposta. O atributo opt-in `data-autocomplete-listar` não muda o mínimo dos demais campos. Só os endpoints já autorizados de produto/serviço aceitam termo vazio; sem termo válido nos outros cadastros continua sem resultado. Selecionar preenche o ID/preço; não salva nem adiciona automaticamente. Escape/saída cancelam pesquisa pendente e o clique reabre a lista.
+
+Validação: lista inicial dos dois produtos e do serviço fictícios, filtro mos retornando apenasMOSFET, preço70,00/400,00 preenchido, Escape e reabertura no mesmo campo.414testesPHP direcionados/1288asserções,23testesJS, PHPStan e build aprovados. Nenhum item adicionado ou removido durante esse teste.

@@ -100,7 +100,8 @@ export function iniciarAutocomplete(wrapper, { buscar = getPadrao, atraso = 250,
     }
 
     const livre = wrapper.dataset.autocompleteLivre !== undefined;
-    const minimo = Number(wrapper.dataset.autocompleteMin ?? 2) || 1;
+    const listarAoAbrir = wrapper.dataset.autocompleteListar !== undefined;
+    const minimo = listarAoAbrir ? 0 : Number(wrapper.dataset.autocompleteMin ?? 2) || 1;
     const idLista = `${campo.id}-opcoes`;
 
     const popup = doc.createElement('div');
@@ -165,6 +166,8 @@ export function iniciarAutocomplete(wrapper, { buscar = getPadrao, atraso = 250,
     }
 
     function fechar() {
+        clearTimeout(espera);
+        pedido++;
         popup.classList.add('hidden');
         campo.setAttribute('aria-expanded', 'false');
         campo.removeAttribute('aria-activedescendant');
@@ -278,6 +281,17 @@ export function iniciarAutocomplete(wrapper, { buscar = getPadrao, atraso = 250,
             }
         }
     }
+
+    // Opt-in para cadastros com lista inicial limitada no servidor. O clique
+    // também reabre depois de Escape, mesmo se o campo ainda tiver o foco.
+    const abrirSugestoes = () => {
+        if (listarAoAbrir && !aberto()) {
+            clearTimeout(espera);
+            pesquisar(campo.value.trim());
+        }
+    };
+    campo.addEventListener('focus', abrirSugestoes);
+    campo.addEventListener('click', abrirSugestoes);
 
     campo.addEventListener('input', () => {
         if (escolhido && campo.value.trim() !== escolhido.valor.trim()) {

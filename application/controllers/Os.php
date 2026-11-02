@@ -878,6 +878,8 @@ class Os extends MY_Controller
     /**
      * Resposta dos autocompletes: sempre um array JSON, vazio sem permissão,
      * sem termo ou sem resultado (na v4 a resposta vinha vazia, sem corpo).
+     * Produtos/serviços aceitam termo vazio para a lista inicial, limitada
+     * pelo model; os demais cadastros continuam exigindo um termo.
      *
      * A permissão é conferida em cada método público (o PermissionsMapTest
      * confere a regra do mapa com a checagem de cada um).
@@ -885,7 +887,8 @@ class Os extends MY_Controller
     private function responderAutocomplete(bool $permitido, string $metodo): void
     {
         $termo = $this->input->get('term');
-        $itens = $permitido && is_string($termo) && trim($termo) !== ''
+        $listaInicial = in_array($metodo, ['autoCompleteProduto', 'autoCompleteServico'], true);
+        $itens = $permitido && is_string($termo) && (trim($termo) !== '' || $listaInicial)
             ? $this->os_model->{$metodo}(mb_strtolower(trim($termo)))
             : [];
 

@@ -157,6 +157,7 @@ $textos = [
                     <div class="relative sm:col-span-2 lg:col-span-1"<?= componenteAtributos([
                         'data-autocomplete' => site_url($produto ? 'os/autoCompleteProduto' : 'os/autoCompleteServico'),
                         'data-autocomplete-alvo' => 'item-id',
+                        'data-autocomplete-listar' => '',
                         'data-os-preco' => 'item-preco',
                         'data-os-estoque' => $produto && $controle_estoque ? 'item-estoque' : null,
                     ]) ?>>

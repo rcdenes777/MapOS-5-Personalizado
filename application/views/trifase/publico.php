@@ -26,6 +26,12 @@
             <h2 id="equipamento" class="text-heading-sm">Equipamento</h2>
             <p class="mt-3 whitespace-pre-wrap break-words text-body-md"><?= e($os['equipamento']) ?></p>
         </section>
+        <?php if (($orcamentoUrl ?? null) !== null) { ?>
+            <section class="rounded-card border border-border bg-surface p-4" aria-labelledby="orcamento-publicado">
+                <h2 id="orcamento-publicado" class="mb-3 text-heading-sm">Orçamento disponível</h2>
+                <?= component('button', ['label' => 'Conferir orçamento e responder', 'href' => $orcamentoUrl]) ?>
+            </section>
+        <?php } ?>
         <section class="rounded-card border border-border bg-surface p-4" aria-labelledby="anexos">
             <h2 id="anexos" class="text-heading-sm">Arquivos compartilhados</h2>
             <ul class="mt-3 grid grid-cols-1 gap-4 sm:grid-cols-2" aria-label="Anexos compartilhados">

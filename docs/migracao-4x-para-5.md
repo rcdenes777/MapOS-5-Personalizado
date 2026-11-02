@@ -399,3 +399,8 @@ entrega; sem conversão em lote, reembolso bancário ou alteração do MapOS 4.5
 ## Extensão Trifase: equipamentos (opcional)
 
 A migração `20261102010000_trifase_equipamentos` acrescenta catálogo, unidades e retratos de entrada por OS sem converter descrições antigas. Faça backup e aplique em cópia antes de ativar `TRIFASE_EQUIPAMENTOS_ENABLED=true` (defaultfalse). As rotas `trifase_equipamentos/*` exigem login/permissão: leitura com `vOs`, vínculo com `vOs+eOs` e nova OS com `aOs+vOs`. Desligar a flag não remove histórico nem permite quebrar vínculos por exclusão/transferência silenciosa. Não há migração reversa destrutiva. Ver `trifase/EQUIPAMENTOS_LAB.md`.
+
+
+## Extensão Trifase: orçamento publicado (opcional)
+
+A migração `20261102020000_trifase_orcamentos` cria versões e eventos de orçamento sem converter OS existentes. Após backup e ensaio em cópia, ative `TRIFASE_ORCAMENTOS_ENABLED=true` (defaultfalse) e conceda `publicarOrcamento` somente aos perfis que podem compartilhar preços pelo link. Consulta exige `vOs+vLancamento`; publicar/retirar também exige `eOs+publicarOrcamento`. O módulo público também deve estar ativo. Não excluir rotas do CSRF. Desligar a flag preserva histórico e bloqueio de exclusão de OS com versões. Ver `trifase/ORCAMENTOS_LAB.md`.

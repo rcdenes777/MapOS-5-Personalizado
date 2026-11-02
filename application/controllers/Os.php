@@ -7,6 +7,7 @@ if (! defined('BASEPATH')) {
 require_once APPPATH . 'helpers/trifase_financeiro_helper.php';
 require_once APPPATH . 'helpers/trifase_entrega_helper.php';
 require_once APPPATH . 'helpers/trifase_equipamento_helper.php';
+require_once APPPATH . 'helpers/trifase_orcamento_helper.php';
 require_once APPPATH . 'helpers/trifase_interface_helper.php';
 
 class Os extends MY_Controller
@@ -327,7 +328,7 @@ class Os extends MY_Controller
      */
     private function salvarOs(object $os, array $dados): ?int
     {
-        if (! trifaseFinanceiroHabilitado() && trifaseEquipamentoDaOs($this->db, (int) $os->idOs) === null) {
+        if (! trifaseFinanceiroHabilitado() && ! $this->db->table_exists('trifase_orcamento_versoes') && trifaseEquipamentoDaOs($this->db, (int) $os->idOs) === null) {
             return $this->salvarOsSemTrava($os, $dados);
         }
         $lock = new Trifase_os_lock($this->db, (int) $os->idOs);
@@ -482,6 +483,18 @@ class Os extends MY_Controller
             $dados['pilotoEntrega'] = $this->piloto_entregas->ativa((int) $os->idOs);
             $dados['pilotoEntregasHistorico'] = $this->piloto_entregas->historico((int) $os->idOs);
         }
+        $dados['pilotoOrcamento'] = null;
+        $dados['pilotoOrcamentoDecisao'] = null;
+        $dados['pilotoOrcamentoValido'] = false;
+        if (trifaseOrcamentoHabilitado() && $this->permite('vLancamento')) {
+            $this->load->model('Trifase_orcamento_model', 'orcamentos_os');
+            $dados['pilotoOrcamento'] = $this->orcamentos_os->atual((int) $os->idOs);
+            if ($dados['pilotoOrcamento'] !== null) {
+                $dados['pilotoOrcamentoDecisao'] = $this->orcamentos_os->decisao((int) $dados['pilotoOrcamento']->id);
+                $dados['pilotoOrcamentoValido'] = $os->status !== 'Cancelado' && (bool) $dados['pilotoOrcamento']->ativo
+                    && hash_equals($dados['pilotoOrcamento']->conteudo_hash, $this->orcamentos_os->hash($this->orcamentos_os->retrato($os)));
+            }
+        }
         $dados['pilotoEquipamento'] = null;
         $dados['pilotoPodeIdentificar'] = false;
         if (trifaseEquipamentosHabilitados()) {
@@ -592,6 +605,9 @@ class Os extends MY_Controller
             $html['pilotoitens'] = $this->load->view('trifase/itens', $dados, true);
             if ($this->permite('vLancamento')) {
                 $html['pilotofinanceiro'] = $this->load->view('trifase/resumo-financeiro', $dados, true);
+                if (trifaseOrcamentoHabilitado()) {
+                    $html['pilotoorcamento'] = $this->load->view('trifase/orcamento-resumo', $dados, true);
+                }
             }
         }
 
@@ -632,10 +648,10 @@ class Os extends MY_Controller
     private function osParaAlterar(bool $tecnica = false): ?object
     {
         $id = (int) $this->input->post('idOs');
-        if (! $tecnica && trifaseFinanceiroHabilitado()) {
+        if (! $tecnica && (trifaseFinanceiroHabilitado() || $this->db->table_exists('trifase_orcamento_versoes'))) {
             try {
                 $this->financeiroLock = new Trifase_os_lock($this->db, $id);
-                if ((int) $this->financeiroLock->os->faturado === 1 || $this->financeiroLock->os->status === 'Cancelado') {
+                if (trifaseFinanceiroHabilitado() && ((int) $this->financeiroLock->os->faturado === 1 || $this->financeiroLock->os->status === 'Cancelado')) {
                     $this->responderJson(403, ['result' => false, 'message' => 'Valores de OS faturada ou cancelada não podem ser alterados.']);
                     return null;
                 }
@@ -909,7 +925,12 @@ class Os extends MY_Controller
         }
 
         $id = (int) $this->input->post('id');
-        $lock = (trifaseFinanceiroHabilitado() || $this->db->table_exists('trifase_entregas_eventos') || $this->db->table_exists('trifase_os_equipamentos')) && $id > 0 ? new Trifase_os_lock($this->db, $id) : null;
+        $lock = (trifaseFinanceiroHabilitado() || $this->db->table_exists('trifase_entregas_eventos') || $this->db->table_exists('trifase_os_equipamentos') || $this->db->table_exists('trifase_orcamento_versoes')) && $id > 0 ? new Trifase_os_lock($this->db, $id) : null;
+        if (trifaseOrcamentoTemHistorico($this->db, $id)) {
+            $this->session->set_flashdata('error', 'OS com histórico de orçamento não pode ser excluída.');
+            $lock?->finalizar(false);
+            redirect('os/visualizar/' . $id);
+        }
         if (trifaseEquipamentoDaOs($this->db, $id) !== null) {
             $this->session->set_flashdata('error', 'OS com histórico de unidade identificada não pode ser excluída.');
             $lock?->finalizar(false);

@@ -57,7 +57,15 @@ class Publico extends CI_Controller
             $this->output->set_header($nome . ': ' . $valor);
             header($nome . ': ' . $valor);
         }
-        $this->load->view('trifase/publico', ['os' => trifasePublicoDados($os), 'anexos' => $anexos, 'basePublica' => $base, 'noncePublico' => $nonce]);
+        $orcamentoUrl = null;
+        require_once APPPATH . 'helpers/trifase_orcamento_helper.php';
+        if (trifaseOrcamentoHabilitado() && $this->db->table_exists('trifase_orcamento_estado')) {
+            $this->load->model('Trifase_orcamento_model', 'orcamentos');
+            if ($this->orcamentos->publicado((int) $os->idOs, $token) !== null) {
+                $orcamentoUrl = $prefixo . 'orcamento_publico/ver/' . $token;
+            }
+        }
+        $this->load->view('trifase/publico', ['orcamentoUrl' => $orcamentoUrl, 'os' => trifasePublicoDados($os), 'anexos' => $anexos, 'basePublica' => $base, 'noncePublico' => $nonce]);
     }
 
     public function anexo($token = null, $id = null)

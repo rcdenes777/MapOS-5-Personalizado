@@ -90,3 +90,8 @@ Retirada integrada no resumo, com recebedor, data real, itens e confirmação de
 ### Identificação e histórico de equipamentos
 
 Catálogo de marca/modelo separado da unidade do cliente, com selo/série/IMEI privados e retrato de entrada por OS. Cadastro e reuso no resumo; nova OS pede novos itens/estado/defeito e não copia laudo ou valores. Migração e flag próprias; detalhes, limites e validação em `EQUIPAMENTOS_LAB.md`.
+
+
+### Orçamento publicado e resposta
+
+Resumo mostra a versão e resposta declarada, com aviso quando publicação foi retirada ou itens mudaram. A prévia e o histórico comercial ficam em tela própria, protegida por permissões; ao publicar explicitamente, o link da OS oferece a versão ao cliente. Aprovação/recusa não muda status, financeiro ou entrega. Detalhes e limites em `ORCAMENTOS_LAB.md`.

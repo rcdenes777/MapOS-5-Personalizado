@@ -7,6 +7,7 @@ require APPPATH . '/libraries/REST_Controller.php';
 require_once APPPATH . 'helpers/trifase_financeiro_helper.php';
 require_once APPPATH . 'helpers/trifase_entrega_helper.php';
 require_once APPPATH . 'helpers/trifase_equipamento_helper.php';
+require_once APPPATH . 'helpers/trifase_orcamento_helper.php';
 
 class OsController extends REST_Controller
 {
@@ -36,7 +37,7 @@ class OsController extends REST_Controller
 
     private function travarFinanceiro(int $id): void
     {
-        if ((! trifaseFinanceiroHabilitado() && ! $this->db->table_exists('trifase_entregas_eventos') && ! $this->db->table_exists('trifase_os_equipamentos')) || $this->financeiroLock !== null) {
+        if ((! trifaseFinanceiroHabilitado() && ! $this->db->table_exists('trifase_entregas_eventos') && ! $this->db->table_exists('trifase_os_equipamentos') && ! $this->db->table_exists('trifase_orcamento_versoes')) || $this->financeiroLock !== null) {
             return;
         }
         try {
@@ -410,6 +411,10 @@ class OsController extends REST_Controller
         }
 
         $this->travarFinanceiro((int) $id);
+        if (trifaseOrcamentoTemHistorico($this->db, (int) $id)) {
+            $this->response(['status' => false, 'message' => 'OS com histórico de orçamento: exclusão bloqueada.'], 409);
+            return;
+        }
         if (trifaseEquipamentoDaOs($this->db, (int) $id) !== null) {
             $this->response(['status' => false, 'message' => 'OS com histórico de unidade identificada: exclusão bloqueada.'], 409);
             return;

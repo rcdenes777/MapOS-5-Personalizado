@@ -32,6 +32,11 @@ defined('BASEPATH') or exit('No direct script access allowed');
 */
 
 $config['permissions_map'] = [
+    'Trifase_orcamentos' => [
+        'visualizar' => ['todas' => ['vOs', 'vLancamento']],
+        'publicar' => ['todas' => ['vOs', 'vLancamento', 'eOs', 'publicarOrcamento']],
+        'retirar' => ['todas' => ['vOs', 'vLancamento', 'eOs', 'publicarOrcamento']],
+    ],
     // Extensão Trifase: exige leitura e edição, inclusive em OS já faturada.
     'Trifase_equipamentos' => [
         'modelos' => 'vOs',

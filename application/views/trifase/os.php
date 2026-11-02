@@ -104,6 +104,12 @@ if (($pilotoEquipamento ?? null) !== null
                 </div>
             </section>
 
+            <?php if (function_exists('trifaseOrcamentoHabilitado') && trifaseOrcamentoHabilitado() && $verFinanceiro) { ?>
+                <section class="trifase-os-painel" aria-labelledby="piloto-orcamento">
+                    <h2 id="piloto-orcamento">Orçamento e resposta do cliente</h2>
+                    <div data-os-parte="pilotoorcamento"><?php $this->load->view('trifase/orcamento-resumo'); ?></div>
+                </section>
+            <?php } ?>
             <section class="trifase-os-painel" aria-labelledby="piloto-anexos" <?= js_module('trifase/anexos') ?>>
                 <div class="trifase-os-secao-titulo"><h2 id="piloto-anexos">Fotos, vídeos e documentos</h2></div>
                 <?php if ($editarTecnico) { ?>
@@ -143,7 +149,7 @@ if (($pilotoEquipamento ?? null) !== null
                 <section class="trifase-os-painel" aria-labelledby="piloto-publico">
                     <h2 id="piloto-publico">Link público desta OS</h2>
                     <?= component('pill-status', ['label' => $pilotoLink !== null ? 'Link ativo' : 'Sem link ativo', 'variant' => $pilotoLink !== null ? 'success' : 'neutral']) ?>
-                    <p class="text-muted">Somente esta ordem e os anexos autorizados.</p>
+                    <p class="text-muted">Somente esta OS, anexos autorizados e orçamento publicado.</p>
                     <?php if ($pilotoLink !== null) { ?><p><?= e('Válido até ' . date('d/m/Y', (int) $pilotoLink->expira_em)) ?></p><?php } ?>
                     <?php if (($pilotoUrlPublica ?? null) !== null) { ?>
                         <label for="piloto-link-publico" class="text-label-md text-text">Endereço para o cliente</label>

@@ -3,6 +3,7 @@
 defined('BASEPATH') or exit('No direct script access allowed');
 require_once APPPATH . 'libraries/Trifase_os_lock.php';
 require_once APPPATH . 'helpers/trifase_atendimento_helper.php';
+require_once APPPATH . 'helpers/trifase_retorno_helper.php';
 
 class Trifase_atendimento_model extends CI_Model
 {
@@ -31,6 +32,9 @@ class Trifase_atendimento_model extends CI_Model
     {
         $id = (int) $os->idOs;
         if ($os->status === 'Finalizado' && $status !== 'Finalizado') {
+            if (trifaseRetornoTemDerivados($this->db, $id)) {
+                throw new DomainException('Esta OS já originou retorno. Preserve o atendimento encerrado e use a nova OS.');
+            }
             if ($this->db->table_exists('trifase_entregas_estado') && $this->db->where('os_id', $id)->where('evento_id IS NOT NULL', null, false)->count_all_results('trifase_entregas_estado') > 0) {
                 throw new DomainException('Equipamento entregue: registre outro atendimento em vez de reabrir esta OS.');
             }
@@ -71,6 +75,9 @@ class Trifase_atendimento_model extends CI_Model
     {
         $d = DateTimeImmutable::createFromFormat('!Y-m-d', $data);
         $dias = filter_var(($os->garantia ?? '') === '' ? 0 : $os->garantia, FILTER_VALIDATE_INT, ['options' => ['min_range' => 0, 'max_range' => 9999]]);
+        if ($this->db->table_exists('trifase_garantia_retornos') && $this->db->where('os_id', (int) $os->idOs)->count_all_results('trifase_garantia_retornos') > 0) {
+            $dias = 0; // O retorno não concede outro prazo; sua origem permanece a referência.
+        }
         if ($usuario <= 0 || $d === false || $d->format('Y-m-d') !== $data || $data > date('Y-m-d') || $data < substr((string) $os->dataInicial, 0, 10) || $dias === false) {
             throw new DomainException('Confira a data real da conclusão e o prazo concedido na OS.');
         }

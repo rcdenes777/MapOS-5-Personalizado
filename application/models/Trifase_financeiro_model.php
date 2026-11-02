@@ -4,6 +4,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 require_once APPPATH . 'libraries/Trifase_os_lock.php';
 require_once APPPATH . 'helpers/trifase_atendimento_helper.php';
+require_once APPPATH . 'helpers/trifase_retorno_helper.php';
 
 /** Regras financeiras e técnicas da extensão Trifase. */
 class Trifase_financeiro_model extends CI_Model
@@ -148,7 +149,7 @@ class Trifase_financeiro_model extends CI_Model
 
     public function alterarAndamento(int $osId, string $status, int $usuario): void
     {
-        if (trifaseAtendimentoHabilitado() || trifaseAtendimentoDaOs($this->db, $osId) !== null) {
+        if (trifaseAtendimentoHabilitado() || trifaseAtendimentoDaOs($this->db, $osId) !== null || trifaseRetornoTemDerivados($this->db, $osId)) {
             require_once APPPATH . 'models/Trifase_atendimento_model.php';
             $tecnico = new Trifase_atendimento_model();
             $tecnico->db = $this->db;
@@ -219,7 +220,7 @@ class Trifase_financeiro_model extends CI_Model
 
     public function registrarConclusao(int $osId, string $data, int $usuario): void
     {
-        if (trifaseAtendimentoHabilitado() || trifaseAtendimentoDaOs($this->db, $osId) !== null) {
+        if (trifaseAtendimentoHabilitado() || trifaseAtendimentoDaOs($this->db, $osId) !== null || trifaseRetornoTemDerivados($this->db, $osId)) {
             require_once APPPATH . 'models/Trifase_atendimento_model.php';
             $tecnico = new Trifase_atendimento_model();
             $tecnico->db = $this->db;

@@ -23,7 +23,7 @@ class Trifase_estoque_model extends CI_Model
     public function movimentar(int $produto, string $tipo, int $quantidade, ?int $custo, string $data, string $motivo, string $origem, int $usuario, string $operacao, ?int $esperado = null): int
     {
         $this->validarOperacao($usuario, $operacao);
-        if (! in_array($tipo, ['entrada', 'saida', 'contagem', 'os_saida', 'os_devolucao', 'venda_saida', 'venda_devolucao', 'legado_entrada', 'legado_saida', 'inicial'], true)
+        if (! in_array($tipo, ['entrada', 'saida', 'contagem', 'os_saida', 'os_devolucao', 'venda_saida', 'venda_devolucao', 'legado_entrada', 'legado_saida', 'troca_saida', 'inicial'], true)
             || abs($quantidade) > ($tipo === 'inicial' ? 99999999 : 1000000) || (in_array($tipo, ['contagem', 'inicial'], true) ? $quantidade < 0 : $quantidade <= 0)
             || ($custo !== null && ($custo < 0 || $custo > 9999999999))
             || ! $this->dataValida($data) || trim($motivo) === '' || mb_strlen($motivo) > 2000 || mb_strlen($origem) > 100) {
@@ -42,7 +42,7 @@ class Trifase_estoque_model extends CI_Model
             if ($tipo === 'contagem' && ($esperado === null || $esperado !== $antes)) {
                 throw new DomainException('O saldo mudou desde a conferência. Recarregue e conte novamente.');
             }
-            $sinal = in_array($tipo, ['saida', 'os_saida', 'venda_saida', 'legado_saida'], true) ? -1 : 1;
+            $sinal = in_array($tipo, ['saida', 'os_saida', 'venda_saida', 'legado_saida', 'troca_saida'], true) ? -1 : 1;
             $depois = $tipo === 'inicial' ? $antes : ($tipo === 'contagem' ? $quantidade : $antes + $sinal * $quantidade);
             if ($depois < 0 || $depois > 2147483647) {
                 throw new DomainException('Saldo insuficiente ou fora do limite permitido.');

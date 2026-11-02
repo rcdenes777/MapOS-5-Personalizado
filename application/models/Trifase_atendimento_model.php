@@ -42,6 +42,13 @@ class Trifase_atendimento_model extends CI_Model
                 throw new DomainException('Registre a conclusão real antes de reabrir, preservando a referência da garantia.');
             }
         }
+        require_once APPPATH . 'helpers/trifase_garantia_helper.php';
+        if ($status === 'Finalizado' && trifaseGarantiaOperacoesHabilitadas() && trifaseRetornoDaOs($this->db, $id)) {
+            $av = $this->db->where('os_id', $id)->where('tipo', 'avaliar')->order_by('id', 'desc')->get('trifase_garantia_eventos', 1)->row();
+            if ($av && in_array($av->solucao, ['troca', 'devolucao_valor'], true) && ! trifaseGarantiaResolucaoExecutada($this->db, $id)) {
+                throw new DomainException('Execute a solução de garantia escolhida antes de concluir o retorno.');
+            }
+        }
         if ($status === 'Finalizado' && $this->conclusao($id) === null) {
             $this->gravarConclusao($os, $this->referenciaFinanceira($id) ?? date('Y-m-d'), $usuario);
         }

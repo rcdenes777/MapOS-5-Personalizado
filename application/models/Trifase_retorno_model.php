@@ -34,7 +34,13 @@ class Trifase_retorno_model extends CI_Model
         $eq->db = $this->db;
         $unidade = $eq->porOs($anterior);
         $original = $eq->porOs($raiz);
-        if (! $os || ! $origem || ! $unidade || ! $original || (int) $unidade->equipamento_id !== (int) $original->equipamento_id
+        require_once APPPATH . 'helpers/trifase_garantia_helper.php';
+        $troca = trifaseGarantiaTroca($this->db, $anterior);
+        if ($troca) {
+            $unidade = (object) json_decode($troca->identificacao, true, 512, JSON_THROW_ON_ERROR);
+        }
+        $pertence = $unidade && $original && trifaseGarantiaMesmaLinhagem($this->db, (int) $original->equipamento_id, (int) $unidade->equipamento_id, $raiz);
+        if (! $os || ! $origem || ! $unidade || ! $original || ! $pertence
             || (int) $os->clientes_id !== (int) $origem->clientes_id) {
             throw new DomainException('Identifique a mesma unidade e o cliente na OS de origem antes de registrar retorno.');
         }
@@ -145,6 +151,10 @@ class Trifase_retorno_model extends CI_Model
             }
             if ((int) ($this->avaliacao($id)->id ?? 0) !== $anterior) {
                 throw new DomainException('Outra avaliação foi registrada. Recarregue antes de decidir.');
+            }
+            require_once APPPATH . 'helpers/trifase_garantia_helper.php';
+            if (trifaseGarantiaResolucaoExecutada($this->db, $id)) {
+                throw new DomainException('Solução já executada. Preserve a avaliação; corrija a operação antes de rever a decisão.');
             }
             $this->evento($id, 'avaliar', $dados, 0, 0, null, $usuario, $chave, $hash);
         });

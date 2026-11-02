@@ -3,6 +3,7 @@
 defined('BASEPATH') or exit('No direct script access allowed');
 require_once APPPATH . 'libraries/Trifase_os_lock.php';
 require_once APPPATH . 'helpers/trifase_equipamento_helper.php';
+require_once APPPATH . 'helpers/trifase_garantia_helper.php';
 
 /** Eventos de retirada imutáveis; correção cancela o registro sem apagá-lo. */
 class Trifase_entrega_model extends CI_Model
@@ -65,7 +66,7 @@ class Trifase_entrega_model extends CI_Model
                 'os_id' => $osId, 'tipo' => 'registrar', 'entregue_em' => $data->format('Y-m-d H:i:s'),
                 'registrado_em' => date('Y-m-d H:i:s'), 'usuario_id' => $usuario,
                 'recebedor' => $recebedor, 'terceiro' => (int) $terceiro, 'autorizacao' => $autorizacao,
-                'equipamento' => trifaseEquipamentoTextoDaOs($this->db, $osId, (string) ($os->descricaoProduto ?? '')), 'itens' => $itens, 'observacoes' => $observacoes,
+                'equipamento' => trifaseGarantiaEquipamentoEntrega($this->db, $osId, trifaseEquipamentoTextoDaOs($this->db, $osId, (string) ($os->descricaoProduto ?? ''))), 'itens' => $itens, 'observacoes' => $observacoes,
                 'confirmou_condicoes' => 1, 'operacao' => $chave, 'payload_hash' => $hash,
             ]);
             if (! $this->db->insert('trifase_entregas_estado', ['os_id' => $osId, 'evento_id' => $id])) {

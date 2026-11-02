@@ -5,6 +5,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
 require_once APPPATH . 'libraries/Trifase_os_lock.php';
 require_once APPPATH . 'helpers/trifase_atendimento_helper.php';
 require_once APPPATH . 'helpers/trifase_retorno_helper.php';
+require_once APPPATH . 'helpers/trifase_garantia_helper.php';
 
 /** Regras financeiras e técnicas da extensão Trifase. */
 class Trifase_financeiro_model extends CI_Model
@@ -33,6 +34,19 @@ class Trifase_financeiro_model extends CI_Model
         $osId = (int) $os->idOs;
         if ((int) $os->faturado !== 0 || in_array($os->status, ['Faturado', 'Cancelado'], true) || $this->obrigacao($osId)) {
             throw new DomainException('OS já faturada ou cancelada.');
+        }
+        if (trifaseGarantiaOperacoesHabilitadas() && $this->db->table_exists('trifase_garantia_retornos') && $this->db->where('os_id', $osId)->count_all_results('trifase_garantia_retornos')) {
+            require_once APPPATH . 'models/Trifase_orcamento_model.php';
+            $q = new Trifase_orcamento_model();
+            $q->db = $this->db;
+            $av = $this->db->where('os_id', $osId)->where('tipo', 'avaliar')->order_by('id', 'desc')->get('trifase_garantia_eventos', 1)->row();
+            $v = $q->atual($osId);
+            $d = $v ? $q->decisao((int) $v->id) : null;
+            $retrato = $q->retrato($os);
+            if (! $av || $av->solucao !== 'novo_orcamento' || ! $v || ! $v->ativo || ! $d || $d->tipo !== 'aprovar'
+                || ! hash_equals($v->conteudo_hash, $q->hash($retrato)) || $bruto - $desconto !== $retrato['total_c']) {
+                throw new DomainException('Fature o retorno somente com novo orçamento vigente, aprovado e sem alterações nos itens ou valores.');
+            }
         }
         $principal = $this->lancamento($osId, $bruto, $desconto, $vencimento, null, '', $usuario, false);
         $this->gravar('trifase_financeiro_obrigacoes', ['os_id' => $osId, 'bruto_c' => $bruto, 'desconto_c' => $desconto, 'vencimento' => $vencimento, 'principal_id' => $principal, 'usuario_id' => $usuario]);
@@ -81,6 +95,9 @@ class Trifase_financeiro_model extends CI_Model
                 return ['evento_id' => $id] + $this->resumo($osId);
             }
             $this->exigirObrigacao($osId);
+            if (trifaseGarantiaCreditos($this->db, $osId)['reembolsado_c'] > 0) {
+                throw new DomainException('Há devolução de garantia vinculada. Confira e corrija esse registro antes de estornar o recebimento.');
+            }
             $e = $this->db->where(['id' => $eventoId, 'os_id' => $osId, 'tipo' => 'receber'])->get('trifase_financeiro_eventos')->row();
             if (! $e || $this->db->where('referencia_id', $eventoId)->count_all_results('trifase_financeiro_eventos') > 0 || $data < $e->data_evento) {
                 throw new DomainException('Recebimento inexistente, já estornado ou data inválida.');
@@ -102,7 +119,7 @@ class Trifase_financeiro_model extends CI_Model
             $recebido += ($e->tipo === 'receber' ? 1 : -1) * (int) $e->valor_c;
         }
         $total = (int) $o->bruto_c - (int) $o->desconto_c;
-        return ['total_c' => $total, 'recebido_c' => $recebido, 'saldo_c' => $total - $recebido, 'situacao' => $recebido === 0 ? 'Pendente' : ($recebido === $total ? 'Quitado' : 'Parcialmente pago')];
+        return trifaseGarantiaResumo($this->db, $osId, $total, $recebido);
     }
 
     /** Projeções em lote para uma página de OS; evita uma consulta por recebimento. */
@@ -117,13 +134,19 @@ class Trifase_financeiro_model extends CI_Model
             ->where_in('os_id', $ids)->group_by('os_id')->get('trifase_financeiro_eventos')->result() as $linha) {
             $recebidos[(int) $linha->os_id] = (int) $linha->recebido_c;
         }
+        $creditos = [];
+        if ($this->db->table_exists('trifase_garantia_reembolsos')) {
+            foreach ($this->db->select('origem_id, SUM(valor_c) AS reembolsado_c, SUM(credito_c) AS abatimento_garantia_c', false)
+                ->where_in('origem_id', $ids)->where('cancelado_id', null)->group_by('origem_id')->get('trifase_garantia_reembolsos')->result() as $c) {
+                $creditos[(int) $c->origem_id] = ['reembolsado_c' => (int) $c->reembolsado_c, 'abatimento_garantia_c' => (int) $c->abatimento_garantia_c];
+            }
+        }
         $resumos = [];
         foreach ($this->db->where_in('os_id', $ids)->get('trifase_financeiro_obrigacoes')->result() as $o) {
             $id = (int) $o->os_id;
             $total = (int) $o->bruto_c - (int) $o->desconto_c;
             $recebido = $recebidos[$id] ?? 0;
-            $resumos[$id] = ['total_c' => $total, 'recebido_c' => $recebido, 'saldo_c' => $total - $recebido,
-                'situacao' => $recebido === 0 ? 'Pendente' : ($recebido === $total ? 'Quitado' : 'Parcialmente pago')];
+            $resumos[$id] = trifaseGarantiaResumo($this->db, $id, $total, $recebido, $creditos[$id] ?? ['reembolsado_c' => 0, 'abatimento_garantia_c' => 0]);
         }
         return $resumos;
     }
@@ -314,6 +337,16 @@ class Trifase_financeiro_model extends CI_Model
             $this->historicoTecnico($osId, 'Faturamento legado conciliado pelo vínculo #' . $l->idLancamentos . '; valores e vencimento preservados. Conclusão não inferida.', $usuario);
             return $this->resumo($osId);
         });
+    }
+
+    /** Uso interno, sob a mesma transação da devolução de garantia. */
+    public function sincronizarSaldoGarantia(int $osId, int $usuario): void
+    {
+        $r = $this->resumo($osId);
+        if ($r['total_c'] < 0 || $r['recebido_c'] < 0 || $r['saldo_c'] < 0) {
+            throw new DomainException('A correção conflita com movimentações posteriores. Concilie o histórico.');
+        }
+        $this->saldoNativo($osId, $usuario);
     }
 
     private function saldoNativo(int $osId, int $usuario): void

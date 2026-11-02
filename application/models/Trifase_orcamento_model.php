@@ -100,6 +100,13 @@ class Trifase_orcamento_model extends CI_Model
             if (! $ok) {
                 throw new RuntimeException('Não foi possível publicar o orçamento.');
             }
+            require_once APPPATH . 'helpers/trifase_garantia_helper.php';
+            if (trifaseGarantiaOperacoesHabilitadas() && $this->db->table_exists('trifase_garantia_retornos') && $this->db->where('os_id', $id)->count_all_results('trifase_garantia_retornos')) {
+                require_once APPPATH . 'models/Trifase_garantia_model.php';
+                $g = new Trifase_garantia_model();
+                $g->db = $this->db;
+                $g->registrarOrcamento($id, $versao, $usuario);
+            }
             return $versao;
         });
     }

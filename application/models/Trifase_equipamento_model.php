@@ -2,6 +2,7 @@
 
 defined('BASEPATH') or exit('No direct script access allowed');
 require_once APPPATH . 'libraries/Trifase_os_lock.php';
+require_once APPPATH . 'helpers/trifase_garantia_helper.php';
 
 /** Modelo não é unidade: o retrato de cada atendimento permanece imutável. */
 class Trifase_equipamento_model extends CI_Model
@@ -14,7 +15,11 @@ class Trifase_equipamento_model extends CI_Model
 
     public function unidades(int $clienteId, string $termo): array
     {
-        return $this->baseUnidade()->where('u.cliente_id', $clienteId)
+        $this->baseUnidade();
+        if ($this->db->table_exists('trifase_garantia_trocas')) {
+            $this->db->where('NOT EXISTS (SELECT 1 FROM trifase_garantia_trocas gt WHERE gt.antiga_id = u.id)', null, false);
+        }
+        return $this->db->where('u.cliente_id', $clienteId)
             ->group_start()->like('u.selo', mb_substr($termo, 0, 100))->or_like('u.serie', mb_substr($termo, 0, 100))
             ->or_like('u.imei', mb_substr($termo, 0, 100))->or_like('m.marca', mb_substr($termo, 0, 100))->or_like('m.modelo', mb_substr($termo, 0, 100))->group_end()
             ->order_by('u.id', 'desc')->limit(25)->get()->result();
@@ -84,6 +89,13 @@ class Trifase_equipamento_model extends CI_Model
             }
             if ($modo === 'existente') {
                 $id = filter_var($dados['equipamento_id'], FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
+                if ($id !== false) {
+                    $sufixo = $this->db->dbdriver === 'mysqli' ? ' FOR UPDATE' : '';
+                    $this->db->query('SELECT id FROM trifase_equipamentos WHERE id = ?' . $sufixo, [$id]);
+                    if (trifaseGarantiaUnidadeSubstituida($this->db, $id)) {
+                        throw new DomainException('Unidade substituída em garantia. Consulte o histórico e selecione a substituta.');
+                    }
+                }
                 $unidade = $id !== false ? $this->unidade($id) : null;
                 if ($unidade === null || (int) $unidade->cliente_id !== (int) $os->clientes_id) {
                     throw new DomainException('Escolha um equipamento deste cliente.');
@@ -133,7 +145,7 @@ class Trifase_equipamento_model extends CI_Model
     }
 
     /** Upsert da chave normalizada reutiliza o cadastro sem reescrever seus dados. */
-    private function obterModelo(mixed $tipo, mixed $marca, mixed $nome, int $usuario): int
+    public function obterModelo(mixed $tipo, mixed $marca, mixed $nome, int $usuario): int
     {
         if (! in_array($tipo, ['placa', 'celular', 'outro'], true)) {
             throw new DomainException('Escolha o tipo de equipamento.');

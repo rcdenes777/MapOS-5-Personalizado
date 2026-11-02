@@ -81,3 +81,7 @@ Andamento de OS gerida é atualizado na mesma tela com as opções existentes. F
 Com o piloto habilitado, o layout autenticado usa os tokens azul/prata também nas telas existentes (cadastros, início, financeiro e formulários). `?apresentacao=classica` preserva a aparência anterior da página e o default continua desligado. A mudança de tema não equivale a implementar todas as funções novas do protótipo.
 
 Na lista de OS, Andamento e Pagamento ficam separados. A projeção financeira é consultada em lote apenas para a página atual e somente com `vLancamento`; perfis sem essa permissão não recebem coluna ou valores na lista do piloto. Previsão substitui o rótulo ambíguo Entrega, sem transformar a data prevista em registro real de retirada. Filtros e paginação permanecem nativos.
+
+### Entrega física — etapa concluída
+
+Retirada integrada no resumo, com recebedor, data real, itens e confirmação de condições. Saldo pendente permanece pendente; terceiro exige autorização. Correção preserva o original, permite nova entrega e mantém comprovante cancelado consultável. Permissões configuráveis e flag própria desligada por padrão. Detalhes, isolamento e evidências em `ENTREGAS_LAB.md`. Etapa concluída; usuário pediu parar antes de começar outra.

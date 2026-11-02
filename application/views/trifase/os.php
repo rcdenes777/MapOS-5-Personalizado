@@ -163,6 +163,10 @@ $campos = [
                 </section>
             <?php } ?>
 
+            <?php if (function_exists('trifaseEntregaHabilitada') && trifaseEntregaHabilitada()) {
+                $this->load->view('trifase/entrega');
+            } ?>
+
             <section class="trifase-os-painel" aria-labelledby="piloto-atendimento">
                 <h2 id="piloto-atendimento">Dados do atendimento</h2>
                 <dl class="trifase-os-dados">

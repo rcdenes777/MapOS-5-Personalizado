@@ -13,6 +13,7 @@
 
 @source "../../application/views/os/imprimir*.php";
 @source "../../application/views/trifase/recibo.php";
+@source "../../application/views/trifase/entrega-comprovante.php";
 @source "../../application/views/vendas/imprimir*.php";
 @source "../../application/views/garantias/imprimir*.php";
 @source "../../application/views/conecte/imprimir*.php";

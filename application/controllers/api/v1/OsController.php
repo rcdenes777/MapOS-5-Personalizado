@@ -5,6 +5,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
 require APPPATH . '/libraries/REST_Controller.php';
 
 require_once APPPATH . 'helpers/trifase_financeiro_helper.php';
+require_once APPPATH . 'helpers/trifase_entrega_helper.php';
 
 class OsController extends REST_Controller
 {
@@ -34,7 +35,7 @@ class OsController extends REST_Controller
 
     private function travarFinanceiro(int $id): void
     {
-        if (! trifaseFinanceiroHabilitado() || $this->financeiroLock !== null) {
+        if ((! trifaseFinanceiroHabilitado() && ! $this->db->table_exists('trifase_entregas_eventos')) || $this->financeiroLock !== null) {
             return;
         }
         try {
@@ -404,6 +405,10 @@ class OsController extends REST_Controller
         }
 
         $this->travarFinanceiro((int) $id);
+        if (trifaseEntregaTemHistorico($this->db, (int) $id)) {
+            $this->response(['status' => false, 'message' => 'OS com histórico de entrega: exclusão bloqueada.'], 409);
+            return;
+        }
         if (trifaseFinanceiroOsGerida($this->db, (int) $id)) {
             $this->response(['status' => false, 'message' => 'OS com histórico financeiro: exclusão bloqueada.'], 409);
             return;

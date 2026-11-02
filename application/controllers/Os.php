@@ -5,6 +5,7 @@ if (! defined('BASEPATH')) {
 }
 
 require_once APPPATH . 'helpers/trifase_financeiro_helper.php';
+require_once APPPATH . 'helpers/trifase_entrega_helper.php';
 
 class Os extends MY_Controller
 {
@@ -390,6 +391,13 @@ class Os extends MY_Controller
             $token = $this->piloto_publico->tokenAtivo((int) $os->idOs);
             $dados['pilotoUrlPublica'] = $token !== null ? trifasePublicoUrl($token, base_url(), (string) config_item('index_page')) : null;
             $dados['pilotoPublicados'] = array_map(static fn ($anexo) => (int) $anexo->idAnexos, $this->piloto_publico->anexos((int) $os->idOs, true));
+        }
+        $dados['pilotoEntrega'] = null;
+        $dados['pilotoEntregasHistorico'] = [];
+        if (trifaseEntregaHabilitada()) {
+            $this->load->model('Trifase_entrega_model', 'piloto_entregas');
+            $dados['pilotoEntrega'] = $this->piloto_entregas->ativa((int) $os->idOs);
+            $dados['pilotoEntregasHistorico'] = $this->piloto_entregas->historico((int) $os->idOs);
         }
         return $dados;
     }
@@ -811,7 +819,12 @@ class Os extends MY_Controller
         }
 
         $id = (int) $this->input->post('id');
-        $lock = trifaseFinanceiroHabilitado() && $id > 0 ? new Trifase_os_lock($this->db, $id) : null;
+        $lock = (trifaseFinanceiroHabilitado() || $this->db->table_exists('trifase_entregas_eventos')) && $id > 0 ? new Trifase_os_lock($this->db, $id) : null;
+        if (trifaseEntregaTemHistorico($this->db, $id)) {
+            $this->session->set_flashdata('error', 'OS com histórico de entrega não pode ser excluída.');
+            $lock?->finalizar(false);
+            redirect('os/visualizar/' . $id);
+        }
         if (trifaseFinanceiroOsGerida($this->db, $id)) {
             $this->session->set_flashdata('error', 'OS com histórico financeiro Trifase não pode ser excluída.');
             if ($lock !== null) {

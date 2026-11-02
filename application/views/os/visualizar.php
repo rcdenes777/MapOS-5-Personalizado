@@ -150,66 +150,7 @@ $textos = [
         <?php if ($pode['editar']) { ?>
             <section class="<?= e($caixa) ?>" aria-labelledby="secao-adicionar-item">
                 <h2 id="secao-adicionar-item" class="text-heading-sm text-text"><?= e($produto ? 'Adicionar produto' : 'Adicionar serviço') ?></h2>
-                <form method="post" action="<?= e(site_url($produto ? 'os/adicionarProduto' : 'os/adicionarServico')) ?>" novalidate
-                      class="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-[minmax(0,1fr)_7rem_9rem_auto] lg:items-start"
-                      data-os-acao="<?= e($produto ? 'produto' : 'servico') ?>" data-os-limpar>
-                    <input type="hidden" name="idOs" value="<?= e($idOs) ?>">
-                    <div class="relative sm:col-span-2 lg:col-span-1"<?= componenteAtributos([
-                        'data-autocomplete' => site_url($produto ? 'os/autoCompleteProduto' : 'os/autoCompleteServico'),
-                        'data-autocomplete-alvo' => 'item-id',
-                        'data-autocomplete-listar' => '',
-                        'data-os-preco' => 'item-preco',
-                        'data-os-estoque' => $produto && $controle_estoque ? 'item-estoque' : null,
-                    ]) ?>>
-                        <?= component('input', [
-                            'name' => $produto ? 'produto' : 'servico',
-                            'id' => 'item-nome',
-                            'label' => $produto ? 'Produto' : 'Serviço',
-                            'required' => true,
-                            'autocomplete' => 'off',
-                            'placeholder' => $produto ? 'Descrição ou código de barras' : 'Nome do serviço',
-                            'help' => $produto && $controle_estoque ? 'O produto sai do estoque ao ser adicionado.' : null,
-                            'attrs' => [
-                                'data-msg-vazio' => $produto ? 'Escolha o produto.' : 'Escolha o serviço.',
-                                'data-msg-invalido' => $produto ? 'Escolha um produto da lista.' : 'Escolha um serviço da lista.',
-                            ],
-                        ]) ?>
-                        <input type="hidden" id="item-id" name="<?= e($produto ? 'idProduto' : 'idServico') ?>" value="">
-                        <p id="item-estoque" class="mt-1 text-caption text-muted" aria-live="polite"></p>
-                    </div>
-                    <?= component('input', [
-                        'name' => 'quantidade',
-                        'id' => 'item-quantidade',
-                        'label' => 'Quantidade',
-                        'type' => 'number',
-                        'value' => '1',
-                        'required' => true,
-                        'attrs' => array_filter([
-                            'min' => $produto ? '1' : '0.01',
-                            'step' => $produto ? '1' : '0.01',
-                            'inputmode' => $produto ? 'numeric' : 'decimal',
-                            'data-msg-vazio' => 'Informe a quantidade.',
-                            'data-msg-invalido' => $produto ? 'Informe um número inteiro maior que zero.' : 'Informe uma quantidade maior que zero.',
-                        ]),
-                    ]) ?>
-                    <?= component('input', [
-                        'name' => 'preco',
-                        'id' => 'item-preco',
-                        'label' => 'Preço (R$)',
-                        'required' => true,
-                        'placeholder' => '0,00',
-                        'help' => 'Sugerido pelo cadastro; pode ser alterado.',
-                        'attrs' => [
-                            'inputmode' => 'numeric',
-                            'data-mascara' => 'dinheiro',
-                            'data-msg-vazio' => 'Informe o preço.',
-                        ],
-                    ]) ?>
-                    <div class="lg:pt-7">
-                        <?= component('button', ['label' => 'Adicionar', 'icon' => 'plus', 'variant' => 'outline', 'type' => 'submit', 'attrs' => ['data-rotulo-carregando' => 'Adicionando…']]) ?>
-                    </div>
-                    <?php $this->load->view('os/partes/desconto-item-campos'); ?>
-                </form>
+                <?php $this->load->view('os/partes/formulario-item', ['tipoItem' => $produto ? 'produto' : 'servico', 'prefixoItem' => 'item']); ?>
             </section>
         <?php } ?>
         <div data-os-parte="<?= e($aba) ?>"><?php $this->load->view('os/partes/' . $aba); ?></div>

@@ -9,14 +9,14 @@
 <div class="grid gap-4 sm:col-span-2 sm:grid-cols-[9rem_minmax(0,12rem)] lg:col-span-4">
     <?= component('select', [
         'name' => 'tipoDescontoItem',
-        'id' => 'item-desconto-tipo',
+        'id' => ($prefixoDesconto ?? 'item') . '-desconto-tipo',
         'label' => 'Tipo do desconto',
         'options' => ['real' => 'Em reais (R$)', 'porcento' => 'Em porcentagem (%)'],
         'selected' => 'real',
     ]) ?>
     <?= component('input', [
         'name' => 'descontoItem',
-        'id' => 'item-desconto-valor',
+        'id' => ($prefixoDesconto ?? 'item') . '-desconto-valor',
         'label' => 'Desconto do item',
         'placeholder' => '0,00',
         'help' => 'Opcional. Vale só para este item.',

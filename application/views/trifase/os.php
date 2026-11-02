@@ -37,7 +37,15 @@ $campos = [
             <div><dt>Técnico responsável</dt><dd><?= e($os->nome) ?></dd></div>
         </dl>
         <?php if (trifaseFinanceiroHabilitado() && trifaseFinanceiroOsGerida($this->db, $idOs) && $permite('eOs')) { ?>
-            <?= component('button', ['label' => 'Atualizar andamento', 'variant' => 'outline', 'href' => site_url('os/visualizar/' . $idOs) . '?apresentacao=classica']) ?>
+            <details class="trifase-os-adicionar">
+                <summary>Atualizar andamento</summary>
+                <form method="post" action="<?= e(site_url('trifase_financeiro/andamento/' . $idOs)) ?>" class="grid gap-3 p-3" <?= js_module('formulario/padrao') ?>>
+                    <input type="hidden" name="<?= e($this->security->get_csrf_token_name()) ?>" value="<?= e($this->security->get_csrf_hash()) ?>">
+                    <?= component('select', ['name' => 'status', 'id' => 'piloto-andamento', 'label' => 'Andamento do serviço', 'selected' => $os->status, 'options' => ['Aberto' => 'Aberto', 'Em Andamento' => 'Em Andamento', 'Aguardando Peças' => 'Aguardando Peças', 'Finalizado' => 'Finalizado']]) ?>
+                    <p class="text-caption text-muted">Finalizar registra a conclusão e a referência de garantia; os pagamentos são preservados.</p>
+                    <?= component('button', ['label' => 'Salvar andamento', 'type' => 'submit']) ?>
+                </form>
+            </details>
         <?php } ?>
     </section>
 
@@ -46,7 +54,7 @@ $campos = [
             <section class="trifase-os-painel" aria-labelledby="piloto-equipamento">
                 <div class="trifase-os-secao-titulo">
                     <h2 id="piloto-equipamento">Equipamento e atendimento</h2>
-                    <?php if ($editarUrl !== null) { ?>
+                    <?php if ($editarUrl !== null && ($pilotoTecnico ?? null) === null) { ?>
                         <?= component('button', ['label' => 'Editar OS', 'icon' => 'pencil', 'variant' => 'outline', 'href' => $editarUrl]) ?>
                     <?php } ?>
                 </div>
@@ -55,6 +63,13 @@ $campos = [
                         <div><dt><?= e($rotulo) ?></dt><dd class="<?= $valor === null ? 'text-muted' : 'text-text' ?>"><?= $valor === null ? 'Não informado' : componenteConteudo($valor) ?></dd></div>
                     <?php } ?>
                 </dl>
+                <?php if ($editarTecnico && ($pilotoTecnico ?? null) !== null) { ?>
+                    <details class="trifase-os-adicionar mt-4">
+                        <summary>Editar OS</summary>
+                        <p class="text-muted">Produtos, serviços, pagamentos e conclusão são preservados.</p>
+                        <?php $this->load->view('trifase/formulario-tecnico', ['osTecnica' => $os, 'metaTecnica' => $pilotoTecnico, 'tecnicoIntegrado' => true]); ?>
+                    </details>
+                <?php } ?>
             </section>
 
             <section class="trifase-os-painel" aria-labelledby="piloto-itens">
@@ -98,6 +113,21 @@ $campos = [
             <?php if ($verFinanceiro) { ?>
                 <section class="trifase-os-painel" aria-labelledby="piloto-financeiro">
                     <div data-os-parte="pilotofinanceiro"><?php $this->load->view('trifase/resumo-financeiro'); ?></div>
+                    <?php if ($pilotoFinanceiro !== null && $permite('aLancamento') && $pilotoFinanceiro['saldo_c'] > 0 && $os->status !== 'Cancelado') { ?>
+                        <details id="piloto-registrar-recebimento" class="trifase-os-adicionar mt-4">
+                            <summary>Registrar recebimento</summary>
+                            <?php $this->load->view('trifase/formulario-recebimento', ['osFinanceira' => $os, 'financeiroChave' => $pilotoOperacao, 'financeiroValores' => ['valor' => '', 'data' => date('Y-m-d'), 'forma' => 'Pix'], 'recebimentoIntegrado' => true]); ?>
+                        </details>
+                    <?php } elseif ($pilotoFinanceiro === null && (int) $os->faturado !== 1 && $permite('aLancamento') && $permite('eOs') && trifaseFinanceiroHabilitado() && $os->status !== 'Cancelado') { ?>
+                        <details class="trifase-os-adicionar mt-4">
+                            <summary>Registrar cobrança</summary>
+                            <form method="post" action="<?= e(site_url('trifase_financeiro/formalizar/' . $idOs)) ?>" class="grid gap-3 p-3" data-os-acao="financeiro">
+                                <p class="text-muted">Confirme os itens antes de registrar. Após a cobrança, os valores ficam protegidos.</p>
+                                <?= component('input', ['name' => 'vencimento', 'id' => 'piloto-vencimento', 'label' => 'Vencimento', 'type' => 'date', 'value' => date('Y-m-d'), 'required' => true]) ?>
+                                <?= component('button', ['label' => 'Confirmar cobrança', 'type' => 'submit']) ?>
+                            </form>
+                        </details>
+                    <?php } ?>
                 </section>
             <?php } ?>
 

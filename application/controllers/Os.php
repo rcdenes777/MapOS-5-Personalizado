@@ -363,6 +363,13 @@ class Os extends MY_Controller
     {
         $this->load->helper('trifase_publico');
         $dados = ['trifase_ui_piloto' => true, 'pilotoFinanceiro' => null, 'pilotoLink' => null, 'pilotoPublicados' => [], 'pilotoUrlPublica' => null];
+        $dados['pilotoOperacao'] = bin2hex(random_bytes(16));
+        $dados['pilotoTecnico'] = null;
+        $dados['pilotoGerida'] = trifaseFinanceiroHabilitado() && trifaseFinanceiroOsGerida($this->db, (int) $os->idOs);
+        if (trifaseFinanceiroHabilitado() && $this->permite('eOs') && ($dados['pilotoGerida'] || (int) $os->faturado === 1)) {
+            $this->load->model('Trifase_financeiro_model', 'piloto_financeiro');
+            $dados['pilotoTecnico'] = $dados['pilotoGerida'] ? $this->piloto_financeiro->metadados((int) $os->idOs) : (object) ['origem' => 'legado_nao_conciliado'];
+        }
         if (trifaseFinanceiroHabilitado() && $this->permite('vLancamento')
             && trifaseFinanceiroOsGerida($this->db, (int) $os->idOs)) {
             $this->load->model('Trifase_financeiro_model', 'piloto_financeiro');

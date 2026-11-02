@@ -6,14 +6,7 @@
     </header>
     <?= component('alert', ['variant' => 'info', 'message' => 'Atualize o equipamento, o defeito, as observações e o laudo. Esta tela preserva produtos, serviços, descontos, recebimentos e a conclusão já registrada.']) ?>
     <?php if ($erroTecnico) { ?><?= component('alert', ['variant' => 'danger', 'message' => $erroTecnico]) ?><?php } ?>
-    <form method="post" class="grid gap-4 rounded-card border border-border bg-surface p-4" novalidate <?= js_module('formulario/padrao') ?>>
-        <input type="hidden" name="<?= e($this->security->get_csrf_token_name()) ?>" value="<?= e($this->security->get_csrf_hash()) ?>">
-        <?php foreach (['descricaoProduto' => 'Equipamento e serviço', 'defeito' => 'Defeito informado', 'observacoes' => 'Observações internas', 'laudoTecnico' => 'Laudo técnico'] as $campo => $rotulo) { ?>
-            <?= component('textarea', ['name' => $campo, 'label' => $rotulo, 'value' => osTextoWhatsApp('{TEXTO}', ['{TEXTO}' => $osTecnica->$campo ?? '']), 'attrs' => ['maxlength' => 20000, 'rows' => 4]]) ?>
-        <?php } ?>
-        <?= component('input', ['name' => 'dataFinal', 'label' => 'Previsão de entrega', 'type' => 'date', 'value' => $osTecnica->dataFinal, 'required' => true, 'attrs' => ['readonly' => $metaTecnica->origem === 'legado_nao_conciliado'], 'help' => 'Alterar a previsão não muda a data de início da garantia.']) ?>
-        <div><?= component('button', ['label' => 'Salvar dados técnicos', 'type' => 'submit']) ?></div>
-    </form>
+    <?php $this->load->view('trifase/formulario-tecnico', ['tecnicoIntegrado' => false]); ?>
     <section class="rounded-card border border-border bg-surface p-4">
         <h2 class="mb-3 text-heading-sm text-text">Conclusão e garantia</h2>
         <?php if ($metaTecnica->origem === 'legado_nao_conciliado') { ?>

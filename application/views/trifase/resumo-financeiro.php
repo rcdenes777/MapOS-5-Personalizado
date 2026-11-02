@@ -12,9 +12,6 @@ $permite = fn (string $p): bool => $this->permission->checkPermission($this->ses
                             <div><dt>Recebido</dt><dd><?= e(dinheiro($pilotoFinanceiro['recebido_c'] / 100)) ?></dd></div>
                             <div class="trifase-os-saldo"><dt>Saldo a receber</dt><dd><?= e(dinheiro($pilotoFinanceiro['saldo_c'] / 100)) ?></dd></div>
                         </dl>
-                        <?php if ($permite('aLancamento') && $pilotoFinanceiro['saldo_c'] > 0 && $os->status !== 'Cancelado') { ?>
-                            <?= component('button', ['label' => 'Registrar recebimento', 'href' => $financeiroUrl]) ?>
-                        <?php } ?>
                         <?= component('link', ['label' => 'Ver histórico financeiro', 'href' => $financeiroUrl]) ?>
                     <?php } else { ?>
                         <p class="text-muted">Valores dos itens desta OS</p>

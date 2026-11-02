@@ -113,11 +113,20 @@ class Trifase_financeiro extends MY_Controller
             try {
                 $post = $this->input->post();
                 unset($post[$this->security->get_csrf_token_name()]);
+                if ($this->pedidoPiloto()) {
+                    unset($post['aba']);
+                }
                 $this->financeiro_os->salvarTecnico((int) $os->idOs, $post, $this->usuario());
                 $this->session->set_flashdata('success', 'Dados técnicos salvos. Os valores e a conclusão registrada foram preservados.');
+                if ($this->pedidoPiloto()) {
+                    return $this->respostaPiloto($os);
+                }
                 redirect('os/visualizar/' . (int) $os->idOs);
             } catch (DomainException $e) {
                 $erro = $e->getMessage();
+                if ($this->pedidoPiloto()) {
+                    return $this->respostaPiloto($os, $erro, 422);
+                }
                 $this->output->set_status_header(422);
             }
         }
@@ -208,14 +217,41 @@ class Trifase_financeiro extends MY_Controller
         try {
             $acao();
             $this->session->set_flashdata('success', $mensagem);
+            if ($this->pedidoPiloto()) {
+                return $this->respostaPiloto($os);
+            }
             redirect('trifase_financeiro/visualizar/' . (int) $os->idOs);
         } catch (DomainException $e) {
+            if ($this->pedidoPiloto()) {
+                return $this->respostaPiloto($os, $e->getMessage(), 422);
+            }
             $this->output->set_status_header(422);
             return $this->tela($os, $e->getMessage());
         } catch (RuntimeException $e) {
+            if ($this->pedidoPiloto()) {
+                return $this->respostaPiloto($os, 'Não foi possível confirmar. Confira o histórico antes de tentar novamente.', 500);
+            }
             $this->output->set_status_header(500);
             return $this->tela($os, 'Não foi possível concluir a operação. Confira o histórico antes de tentar novamente.');
         }
+    }
+
+    /** @phpstan-impure Carrega o helper e consulta o transporte da requisição. */
+    private function pedidoPiloto(): bool
+    {
+        $this->load->helper('trifase_interface');
+        return trifaseInterfacePiloto() && $this->input->is_ajax_request() && $this->texto('aba') === 'resumo';
+    }
+
+    private function respostaPiloto(object $os, ?string $erro = null, int $status = 200)
+    {
+        $corpo = ['result' => $erro === null];
+        if ($erro === null) {
+            $corpo['redirecionar'] = site_url('os/visualizar/' . (int) $os->idOs);
+        } else {
+            $corpo['message'] = $erro;
+        }
+        return $this->output->set_status_header($status)->set_content_type('application/json', 'utf-8')->set_output(json_encode($corpo));
     }
 
     private function tela(object $os, ?string $erro = null)

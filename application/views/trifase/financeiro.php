@@ -45,13 +45,7 @@ foreach ($financeiroEventos as $e) {
         <?php if ($permite('aLancamento') && $financeiroResumo['saldo_c'] > 0 && $osFinanceira->status !== 'Cancelado') { ?>
             <section class="rounded-card border border-border bg-surface p-4">
                 <h2 class="mb-3 text-heading-sm text-text">Registrar recebimento</h2>
-                <form method="post" action="<?= e(site_url('trifase_financeiro/receber/' . $id)) ?>" class="grid gap-3 sm:grid-cols-3" novalidate <?= js_module('formulario/padrao') ?>>
-                    <input type="hidden" name="<?= e($csrfNome) ?>" value="<?= e($csrfValor) ?>"><input type="hidden" name="operacao" value="<?= e($financeiroChave) ?>">
-                    <?= component('input', ['name' => 'valor', 'label' => 'Valor recebido (R$)', 'value' => $financeiroValores['valor'], 'required' => true, 'attrs' => ['inputmode' => 'decimal', 'maxlength' => 12]]) ?>
-                    <?= component('input', ['name' => 'data', 'id' => 'trifase-recebimento-data', 'label' => 'Data do recebimento', 'type' => 'date', 'value' => $financeiroValores['data'], 'required' => true]) ?>
-                    <?= component('select', ['name' => 'forma', 'label' => 'Forma de pagamento', 'selected' => $financeiroValores['forma'], 'options' => ['Pix' => 'Pix', 'Dinheiro' => 'Dinheiro', 'Cartão de Crédito' => 'Cartão de Crédito', 'Cartão de Débito' => 'Cartão de Débito', 'Transferência' => 'Transferência'], 'required' => true]) ?>
-                    <div><?= component('button', ['label' => 'Registrar recebimento', 'type' => 'submit']) ?></div>
-                </form>
+                <?php $this->load->view('trifase/formulario-recebimento', ['recebimentoIntegrado' => false]); ?>
             </section>
         <?php } ?>
         <section class="rounded-card border border-border bg-surface p-4">

@@ -65,3 +65,9 @@ As funções de edição técnica, recebimento, compartilhamento e envio de anex
 O resumo reutiliza o formulário nativo de upload (200 MiB por arquivo), mantém imagem/vídeo na galeria e oferece marcação Público por arquivo a quem tem `vOs` e `eOs`. A rota POST `trifase/visibilidade` valida vínculo do anexo com a OS, CSRF e valores; a transação altera somente esse arquivo. Novos uploads continuam privados. Erro de rede deixa o controle desabilitado com estado não confirmado, evitando anunciar uma privacidade que o servidor não confirmou.
 
 O link ativo permanece disponível para copiar; gerar, renovar e revogar retornam ao resumo pelo destino fechado `voltar=resumo` somente no piloto. Revogação exige confirmação. As rotas clássicas permanecem disponíveis e o piloto segue desativado por padrão.
+
+### Edição técnica e recebimentos no resumo
+
+OS faturada/gerida permite editar os mesmos campos técnicos da tela existente, em seção recolhível “Editar OS”. O modelo mantém a lista fechada de campos e protege valores/vínculos/conclusão. OS ainda não faturada continua com o formulário completo nativo. A cobrança e o recebimento parcial usam os mesmos endpoints, permissões, CSRF, centavos e chaves idempotentes do financeiro; o retorno AJAX ao resumo existe somente com o piloto ligado. Em erro, o formulário permanece preenchido e mantém a chave da operação.
+
+Andamento de OS gerida é atualizado na mesma tela com as opções existentes. Finalizar não quita a OS. O histórico, a correção de recebimentos e a conciliação de legado continuam na tela financeira; não há conciliação automática nem transferência de dinheiro.

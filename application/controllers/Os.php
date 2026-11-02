@@ -6,10 +6,15 @@ if (! defined('BASEPATH')) {
 
 require_once APPPATH . 'helpers/trifase_financeiro_helper.php';
 require_once APPPATH . 'helpers/trifase_entrega_helper.php';
+require_once APPPATH . 'helpers/trifase_equipamento_helper.php';
+require_once APPPATH . 'helpers/trifase_interface_helper.php';
 
 class Os extends MY_Controller
 {
     private ?Trifase_os_lock $financeiroLock = null;
+    private ?object $equipamentoNovaOs = null;
+    private array $entradaEquipamentoNovaOs = [];
+    private ?string $erroEquipamentoNovaOs = null;
     /** Filtros da listagem, na query string (listagemFiltros()). */
     public const FILTROS = [
         'pesquisa' => 'texto',
@@ -150,6 +155,10 @@ class Os extends MY_Controller
         $erros = [];
         $dados = [];
 
+        if ($os === null) {
+            $this->prepararEquipamentoNovaOs();
+        }
+
         if ($this->input->method() === 'post') {
             $erros = $this->validarFormulario('os');
             // As regras do grupo "os" checam os ids ocultos; o erro aparece no
@@ -177,6 +186,13 @@ class Os extends MY_Controller
                 }
             }
 
+            if ($erros === [] && $this->equipamentoNovaOs !== null && (int) $dados['clientes_id'] !== (int) $this->equipamentoNovaOs->cliente_id) {
+                $erros['cliente'] = 'Este equipamento pertence a outro cliente. Escolha o cliente cadastrado na unidade.';
+            }
+            if ($erros === [] && $os !== null && ! trifaseEquipamentoClienteValido($this->db, (int) $os->idOs, (int) $dados['clientes_id'])) {
+                $erros['cliente'] = 'A OS identifica uma unidade deste cliente. A troca de proprietário exige um fluxo próprio.';
+            }
+
             if ($erros === []) {
                 $idOs = $os === null ? $this->criarOs($dados) : $this->salvarOs($os, $dados);
 
@@ -187,7 +203,8 @@ class Os extends MY_Controller
                         log_info('Adicionou uma OS. ID: ' . $idOs);
                         $this->session->set_flashdata('success', 'OS #' . $idOs . ' criada. Agora adicione os produtos e serviços.');
 
-                        return redirect('os/visualizar/' . $idOs . ($this->permite('eOs') ? '?aba=produtos' : ''));
+                        $irParaItens = $this->permite('eOs') && ! trifaseInterfacePiloto();
+                        return redirect('os/visualizar/' . $idOs . ($irParaItens ? '?aba=produtos' : ''));
                     }
 
                     log_info('Alterou uma OS. ID: ' . $idOs);
@@ -196,7 +213,7 @@ class Os extends MY_Controller
                     return redirect('os/editar/' . $idOs);
                 }
 
-                $erros['_geral'] = 'Não foi possível salvar. Tente de novo.';
+                $erros['_geral'] = $this->erroEquipamentoNovaOs ?? 'Não foi possível salvar. Tente de novo.';
             }
         }
 
@@ -211,6 +228,15 @@ class Os extends MY_Controller
                 'dataInicial' => date('Y-m-d'),
             ]
         );
+        if ($this->equipamentoNovaOs !== null && $this->input->method() !== 'post') {
+            $cliente = $this->db->select('nomeCliente')->where('idClientes', (int) $this->equipamentoNovaOs->cliente_id)->get('clientes', 1)->row();
+            $this->data['valores']['clientes_id'] = (string) $this->equipamentoNovaOs->cliente_id;
+            $this->data['valores']['cliente'] = (string) ($cliente->nomeCliente ?? '');
+            // Não transportar selo/IMEI para a descrição que a página pública já exibe.
+            $this->data['valores']['descricaoProduto'] = $this->equipamentoNovaOs->marca . ' · ' . $this->equipamentoNovaOs->modelo;
+        }
+        $this->data['equipamentoNovaOs'] = $this->equipamentoNovaOs;
+        $this->data['entradaEquipamentoNovaOs'] = $this->entradaEquipamentoNovaOs;
         $this->data['erros'] = $erros;
         // Campos com formatação do editor antigo (Trumbowyg), que sai ao salvar.
         $this->data['formatados'] = $os === null ? [] : array_values(array_filter(OS_CAMPOS_TEXTO, static fn ($campo) => osTemFormatacao($os->{$campo} ?? null)));
@@ -223,17 +249,69 @@ class Os extends MY_Controller
         return $this->layout();
     }
 
-    /** Cria a OS e devolve o id, ou null se não gravou. */
+    private function prepararEquipamentoNovaOs(): void
+    {
+        $id = $this->input->method() === 'post' ? $this->input->post('equipamento_id') : $this->input->get('equipamento_id');
+        if ($id === null || $id === '') {
+            return;
+        }
+        if (! trifaseEquipamentosHabilitados()) {
+            show_404('', false);
+        }
+        if (! $this->permite('vOs')) {
+            show_error('Você não tem permissão para consultar a unidade deste atendimento.', 403);
+        }
+        $id = filter_var($id, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
+        $this->load->model('Trifase_equipamento_model', 'equipamentos_os');
+        $this->equipamentoNovaOs = $id !== false ? $this->equipamentos_os->unidade($id) : null;
+        if ($this->equipamentoNovaOs === null) {
+            show_404('', false);
+        }
+        $this->entradaEquipamentoNovaOs = [
+            'modo' => 'existente', 'equipamento_id' => (string) $id,
+            'itens_recebidos' => $this->input->post('equipamento_itens') ?? '',
+            'estado_entrada' => $this->input->post('equipamento_estado') ?? '',
+            'operacao' => $this->input->method() === 'post' ? ($this->input->post('equipamento_operacao') ?? '') : bin2hex(random_bytes(16)),
+        ];
+    }
+
+    /** Quando há unidade, criar a OS e vinculá-la é uma única transação. */
     private function criarOs(array $dados): ?int
     {
-        $id = $this->os_model->add('os', $dados + ['faturado' => 0], true);
-        if (! is_numeric($id)) {
+        $comEquipamento = $this->equipamentoNovaOs !== null;
+        if ($comEquipamento && ! $this->db->trans_begin()) {
             return null;
         }
-
-        $this->os_model->registrarStatus((int) $id, null, (string) $dados['status'], $this->usuarioLogado());
-
-        return (int) $id;
+        try {
+            $id = $this->os_model->add('os', $dados + ['faturado' => 0], true);
+            if (! is_numeric($id)) {
+                if ($comEquipamento) {
+                    $this->db->trans_rollback();
+                }
+                return null;
+            }
+            $this->os_model->registrarStatus((int) $id, null, (string) $dados['status'], $this->usuarioLogado());
+            if ($comEquipamento) {
+                $entrada = $this->entradaEquipamentoNovaOs;
+                $operacao = $entrada['operacao'];
+                unset($entrada['operacao']);
+                if (! is_string($operacao)) {
+                    throw new DomainException('Identificador inválido. Recarregue o formulário.');
+                }
+                $this->equipamentos_os->vincular((int) $id, $entrada, (int) $this->usuarioLogado(), $operacao);
+                if (! $this->db->trans_status() || ! $this->db->trans_commit()) {
+                    throw new RuntimeException('Não foi possível confirmar a nova OS e seu equipamento.');
+                }
+            }
+            return (int) $id;
+        } catch (Throwable $e) {
+            if (! $comEquipamento) {
+                throw $e;
+            }
+            $this->db->trans_rollback();
+            $this->erroEquipamentoNovaOs = $e instanceof DomainException ? $e->getMessage() : 'Não foi possível confirmar a OS e o equipamento. Confira a lista antes de tentar novamente.';
+            return null;
+        }
     }
 
     private function usuarioLogado(): ?int
@@ -249,12 +327,17 @@ class Os extends MY_Controller
      */
     private function salvarOs(object $os, array $dados): ?int
     {
-        if (! trifaseFinanceiroHabilitado()) {
+        if (! trifaseFinanceiroHabilitado() && trifaseEquipamentoDaOs($this->db, (int) $os->idOs) === null) {
             return $this->salvarOsSemTrava($os, $dados);
         }
         $lock = new Trifase_os_lock($this->db, (int) $os->idOs);
         try {
-            if ((int) $lock->os->faturado === 1 || trifaseFinanceiroOsGerida($this->db, (int) $os->idOs)) {
+            if (! trifaseEquipamentoClienteValido($this->db, (int) $os->idOs, (int) $dados['clientes_id'])) {
+                $lock->finalizar(false);
+                $this->erroEquipamentoNovaOs = 'Não é possível trocar o cliente de uma OS com unidade identificada.';
+                return null;
+            }
+            if (trifaseFinanceiroHabilitado() && ((int) $lock->os->faturado === 1 || trifaseFinanceiroOsGerida($this->db, (int) $os->idOs))) {
                 $lock->finalizar(false);
                 return null;
             }
@@ -398,6 +481,13 @@ class Os extends MY_Controller
             $this->load->model('Trifase_entrega_model', 'piloto_entregas');
             $dados['pilotoEntrega'] = $this->piloto_entregas->ativa((int) $os->idOs);
             $dados['pilotoEntregasHistorico'] = $this->piloto_entregas->historico((int) $os->idOs);
+        }
+        $dados['pilotoEquipamento'] = null;
+        $dados['pilotoPodeIdentificar'] = false;
+        if (trifaseEquipamentosHabilitados()) {
+            $this->load->model('Trifase_equipamento_model', 'equipamentos_os');
+            $dados['pilotoEquipamento'] = $this->equipamentos_os->porOs((int) $os->idOs);
+            $dados['pilotoPodeIdentificar'] = $this->permite('eOs') && ! trifaseEntregaTemHistorico($this->db, (int) $os->idOs);
         }
         return $dados;
     }
@@ -819,7 +909,12 @@ class Os extends MY_Controller
         }
 
         $id = (int) $this->input->post('id');
-        $lock = (trifaseFinanceiroHabilitado() || $this->db->table_exists('trifase_entregas_eventos')) && $id > 0 ? new Trifase_os_lock($this->db, $id) : null;
+        $lock = (trifaseFinanceiroHabilitado() || $this->db->table_exists('trifase_entregas_eventos') || $this->db->table_exists('trifase_os_equipamentos')) && $id > 0 ? new Trifase_os_lock($this->db, $id) : null;
+        if (trifaseEquipamentoDaOs($this->db, $id) !== null) {
+            $this->session->set_flashdata('error', 'OS com histórico de unidade identificada não pode ser excluída.');
+            $lock?->finalizar(false);
+            redirect('os/visualizar/' . $id);
+        }
         if (trifaseEntregaTemHistorico($this->db, $id)) {
             $this->session->set_flashdata('error', 'OS com histórico de entrega não pode ser excluída.');
             $lock?->finalizar(false);

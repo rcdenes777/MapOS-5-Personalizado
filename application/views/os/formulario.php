@@ -87,6 +87,20 @@ if (function_exists('trifaseFinanceiroHabilitado') && trifaseFinanceiroHabilitad
     <form method="post" action="<?= e(current_url()) ?>" novalidate class="flex flex-col gap-4" <?= js_module('formulario/padrao') ?>>
         <input type="hidden" name="<?= e($this->security->get_csrf_token_name()) ?>" value="<?= e($this->security->get_csrf_hash()) ?>">
 
+        <?php if (($equipamentoNovaOs ?? null) !== null) { ?>
+            <section class="<?= e($caixa) ?>" aria-labelledby="secao-unidade-reutilizada">
+                <h2 id="secao-unidade-reutilizada" class="text-heading-sm text-text">Novo atendimento da mesma unidade</h2>
+                <p class="mt-2 text-body-md text-text"><?= e($equipamentoNovaOs->marca . ' · ' . $equipamentoNovaOs->modelo . ($equipamentoNovaOs->selo !== '' ? ' · Selo ' . $equipamentoNovaOs->selo : ' · Unidade #' . (int) $equipamentoNovaOs->id)) ?></p>
+                <p class="mt-2 text-caption text-muted">Somente a identificação e o cliente foram reaproveitados. Informe o novo defeito e os dados desta entrada; a OS anterior fica preservada.</p>
+                <input type="hidden" name="equipamento_id" value="<?= e((int) $equipamentoNovaOs->id) ?>">
+                <input type="hidden" name="equipamento_operacao" value="<?= e(is_string($entradaEquipamentoNovaOs['operacao'] ?? null) ? $entradaEquipamentoNovaOs['operacao'] : '') ?>">
+                <div class="<?= e($grade) ?>">
+                    <?= component('textarea', ['name' => 'equipamento_itens', 'label' => 'Itens recebidos neste atendimento', 'value' => is_string($entradaEquipamentoNovaOs['itens_recebidos'] ?? null) ? $entradaEquipamentoNovaOs['itens_recebidos'] : '', 'required' => true, 'attrs' => ['maxlength' => 10000, 'rows' => 3]]) ?>
+                    <?= component('textarea', ['name' => 'equipamento_estado', 'label' => 'Estado nesta entrada', 'value' => is_string($entradaEquipamentoNovaOs['estado_entrada'] ?? null) ? $entradaEquipamentoNovaOs['estado_entrada'] : '', 'required' => true, 'attrs' => ['maxlength' => 10000, 'rows' => 3]]) ?>
+                </div>
+            </section>
+        <?php } ?>
+
         <section class="<?= e($caixa) ?>" aria-labelledby="secao-responsaveis">
             <h2 id="secao-responsaveis" class="text-heading-sm text-text">Cliente e responsável</h2>
             <div class="<?= e($grade) ?>">
@@ -178,7 +192,7 @@ if (function_exists('trifaseFinanceiroHabilitado') && trifaseFinanceiroHabilitad
         <section class="<?= e($caixa) ?>" aria-labelledby="secao-equipamento">
             <h2 id="secao-equipamento" class="text-heading-sm text-text">Equipamento e serviço</h2>
             <div class="<?= e($grade) ?>">
-                <?= component('textarea', $texto('descricaoProduto', 'Descrição do produto ou serviço', 'Equipamento, modelo, número de série, acessórios.')) ?>
+                <?= component('textarea', $texto('descricaoProduto', 'Descrição do produto ou serviço', ($equipamentoNovaOs ?? null) !== null ? 'Descrição geral. Selo, série e IMEI ficam na identificação privada da unidade.' : 'Equipamento, modelo, número de série, acessórios.')) ?>
                 <?= component('textarea', $texto('defeito', 'Defeito', 'O que o cliente relatou.')) ?>
                 <?= component('textarea', $texto('observacoes', 'Observações')) ?>
                 <?= component('textarea', $texto('laudoTecnico', 'Laudo técnico', 'Diagnóstico e o que foi feito.')) ?>

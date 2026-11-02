@@ -6,6 +6,7 @@ require APPPATH . '/libraries/REST_Controller.php';
 
 require_once APPPATH . 'helpers/trifase_financeiro_helper.php';
 require_once APPPATH . 'helpers/trifase_entrega_helper.php';
+require_once APPPATH . 'helpers/trifase_equipamento_helper.php';
 
 class OsController extends REST_Controller
 {
@@ -35,7 +36,7 @@ class OsController extends REST_Controller
 
     private function travarFinanceiro(int $id): void
     {
-        if ((! trifaseFinanceiroHabilitado() && ! $this->db->table_exists('trifase_entregas_eventos')) || $this->financeiroLock !== null) {
+        if ((! trifaseFinanceiroHabilitado() && ! $this->db->table_exists('trifase_entregas_eventos') && ! $this->db->table_exists('trifase_os_equipamentos')) || $this->financeiroLock !== null) {
             return;
         }
         try {
@@ -331,6 +332,10 @@ class OsController extends REST_Controller
             'faturado' => 0,
         ];
 
+        if (! trifaseEquipamentoClienteValido($this->db, (int) $id, (int) $data['clientes_id'])) {
+            $this->response(['status' => false, 'message' => 'A unidade identificada não pode ser transferida por edição da OS.'], 409);
+            return;
+        }
         if (strtolower($this->put('status')) == 'cancelado' && strtolower($os->status) != 'cancelado') {
             $this->devolucaoEstoque($id);
         }
@@ -405,6 +410,10 @@ class OsController extends REST_Controller
         }
 
         $this->travarFinanceiro((int) $id);
+        if (trifaseEquipamentoDaOs($this->db, (int) $id) !== null) {
+            $this->response(['status' => false, 'message' => 'OS com histórico de unidade identificada: exclusão bloqueada.'], 409);
+            return;
+        }
         if (trifaseEntregaTemHistorico($this->db, (int) $id)) {
             $this->response(['status' => false, 'message' => 'OS com histórico de entrega: exclusão bloqueada.'], 409);
             return;

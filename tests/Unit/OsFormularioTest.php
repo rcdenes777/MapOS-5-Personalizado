@@ -201,6 +201,8 @@ final class OsFormularioTest extends MaposTestCase
         // Subclasse com as propriedades declaradas: o CI as cria dinamicamente,
         // o que é deprecado no PHP 8.2+ fora do framework.
         $controller = new class() extends Os {
+            public object $db;
+
             public $os_model;
 
             public $produtos_model;
@@ -213,6 +215,7 @@ final class OsFormularioTest extends MaposTestCase
             {
             }
         };
+        $controller->db = $this->db;
         $controller->os_model = $osModel;
         $controller->produtos_model = $produtosModel;
         $controller->session = new class() {

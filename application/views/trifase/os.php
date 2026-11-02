@@ -15,6 +15,10 @@ $campos = [
     'Observações' => $texto($os->observacoes),
     'Laudo técnico' => $texto($os->laudoTecnico),
 ];
+if (($pilotoEquipamento ?? null) !== null
+    && trim(strip_tags((string) $os->descricaoProduto)) === $pilotoEquipamento->marca . ' · ' . $pilotoEquipamento->modelo) {
+    unset($campos['Equipamento']);
+}
 ?>
 <div class="trifase-os" <?= js_module('os/tela') ?> data-os-aba="resumo">
     <header class="trifase-os-cabecalho">
@@ -71,6 +75,10 @@ $campos = [
                     </details>
                 <?php } ?>
             </section>
+
+            <?php if (function_exists('trifaseEquipamentosHabilitados') && trifaseEquipamentosHabilitados()) {
+                $this->load->view('trifase/equipamento');
+            } ?>
 
             <section class="trifase-os-painel" aria-labelledby="piloto-itens">
                 <div class="trifase-os-secao-titulo">

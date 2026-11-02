@@ -84,4 +84,9 @@ Na lista de OS, Andamento e Pagamento ficam separados. A projeção financeira �
 
 ### Entrega física — etapa concluída
 
-Retirada integrada no resumo, com recebedor, data real, itens e confirmação de condições. Saldo pendente permanece pendente; terceiro exige autorização. Correção preserva o original, permite nova entrega e mantém comprovante cancelado consultável. Permissões configuráveis e flag própria desligada por padrão. Detalhes, isolamento e evidências em `ENTREGAS_LAB.md`. Etapa concluída; usuário pediu parar antes de começar outra.
+Retirada integrada no resumo, com recebedor, data real, itens e confirmação de condições. Saldo pendente permanece pendente; terceiro exige autorização. Correção preserva o original, permite nova entrega e mantém comprovante cancelado consultável. Permissões configuráveis e flag própria desligada por padrão. Detalhes, isolamento e evidências em `ENTREGAS_LAB.md`. Etapa concluída. Em02/11/2026 o usuário autorizou retomar as etapas seguintes.
+
+
+### Identificação e histórico de equipamentos
+
+Catálogo de marca/modelo separado da unidade do cliente, com selo/série/IMEI privados e retrato de entrada por OS. Cadastro e reuso no resumo; nova OS pede novos itens/estado/defeito e não copia laudo ou valores. Migração e flag próprias; detalhes, limites e validação em `EQUIPAMENTOS_LAB.md`.

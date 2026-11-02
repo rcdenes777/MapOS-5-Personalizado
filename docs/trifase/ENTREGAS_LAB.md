@@ -39,3 +39,5 @@ Relatórios e imagens em `outputs/ui-piloto/`: `entrega-http.json`, `entrega-con
 ## Retomada futura
 
 Etapa encerrada. Restam identificação reutilizável (marca/modelo/unidade/selo), orçamento/decisão versionados, retorno em garantia e demais extensões do plano. O tema estendido às telas nativas não equivale à implementação dessas funções. Não reiniciar seeds/setup nem resetar o banco. Testes mutáveis somente em fixtures próprias.
+
+Atualização02/11/2026: usuário autorizou continuar. Identificação reutilizável concluída no recorte descrito em `EQUIPAMENTOS_LAB.md`; orçamento versionado é a etapa seguinte.

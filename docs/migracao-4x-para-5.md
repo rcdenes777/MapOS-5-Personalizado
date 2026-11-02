@@ -394,3 +394,8 @@ entrega; sem conversão em lote, reembolso bancário ou alteração do MapOS 4.5
 ### Piloto visual Trifase (opcional)
 
 `TRIFASE_UI_PILOTO_ENABLED=false` mantém a interface atual. Em laboratório, `true` habilita o novo resumo da OS, sem migração de dados ou ativação dos módulos financeiro/público. `?apresentacao=classica` mantém acesso à apresentação anterior. Não alterar chaves, permissões ou flags dos módulos para apenas trocar a interface. O build de assets acompanha a mudança. O piloto não registra entrega, selo, retorno ou aceite de orçamento.
+
+
+## Extensão Trifase: equipamentos (opcional)
+
+A migração `20261102010000_trifase_equipamentos` acrescenta catálogo, unidades e retratos de entrada por OS sem converter descrições antigas. Faça backup e aplique em cópia antes de ativar `TRIFASE_EQUIPAMENTOS_ENABLED=true` (defaultfalse). As rotas `trifase_equipamentos/*` exigem login/permissão: leitura com `vOs`, vínculo com `vOs+eOs` e nova OS com `aOs+vOs`. Desligar a flag não remove histórico nem permite quebrar vínculos por exclusão/transferência silenciosa. Não há migração reversa destrutiva. Ver `trifase/EQUIPAMENTOS_LAB.md`.

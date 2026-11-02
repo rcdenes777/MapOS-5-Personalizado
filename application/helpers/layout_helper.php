@@ -263,6 +263,12 @@ if (! function_exists('layoutBreadcrumb')) {
         [$controller, $metodo, $parametro] = array_pad(array_map(static fn ($s) => (string) $s, $segmentos), 3, '');
 
         $itens = [['label' => 'Início', 'url' => $siteUrl('')]];
+        if (strtolower($controller) === 'trifase_equipamentos') {
+            return array_merge($itens, [
+                ['label' => 'Ordens de serviço', 'url' => $siteUrl('os')],
+                ['label' => ctype_digit($parametro) ? 'Equipamento #' . (int) $parametro : 'Equipamento'],
+            ]);
+        }
         if (strtolower($controller) === 'trifase_financeiro') {
             return array_merge($itens, [
                 ['label' => 'Ordens de serviço', 'url' => $siteUrl('os')],

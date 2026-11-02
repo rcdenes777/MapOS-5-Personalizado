@@ -1,3 +1,4 @@
+<?php require_once APPPATH . 'helpers/trifase_cadastro_helper.php'; ?>
 <?php
 /**
  * Listagem de clientes e fornecedores (#2841, #2852): primeira tela de módulo
@@ -57,6 +58,13 @@ $colunas = [
         return $acoes;
     }],
 ];
+
+if (trifaseCadastrosHabilitados()) {
+    array_splice($colunas, 2, 0, [[
+        'label' => 'Categoria interna', 'nowrap' => true,
+        'render' => fn ($c) => component('pill-status', ['label' => trifaseCategoriasClientes()[$categoriasClientes[(int) $c->idClientes] ?? 'nao_classificado'], 'variant' => 'neutral']),
+    ]]);
+}
 
 $vazio = $temFiltro
     ? component('empty-state', [

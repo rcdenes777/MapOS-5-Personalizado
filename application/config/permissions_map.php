@@ -32,6 +32,12 @@ defined('BASEPATH') or exit('No direct script access allowed');
 */
 
 $config['permissions_map'] = [
+    'Trifase_cadastros' => [
+        'cliente' => 'vCliente',
+        'modelo' => 'vOs',
+        'unidade' => 'vOs',
+        'catalogo' => 'vOs',
+    ],
     'Trifase_retornos' => [
         'novo' => ['todas' => ['vOs', 'aOs', 'eOs']],
         'visualizar' => 'vOs',

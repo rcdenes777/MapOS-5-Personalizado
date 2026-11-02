@@ -182,6 +182,11 @@ class ClientesController extends REST_Controller
     public function index_delete($id)
     {
         $this->logged_user();
+        require_once APPPATH . 'helpers/trifase_cadastro_helper.php';
+        if (trifaseClienteTemHistoricoProtegido($this->db, (int) $id)) {
+            $this->response(['status' => false, 'message' => 'Cliente com histórico interno não pode ser excluído.'], REST_Controller::HTTP_FORBIDDEN);
+            return;
+        }
         if (! $this->permission->checkPermission($this->logged_user()->level, 'dCliente')) {
             $this->response([
                 'status' => false,

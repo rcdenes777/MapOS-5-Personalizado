@@ -46,6 +46,18 @@ class Clientes extends MY_Controller
         $this->data['total'] = $total;
         $this->data['results'] = $this->clientes_model->listar($filtros, (int) $this->data['configuration']['per_page'], $offset);
         $this->data['paginacao'] = $this->paginacao(site_url('clientes/gerenciar'), $total, $offset, null, $filtros);
+        $this->load->helper('trifase_cadastro');
+        $this->data['categoriasClientes'] = [];
+        if (trifaseCadastrosHabilitados() && $this->data['results'] !== []) {
+            $idsClientes = array_map(static fn ($c) => (int) $c->idClientes, $this->data['results']);
+            $eventosClientes = $this->db->select('recurso_id, depois')->where('tipo', 'cliente')->where_in('recurso_id', $idsClientes)
+                ->where("id IN (SELECT MAX(id) FROM trifase_cadastros_eventos WHERE tipo = 'cliente' GROUP BY recurso_id)", null, false)
+                ->get('trifase_cadastros_eventos')->result();
+            foreach ($eventosClientes as $eventoCliente) {
+                $this->data['categoriasClientes'][(int) $eventoCliente->recurso_id] = json_decode($eventoCliente->depois, true)['categoria'];
+            }
+        }
+
         $this->data['pode'] = [
             'adicionar' => $this->permite('aCliente'),
             'editar' => $this->permite('eCliente'),
@@ -230,6 +242,18 @@ class Clientes extends MY_Controller
         $id = (int) $cliente->idClientes;
         $aba = listagemFiltros(['aba' => ['dados', 'os', 'vendas']], $this->input->get())['aba'] ?? 'dados';
 
+        $this->load->helper('trifase_cadastro');
+        if (trifaseCadastrosHabilitados() && $aba === 'dados') {
+            $this->load->model('Trifase_cadastro_model', 'cadastros_cliente');
+            $relacao = $this->cadastros_cliente->atual('cliente', $id);
+            $this->data = array_merge($this->data, [
+                'cadastroIntegrado' => true, 'tipoCadastro' => 'cliente', 'idCadastro' => $id,
+                'tituloCadastro' => 'Relacionamento interno',
+                'valoresCadastro' => $relacao['dados'] + ['categoria' => 'nao_classificado', 'orientacoes' => ''],
+                'versaoCadastro' => $relacao['versao'], 'podeEditarCadastro' => $this->permite('eCliente'),
+                'erroCadastro' => null, 'historicoCadastro' => $this->cadastros_cliente->historico('cliente', $id),
+            ]);
+        }
         $this->data['cliente'] = $cliente;
         $this->data['aba'] = $aba;
         $this->data['total_os'] = $this->clientes_model->contarOsDoCliente($id);
@@ -268,6 +292,11 @@ class Clientes extends MY_Controller
         }
 
         $id = $this->input->post('id');
+        $this->load->helper('trifase_cadastro');
+        if (trifaseClienteTemHistoricoProtegido($this->db, (int) $id)) {
+            $this->session->set_flashdata('error', 'Cliente com histórico de relacionamento não pode ser excluído.');
+            return redirect('clientes/visualizar/' . (int) $id);
+        }
         if ($id == null) {
             $this->session->set_flashdata('error', 'Erro ao tentar excluir cliente.');
             redirect(site_url('clientes/gerenciar/'));

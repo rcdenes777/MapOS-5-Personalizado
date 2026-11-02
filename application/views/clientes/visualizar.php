@@ -1,3 +1,4 @@
+<?php require_once APPPATH . 'helpers/trifase_cadastro_helper.php'; ?>
 <?php
 /**
  * Ficha do cliente (#2841), migrada para os componentes da v5.
@@ -99,6 +100,9 @@ $secoes = [
                 </section>
             <?php } ?>
         </div>
+        <?php if (trifaseCadastrosHabilitados()) {
+            $this->load->view('trifase/cadastro');
+        } ?>
     <?php } elseif ($aba === 'os') { ?>
         <?= component('data-table', [
             'caption' => 'Ordens de serviço do cliente',

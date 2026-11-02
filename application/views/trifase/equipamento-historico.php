@@ -1,8 +1,16 @@
+<?php require_once APPPATH . 'helpers/trifase_cadastro_helper.php'; ?>
 <div class="flex flex-col gap-5 py-4">
     <header class="flex flex-wrap items-start justify-between gap-3">
         <div><h1 class="text-heading-xl text-text"><?= e('Equipamento #' . (int) $equipamento->id) ?></h1><p class="mt-2 text-body-md text-muted"><?= e($equipamento->marca . ' · ' . $equipamento->modelo) ?></p></div>
         <?php if ($podeNovaOs) { ?><?= component('button', ['label' => 'Nova OS deste equipamento', 'icon' => 'plus', 'href' => site_url('os/adicionar') . '?equipamento_id=' . (int) $equipamento->id]) ?><?php } ?>
     </header>
+    <?php if (trifaseCadastrosHabilitados()) { ?>
+        <nav class="flex flex-wrap gap-4" aria-label="Cadastros do equipamento">
+            <?= component('link', ['label' => 'Identificação atual e correções', 'href' => site_url('trifase_cadastros/unidade/' . (int) $equipamento->id)]) ?>
+            <?= component('link', ['label' => 'Consultar ou editar modelo', 'href' => site_url('trifase_cadastros/modelo/' . (int) $equipamento->modelo_id)]) ?>
+            <?= component('link', ['label' => 'Marcas e modelos', 'href' => site_url('trifase_cadastros/catalogo')]) ?>
+        </nav>
+    <?php } ?>
     <section class="rounded-card border border-border bg-surface p-5">
         <h2 class="mb-3 text-heading-sm text-text">Identificação da unidade</h2>
         <dl class="grid gap-4 sm:grid-cols-3">

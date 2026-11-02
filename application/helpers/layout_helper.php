@@ -263,6 +263,12 @@ if (! function_exists('layoutBreadcrumb')) {
         [$controller, $metodo, $parametro] = array_pad(array_map(static fn ($s) => (string) $s, $segmentos), 3, '');
 
         $itens = [['label' => 'Início', 'url' => $siteUrl('')]];
+        if (strtolower($controller) === 'trifase_cadastros') {
+            return [['label' => 'Início', 'url' => site_url()], ['label' => 'Cadastros'], ['label' => 'Histórico e correções']];
+        }
+        if (strtolower($controller) === 'trifase_estoque') {
+            return [['label' => 'Início', 'url' => site_url()], ['label' => 'Estoque e custos']];
+        }
         if (strtolower($controller) === 'trifase_retornos') {
             return array_merge($itens, [['label' => 'Ordens de serviço', 'url' => $siteUrl('os')], ['label' => 'Retorno em garantia']]);
         }

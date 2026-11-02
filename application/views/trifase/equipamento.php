@@ -59,3 +59,6 @@ $idEquipamentoOs = (int) $os->idOs;
         <?php } ?>
     <?php } ?>
 </section>
+
+<?php require_once APPPATH . 'helpers/trifase_cadastro_helper.php'; ?>
+<?php if (trifaseCadastrosHabilitados()) { ?><div class="mt-3"><?= component('link', ['label' => 'Consultar marcas e modelos', 'href' => site_url('trifase_cadastros/catalogo')]) ?></div><?php } ?>

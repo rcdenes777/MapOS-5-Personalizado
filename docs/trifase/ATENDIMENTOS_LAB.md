@@ -27,3 +27,5 @@ A edição/criação nativa também participa do registro de conclusão sob tran
 Navegador:OS9020 finalizada sem faturar, garantia90dias a partir de02/11/2026 até31/01/2027. Previsão da fixture foi deliberadamente alterada de2099para2098 para provar independência. Formulário conferido em larguraCSS396semoverflow; não é teste físico. Auditoria porPK/hash preservou17tabelas anteriores, incluindo OS3 do usuário, orçamento e financeiro. Nenhuma nova receita/obrigação/retirada/anexo;4conclusões deQA. OS9020/9021/9023/9024exclusivas deQA;9024criada finalizada pela tela nativa. Não repetir seeds ou scripts mutáveis.
 
 Relatórios `atendimento-http.json`, `atendimento-audit.json`, `atendimento-phpunit-final.txt`, `atendimento-phpstan-final.txt` e imagens em `outputs/ui-piloto/`. Próximo recorte: retorno em garantia vinculado à unidade/OS original, cobertura e solução justificadas, sem mudar prazo ou pagamentos da origem automaticamente.
+
+Atualização02/11/2026:retorno por equipamento implementado em `RETORNOS_LAB.md`. Origem com retorno não muda de status por reabertura/cancelamento; conclusão de retorno não concede novo prazo.

@@ -82,6 +82,22 @@ if (($pilotoEquipamento ?? null) !== null
                 $this->load->view('trifase/equipamento');
             } ?>
 
+            <?php if (function_exists('trifaseRetornoHabilitado') && trifaseRetornoHabilitado()) { ?>
+                <?php if (($pilotoRetorno ?? null) !== null) { ?>
+                    <section class="trifase-os-painel" aria-labelledby="piloto-retorno">
+                        <h2 id="piloto-retorno">Retorno em garantia</h2>
+                        <p class="text-label-md"><?= e(trifaseRetornoCobertura($pilotoRetornoAvaliacao)) ?></p>
+                        <p class="text-muted"><?= e('OS de origem #' . (int) $pilotoRetorno->origem_id . ($pilotoRetorno->vencimento_origem ? ' · prazo original até ' . dataBr($pilotoRetorno->vencimento_origem) : ' · sem prazo informado')) ?></p>
+                        <?= component('button', ['label' => 'Avaliação e histórico do retorno', 'variant' => 'outline', 'href' => site_url('trifase_retornos/visualizar/' . $idOs)]) ?>
+                    </section>
+                <?php } elseif (($pilotoEquipamento ?? null) !== null && $os->status === 'Finalizado' && ! empty($os->trifase_garantia_inicio) && $permite('aOs') && $permite('eOs')) { ?>
+                    <section class="trifase-os-painel" aria-labelledby="piloto-retorno-novo">
+                        <h2 id="piloto-retorno-novo">Equipamento voltou?</h2>
+                        <p class="text-muted">Registre outro atendimento e preserve esta OS e seu prazo de garantia.</p>
+                        <?= component('button', ['label' => 'Registrar retorno em garantia', 'variant' => 'outline', 'href' => site_url('trifase_retornos/novo/' . $idOs)]) ?>
+                    </section>
+                <?php } ?>
+            <?php } ?>
             <section class="trifase-os-painel" aria-labelledby="piloto-itens">
                 <div class="trifase-os-secao-titulo">
                     <h2 id="piloto-itens">Peças e serviços da OS</h2>
@@ -188,7 +204,11 @@ if (($pilotoEquipamento ?? null) !== null
                 <dl class="trifase-os-dados">
                     <div><dt>Cliente</dt><dd><?php if ($pode['ver_cliente']) { ?><?= component('link', ['label' => $os->nomeCliente, 'href' => site_url('clientes/visualizar/' . (int) $os->clientes_id)]) ?><?php } else { ?><?= e($os->nomeCliente) ?><?php } ?></dd></div>
                     <div><dt>Contato</dt><dd><?= e(trim(implode(' · ', array_filter([$os->celular_cliente, $os->telefone_cliente]))) ?: 'Não informado') ?></dd></div>
+                    <?php if (($pilotoRetorno ?? null) !== null) { ?>
+                        <div><dt>Prazo da OS de origem</dt><dd><?= e($pilotoRetorno->vencimento_origem ? 'Até ' . dataBr($pilotoRetorno->vencimento_origem) : 'Sem prazo informado') ?></dd></div>
+                    <?php } else { ?>
                     <div><dt>Garantia concedida</dt><dd><?= e((int) $os->garantia > 0 ? (int) $os->garantia . ' dias' . ($garantia_ate ? ' · até ' . dataBr($garantia_ate) : '') : 'Não informada') ?></dd></div>
+                    <?php } ?>
                 </dl>
                 <div class="trifase-os-links-itens">
                     <?= component('link', ['label' => 'Anotações internas', 'href' => site_url('os/visualizar/' . $idOs) . '?aba=anotacoes']) ?>

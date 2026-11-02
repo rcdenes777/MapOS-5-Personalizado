@@ -32,6 +32,13 @@ defined('BASEPATH') or exit('No direct script access allowed');
 */
 
 $config['permissions_map'] = [
+    'Trifase_retornos' => [
+        'novo' => ['todas' => ['vOs', 'aOs', 'eOs']],
+        'visualizar' => 'vOs',
+        'avaliar' => ['todas' => ['vOs', 'eOs']],
+        'custo' => ['todas' => ['vOs', 'eOs', 'vLancamento']],
+        'corrigirCusto' => ['todas' => ['vOs', 'eOs', 'vLancamento']],
+    ],
     'Trifase_atendimentos' => [
         'andamento' => ['todas' => ['vOs', 'eOs']],
         'conclusao' => ['todas' => ['vOs', 'eOs']],

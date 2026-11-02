@@ -408,3 +408,7 @@ A migração `20261102020000_trifase_orcamentos` cria versões e eventos de orç
 ## Extensão Trifase: conclusão técnica (opcional)
 
 A migração `20261102030000_trifase_atendimentos` cria referência técnica própria sem converter OS/obrigações existentes. Após backup e ensaio em cópia, `TRIFASE_ATENDIMENTOS_ENABLED=true` habilita conclusão/andamento sem cobrança, com `vOs+eOs`, POST e CSRF. Registros anteriores conservam a referência conhecida; registros próprios continuam protegidos e consultáveis com a flag desligada. Não apagar a tabela para reverter a aparência. Ver `trifase/ATENDIMENTOS_LAB.md` para regras de primeira conclusão, prazo e limitações da API.
+
+## Extensão Trifase: retorno em garantia (opcional)
+
+A migração `20261102040000_trifase_retornos` cria vínculos e eventos, sem reabrir OS antigas ou converter garantias. Após backup e ensaio em cópia, ative `TRIFASE_RETORNOS_ENABLED=true` junto dos módulos de equipamentos e atendimentos. Origem precisa estar concluída e ter unidade/cliente e referência de garantia conhecidos. Leitura exige `vOs`; criação também `aOs+eOs`; avaliação `eOs`; custos também `vLancamento`. Decisões não executam pagamentos, estoque ou prorrogação de prazo. Preserve as tabelas ao desligar a função. Ver `trifase/RETORNOS_LAB.md`.

@@ -9,6 +9,7 @@ require_once APPPATH . 'helpers/trifase_entrega_helper.php';
 require_once APPPATH . 'helpers/trifase_equipamento_helper.php';
 require_once APPPATH . 'helpers/trifase_orcamento_helper.php';
 require_once APPPATH . 'helpers/trifase_atendimento_helper.php';
+require_once APPPATH . 'helpers/trifase_retorno_helper.php';
 
 class OsController extends REST_Controller
 {
@@ -271,7 +272,7 @@ class OsController extends REST_Controller
         }
 
         $this->travarFinanceiro((int) $id);
-        if (trifaseAtendimentoDaOs($this->db, (int) $id) !== null || (trifaseAtendimentoHabilitado() && $this->put('status') === 'Finalizado')) {
+        if (trifaseRetornoDaOs($this->db, (int) $id) !== null || trifaseAtendimentoDaOs($this->db, (int) $id) !== null || (trifaseAtendimentoHabilitado() && $this->put('status') === 'Finalizado')) {
             $this->response(['status' => false, 'message' => 'Use as ações técnicas dedicadas para concluir ou editar esta OS.'], 409);
             return;
         }

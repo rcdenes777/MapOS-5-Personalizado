@@ -99,3 +99,7 @@ Resumo mostra a versão e resposta declarada, com aviso quando publicação foi 
 ### Andamento técnico sem cobrança
 
 O resumo passa a permitir andamento/conclusão comvOs+eOs, inclusive sem receita e sem revelar financeiro ao técnico. Conclusão e prazo têm registro próprio; previsão não desloca a garantia. Totalzero não oferece registrar cobrança de zero. Integração nativa e limites em `ATENDIMENTOS_LAB.md`. Retorno em garantia ainda é recorte seguinte.
+
+### Retorno em garantia
+
+OS concluída/identificada pode abrir retorno em outra OS; se já existe um ativo para a unidade, o acesso leva a ele. Resumo mostra cobertura, origem e prazo original. Avaliação, diagnóstico, soluções e custos internos declarados têm histórico próprio; custos exigem financeiro e não chegam ao link público. Retorno não reinicia garantia, não altera a origem nem executa automaticamente a solução financeira/estoque. Detalhes e validação em `RETORNOS_LAB.md`.

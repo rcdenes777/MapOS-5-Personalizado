@@ -9,6 +9,7 @@ require_once APPPATH . 'helpers/trifase_entrega_helper.php';
 require_once APPPATH . 'helpers/trifase_equipamento_helper.php';
 require_once APPPATH . 'helpers/trifase_orcamento_helper.php';
 require_once APPPATH . 'helpers/trifase_atendimento_helper.php';
+require_once APPPATH . 'helpers/trifase_retorno_helper.php';
 require_once APPPATH . 'helpers/trifase_interface_helper.php';
 
 class Os extends MY_Controller
@@ -353,6 +354,16 @@ class Os extends MY_Controller
                 $lock->finalizar(false);
                 return null;
             }
+            if ($dados['status'] !== $lock->os->status && trifaseRetornoTemDerivados($this->db, (int) $os->idOs)) {
+                $lock->finalizar(false);
+                $this->erroEquipamentoNovaOs = 'Esta OS já originou retorno. Preserve o atendimento encerrado e use a nova OS.';
+                return null;
+            }
+            if (trifaseRetornoDaOs($this->db, (int) $os->idOs) !== null && (int) $dados['garantia'] !== 0) {
+                $lock->finalizar(false);
+                $this->erroEquipamentoNovaOs = 'Retorno utiliza o prazo da origem. A edição desta OS não concede outro prazo de garantia.';
+                return null;
+            }
             if (trifaseAtendimentoDaOs($this->db, (int) $os->idOs) !== null && (int) $dados['garantia'] !== (int) $lock->os->garantia) {
                 $lock->finalizar(false);
                 $this->erroEquipamentoNovaOs = 'O prazo registrado na conclusão não pode ser substituído pela edição da OS.';
@@ -524,6 +535,15 @@ class Os extends MY_Controller
                 $dados['pilotoOrcamentoDecisao'] = $this->orcamentos_os->decisao((int) $dados['pilotoOrcamento']->id);
                 $dados['pilotoOrcamentoValido'] = $os->status !== 'Cancelado' && (bool) $dados['pilotoOrcamento']->ativo
                     && hash_equals($dados['pilotoOrcamento']->conteudo_hash, $this->orcamentos_os->hash($this->orcamentos_os->retrato($os)));
+            }
+        }
+        $dados['pilotoRetorno'] = null;
+        $dados['pilotoRetornoAvaliacao'] = null;
+        if (trifaseRetornoHabilitado() && $this->db->table_exists('trifase_garantia_retornos')) {
+            $this->load->model('Trifase_retorno_model', 'retornos_os');
+            $dados['pilotoRetorno'] = $this->retornos_os->vinculo((int) $os->idOs);
+            if ($dados['pilotoRetorno'] !== null) {
+                $dados['pilotoRetornoAvaliacao'] = $this->retornos_os->avaliacao((int) $os->idOs);
             }
         }
         $dados['pilotoEquipamento'] = null;

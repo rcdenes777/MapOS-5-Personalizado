@@ -389,3 +389,8 @@ e conciliar operações posteriores antes de restaurar um backup.
 Consultar `docs/trifase/FINANCEIRO_LAB.md` para integração, permissões, evidências,
 limites e pontos a revisar em atualizações upstream. Produção permanece fora desta
 entrega; sem conversão em lote, reembolso bancário ou alteração do MapOS 4.55.2.
+
+
+### Piloto visual Trifase (opcional)
+
+`TRIFASE_UI_PILOTO_ENABLED=false` mantém a interface atual. Em laboratório, `true` habilita o novo resumo da OS, sem migração de dados ou ativação dos módulos financeiro/público. `?apresentacao=classica` mantém acesso à apresentação anterior. Não alterar chaves, permissões ou flags dos módulos para apenas trocar a interface. O build de assets acompanha a mudança. O piloto não registra entrega, selo, retorno ou aceite de orçamento.

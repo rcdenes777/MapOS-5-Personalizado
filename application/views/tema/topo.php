@@ -12,7 +12,7 @@
  * @var array $layout
  */
 ?><!DOCTYPE html>
-<html lang="pt-br"<?= temaAtributosHtml($configuration) ?>>
+<html lang="pt-br"<?= temaAtributosHtml($configuration) ?><?php if ($trifase_ui_piloto ?? false) { ?> data-trifase-ui="piloto"<?php } ?>>
 
 <head>
   <meta charset="UTF-8">

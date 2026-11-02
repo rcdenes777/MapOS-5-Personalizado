@@ -349,6 +349,24 @@ class Os extends MY_Controller
 
         $this->data['view'] = 'os/visualizar';
 
+        $this->load->helper('trifase_interface');
+        if (trifaseInterfacePiloto() && $aba === 'resumo' && $this->input->get('apresentacao') !== 'classica') {
+            $this->load->helper('trifase_publico');
+            $this->data['trifase_ui_piloto'] = true;
+            $this->data['pilotoFinanceiro'] = null;
+            $this->data['pilotoLink'] = null;
+            if (trifaseFinanceiroHabilitado() && $this->permite('vLancamento')
+                && trifaseFinanceiroOsGerida($this->db, (int) $this->data['result']->idOs)) {
+                $this->load->model('Trifase_financeiro_model', 'piloto_financeiro');
+                $this->data['pilotoFinanceiro'] = $this->piloto_financeiro->resumo((int) $this->data['result']->idOs);
+            }
+            if (function_exists('trifasePublicoHabilitado') && trifasePublicoHabilitado() && $this->permite('eOs')) {
+                $this->load->model('Trifase_publico_model', 'piloto_publico');
+                $this->data['pilotoLink'] = $this->piloto_publico->estado((int) $this->data['result']->idOs);
+            }
+            $this->data['view'] = 'trifase/os';
+        }
+
         return $this->layout();
     }
 

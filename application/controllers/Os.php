@@ -356,6 +356,12 @@ class Os extends MY_Controller
                 $lock->finalizar(false);
                 return null;
             }
+            require_once APPPATH . 'helpers/trifase_garantia_helper.php';
+            if ($dados['status'] === 'Cancelado' && trifaseGarantiaResolucaoExecutada($this->db, (int) $os->idOs)) {
+                $lock->finalizar(false);
+                $this->erroEquipamentoNovaOs = 'Solução de garantia executada: preserve a OS e concilie a operação antes de cancelar.';
+                return null;
+            }
             if ($dados['status'] !== $lock->os->status && trifaseRetornoTemDerivados($this->db, (int) $os->idOs)) {
                 $lock->finalizar(false);
                 $this->erroEquipamentoNovaOs = 'Esta OS já originou retorno. Preserve o atendimento encerrado e use a nova OS.';

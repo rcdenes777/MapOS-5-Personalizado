@@ -1,9 +1,24 @@
-<?php require_once APPPATH . 'helpers/trifase_cadastro_helper.php'; ?>
+<?php require_once APPPATH . 'helpers/trifase_cadastro_helper.php';
+require_once APPPATH . 'helpers/trifase_garantia_helper.php';
+$substituicaoHistorico = trifaseGarantiaUnidadeSubstituida($this->db, (int) $equipamento->id);
+$origemSubstitutaHistorico = $this->db->table_exists('trifase_garantia_trocas') ? $this->db->where('nova_id', (int) $equipamento->id)->get('trifase_garantia_trocas', 1)->row() : null;
+?>
 <div class="flex flex-col gap-5 py-4">
     <header class="flex flex-wrap items-start justify-between gap-3">
         <div><h1 class="text-heading-xl text-text"><?= e('Equipamento #' . (int) $equipamento->id) ?></h1><p class="mt-2 text-body-md text-muted"><?= e($equipamento->marca . ' · ' . $equipamento->modelo) ?></p></div>
-        <?php if ($podeNovaOs) { ?><?= component('button', ['label' => 'Nova OS deste equipamento', 'icon' => 'plus', 'href' => site_url('os/adicionar') . '?equipamento_id=' . (int) $equipamento->id]) ?><?php } ?>
+        <?php if ($podeNovaOs && ! $substituicaoHistorico) { ?><?= component('button', ['label' => 'Nova OS deste equipamento', 'icon' => 'plus', 'href' => site_url('os/adicionar') . '?equipamento_id=' . (int) $equipamento->id]) ?><?php } ?>
     </header>
+    <?php foreach (array_filter([$substituicaoHistorico, $origemSubstitutaHistorico]) as $trocaHistorico) { ?>
+        <section class="rounded-card border border-border bg-surface p-4">
+            <h2 class="text-heading-sm text-text">Substituição em garantia</h2>
+            <div class="mt-3 flex flex-wrap gap-3">
+                <?= component('link', ['label' => 'Unidade anterior #' . (int) $trocaHistorico->antiga_id, 'href' => site_url('trifase_equipamentos/visualizar/' . (int) $trocaHistorico->antiga_id)]) ?>
+                <?= component('link', ['label' => 'Substituta #' . (int) $trocaHistorico->nova_id, 'href' => site_url('trifase_equipamentos/visualizar/' . (int) $trocaHistorico->nova_id)]) ?>
+                <?= component('link', ['label' => 'Retorno #' . (int) $trocaHistorico->os_id, 'href' => site_url('trifase_retornos/visualizar/' . (int) $trocaHistorico->os_id)]) ?>
+            </div>
+            <p class="mt-2 text-caption text-muted">Unidade anterior preservada no histórico; atendimentos seguintes usam a substituta. Prazo original preservado.</p>
+        </section>
+    <?php } ?>
     <?php if (trifaseCadastrosHabilitados()) { ?>
         <nav class="flex flex-wrap gap-4" aria-label="Cadastros do equipamento">
             <?= component('link', ['label' => 'Identificação atual e correções', 'href' => site_url('trifase_cadastros/unidade/' . (int) $equipamento->id)]) ?>

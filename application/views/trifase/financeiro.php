@@ -36,6 +36,14 @@ foreach ($financeiroEventos as $e) {
             <?php } ?>
         </section>
     <?php } else { ?>
+        <?php if (($financeiroResumo['abatimento_garantia_c'] ?? 0) > 0) { ?>
+            <section class="rounded-card border border-border bg-surface p-4">
+                <h2 class="text-heading-sm text-text">Ajustes por garantia</h2>
+                <p class="mt-2 text-body-md text-text"><?= e('Total original: ' . dinheiro($financeiroResumo['total_original_c'] / 100) . ' · recebimentos originais líquidos de correções: ' . dinheiro($financeiroResumo['recebido_original_c'] / 100)) ?></p>
+                <p class="mt-2 text-body-md text-text"><?= e('Dinheiro devolvido: ' . dinheiro($financeiroResumo['reembolsado_c'] / 100) . ' · abatimento da cobrança: ' . dinheiro($financeiroResumo['abatimento_garantia_c'] / 100)) ?></p>
+                <p class="mt-2 text-caption text-muted">Os totais abaixo já consideram esses ajustes. Recebimentos e comprovantes anteriores permanecem no histórico.</p>
+            </section>
+        <?php } ?>
         <div class="grid gap-3 sm:grid-cols-3">
             <?php foreach (['total_c' => 'Total acordado', 'recebido_c' => 'Recebido líquido', 'saldo_c' => 'Saldo a receber'] as $campo => $rotulo) { ?>
                 <section class="rounded-card border border-border bg-surface p-4"><h2 class="text-caption text-muted"><?= e($rotulo) ?></h2><p class="mt-2 text-heading-lg text-text"><?= e(dinheiro($financeiroResumo[$campo] / 100)) ?></p></section>

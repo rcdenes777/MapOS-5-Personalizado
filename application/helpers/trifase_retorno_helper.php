@@ -19,7 +19,7 @@ function trifaseRetornoCobertura(?object $evento): string
 
 function trifaseRetornoSolucoes(): array
 {
-    return ['' => 'Ainda não definida', 'reparo_sem_cobranca' => 'Reparo sem cobrança', 'novo_orcamento' => 'Novo orçamento', 'troca' => 'Troca', 'devolucao_valor' => 'Devolução do valor — decisão, sem executar pagamento'];
+    return ['' => 'Ainda não definida', 'reparo_sem_cobranca' => 'Reparo sem cobrança', 'novo_orcamento' => 'Novo orçamento', 'troca' => 'Troca', 'devolucao_valor' => 'Devolução de dinheiro'];
 }
 
 /** Mantém a origem encerrada mesmo quando a apresentação do módulo é desligada. */

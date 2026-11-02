@@ -44,6 +44,9 @@ $config['permissions_map'] = [
         'catalogo' => 'vOs',
     ],
     'Trifase_retornos' => [
+        'trocar' => ['todas' => ['vOs', 'eOs', 'vProduto', 'trocarGarantia']],
+        'reembolsar' => ['todas' => ['vOs', 'eOs', 'vLancamento', 'reembolsarGarantia']],
+        'corrigirReembolso' => ['todas' => ['vOs', 'eOs', 'vLancamento', 'reembolsarGarantia', 'estornarRecebimento']],
         'novo' => ['todas' => ['vOs', 'aOs', 'eOs']],
         'visualizar' => 'vOs',
         'avaliar' => ['todas' => ['vOs', 'eOs']],

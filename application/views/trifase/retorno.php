@@ -47,6 +47,9 @@ foreach ($eventosRetorno as $eventoCustoRetorno) {
             </details>
         </section>
     <?php } ?>
+    <?php if ($garantiaOperacoes ?? false) {
+        $this->load->view('trifase/garantia-operacoes');
+    } ?>
     <?php if ($verCustosRetorno) { ?>
         <section class="rounded-card border border-border bg-surface p-4">
             <h2 class="text-heading-sm text-text">Custos internos registrados</h2>

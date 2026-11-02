@@ -62,6 +62,8 @@ if (! defined('PERMISSOES_SISTEMA')) {
         'cEmail' => ['Fila de e-mails', 'Ver e limpar a fila de envio.'],
         'cAuditoria' => ['Auditoria', 'Ver o registro das ações dos usuários.'],
         'publicarOrcamento' => ['Publicar orçamento no link da OS', 'Compartilhar peças, serviços e valores conferidos e retirar a publicação, preservando decisões.'],
+        'trocarGarantia' => ['Executar troca em garantia', 'Substituir unidade e, quando escolhida, baixar uma peça do estoque.'],
+        'reembolsarGarantia' => ['Registrar devolução de garantia', 'Registrar dinheiro devolvido e abatimento da cobrança original. Não transfere dinheiro.'],
         'registrarEntrega' => ['Registrar entrega de OS', 'Registrar retirada com recebedor identificado e confirmação das condições, sem quitar a OS.'],
         'corrigirEntrega' => ['Corrigir entrega de OS', 'Cancelar um registro de retirada com motivo e preservar seu histórico.'],
         'estornarRecebimento' => ['Estornar recebimento de OS', 'Corrigir registros financeiros Trifase, preservando o histórico. Não executa reembolso bancário.'],

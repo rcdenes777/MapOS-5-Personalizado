@@ -114,6 +114,18 @@ class Trifase_retornos extends MY_Controller
             $this->data['custosItensRetorno'] = $this->estoque_retorno->resumoOs($id);
         }
         $this->data['custosUnidadeRetorno'] = $financeiro ? $total : null;
+        require_once APPPATH . 'helpers/trifase_garantia_helper.php';
+        $this->data['garantiaOperacoes'] = trifaseGarantiaOperacoesHabilitadas() && $this->db->table_exists('trifase_garantia_operacoes');
+        if ($this->data['garantiaOperacoes']) {
+            $this->load->model('Trifase_garantia_model', 'garantia_operacao');
+            $this->data['trocaGarantia'] = trifaseGarantiaTroca($this->db, $id);
+            $this->data['reembolsosGarantia'] = $financeiro ? $this->garantia_operacao->reembolsos($id) : [];
+            $this->data['financeiroGarantia'] = $financeiro ? $this->garantia_operacao->financeiro($id) : null;
+            $this->data['hashFinanceiroGarantia'] = $this->data['financeiroGarantia'] ? $this->garantia_operacao->financeiroHash($this->data['financeiroGarantia']) : '';
+            $this->data['podeCorrigirReembolsoGarantia'] = $this->permite('estornarRecebimento');
+            $this->data['podeTrocarGarantia'] = $this->permite('eOs') && $this->permite('trocarGarantia') && $this->permite('vProduto');
+            $this->data['podeReembolsarGarantia'] = $this->permite('eOs') && $financeiro && $this->permite('reembolsarGarantia');
+        }
         $this->data['view'] = 'trifase/retorno';
         $this->data['menuOs'] = 'OS';
         return $this->layout();
@@ -191,6 +203,98 @@ class Trifase_retornos extends MY_Controller
             return $this->falha('Não foi possível confirmar a correção. Recarregue o histórico.', 500);
         }
         redirect('trifase_retornos/visualizar/' . $id);
+    }
+
+    public function trocar($id = null)
+    {
+        if (! $this->permission->checkPermission($this->session->userdata('permissao'), 'vOs')
+            || ! $this->permission->checkPermission($this->session->userdata('permissao'), 'eOs')
+            || ! $this->permission->checkPermission($this->session->userdata('permissao'), 'vProduto')
+            || ! $this->permission->checkPermission($this->session->userdata('permissao'), 'trocarGarantia')) {
+            show_error('Você não tem permissão para executar troca em garantia.', 403);
+        }
+        $id = $this->operacaoId($id);
+        try {
+            if ($this->input->post('confirmar') !== '1') {
+                throw new DomainException('Confira e confirme a substituição física e a saída do estoque, quando aplicável.');
+            }
+            $d = [];
+            foreach (['origem','produto_id','modelo_id','tipo','marca','modelo','selo','serie','imei','destino_antiga','custo_externo','motivo'] as $campo) {
+                $d[$campo] = $this->texto($campo);
+            }
+            $this->garantia_operacao->trocar($id, $d, $this->inteiro('avaliacao', 1), $this->usuario(), $this->texto('operacao'));
+            $this->session->set_flashdata('success', 'Troca registrada. Unidade anterior e prazo original preservados; substituta identificada.');
+        } catch (DomainException $e) {
+            return $this->falha($e->getMessage());
+        } catch (RuntimeException $e) {
+            return $this->falha('Não foi possível confirmar a troca. Confira o histórico antes de repetir.', 500);
+        }
+        redirect('trifase_retornos/visualizar/' . $id);
+    }
+
+    public function reembolsar($id = null)
+    {
+        if (! $this->permission->checkPermission($this->session->userdata('permissao'), 'vOs')
+            || ! $this->permission->checkPermission($this->session->userdata('permissao'), 'eOs')
+            || ! $this->permission->checkPermission($this->session->userdata('permissao'), 'vLancamento')
+            || ! $this->permission->checkPermission($this->session->userdata('permissao'), 'reembolsarGarantia')) {
+            show_error('Você não tem permissão para registrar devolução de garantia.', 403);
+        }
+        $id = $this->operacaoId($id);
+        try {
+            if ($this->input->post('confirmar') !== '1') {
+                throw new DomainException('Confirme que o dinheiro já foi devolvido fora do sistema e confira o abatimento.');
+            }
+            $valor = valorDecimal($this->texto('valor'));
+            if ($valor === null || ! preg_match('/\A[0-9]+(?:\.[0-9]{1,2})?\z/', $valor)) {
+                throw new DomainException('Informe valor válido com até dois centavos.');
+            }
+            $d = ['valor_c' => financeiroCentavos($valor)];
+            foreach (['modo','data','forma','referencia','motivo'] as $campo) {
+                $d[$campo] = $this->texto($campo);
+            }
+            $this->garantia_operacao->reembolsar($id, $d, $this->inteiro('avaliacao', 1), $this->texto('financeiro_hash'), $this->usuario(), $this->texto('operacao'));
+            $this->session->set_flashdata('success', 'Devolução registrada com saída de caixa e abatimento na cobrança original.');
+        } catch (DomainException $e) {
+            return $this->falha($e->getMessage());
+        } catch (RuntimeException $e) {
+            return $this->falha('Não foi possível confirmar a devolução. Confira o histórico antes de repetir.', 500);
+        }
+        redirect('trifase_retornos/visualizar/' . $id);
+    }
+
+    public function corrigirReembolso($id = null)
+    {
+        if (! $this->permission->checkPermission($this->session->userdata('permissao'), 'vOs')
+            || ! $this->permission->checkPermission($this->session->userdata('permissao'), 'eOs')
+            || ! $this->permission->checkPermission($this->session->userdata('permissao'), 'vLancamento')
+            || ! $this->permission->checkPermission($this->session->userdata('permissao'), 'reembolsarGarantia')
+            || ! $this->permission->checkPermission($this->session->userdata('permissao'), 'estornarRecebimento')) {
+            show_error('Você não tem permissão para corrigir devolução de garantia.', 403);
+        }
+        $id = $this->operacaoId($id);
+        try {
+            if ($this->input->post('confirmar') !== '1') {
+                throw new DomainException('Confirme que o dinheiro não foi devolvido e que o registro foi lançado por engano.');
+            }
+            $this->garantia_operacao->corrigirReembolso($id, $this->inteiro('reembolso', 1), $this->texto('motivo'), $this->usuario(), $this->texto('operacao'));
+            $this->session->set_flashdata('success', 'Correção registrada. Devolução anterior preservada como cancelada, sem transferência bancária.');
+        } catch (DomainException $e) {
+            return $this->falha($e->getMessage());
+        } catch (RuntimeException $e) {
+            return $this->falha('Não foi possível confirmar a correção. Confira o histórico.', 500);
+        }
+        redirect('trifase_retornos/visualizar/' . $id);
+    }
+
+    private function operacaoId($id): int
+    {
+        require_once APPPATH . 'helpers/trifase_garantia_helper.php';
+        if (! trifaseGarantiaOperacoesHabilitadas() || ! $this->db->table_exists('trifase_garantia_operacoes')) {
+            show_404('', false);
+        }
+        $this->load->model('Trifase_garantia_model', 'garantia_operacao');
+        return $this->postId($id);
     }
 
     private function id($id): int

@@ -165,6 +165,37 @@ final class TrifasePublicoTest extends MaposTestCase
         $this->assertNull($this->modelo->anexoPublicado(1, 11));
     }
 
+    public function testPublicacaoIndividualPreservaOutrosAnexosEReenvioEIdempotente(): void
+    {
+        $this->modelo->alterarAnexo(1, 11, true, false);
+        $this->modelo->alterarAnexo(1, 12, true, false);
+        $this->modelo->alterarAnexo(1, 11, true, false);
+        $this->assertCount(2, $this->modelo->anexos(1, true));
+        $this->modelo->alterarAnexo(1, 11, false, true);
+        $this->assertNull($this->modelo->anexoPublicado(1, 11));
+        $this->assertNotNull($this->modelo->anexoPublicado(1, 12));
+    }
+
+    public function testPublicacaoIndividualRejeitaAnexoDeOutraOsSemAlterarSelecao(): void
+    {
+        $this->modelo->alterarAnexo(1, 11, true, false);
+        try {
+            $this->modelo->alterarAnexo(1, 21, true, false);
+            $this->fail('Aceitou anexo de outra OS');
+        } catch (DomainException $erro) {
+            $this->assertNotNull($this->modelo->anexoPublicado(1, 11));
+            $this->assertNull($this->modelo->anexoPublicado(2, 21));
+        }
+    }
+
+    public function testEstadoAnteriorDivergenteNaoApagaPublicacao(): void
+    {
+        $this->modelo->alterarAnexo(1, 11, true, false);
+        $retorno = $this->modelo->alterarAnexo(1, 11, false, false);
+        $this->assertSame(['publicado' => true, 'conflito' => true], $retorno);
+        $this->assertNotNull($this->modelo->anexoPublicado(1, 11));
+    }
+
     public function testAnexoDeOutraOsRejeitaSelecaoInteiraSemPerderSelecaoAnterior(): void
     {
         $this->modelo->publicarAnexos(1, [11]);

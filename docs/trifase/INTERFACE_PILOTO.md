@@ -59,3 +59,9 @@ Verificações reais em OS9001 exclusiva de QA:2fusíveis de15menos5em reais=25;
 Validação:1673testesPHP/7839asserções, sem falhas/erros/warnings, mantendo1depreciação e1ignorado; PHPStan sem erros novos/baseline preservado,23JS e build.9 verificaçõesHTTP: formulários nativos preservados, OS faturada sem controles e POST403, item ausente422, remoção inválida404, CSRF403 e perfil sem valores/controles comerciais. Navegador: ciclo real com desconto/fracionamento, confirmação de remoção e validação vazia; larguras360/390sem overflow após estabilizar o layout e sem IDs duplicados. Não é homologação completa ou teste físico. A tentativa inicial de teste revelou idOs ausente no formulário extraído; corrigido e coberto por teste. Uma fixture unitária sem ID de item gerou aviso e foi corrigida; relatório válido é itens-phpunit-final.txt.
 
 As funções de edição técnica, recebimento, compartilhamento e envio de anexos continuam nas telas existentes. Este lote integra operações de itens; não declara toda a fase operacional ou novas entidades implementadas.
+
+### Anexos e link no resumo
+
+O resumo reutiliza o formulário nativo de upload (200 MiB por arquivo), mantém imagem/vídeo na galeria e oferece marcação Público por arquivo a quem tem `vOs` e `eOs`. A rota POST `trifase/visibilidade` valida vínculo do anexo com a OS, CSRF e valores; a transação altera somente esse arquivo. Novos uploads continuam privados. Erro de rede deixa o controle desabilitado com estado não confirmado, evitando anunciar uma privacidade que o servidor não confirmou.
+
+O link ativo permanece disponível para copiar; gerar, renovar e revogar retornam ao resumo pelo destino fechado `voltar=resumo` somente no piloto. Revogação exige confirmação. As rotas clássicas permanecem disponíveis e o piloto segue desativado por padrão.

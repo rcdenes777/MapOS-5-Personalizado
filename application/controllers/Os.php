@@ -362,7 +362,7 @@ class Os extends MY_Controller
     private function dadosDoPiloto(object $os): array
     {
         $this->load->helper('trifase_publico');
-        $dados = ['trifase_ui_piloto' => true, 'pilotoFinanceiro' => null, 'pilotoLink' => null];
+        $dados = ['trifase_ui_piloto' => true, 'pilotoFinanceiro' => null, 'pilotoLink' => null, 'pilotoPublicados' => [], 'pilotoUrlPublica' => null];
         if (trifaseFinanceiroHabilitado() && $this->permite('vLancamento')
             && trifaseFinanceiroOsGerida($this->db, (int) $os->idOs)) {
             $this->load->model('Trifase_financeiro_model', 'piloto_financeiro');
@@ -371,6 +371,9 @@ class Os extends MY_Controller
         if (trifasePublicoHabilitado() && $this->permite('eOs')) {
             $this->load->model('Trifase_publico_model', 'piloto_publico');
             $dados['pilotoLink'] = $this->piloto_publico->estado((int) $os->idOs);
+            $token = $this->piloto_publico->tokenAtivo((int) $os->idOs);
+            $dados['pilotoUrlPublica'] = $token !== null ? trifasePublicoUrl($token, base_url(), (string) config_item('index_page')) : null;
+            $dados['pilotoPublicados'] = array_map(static fn ($anexo) => (int) $anexo->idAnexos, $this->piloto_publico->anexos((int) $os->idOs, true));
         }
         return $dados;
     }
@@ -476,6 +479,14 @@ class Os extends MY_Controller
             if ($this->permite('vLancamento')) {
                 $html['pilotofinanceiro'] = $this->load->view('trifase/resumo-financeiro', $dados, true);
             }
+        }
+
+        if (trifaseInterfacePiloto() && $aba === 'resumo' && in_array('anexos', $partes, true)) {
+            $dados = array_merge($dados, $this->dadosDoPiloto($os));
+            $dados['publicacaoIntegrada'] = true;
+            $dados['anexosPublicosIds'] = $dados['pilotoPublicados'];
+            $dados['anexosSomenteConsulta'] = ! ($dados['pode']['editar_tecnico'] ?? false);
+            $html['pilotoanexos'] = $this->load->view('os/partes/anexos', $dados, true);
         }
 
         return $html;

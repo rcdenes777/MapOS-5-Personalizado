@@ -292,10 +292,10 @@ export default function iniciar(raiz, { post = postPadrao, doc = document, naveg
 
         try {
             await navigator.clipboard.writeText(campo.value);
-            mostrarToast({ mensagem: 'Código PIX copiado.', variante: 'success' }, doc);
+            mostrarToast({ mensagem: botao.dataset.copiarMensagem || 'Código PIX copiado.', variante: 'success' }, doc);
         } catch {
             campo.select();
-            mostrarToast({ mensagem: 'Não foi possível copiar sozinho: o código ficou selecionado, use Ctrl+C.', variante: 'warning' }, doc);
+            mostrarToast({ mensagem: 'Não foi possível copiar sozinho. O conteúdo ficou selecionado; use Ctrl+C.', variante: 'warning' }, doc);
         }
     });
 

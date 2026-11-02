@@ -53,7 +53,7 @@ class Trifase extends MY_Controller
         } catch (RuntimeException $erro) {
             $this->session->set_flashdata('error', 'Não foi possível gerar o link. Tente novamente.');
         }
-        redirect('trifase/gerenciar/' . (int) $os->idOs);
+        redirect($this->destino((int) $os->idOs));
     }
 
     /** Miniaturas do painel também ficam atrás das permissões do módulo. */
@@ -99,7 +99,7 @@ class Trifase extends MY_Controller
         } catch (DomainException | RuntimeException $erro) {
             $this->session->set_flashdata('error', $erro->getMessage());
         }
-        redirect('trifase/gerenciar/' . (int) $os->idOs);
+        redirect($this->destino((int) $os->idOs));
     }
 
     public function revogar($id = null)
@@ -108,7 +108,7 @@ class Trifase extends MY_Controller
         $this->publico_model->revogar((int) $os->idOs);
         $this->session->set_flashdata('success', 'Link público revogado.');
         log_info('Revogou link público da OS: ' . (int) $os->idOs);
-        redirect('trifase/gerenciar/' . (int) $os->idOs);
+        redirect($this->destino((int) $os->idOs));
     }
 
     public function anexos($id = null)
@@ -125,7 +125,42 @@ class Trifase extends MY_Controller
         } catch (DomainException $erro) {
             $this->session->set_flashdata('error', $erro->getMessage());
         }
-        redirect('trifase/gerenciar/' . (int) $os->idOs);
+        redirect($this->destino((int) $os->idOs));
+    }
+
+    public function visibilidade($id = null, $anexo = null)
+    {
+        $os = $this->ordemPost($id);
+        $anexo = filter_var($anexo, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
+        $publicar = $this->input->post('publicar');
+        $anterior = $this->input->post('anterior');
+        $status = 200;
+        try {
+            if ($anexo === false || ! in_array($publicar, ['0', '1'], true) || ! in_array($anterior, ['0', '1'], true)) {
+                throw new DomainException('Visibilidade inválida.');
+            }
+            $resultado = $this->publico_model->alterarAnexo((int) $os->idOs, $anexo, $publicar === '1', $anterior === '1');
+            $status = $resultado['conflito'] ? 409 : 200;
+            $corpo = $resultado + ['result' => $status === 200, 'message' => $status === 200 ? 'Visibilidade atualizada.' : 'Outra sessão alterou a visibilidade. Confira o estado atual.'];
+            if ($status === 200) {
+                log_info('Alterou visibilidade do anexo #' . $anexo . ' da OS #' . (int) $os->idOs);
+            }
+        } catch (DomainException $e) {
+            $status = 422;
+            $corpo = ['result' => false, 'message' => $e->getMessage()];
+        } catch (RuntimeException $e) {
+            $status = 500;
+            $corpo = ['result' => false, 'message' => 'Não foi possível confirmar a visibilidade. Recarregue a OS.'];
+        }
+        $this->output->set_status_header($status)->set_content_type('application/json', 'utf-8')->set_output(json_encode($corpo));
+    }
+
+    /** Retorno fechado: nenhuma URL fornecida pelo navegador é aceita. */
+    private function destino(int $id): string
+    {
+        $this->load->helper('trifase_interface');
+        return $this->input->post('voltar') === 'resumo' && trifaseInterfacePiloto()
+            ? 'os/visualizar/' . $id : 'trifase/gerenciar/' . $id;
     }
 
     private function ordem($id): object

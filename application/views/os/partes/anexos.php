@@ -68,6 +68,17 @@ if ($anexos === []) { ?>
                     <?php } ?>
                 </div>
             </div>
+            <?php if (($publicacaoIntegrada ?? false) && $galeriaTrifase && ! $ausente) {
+                $publicado = in_array((int) $anexo->idAnexos, $anexosPublicosIds ?? [], true);
+                ?>
+                <form action="<?= e(site_url('trifase/visibilidade/' . (int) $os->idOs . '/' . (int) $anexo->idAnexos)) ?>" method="post" class="border-t border-border p-3" data-anexo-publicacao>
+                    <label class="flex min-h-11 cursor-pointer items-center gap-2 text-label-md text-text">
+                        <input type="checkbox" name="publicar" value="1" <?= $publicado ? 'checked' : '' ?> data-publicar-anexo data-publicado="<?= e($publicado ? '1' : '0') ?>" class="size-5 accent-brand focus-visible:outline-3 focus-visible:outline-ring">
+                        <?= e('Público — ' . $nome) ?>
+                    </label>
+                    <p class="text-caption text-muted" role="status" data-publicacao-estado><?= e($publicado ? 'Disponível no link desta OS.' : 'Privado; somente no painel.') ?></p>
+                </form>
+            <?php } ?>
         </li>
     <?php } ?>
 </ul>

@@ -167,6 +167,29 @@ class Trifase_publico_model extends CI_Model
         });
     }
 
+    /** Altera um único anexo sem sobrescrever a seleção de outra sessão. */
+    public function alterarAnexo(int $id, int $anexo, bool $publicar, bool $anterior): array
+    {
+        return $this->transacao($id, function () use ($id, $anexo, $publicar, $anterior): array {
+            if (! $this->db->where('os_id', $id)->where('idAnexos', $anexo)->get('anexos', 1)->row()) {
+                throw new DomainException('Anexo não encontrado nesta OS.');
+            }
+            $atual = $this->db->where('os_id', $id)->where('anexo_id', $anexo)->count_all_results('trifase_publico_anexos') > 0;
+            if ($atual !== $anterior && $atual !== $publicar) {
+                return ['publicado' => $atual, 'conflito' => true];
+            }
+            if ($atual !== $publicar) {
+                $ok = $publicar
+                    ? $this->db->insert('trifase_publico_anexos', ['os_id' => $id, 'anexo_id' => $anexo])
+                    : $this->db->where('os_id', $id)->where('anexo_id', $anexo)->delete('trifase_publico_anexos');
+                if (! $ok) {
+                    throw new RuntimeException('Não foi possível alterar a visibilidade.');
+                }
+            }
+            return ['publicado' => $publicar, 'conflito' => false];
+        });
+    }
+
     /** Serializa mudanças do módulo na mesma OS; InnoDB em produção, SQLite nos testes. */
     private function transacao(int $id, callable $acao): mixed
     {

@@ -64,6 +64,15 @@ class Os extends MY_Controller
             $this->data['topbar_acao'] = ['label' => 'Nova OS', 'icon' => 'plus', 'href' => site_url('os/adicionar')];
         }
 
+        $this->load->helper('trifase_interface');
+        $this->data['listaVerFinanceiro'] = $this->permite('vLancamento');
+        $this->data['listaFinanceiro'] = [];
+        $this->data['listaFinanceiroHabilitado'] = trifaseFinanceiroHabilitado();
+        if (trifaseInterfacePiloto() && trifaseFinanceiroHabilitado() && $this->data['listaVerFinanceiro']) {
+            $this->load->model('Trifase_financeiro_model', 'piloto_financeiro');
+            $this->data['listaFinanceiro'] = $this->piloto_financeiro->resumos(array_map(static fn ($os) => (int) $os->idOs, $this->data['results']));
+        }
+
         $this->data['view'] = 'os/os';
 
         return $this->layout();

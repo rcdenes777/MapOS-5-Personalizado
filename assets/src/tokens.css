@@ -558,8 +558,11 @@
   }
 }
 
-/* Trifase: somente a visualização opt-in da OS. Modos existentes preservados. */
+/* Trifase: painel opt-in do laboratório. Modos existentes preservados. */
 :root[data-trifase-ui="piloto"] {
+  --text-body-md: 1.0625rem;
+  --text-label-md: 1rem;
+  --text-caption: .9375rem;
   --trifase-body: 1.0625rem;
   --trifase-title: 1.75rem;
   --trifase-section-title: 1.25rem;

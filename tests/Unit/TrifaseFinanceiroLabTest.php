@@ -89,6 +89,20 @@ final class TrifaseFinanceiroLabTest extends MaposTestCase
         $this->verificar(50000, 0);
     }
 
+    public function testProjecaoDaListagemConfereComResumoIndividualAposParcialEEstorno(): void
+    {
+        $this->f->formalizar(1, 50000, 0, '2026-11-15', 7);
+        $this->assertSame([1 => $this->f->resumo(1)], $this->f->resumos([1, 2]));
+        $entrada = $this->rec(20000, 'lista-a');
+        $this->rec(10000, 'lista-b');
+        $this->assertSame([1 => $this->f->resumo(1)], $this->f->resumos([1, 2, 1, 0]));
+        $this->f->estornar(1, $entrada['evento_id'], 'Correção', '2026-11-01', $this->chave('lista-estorno'), 7);
+        $this->assertSame([1 => $this->f->resumo(1)], $this->f->resumos([1, 2]));
+        $this->assertSame([], $this->f->resumos([]));
+        $this->rec(40000, 'lista-quitar');
+        $this->assertSame([1 => $this->f->resumo(1)], $this->f->resumos([1, 2]));
+    }
+
     public function testReciboUsaEventoDaOsERefleteEstornoSemExporDadosInternos(): void
     {
         $this->f->formalizar(1, 50000, 0, '2026-11-15', 7);

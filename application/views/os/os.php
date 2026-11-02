@@ -26,7 +26,7 @@ $colunas = [
     ['key' => 'responsavel', 'label' => 'Responsável', 'nowrap' => true, 'hide_until' => '2xl'],
     ['label' => 'Entrada', 'align' => 'right', 'nowrap' => true, 'hide_until' => 'xl', 'render' => fn ($o) => dataBr($o->dataInicial)],
     ['label' => 'Entrega', 'align' => 'right', 'nowrap' => true, 'hide_until' => 'xl', 'render' => fn ($o) => dataBr($o->dataFinal)],
-    ['label' => 'Status', 'nowrap' => true, 'render' => fn ($o) => component('pill-status', osStatusPill($o->status))],
+    ['label' => ($trifase_ui_piloto ?? false) ? 'Andamento do serviço' : 'Status', 'nowrap' => true, 'render' => fn ($o) => component('pill-status', osStatusPill($o->status))],
     ['label' => 'Total', 'align' => 'right', 'nowrap' => true, 'render' => fn ($o) => dinheiro($o->total)],
     ['label' => 'Ações', 'align' => 'right', 'nowrap' => true, 'render' => function ($o) use ($pode, $controle_editos) {
         $numero = 'OS ' . $o->idOs;
@@ -50,6 +50,32 @@ $colunas = [
         return $acoes;
     }],
 ];
+
+if ($trifase_ui_piloto ?? false) {
+    $adaptadas = [];
+    foreach ($colunas as $coluna) {
+        if ($coluna['label'] === 'Total') {
+            if ($listaVerFinanceiro ?? false) {
+                $adaptadas[] = $coluna;
+                if ($listaFinanceiroHabilitado ?? false) {
+                    $adaptadas[] = ['label' => 'Pagamento', 'render' => static function ($o) use ($listaFinanceiro) {
+                        $f = $listaFinanceiro[(int) $o->idOs] ?? null;
+                        if ($f === null) {
+                            return (int) $o->faturado === 1 ? 'Faturamento anterior' : 'Não registrado';
+                        }
+                        return component('pill-status', ['label' => $f['situacao'], 'variant' => $f['saldo_c'] === 0 ? 'success' : 'warning']);
+                    }];
+                }
+            }
+            continue;
+        }
+        $coluna['label'] = match ($coluna['label']) {
+            'Entrega' => 'Previsão', 'Status' => 'Andamento', default => $coluna['label']
+        };
+        $adaptadas[] = $coluna;
+    }
+    $colunas = $adaptadas;
+}
 
 $vazio = $temFiltro
     ? component('empty-state', [
@@ -90,7 +116,7 @@ $resumo = ($total === 1 ? '1 ordem de serviço' : number_format($total, 0, ',', 
         ]) ?>
         <?= component('select', [
             'name' => 'status',
-            'label' => 'Status',
+            'label' => ($trifase_ui_piloto ?? false) ? 'Andamento do serviço' : 'Status',
             'placeholder' => 'Todos',
             'options' => array_combine(array_keys(OS_STATUS_VARIANTES), array_keys(OS_STATUS_VARIANTES)),
             'selected' => $filtros['status'] ?? null,
@@ -103,7 +129,7 @@ $resumo = ($total === 1 ? '1 ordem de serviço' : number_format($total, 0, ',', 
         ]) ?>
         <?= component('input', [
             'name' => 'ate',
-            'label' => 'Entrega até',
+            'label' => 'Previsão até',
             'type' => 'date',
             'value' => $filtros['ate'] ?? null,
         ]) ?>

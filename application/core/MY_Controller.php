@@ -429,6 +429,8 @@ class MY_Controller extends CI_Controller
      */
     public function layout()
     {
+        $this->load->helper('trifase_interface');
+        $this->data['trifase_ui_piloto'] = trifaseInterfacePiloto() && $this->input->get('apresentacao') !== 'classica';
         $this->data['layout'] = $this->dadosDoLayout();
 
         $this->load->view('tema/topo', $this->data);

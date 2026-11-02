@@ -103,6 +103,29 @@ class Trifase_financeiro_model extends CI_Model
         return ['total_c' => $total, 'recebido_c' => $recebido, 'saldo_c' => $total - $recebido, 'situacao' => $recebido === 0 ? 'Pendente' : ($recebido === $total ? 'Quitado' : 'Parcialmente pago')];
     }
 
+    /** Projeções em lote para uma página de OS; evita uma consulta por recebimento. */
+    public function resumos(array $ids): array
+    {
+        $ids = array_values(array_unique(array_filter(array_map('intval', $ids), static fn ($id) => $id > 0)));
+        if ($ids === []) {
+            return [];
+        }
+        $recebidos = [];
+        foreach ($this->db->select("os_id, SUM(CASE WHEN tipo = 'receber' THEN valor_c ELSE -valor_c END) AS recebido_c", false)
+            ->where_in('os_id', $ids)->group_by('os_id')->get('trifase_financeiro_eventos')->result() as $linha) {
+            $recebidos[(int) $linha->os_id] = (int) $linha->recebido_c;
+        }
+        $resumos = [];
+        foreach ($this->db->where_in('os_id', $ids)->get('trifase_financeiro_obrigacoes')->result() as $o) {
+            $id = (int) $o->os_id;
+            $total = (int) $o->bruto_c - (int) $o->desconto_c;
+            $recebido = $recebidos[$id] ?? 0;
+            $resumos[$id] = ['total_c' => $total, 'recebido_c' => $recebido, 'saldo_c' => $total - $recebido,
+                'situacao' => $recebido === 0 ? 'Pendente' : ($recebido === $total ? 'Quitado' : 'Parcialmente pago')];
+        }
+        return $resumos;
+    }
+
     /** Documento de um evento específico: não expõe chave, hash ou notas privadas. */
     public function recibo(int $osId, int $eventoId): ?array
     {

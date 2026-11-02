@@ -75,3 +75,9 @@ Andamento de OS gerida é atualizado na mesma tela com as opções existentes. F
 ### Recibo por recebimento
 
 `trifase_financeiro/recibo/{os}/{evento}` exige `vOs` e `vLancamento`, aceita somente GET/HEAD e confere que o evento é recebimento daquela OS. O documento mostra o valor e a data imutáveis desse evento, a forma e o cliente. Não representa quitação total. Eventos estornados aparecem com indicação explícita e data do estorno; chaves idempotentes, hashes e motivos internos não são enviados à view. Não há publicação pelo token do cliente. Impressão usa folha responsiva e CSS próprio de documento; o emitente precisa estar configurado para entregar ao cliente.
+
+### Lista e continuidade visual
+
+Com o piloto habilitado, o layout autenticado usa os tokens azul/prata também nas telas existentes (cadastros, início, financeiro e formulários). `?apresentacao=classica` preserva a aparência anterior da página e o default continua desligado. A mudança de tema não equivale a implementar todas as funções novas do protótipo.
+
+Na lista de OS, Andamento e Pagamento ficam separados. A projeção financeira é consultada em lote apenas para a página atual e somente com `vLancamento`; perfis sem essa permissão não recebem coluna ou valores na lista do piloto. Previsão substitui o rótulo ambíguo Entrega, sem transformar a data prevista em registro real de retirada. Filtros e paginação permanecem nativos.

@@ -55,6 +55,9 @@ foreach ($financeiroEventos as $e) {
                 <?php foreach ($financeiroEventos as $e) { ?>
                     <li class="border-b border-border pb-3 text-body-md text-text">
                         <?= e('#' . $e->id . ' · ' . ($e->tipo === 'receber' ? 'Recebimento' : 'Estorno do registro #' . $e->referencia_id) . ' · ' . dinheiro($e->valor_c / 100) . ' · ' . dataBr($e->data_evento) . ' · ' . $e->forma . ' · Operador #' . $e->usuario_id) ?>
+                        <?php if ($e->tipo === 'receber') { ?>
+                            <div class="mt-2"><?= component('link', ['label' => in_array($e->id, $estornados) ? 'Consultar registro estornado' : 'Abrir recibo deste recebimento', 'href' => site_url('trifase_financeiro/recibo/' . $id . '/' . (int) $e->id), 'attrs' => ['target' => '_blank', 'rel' => 'noopener']]) ?></div>
+                        <?php } ?>
                         <?php if ($e->motivo) { ?><p class="mt-1 text-caption text-muted"><?= e($e->motivo) ?></p><?php } ?>
                         <?php if ($e->tipo === 'receber' && in_array($e->id, $estornados)) { ?><p class="mt-1 text-caption text-muted">Registro estornado; preservado para consulta.</p><?php } ?>
                     </li>

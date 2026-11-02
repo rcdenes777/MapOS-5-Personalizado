@@ -89,6 +89,25 @@ final class TrifaseFinanceiroLabTest extends MaposTestCase
         $this->verificar(50000, 0);
     }
 
+    public function testReciboUsaEventoDaOsERefleteEstornoSemExporDadosInternos(): void
+    {
+        $this->f->formalizar(1, 50000, 0, '2026-11-15', 7);
+        $entrada = $this->rec(12345, 'recibo');
+        $r = $this->f->recibo(1, $entrada['evento_id']);
+        $this->assertSame(12345, (int) $r['evento']->valor_c);
+        $this->assertNull($r['estorno']);
+        $this->assertNull($this->f->recibo(2, $entrada['evento_id']));
+        $this->assertNull($this->f->recibo(1, 999999));
+        $this->assertObjectNotHasProperty('operacao', $r['evento']);
+        $this->assertObjectNotHasProperty('payload_hash', $r['evento']);
+        $estorno = $this->f->estornar(1, $entrada['evento_id'], 'Motivo interno', '2026-11-01', $this->chave('estorno-recibo'), 7);
+        $r = $this->f->recibo(1, $entrada['evento_id']);
+        $this->assertSame(12345, (int) $r['evento']->valor_c);
+        $this->assertSame($estorno['evento_id'], (int) $r['estorno']->id);
+        $this->assertObjectNotHasProperty('motivo', $r['estorno']);
+        $this->assertNull($this->f->recibo(1, $estorno['evento_id']));
+    }
+
     public function testDescontoECentavosPermanecemConciliadosAposEstorno(): void
     {
         $this->f->formalizar(1, 55001, 5001, '2026-11-15', 7);

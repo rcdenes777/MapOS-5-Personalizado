@@ -71,3 +71,7 @@ O link ativo permanece disponível para copiar; gerar, renovar e revogar retorna
 OS faturada/gerida permite editar os mesmos campos técnicos da tela existente, em seção recolhível “Editar OS”. O modelo mantém a lista fechada de campos e protege valores/vínculos/conclusão. OS ainda não faturada continua com o formulário completo nativo. A cobrança e o recebimento parcial usam os mesmos endpoints, permissões, CSRF, centavos e chaves idempotentes do financeiro; o retorno AJAX ao resumo existe somente com o piloto ligado. Em erro, o formulário permanece preenchido e mantém a chave da operação.
 
 Andamento de OS gerida é atualizado na mesma tela com as opções existentes. Finalizar não quita a OS. O histórico, a correção de recebimentos e a conciliação de legado continuam na tela financeira; não há conciliação automática nem transferência de dinheiro.
+
+### Recibo por recebimento
+
+`trifase_financeiro/recibo/{os}/{evento}` exige `vOs` e `vLancamento`, aceita somente GET/HEAD e confere que o evento é recebimento daquela OS. O documento mostra o valor e a data imutáveis desse evento, a forma e o cliente. Não representa quitação total. Eventos estornados aparecem com indicação explícita e data do estorno; chaves idempotentes, hashes e motivos internos não são enviados à view. Não há publicação pelo token do cliente. Impressão usa folha responsiva e CSS próprio de documento; o emitente precisa estar configurado para entregar ao cliente.

@@ -103,6 +103,20 @@ class Trifase_financeiro_model extends CI_Model
         return ['total_c' => $total, 'recebido_c' => $recebido, 'saldo_c' => $total - $recebido, 'situacao' => $recebido === 0 ? 'Pendente' : ($recebido === $total ? 'Quitado' : 'Parcialmente pago')];
     }
 
+    /** Documento de um evento específico: não expõe chave, hash ou notas privadas. */
+    public function recibo(int $osId, int $eventoId): ?array
+    {
+        $evento = $this->db->select('id, os_id, valor_c, data_evento, forma, usuario_id')
+            ->where(['os_id' => $osId, 'id' => $eventoId, 'tipo' => 'receber'])
+            ->get('trifase_financeiro_eventos', 1)->row();
+        if (! $evento) {
+            return null;
+        }
+        $estorno = $this->db->select('id, data_evento')->where(['os_id' => $osId, 'referencia_id' => $eventoId, 'tipo' => 'estornar'])
+            ->get('trifase_financeiro_eventos', 1)->row();
+        return ['evento' => $evento, 'estorno' => $estorno ?: null];
+    }
+
     public function historico(int $osId): array
     {
         return $this->eventos($osId);

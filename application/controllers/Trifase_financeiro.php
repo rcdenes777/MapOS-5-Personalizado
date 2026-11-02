@@ -28,6 +28,26 @@ class Trifase_financeiro extends MY_Controller
         return $this->tela($this->ordem($id));
     }
 
+    public function recibo($id = null, $evento = null)
+    {
+        if (! $this->permission->checkPermission($this->session->userdata('permissao'), 'vOs')
+            || ! $this->permission->checkPermission($this->session->userdata('permissao'), 'vLancamento')) {
+            show_error('Você não tem permissão para consultar este recebimento.', 403);
+        }
+        if (! in_array($this->input->method(true), ['GET', 'HEAD'], true)) {
+            show_error('Método não permitido.', 405);
+        }
+        $os = $this->ordem($id);
+        $evento = filter_var($evento, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
+        $recibo = $evento !== false ? $this->financeiro_os->recibo((int) $os->idOs, $evento) : null;
+        if ($recibo === null) {
+            show_404('', false);
+        }
+        $this->load->model('mapos_model');
+        $this->output->set_header('X-Robots-Tag: noindex, nofollow, noarchive');
+        return $this->load->view('trifase/recibo', ['osRecibo' => $os, 'recibo' => $recibo, 'emitente' => $this->mapos_model->getEmitente()]);
+    }
+
     public function formalizar($id = null)
     {
         if (! $this->permission->checkPermission($this->session->userdata('permissao'), 'vOs')

@@ -35,6 +35,7 @@ $config['permissions_map'] = [
     // Extensão Trifase: exige leitura e edição, inclusive em OS já faturada.
     'Trifase_financeiro' => [
         'visualizar' => ['todas' => ['vOs', 'vLancamento']],
+        'recibo' => ['todas' => ['vOs', 'vLancamento']],
         'formalizar' => ['todas' => ['vOs', 'vLancamento', 'eOs', 'aLancamento']],
         'receber' => ['todas' => ['vOs', 'vLancamento', 'aLancamento']],
         'estornar' => ['todas' => ['vOs', 'vLancamento', 'estornarRecebimento']],

@@ -4,8 +4,12 @@ if (! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
+require_once APPPATH . 'helpers/trifase_estoque_helper.php';
+require_once APPPATH . 'libraries/Trifase_venda_lock.php';
+
 class Vendas extends MY_Controller
 {
+    private ?Trifase_venda_lock $estoqueLock = null;
     /** Filtros da listagem, na query string (listagemFiltros()). */
     public const FILTROS = [
         'pesquisa' => 'texto',
@@ -219,17 +223,28 @@ class Vendas extends MY_Controller
     private function salvarVenda(object $venda, array $dados): ?int
     {
         $idVenda = (int) $venda->idVendas;
-        $antes = strtolower((string) $venda->status);
-        $depois = strtolower((string) $dados['status']);
-
-        if ($depois === 'cancelado' && $antes !== 'cancelado') {
-            $this->devolucaoEstoque($idVenda);
+        $lock = trifaseEstoqueHabilitado() ? new Trifase_venda_lock($this->db, $idVenda) : null;
+        try {
+            $venda = $lock ? $this->vendas_model->getById($idVenda) : $venda;
+            if ($lock && ! $this->vendas_model->isEditable($idVenda)) {
+                $lock->finalizar(false);
+                return null;
+            }
+            $antes = strtolower((string) $venda->status);
+            $depois = strtolower((string) $dados['status']);
+            if ($depois === 'cancelado' && $antes !== 'cancelado') {
+                $this->devolucaoEstoque($idVenda);
+            }
+            if ($antes === 'cancelado' && $depois !== 'cancelado') {
+                $this->debitarEstoque($idVenda);
+            }
+            $ok = $this->vendas_model->edit('vendas', $dados, 'idVendas', $idVenda);
+            $lock?->finalizar($ok);
+            return $ok ? $idVenda : null;
+        } catch (DomainException|RuntimeException $e) {
+            $lock?->finalizar(false);
+            return null;
         }
-        if ($antes === 'cancelado' && $depois !== 'cancelado') {
-            $this->debitarEstoque($idVenda);
-        }
-
-        return $this->vendas_model->edit('vendas', $dados, 'idVendas', $idVenda) ? $idVenda : null;
     }
 
     private function usuarioLogado(): ?int
@@ -257,7 +272,7 @@ class Vendas extends MY_Controller
 
         $this->load->model('produtos_model');
         foreach ($this->vendas_model->getProdutos($idVenda) as $p) {
-            $this->produtos_model->updateEstoque($p->produtos_id, $p->quantidade, $operacao);
+            $this->produtos_model->updateEstoque($p->produtos_id, $p->quantidade, $operacao, ['tipo' => $operacao === '+' ? 'venda_devolucao' : 'venda_saida', 'origem' => 'Venda #' . $idVenda, 'motivo' => $motivo]);
             log_info('ESTOQUE: Produto id ' . $p->produtos_id . ($operacao === '+' ? ' voltou ao estoque' : ' baixa do estoque') . '. Quantidade: ' . $p->quantidade . '. ' . $motivo . '. Venda: ' . $idVenda);
         }
     }
@@ -371,6 +386,15 @@ class Vendas extends MY_Controller
     /** Resposta JSON dos endpoints da tela da venda. */
     private function responderJson(int $status, array $corpo): void
     {
+        if ($this->estoqueLock !== null) {
+            try {
+                $this->estoqueLock->finalizar($status < 400);
+            } catch (RuntimeException $e) {
+                $status = 500;
+                $corpo = ['result' => false, 'message' => 'Não foi possível confirmar a venda e o estoque.'];
+            }
+            $this->estoqueLock = null;
+        }
         $this->output
             ->set_status_header($status)
             ->set_content_type('application/json', 'utf-8')
@@ -388,6 +412,14 @@ class Vendas extends MY_Controller
     private function vendaParaAlterar(bool $mexeNosItens = false): ?object
     {
         $id = (int) $this->input->post('idVendas');
+        if (trifaseEstoqueHabilitado()) {
+            try {
+                $this->estoqueLock = new Trifase_venda_lock($this->db, $id);
+            } catch (DomainException $e) {
+                $this->responderJson(404, ['result' => false, 'message' => 'Venda não encontrada.']);
+                return null;
+            }
+        }
         $venda = $id > 0 ? $this->vendas_model->getById($id) : null;
 
         if (! $venda) {
@@ -501,6 +533,7 @@ class Vendas extends MY_Controller
         }
 
         $id = (int) $this->input->post('id');
+        $lock = trifaseEstoqueHabilitado() ? new Trifase_venda_lock($this->db, $id) : null;
         // Volta para a listagem com os mesmos filtros (só os permitidos).
         $listagem = site_url('vendas/gerenciar') . listagemQuery($this->filtrosDaListagem());
 
@@ -542,6 +575,7 @@ class Vendas extends MY_Controller
 
         log_info('Removeu uma venda. ID: ' . $id);
 
+        $lock?->finalizar(true);
         $this->session->set_flashdata('success', 'Venda excluída com sucesso!');
         redirect($listagem);
     }
@@ -602,7 +636,12 @@ class Vendas extends MY_Controller
 
         if ($controleEstoque) {
             $this->load->model('produtos_model');
-            $this->produtos_model->updateEstoque($dados['produtos_id'], $dados['quantidade'], '-');
+            try {
+                $this->produtos_model->updateEstoque($dados['produtos_id'], $dados['quantidade'], '-', ['tipo' => 'venda_saida', 'origem' => 'Venda #' . $idVenda, 'motivo' => 'Inclusão de produto na venda']);
+            } catch (DomainException $e) {
+                $this->responderJson(422, ['result' => false, 'message' => $e->getMessage()]);
+                return;
+            }
         }
 
         $tinhaDesconto = (float) $venda->valor_desconto > 0;
@@ -714,7 +753,7 @@ class Vendas extends MY_Controller
 
         if ($this->data['configuration']['control_estoque'] ?? false) {
             $this->load->model('produtos_model');
-            $this->produtos_model->updateEstoque($item->produtos_id, $item->quantidade, '+');
+            $this->produtos_model->updateEstoque($item->produtos_id, $item->quantidade, '+', ['tipo' => 'venda_devolucao', 'origem' => 'Venda #' . $idVenda, 'motivo' => 'Remoção de produto da venda']);
         }
 
         $tinhaDesconto = (float) $venda->valor_desconto > 0;

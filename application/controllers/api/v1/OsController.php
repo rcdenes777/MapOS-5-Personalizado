@@ -150,6 +150,11 @@ class OsController extends REST_Controller
     public function index_post()
     {
         $this->logged_user();
+        require_once APPPATH . 'helpers/trifase_estoque_helper.php';
+        if (trifaseEstoqueHabilitado()) {
+            $this->response(['status' => false, 'message' => 'Use as operações auditáveis do painel para preservar estoque e custos.'], REST_Controller::HTTP_FORBIDDEN);
+            return;
+        }
         if (trifaseAtendimentoHabilitado() && $this->post('status') === 'Finalizado') {
             $this->response(['status' => false, 'message' => 'Crie o atendimento e registre a conclusão pelas ações técnicas dedicadas.'], 409);
             return;
@@ -264,6 +269,11 @@ class OsController extends REST_Controller
     public function index_put($id)
     {
         $this->logged_user();
+        require_once APPPATH . 'helpers/trifase_estoque_helper.php';
+        if (trifaseEstoqueHabilitado()) {
+            $this->response(['status' => false, 'message' => 'Use as operações auditáveis do painel para preservar estoque e custos.'], REST_Controller::HTTP_FORBIDDEN);
+            return;
+        }
         if (! $this->permission->checkPermission($this->logged_user()->level, 'eOs')) {
             $this->response([
                 'status' => false,
@@ -406,6 +416,15 @@ class OsController extends REST_Controller
     public function index_delete($id)
     {
         $this->logged_user();
+        if ($this->db->table_exists('trifase_os_custos') && $this->db->where('os_id', (int) $id)->count_all_results('trifase_os_custos')) {
+            $this->response(['status' => false, 'message' => 'OS com custos históricos não pode ser excluída.'], REST_Controller::HTTP_FORBIDDEN);
+            return;
+        }
+        require_once APPPATH . 'helpers/trifase_estoque_helper.php';
+        if (trifaseEstoqueHabilitado()) {
+            $this->response(['status' => false, 'message' => 'Use as operações auditáveis do painel para preservar estoque e custos.'], REST_Controller::HTTP_FORBIDDEN);
+            return;
+        }
         if (! $this->permission->checkPermission($this->logged_user()->level, 'dOs')) {
             $this->response([
                 'status' => false,
@@ -494,6 +513,11 @@ class OsController extends REST_Controller
     public function desconto_post($id)
     {
         $this->logged_user();
+        require_once APPPATH . 'helpers/trifase_estoque_helper.php';
+        if (trifaseEstoqueHabilitado()) {
+            $this->response(['status' => false, 'message' => 'Use as operações auditáveis do painel para preservar estoque e custos.'], REST_Controller::HTTP_FORBIDDEN);
+            return;
+        }
         if (! $this->permission->checkPermission($this->logged_user()->level, 'eOs')) {
             $this->response([
                 'status' => false,
@@ -542,6 +566,11 @@ class OsController extends REST_Controller
     public function produtos_post($id)
     {
         $this->logged_user();
+        require_once APPPATH . 'helpers/trifase_estoque_helper.php';
+        if (trifaseEstoqueHabilitado()) {
+            $this->response(['status' => false, 'message' => 'Use as operações auditáveis do painel para preservar estoque e custos.'], REST_Controller::HTTP_FORBIDDEN);
+            return;
+        }
         if (! $this->permission->checkPermission($this->logged_user()->level, 'eOs')) {
             $this->response([
                 'status' => false,
@@ -614,6 +643,11 @@ class OsController extends REST_Controller
     public function produtos_put($id, $idProdutos_os)
     {
         $this->logged_user();
+        require_once APPPATH . 'helpers/trifase_estoque_helper.php';
+        if (trifaseEstoqueHabilitado()) {
+            $this->response(['status' => false, 'message' => 'Use as operações auditáveis do painel para preservar estoque e custos.'], REST_Controller::HTTP_FORBIDDEN);
+            return;
+        }
         if (! $this->permission->checkPermission($this->logged_user()->level, 'eOs')) {
             $this->response([
                 'status' => false,
@@ -681,6 +715,11 @@ class OsController extends REST_Controller
     public function produtos_delete($id, $idProdutos_os)
     {
         $this->logged_user();
+        require_once APPPATH . 'helpers/trifase_estoque_helper.php';
+        if (trifaseEstoqueHabilitado()) {
+            $this->response(['status' => false, 'message' => 'Use as operações auditáveis do painel para preservar estoque e custos.'], REST_Controller::HTTP_FORBIDDEN);
+            return;
+        }
         if (! $this->permission->checkPermission($this->logged_user()->level, 'eOs')) {
             $this->response([
                 'status' => false,
@@ -725,6 +764,11 @@ class OsController extends REST_Controller
     public function servicos_post($id)
     {
         $this->logged_user();
+        require_once APPPATH . 'helpers/trifase_estoque_helper.php';
+        if (trifaseEstoqueHabilitado()) {
+            $this->response(['status' => false, 'message' => 'Use as operações auditáveis do painel para preservar estoque e custos.'], REST_Controller::HTTP_FORBIDDEN);
+            return;
+        }
         if (! $this->permission->checkPermission($this->logged_user()->level, 'eOs')) {
             $this->response([
                 'status' => false,
@@ -795,6 +839,11 @@ class OsController extends REST_Controller
     public function servicos_put($id, $idServicos_os)
     {
         $this->logged_user();
+        require_once APPPATH . 'helpers/trifase_estoque_helper.php';
+        if (trifaseEstoqueHabilitado()) {
+            $this->response(['status' => false, 'message' => 'Use as operações auditáveis do painel para preservar estoque e custos.'], REST_Controller::HTTP_FORBIDDEN);
+            return;
+        }
         if (! $this->permission->checkPermission($this->logged_user()->level, 'eOs')) {
             $this->response([
                 'status' => false,
@@ -855,6 +904,11 @@ class OsController extends REST_Controller
     public function servicos_delete($id, $idServicos_os)
     {
         $this->logged_user();
+        require_once APPPATH . 'helpers/trifase_estoque_helper.php';
+        if (trifaseEstoqueHabilitado()) {
+            $this->response(['status' => false, 'message' => 'Use as operações auditáveis do painel para preservar estoque e custos.'], REST_Controller::HTTP_FORBIDDEN);
+            return;
+        }
         if (! $this->permission->checkPermission($this->logged_user()->level, 'eOs')) {
             $this->response([
                 'status' => false,
@@ -894,6 +948,11 @@ class OsController extends REST_Controller
     public function anotacoes_post($id)
     {
         $this->logged_user();
+        require_once APPPATH . 'helpers/trifase_estoque_helper.php';
+        if (trifaseEstoqueHabilitado()) {
+            $this->response(['status' => false, 'message' => 'Use as operações auditáveis do painel para preservar estoque e custos.'], REST_Controller::HTTP_FORBIDDEN);
+            return;
+        }
         if (! $this->permission->checkPermission($this->logged_user()->level, 'eOs')) {
             $this->response([
                 'status' => false,
@@ -946,6 +1005,11 @@ class OsController extends REST_Controller
     public function anotacoes_delete($id, $idAnotacao)
     {
         $this->logged_user();
+        require_once APPPATH . 'helpers/trifase_estoque_helper.php';
+        if (trifaseEstoqueHabilitado()) {
+            $this->response(['status' => false, 'message' => 'Use as operações auditáveis do painel para preservar estoque e custos.'], REST_Controller::HTTP_FORBIDDEN);
+            return;
+        }
         if (! $this->permission->checkPermission($this->logged_user()->level, 'eOs')) {
             $this->response([
                 'status' => false,
@@ -1003,6 +1067,11 @@ class OsController extends REST_Controller
     public function anexos_post($id)
     {
         $this->logged_user();
+        require_once APPPATH . 'helpers/trifase_estoque_helper.php';
+        if (trifaseEstoqueHabilitado()) {
+            $this->response(['status' => false, 'message' => 'Use as operações auditáveis do painel para preservar estoque e custos.'], REST_Controller::HTTP_FORBIDDEN);
+            return;
+        }
         if (! $this->permission->checkPermission($this->logged_user()->level, 'eOs')) {
             $this->response([
                 'status' => false,
@@ -1109,6 +1178,11 @@ class OsController extends REST_Controller
     public function anexos_delete($id, $idAnexo)
     {
         $this->logged_user();
+        require_once APPPATH . 'helpers/trifase_estoque_helper.php';
+        if (trifaseEstoqueHabilitado()) {
+            $this->response(['status' => false, 'message' => 'Use as operações auditáveis do painel para preservar estoque e custos.'], REST_Controller::HTTP_FORBIDDEN);
+            return;
+        }
         if (! $this->permission->checkPermission($this->logged_user()->level, 'eOs')) {
             $this->response([
                 'status' => false,

@@ -1,5 +1,7 @@
 <?php
 
+require_once APPPATH . 'helpers/trifase_estoque_helper.php';
+
 class Produtos_model extends CI_Model
 {
     public function __construct()
@@ -69,6 +71,26 @@ class Produtos_model extends CI_Model
 
     public function add($table, $data)
     {
+        if ($table === 'produtos' && trifaseEstoqueHabilitado()) {
+            require_once APPPATH . 'models/Trifase_estoque_model.php';
+            $modelo = new Trifase_estoque_model();
+            $modelo->db = $this->db;
+            $this->db->trans_begin();
+            try {
+                if (! $this->db->insert($table, $data)) {
+                    throw new RuntimeException('Não foi possível cadastrar o produto.');
+                }
+                $id = (int) $this->db->insert_id();
+                $modelo->movimentar($id, 'inicial', (int) $data['estoque'], $modelo->centavos((string) $data['precoCompra']), date('Y-m-d'), 'Saldo inicial informado no cadastro', 'Cadastro do produto', (int) get_instance()->session->userdata('id_admin'), bin2hex(random_bytes(16)));
+                if (! $this->db->trans_status() || ! $this->db->trans_commit()) {
+                    throw new RuntimeException('Falha ao confirmar o cadastro.');
+                }
+                return true;
+            } catch (Throwable $e) {
+                $this->db->trans_rollback();
+                return false;
+            }
+        }
         $this->db->insert($table, $data);
         if ($this->db->affected_rows() == '1') {
             return true;
@@ -79,6 +101,9 @@ class Produtos_model extends CI_Model
 
     public function edit($table, $data, $fieldID, $ID)
     {
+        if ($table === 'produtos' && $this->db->table_exists('trifase_estoque_eventos') && $this->db->where('produto_id', (int) $ID)->count_all_results('trifase_estoque_eventos')) {
+            unset($data['estoque']);
+        }
         $this->db->where($fieldID, $ID);
         $this->db->update($table, $data);
 
@@ -91,6 +116,9 @@ class Produtos_model extends CI_Model
 
     public function delete($table, $fieldID, $ID)
     {
+        if ($table === 'produtos' && $this->db->table_exists('trifase_estoque_eventos') && $this->db->where('produto_id', (int) $ID)->count_all_results('trifase_estoque_eventos')) {
+            return false;
+        }
         $this->db->where($fieldID, $ID);
         $this->db->delete($table);
         if ($this->db->affected_rows() == '1') {
@@ -105,10 +133,33 @@ class Produtos_model extends CI_Model
         return $this->db->count_all($table);
     }
 
-    public function updateEstoque($produto, $quantidade, $operacao = '-')
+    public function updateEstoque($produto, $quantidade, $operacao = '-', array $contexto = [])
     {
+        if (! in_array($operacao, ['+', '-'], true)) {
+            throw new DomainException('Operação de estoque inválida.');
+        }
+        if (trifaseEstoqueHabilitado()) {
+            require_once APPPATH . 'models/Trifase_estoque_model.php';
+            $modelo = new Trifase_estoque_model();
+            $modelo->db = $this->db;
+            $usuario = (int) ($contexto['usuario'] ?? get_instance()->session->userdata('id_admin'));
+            $modelo->movimentar(
+                (int) $produto,
+                $contexto['tipo'] ?? ($operacao === '+' ? 'legado_entrada' : 'legado_saida'),
+                (int) $quantidade,
+                null,
+                date('Y-m-d'),
+                $contexto['motivo'] ?? 'Movimentação pelo fluxo nativo',
+                $contexto['origem'] ?? 'Painel nativo',
+                $usuario,
+                $contexto['operacao'] ?? bin2hex(random_bytes(16))
+            );
+            return true;
+        }
+        if ($this->db->table_exists('trifase_estoque_eventos') && $this->db->where('produto_id', (int) $produto)->count_all_results('trifase_estoque_eventos')) {
+            throw new DomainException('Reative o estoque auditável para movimentar este produto e preservar seu histórico.');
+        }
         $sql = "UPDATE produtos set estoque = estoque $operacao ? WHERE idProdutos = ?";
-
         return $this->db->query($sql, [$quantidade, $produto]);
     }
 }

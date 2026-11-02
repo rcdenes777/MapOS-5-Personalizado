@@ -107,6 +107,12 @@ class Trifase_retornos extends MY_Controller
                 $total['minutos'] += $c['minutos'];
             }
         }
+        $this->data['custosItensRetorno'] = null;
+        require_once APPPATH . 'helpers/trifase_estoque_helper.php';
+        if ($financeiro && trifaseEstoqueHabilitado()) {
+            $this->load->model('Trifase_estoque_model', 'estoque_retorno');
+            $this->data['custosItensRetorno'] = $this->estoque_retorno->resumoOs($id);
+        }
         $this->data['custosUnidadeRetorno'] = $financeiro ? $total : null;
         $this->data['view'] = 'trifase/retorno';
         $this->data['menuOs'] = 'OS';

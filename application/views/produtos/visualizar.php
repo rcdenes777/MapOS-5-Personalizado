@@ -1,3 +1,4 @@
+<?php require_once APPPATH . 'helpers/trifase_estoque_helper.php'; ?>
 <?php
 /**
  * Ficha do produto (#2841): dados, preços com o lucro e o estoque, com a
@@ -74,7 +75,9 @@ $secoes = [
                     <dd class="text-body-md tabular-nums text-text"><?= e($produto->estoqueMinimo !== null && $produto->estoqueMinimo !== '' ? (int) $produto->estoqueMinimo . ' ' . $unidade : '—') ?></dd>
                 </div>
             </dl>
-            <?php if ($pode['editar']) { ?>
+            <?php if (trifaseEstoqueHabilitado()) { ?>
+                <div class="mt-4"><?= component('link', ['label' => 'Movimentar estoque e consultar histórico', 'href' => site_url('trifase_estoque/produto/' . $id)]) ?></div>
+            <?php } elseif ($pode['editar']) { ?>
                 <form method="post" action="<?= e(site_url('produtos/atualizar_estoque')) ?>" novalidate class="mt-4 grid grid-cols-[minmax(0,1fr)_auto] items-start gap-2 border-t border-border pt-4" <?= js_module('formulario/padrao') ?>>
                     <input type="hidden" name="<?= e($this->security->get_csrf_token_name()) ?>" value="<?= e($this->security->get_csrf_hash()) ?>">
                     <input type="hidden" name="id" value="<?= e($id) ?>">

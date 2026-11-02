@@ -140,6 +140,11 @@ class Servicos extends MY_Controller
         }
 
         $id = $this->input->post('id');
+        if ($this->db->table_exists('trifase_servico_custos') && ($this->db->where('servico_id', (int) $id)->count_all_results('trifase_servico_custos')
+            || $this->db->where('servicos_id', (int) $id)->count_all_results('servicos_os'))) {
+            $this->session->set_flashdata('error', 'Serviço com custos ou uso em OS não pode ser excluído.');
+            return redirect('servicos');
+        }
         if ($id == null) {
             $this->session->set_flashdata('error', 'Erro ao tentar excluir serviço.');
             redirect(site_url('servicos/gerenciar/'));

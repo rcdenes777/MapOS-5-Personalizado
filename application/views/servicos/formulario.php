@@ -1,3 +1,4 @@
+<?php require_once APPPATH . 'helpers/trifase_estoque_helper.php'; ?>
 <?php
 /**
  * Formulário de serviço, para cadastrar e editar (#2841), no padrão dos
@@ -63,3 +64,7 @@ $errosDeCampo = array_diff_key($erros, ['_geral' => true]);
         </div>
     </form>
 </div>
+
+<?php if (($servico ?? null) !== null && trifaseEstoqueHabilitado() && $this->permission->checkPermission($this->session->userdata('permissao'), 'vLancamento')) { ?>
+    <div class="mt-4"><?= component('link', ['label' => 'Custo interno e histórico deste serviço', 'href' => site_url('trifase_estoque/servico/' . (int) $servico->idServicos)]) ?></div>
+<?php } ?>

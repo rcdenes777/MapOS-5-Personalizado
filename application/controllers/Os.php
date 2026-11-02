@@ -12,6 +12,8 @@ require_once APPPATH . 'helpers/trifase_atendimento_helper.php';
 require_once APPPATH . 'helpers/trifase_retorno_helper.php';
 require_once APPPATH . 'helpers/trifase_interface_helper.php';
 
+require_once APPPATH . 'helpers/trifase_estoque_helper.php';
+
 class Os extends MY_Controller
 {
     private ?Trifase_os_lock $financeiroLock = null;
@@ -340,7 +342,7 @@ class Os extends MY_Controller
      */
     private function salvarOs(object $os, array $dados): ?int
     {
-        if (! trifaseFinanceiroHabilitado() && ! $this->db->table_exists('trifase_orcamento_versoes') && ! $this->db->table_exists('trifase_atendimentos') && trifaseEquipamentoDaOs($this->db, (int) $os->idOs) === null) {
+        if (! trifaseFinanceiroHabilitado() && ! trifaseEstoqueHabilitado() && ! $this->db->table_exists('trifase_orcamento_versoes') && ! $this->db->table_exists('trifase_atendimentos') && trifaseEquipamentoDaOs($this->db, (int) $os->idOs) === null) {
             return $this->salvarOsSemTrava($os, $dados);
         }
         $lock = new Trifase_os_lock($this->db, (int) $os->idOs);
@@ -699,7 +701,7 @@ class Os extends MY_Controller
     private function osParaAlterar(bool $tecnica = false): ?object
     {
         $id = (int) $this->input->post('idOs');
-        if (! $tecnica && (trifaseFinanceiroHabilitado() || $this->db->table_exists('trifase_orcamento_versoes'))) {
+        if (! $tecnica && (trifaseFinanceiroHabilitado() || trifaseEstoqueHabilitado() || $this->db->table_exists('trifase_orcamento_versoes'))) {
             try {
                 $this->financeiroLock = new Trifase_os_lock($this->db, $id);
                 if (trifaseFinanceiroHabilitado() && ((int) $this->financeiroLock->os->faturado === 1 || $this->financeiroLock->os->status === 'Cancelado')) {
@@ -947,7 +949,7 @@ class Os extends MY_Controller
             $this->load->model('produtos_model');
             if ($this->data['configuration']['control_estoque']) {
                 foreach ($produtos as $p) {
-                    $this->produtos_model->updateEstoque($p->produtos_id, $p->quantidade, '+');
+                    $this->produtos_model->updateEstoque($p->produtos_id, $p->quantidade, '+', ['tipo' => 'os_devolucao', 'origem' => 'OS #' . (int) $id, 'motivo' => 'Cancelamento ou exclusão da OS']);
                     log_info('ESTOQUE: Produto id ' . $p->produtos_id . ' voltou ao estoque. Quantidade: ' . $p->quantidade . '. Motivo: Cancelamento/Exclusão');
                 }
             }
@@ -960,7 +962,7 @@ class Os extends MY_Controller
             $this->load->model('produtos_model');
             if ($this->data['configuration']['control_estoque']) {
                 foreach ($produtos as $p) {
-                    $this->produtos_model->updateEstoque($p->produtos_id, $p->quantidade, '-');
+                    $this->produtos_model->updateEstoque($p->produtos_id, $p->quantidade, '-', ['tipo' => 'os_saida', 'origem' => 'OS #' . (int) $id, 'motivo' => 'Reativação da OS']);
                     log_info('ESTOQUE: Produto id ' . $p->produtos_id . ' baixa do estoque. Quantidade: ' . $p->quantidade . '. Motivo: Mudou status que já estava Cancelado para outro');
                 }
             }
@@ -977,6 +979,11 @@ class Os extends MY_Controller
 
         $id = (int) $this->input->post('id');
         $lock = (trifaseFinanceiroHabilitado() || $this->db->table_exists('trifase_entregas_eventos') || $this->db->table_exists('trifase_os_equipamentos') || $this->db->table_exists('trifase_orcamento_versoes') || $this->db->table_exists('trifase_atendimentos')) && $id > 0 ? new Trifase_os_lock($this->db, $id) : null;
+        if ($this->db->table_exists('trifase_os_custos') && $this->db->where('os_id', $id)->count_all_results('trifase_os_custos')) {
+            $this->session->set_flashdata('error', 'OS com histórico de custos não pode ser excluída.');
+            $lock?->finalizar(false);
+            return redirect('os/visualizar/' . $id);
+        }
         if (trifaseAtendimentoDaOs($this->db, $id) !== null) {
             $this->session->set_flashdata('error', 'OS com conclusão técnica registrada não pode ser excluída.');
             $lock?->finalizar(false);
@@ -1218,9 +1225,22 @@ class Os extends MY_Controller
             return;
         }
 
-        if ($produto && $controleEstoque) {
-            $this->load->model('produtos_model');
-            $this->produtos_model->updateEstoque($dados['produtos_id'], $dados['quantidade'], '-');
+        try {
+            if (trifaseEstoqueHabilitado()) {
+                $itemNovo = (int) $this->db->insert_id();
+                $this->load->model('Trifase_estoque_model', 'custos_estoque');
+                $this->custos_estoque->capturarItem($idOs, $tipo, $itemNovo, (int) $this->session->userdata('id_admin'));
+            }
+            if ($produto && $controleEstoque) {
+                $this->load->model('produtos_model');
+                $this->produtos_model->updateEstoque($dados['produtos_id'], $dados['quantidade'], '-', ['tipo' => 'os_saida', 'origem' => 'OS #' . $idOs, 'motivo' => 'Inclusão de peça na OS']);
+            }
+        } catch (DomainException $e) {
+            $this->responderJson(422, ['result' => false, 'message' => $e->getMessage()]);
+            return;
+        } catch (RuntimeException $e) {
+            $this->responderJson(500, ['result' => false, 'message' => 'Não foi possível registrar item, custo e estoque. Nenhuma alteração foi confirmada.']);
+            return;
         }
 
         $tinhaDesconto = (float) $os->valor_desconto > 0;
@@ -1350,7 +1370,7 @@ class Os extends MY_Controller
 
         if ($produto && ($this->data['configuration']['control_estoque'] ?? false)) {
             $this->load->model('produtos_model');
-            $this->produtos_model->updateEstoque($item->produtos_id, $item->quantidade, '+');
+            $this->produtos_model->updateEstoque($item->produtos_id, $item->quantidade, '+', ['tipo' => 'os_devolucao', 'origem' => 'OS #' . $idOs, 'motivo' => 'Remoção de peça da OS']);
         }
 
         $tinhaDesconto = (float) $os->valor_desconto > 0;

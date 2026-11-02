@@ -412,3 +412,9 @@ A migração `20261102030000_trifase_atendimentos` cria referência técnica pr�
 ## Extensão Trifase: retorno em garantia (opcional)
 
 A migração `20261102040000_trifase_retornos` cria vínculos e eventos, sem reabrir OS antigas ou converter garantias. Após backup e ensaio em cópia, ative `TRIFASE_RETORNOS_ENABLED=true` junto dos módulos de equipamentos e atendimentos. Origem precisa estar concluída e ter unidade/cliente e referência de garantia conhecidos. Leitura exige `vOs`; criação também `aOs+eOs`; avaliação `eOs`; custos também `vLancamento`. Decisões não executam pagamentos, estoque ou prorrogação de prazo. Preserve as tabelas ao desligar a função. Ver `trifase/RETORNOS_LAB.md`.
+
+### Clientes, catálogo e custos do laboratório Trifase
+
+As migrações aditivas `20261102050000` e `20261102060000` preparam o histórico privado dos cadastros, movimentos de estoque e custos por item/serviço. Aplicar backup e migrations antes de habilitar `TRIFASE_CADASTROS_ENABLED` ou `TRIFASE_ESTOQUE_ENABLED`; ambas vêm desligadas. Não classificam clientes, reinterpretam unidades, recalculam saldos ou preenchem custos antigos automaticamente.
+
+A ativação foi ensaiada somente no laboratório8230. Usar permissões nativas de consulta/edição por área; não conceder automaticamente por nome de cargo. Custos exigem também visualização financeira. Com estoque auditável ativo, ajustes passam pelo novo formulário e escritas de produtos/OS pela API ficam bloqueadas até adaptação equivalente; API permanece desligada no laboratório. Não apagar tabelas para desativar a interface: histórico de clientes, OS e estoque continua protegido. Consulte `trifase/CADASTROS_LAB.md` e `trifase/ESTOQUE_CUSTOS_LAB.md` para regras, limitações e recuperação coerente.

@@ -1,3 +1,4 @@
+<?php require_once APPPATH . 'helpers/trifase_estoque_helper.php'; ?>
 <?php
 /** Piloto visual: leitura dos mesmos registros e navegação para ações existentes. */
 $idOs = (int) $os->idOs;
@@ -239,4 +240,11 @@ if (($pilotoEquipamento ?? null) !== null
         <input type="hidden" name="idItem" value="" data-modal-de="excluir-anexo" data-modal-valor="id">
     </form>
     <?= component('modal-confirm', ['id' => 'excluir-anexo', 'title' => 'Excluir anexo?', 'message' => [new HtmlSeguro('<strong data-modal-valor="nome"></strong>'), ' será apagado do servidor. Essa ação não pode ser desfeita.'], 'confirm_label' => 'Excluir', 'confirm_attrs' => ['form' => 'form-excluir-anexo']]) ?>
+<?php } ?>
+
+<?php if (trifaseEstoqueHabilitado() && $this->permission->checkPermission($this->session->userdata('permissao'), 'vLancamento')) { ?>
+    <section class="mt-4 rounded-card border border-border bg-surface p-4">
+        <h2 class="mb-2 text-heading-sm text-text">Custos internos do reparo</h2>
+        <?= component('link', ['label' => 'Consultar peças, serviços e custos registrados', 'href' => site_url('trifase_estoque/os/' . (int) $os->idOs)]) ?>
+    </section>
 <?php } ?>

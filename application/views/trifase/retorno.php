@@ -53,6 +53,12 @@ foreach ($eventosRetorno as $eventoCustoRetorno) {
             <p class="mt-3 text-body-md text-text"><?= e('Neste retorno: ' . dinheiro($custosRetorno['valor_c'] / 100) . ' · ' . $custosRetorno['minutos'] . ' minutos') ?></p>
             <p class="mt-2 text-body-md text-text"><?= e('Nos retornos desta unidade: ' . dinheiro($custosUnidadeRetorno['valor_c'] / 100) . ' · ' . $custosUnidadeRetorno['minutos'] . ' minutos') ?></p>
             <p class="mt-3 text-caption text-muted">Valores e tempo informados pela equipe. Não incluem custos antigos não registrados. Não são preço cobrado, despesa paga ou movimentação de estoque; evite registrar novamente o mesmo custo.</p>
+            <?php if (($custosItensRetorno ?? null) !== null) { ?>
+                <p class="mt-3 text-body-md text-text"><?= e('Peças e serviços registrados nesta OS: ' . dinheiro($custosItensRetorno['valor_c'] / 100)) ?></p>
+                <p class="mt-2 text-caption text-muted"><?= e($custosItensRetorno['desconhecidos'] > 0 ? 'Existem itens sem custo conhecido. A composição está incompleta.' : 'Custos dos itens registrados no uso, separados dos valores adicionais declarados acima.') ?></p>
+                <?= component('link', ['label' => 'Consultar composição e histórico dos custos', 'href' => site_url('trifase_estoque/os/' . $idRetorno)]) ?>
+            <?php } ?>
+
             <?php if ($editavelRetorno) { ?>
                 <details class="mt-4"><summary>Registrar custo ou tempo de trabalho</summary>
                     <form method="post" action="<?= e(site_url('trifase_retornos/custo/' . $idRetorno)) ?>" class="mt-3 grid gap-3" <?= js_module('formulario/padrao') ?>>

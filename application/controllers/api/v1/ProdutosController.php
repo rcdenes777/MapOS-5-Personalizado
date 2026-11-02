@@ -60,6 +60,11 @@ class ProdutosController extends REST_Controller
     public function index_post()
     {
         $this->logged_user();
+        require_once APPPATH . 'helpers/trifase_estoque_helper.php';
+        if (trifaseEstoqueHabilitado()) {
+            $this->response(['status' => false, 'message' => 'Use as operações auditáveis do painel para preservar estoque e custos.'], REST_Controller::HTTP_FORBIDDEN);
+            return;
+        }
         if (! $this->permission->checkPermission($this->logged_user()->level, 'aProduto')) {
             $this->response([
                 'status' => false,
@@ -111,6 +116,11 @@ class ProdutosController extends REST_Controller
     public function index_put($id)
     {
         $this->logged_user();
+        require_once APPPATH . 'helpers/trifase_estoque_helper.php';
+        if (trifaseEstoqueHabilitado()) {
+            $this->response(['status' => false, 'message' => 'Use as operações auditáveis do painel para preservar estoque e custos.'], REST_Controller::HTTP_FORBIDDEN);
+            return;
+        }
 
         if (! $this->permission->checkPermission($this->logged_user()->level, 'eProduto')) {
             $this->response([
@@ -170,6 +180,15 @@ class ProdutosController extends REST_Controller
     public function index_delete($id)
     {
         $this->logged_user();
+        if ($this->db->table_exists('trifase_estoque_eventos') && ($this->db->where('produto_id', (int) $id)->count_all_results('trifase_estoque_eventos') || $this->db->where('produtos_id', (int) $id)->count_all_results('produtos_os'))) {
+            $this->response(['status' => false, 'message' => 'Cadastro com histórico de custos ou estoque não pode ser excluído.'], REST_Controller::HTTP_FORBIDDEN);
+            return;
+        }
+        require_once APPPATH . 'helpers/trifase_estoque_helper.php';
+        if (trifaseEstoqueHabilitado()) {
+            $this->response(['status' => false, 'message' => 'Use as operações auditáveis do painel para preservar estoque e custos.'], REST_Controller::HTTP_FORBIDDEN);
+            return;
+        }
         if (! $this->permission->checkPermission($this->logged_user()->level, 'dProduto')) {
             $this->response([
                 'status' => false,

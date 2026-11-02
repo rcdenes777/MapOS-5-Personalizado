@@ -154,6 +154,10 @@ class ServicosController extends REST_Controller
     public function index_delete($id)
     {
         $this->logged_user();
+        if ($this->db->table_exists('trifase_servico_custos') && ($this->db->where('servico_id', (int) $id)->count_all_results('trifase_servico_custos') || $this->db->where('servicos_id', (int) $id)->count_all_results('servicos_os'))) {
+            $this->response(['status' => false, 'message' => 'Cadastro com histórico de custos ou estoque não pode ser excluído.'], REST_Controller::HTTP_FORBIDDEN);
+            return;
+        }
         if (! $this->permission->checkPermission($this->logged_user()->level, 'dServico')) {
             $this->response([
                 'status' => false,

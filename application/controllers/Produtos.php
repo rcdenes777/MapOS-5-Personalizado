@@ -4,6 +4,8 @@ if (! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
+require_once APPPATH . 'helpers/trifase_estoque_helper.php';
+
 class Produtos extends MY_Controller
 {
     /** Filtros da listagem, na query string (listagemFiltros()). */
@@ -93,6 +95,9 @@ class Produtos extends MY_Controller
         $erros = [];
 
         if ($this->input->method() === 'post') {
+            if ($produto !== null && trifaseEstoqueHabilitado()) {
+                $_POST['estoque'] = (string) $produto->estoque;
+            }
             $erros = $this->validarFormulario('produtos');
             $precos = [];
             foreach (['precoCompra', 'precoVenda'] as $campo) {
@@ -105,6 +110,9 @@ class Produtos extends MY_Controller
             if ($erros === []) {
                 $dados = produtoDadosDoFormulario($this->input->post(), $precos['precoCompra'], $precos['precoVenda']);
 
+                if ($produto !== null && trifaseEstoqueHabilitado()) {
+                    unset($dados['estoque']);
+                }
                 $salvou = $produto === null
                     ? $this->produtos_model->add('produtos', $dados)
                     : $this->produtos_model->edit('produtos', $dados, 'idProdutos', (int) $produto->idProdutos);
@@ -174,6 +182,10 @@ class Produtos extends MY_Controller
         }
 
         $id = (int) $this->input->post('id');
+        if ($this->db->table_exists('trifase_estoque_eventos') && ($this->db->where('produto_id', $id)->count_all_results('trifase_estoque_eventos') || $this->db->where('produtos_id', $id)->count_all_results('produtos_os'))) {
+            $this->session->set_flashdata('error', 'Produto com histórico de estoque não pode ser excluído.');
+            return redirect('produtos/visualizar/' . $id);
+        }
         if ($id <= 0) {
             $this->session->set_flashdata('error', 'Erro ao tentar excluir produto.');
             redirect(site_url('produtos'));
@@ -201,6 +213,10 @@ class Produtos extends MY_Controller
             redirect(base_url());
         }
 
+        if (trifaseEstoqueHabilitado()) {
+            $this->session->set_flashdata('error', 'Use Movimentar estoque para registrar tipo, motivo e histórico.');
+            return redirect('trifase_estoque/produto/' . (int) $this->input->post('id'));
+        }
         $produto = $this->produtos_model->getById((int) $this->input->post('id'));
         if (! $produto) {
             $this->session->set_flashdata('error', 'Produto não encontrado.');

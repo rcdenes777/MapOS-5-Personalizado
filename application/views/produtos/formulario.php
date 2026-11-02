@@ -1,3 +1,4 @@
+<?php require_once APPPATH . 'helpers/trifase_estoque_helper.php'; ?>
 <?php
 /**
  * Formulário de produto, para cadastrar e editar (#2841), no padrão dos
@@ -114,6 +115,7 @@ $caixa = 'rounded-xl border border-border bg-surface p-4 sm:p-6';
             <div class="mt-4 grid gap-4 sm:grid-cols-2">
                 <?= component('input', $campo('estoque', [
                     'label' => $editando ? 'Quantidade em estoque' : 'Estoque inicial',
+                    'disabled' => $editando && trifaseEstoqueHabilitado(),
                     'type' => 'number',
                     'required' => true,
                     'help' => $editando ? 'Para entradas e saídas do dia a dia, use "Entrada de estoque" na ficha do produto.' : null,

@@ -351,23 +351,28 @@ class Os extends MY_Controller
 
         $this->load->helper('trifase_interface');
         if (trifaseInterfacePiloto() && $aba === 'resumo' && $this->input->get('apresentacao') !== 'classica') {
-            $this->load->helper('trifase_publico');
-            $this->data['trifase_ui_piloto'] = true;
-            $this->data['pilotoFinanceiro'] = null;
-            $this->data['pilotoLink'] = null;
-            if (trifaseFinanceiroHabilitado() && $this->permite('vLancamento')
-                && trifaseFinanceiroOsGerida($this->db, (int) $this->data['result']->idOs)) {
-                $this->load->model('Trifase_financeiro_model', 'piloto_financeiro');
-                $this->data['pilotoFinanceiro'] = $this->piloto_financeiro->resumo((int) $this->data['result']->idOs);
-            }
-            if (function_exists('trifasePublicoHabilitado') && trifasePublicoHabilitado() && $this->permite('eOs')) {
-                $this->load->model('Trifase_publico_model', 'piloto_publico');
-                $this->data['pilotoLink'] = $this->piloto_publico->estado((int) $this->data['result']->idOs);
-            }
+            $this->data = array_merge($this->data, $this->dadosDoPiloto($this->data['result']));
             $this->data['view'] = 'trifase/os';
         }
 
         return $this->layout();
+    }
+
+    /** Dados de consulta exclusivos da apresentação opt-in. */
+    private function dadosDoPiloto(object $os): array
+    {
+        $this->load->helper('trifase_publico');
+        $dados = ['trifase_ui_piloto' => true, 'pilotoFinanceiro' => null, 'pilotoLink' => null];
+        if (trifaseFinanceiroHabilitado() && $this->permite('vLancamento')
+            && trifaseFinanceiroOsGerida($this->db, (int) $os->idOs)) {
+            $this->load->model('Trifase_financeiro_model', 'piloto_financeiro');
+            $dados['pilotoFinanceiro'] = $this->piloto_financeiro->resumo((int) $os->idOs);
+        }
+        if (trifasePublicoHabilitado() && $this->permite('eOs')) {
+            $this->load->model('Trifase_publico_model', 'piloto_publico');
+            $dados['pilotoLink'] = $this->piloto_publico->estado((int) $os->idOs);
+        }
+        return $dados;
     }
 
     /**
@@ -461,6 +466,16 @@ class Os extends MY_Controller
         $html = [];
         foreach ($partes as $parte) {
             $html[$parte] = $this->load->view('os/partes/' . $parte, $dados, true);
+        }
+
+        $this->load->helper('trifase_interface');
+        if (trifaseInterfacePiloto() && $aba === 'resumo'
+            && array_intersect($partes, ['produtos', 'servicos', 'desconto']) !== []) {
+            $dados = array_merge($dados, $this->dadosDoPiloto($os));
+            $html['pilotoitens'] = $this->load->view('trifase/itens', $dados, true);
+            if ($this->permite('vLancamento')) {
+                $html['pilotofinanceiro'] = $this->load->view('trifase/resumo-financeiro', $dados, true);
+            }
         }
 
         return $html;

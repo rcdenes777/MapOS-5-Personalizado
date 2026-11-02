@@ -60,34 +60,20 @@ $campos = [
             <section class="trifase-os-painel" aria-labelledby="piloto-itens">
                 <div class="trifase-os-secao-titulo">
                     <h2 id="piloto-itens">Peças e serviços da OS</h2>
-                    <?php if ($pode['editar']) { ?>
-                        <?= component('button', ['label' => 'Adicionar itens', 'icon' => 'plus', 'variant' => 'outline', 'href' => site_url('os/visualizar/' . $idOs) . '?aba=produtos']) ?>
+                    <?php if ($pode['editar'] && $verFinanceiro) { ?>
+                        <?= component('button', ['label' => 'Adicionar itens', 'icon' => 'plus', 'variant' => 'outline', 'href' => '#piloto-formularios-itens']) ?>
                     <?php } ?>
                 </div>
-                <?php if ((int) $os->faturado === 1) { ?><p class="text-muted">OS faturada · valores protegidos</p><?php } ?>
-                <?php if ($produtos === [] && $servicos === []) { ?>
-                    <?= component('empty-state', ['title' => 'Nenhuma peça ou serviço', 'message' => 'Os itens deste atendimento aparecerão aqui.', 'icon' => 'package', 'class' => 'border-0']) ?>
-                <?php } else { ?>
-                    <ul class="trifase-os-itens" aria-label="Peças e serviços">
-                        <?php foreach (['Peça' => $produtos, 'Serviço' => $servicos] as $tipo => $itens) { ?>
-                            <?php foreach ($itens as $item) { ?>
-                                <li>
-                                    <div class="trifase-os-item-nome"><span><?= e($tipo === 'Peça' ? $item->descricao : $item->nome) ?></span><small><?= e($tipo) ?></small></div>
-                                    <div class="trifase-os-item-valores"><span><?= e('Qtd. ' . (0 + $item->quantidade)) ?></span>
-                                        <?php if ($verFinanceiro) { ?><span><?= e(dinheiro($item->preco)) ?> / un.</span><strong><?= e(dinheiro($item->subTotal)) ?></strong><?php } ?>
-                                    </div>
-                                </li>
-                            <?php } ?>
+                <div data-os-parte="pilotoitens"><?php $this->load->view('trifase/itens'); ?></div>
+                <?php if ($pode['editar'] && $verFinanceiro) { ?>
+                    <div id="piloto-formularios-itens" class="trifase-os-formularios">
+                        <?php foreach (['produto' => 'Adicionar peça', 'servico' => 'Adicionar serviço'] as $tipoItem => $tituloItem) { ?>
+                            <details class="trifase-os-adicionar">
+                                <summary><?= e($tituloItem) ?></summary>
+                                <?php $this->load->view('os/partes/formulario-item', ['tipoItem' => $tipoItem, 'prefixoItem' => 'piloto-' . $tipoItem]); ?>
+                            </details>
                         <?php } ?>
-                    </ul>
-                    <?php if ($verFinanceiro) { ?>
-                        <dl class="trifase-os-totais">
-                            <div><dt>Peças</dt><dd><?= e(dinheiro($totais['produtos'])) ?></dd></div>
-                            <div><dt>Serviços</dt><dd><?= e(dinheiro($totais['servicos'])) ?></dd></div>
-                            <?php if ($totais['desconto'] > 0) { ?><div><dt>Desconto</dt><dd><?= e(dinheiro($totais['desconto'])) ?></dd></div><?php } ?>
-                            <div><dt>Total</dt><dd><?= e(dinheiro($totais['total'])) ?></dd></div>
-                        </dl>
-                    <?php } ?>
+                    </div>
                 <?php } ?>
                 <div class="trifase-os-links-itens">
                     <?= component('link', ['label' => $pode['editar'] ? 'Gerenciar peças' : 'Consultar peças', 'href' => site_url('os/visualizar/' . $idOs) . '?aba=produtos']) ?>
@@ -110,26 +96,7 @@ $campos = [
         <aside class="trifase-os-lateral" aria-label="Financeiro, compartilhamento e informações da OS">
             <?php if ($verFinanceiro) { ?>
                 <section class="trifase-os-painel" aria-labelledby="piloto-financeiro">
-                    <h2 id="piloto-financeiro">Financeiro</h2>
-                    <?php if ($pilotoFinanceiro !== null) { ?>
-                        <?= component('pill-status', ['label' => $pilotoFinanceiro['situacao'], 'variant' => $pilotoFinanceiro['saldo_c'] === 0 ? 'success' : 'warning']) ?>
-                        <dl class="trifase-os-financeiro">
-                            <div><dt>Total acordado</dt><dd><?= e(dinheiro($pilotoFinanceiro['total_c'] / 100)) ?></dd></div>
-                            <div><dt>Recebido</dt><dd><?= e(dinheiro($pilotoFinanceiro['recebido_c'] / 100)) ?></dd></div>
-                            <div class="trifase-os-saldo"><dt>Saldo a receber</dt><dd><?= e(dinheiro($pilotoFinanceiro['saldo_c'] / 100)) ?></dd></div>
-                        </dl>
-                        <?php if ($permite('aLancamento') && $pilotoFinanceiro['saldo_c'] > 0 && $os->status !== 'Cancelado') { ?>
-                            <?= component('button', ['label' => 'Registrar recebimento', 'href' => $financeiroUrl]) ?>
-                        <?php } ?>
-                        <?= component('link', ['label' => 'Ver histórico financeiro', 'href' => $financeiroUrl]) ?>
-                    <?php } else { ?>
-                        <p class="text-muted">Valores dos itens desta OS</p>
-                        <p class="trifase-os-total-nao-formalizado"><?= e(dinheiro($totais['total'])) ?></p>
-                        <p class="text-muted"><?= e((int) $os->faturado === 1 ? 'Faturamento anterior: consulte o registro para conferir os pagamentos.' : 'Cobrança ainda não formalizada. Recebimentos e saldo não foram registrados.') ?></p>
-                        <?php if (trifaseFinanceiroHabilitado()) { ?>
-                            <?= component('button', ['label' => 'Consultar financeiro', 'variant' => 'outline', 'href' => $financeiroUrl]) ?>
-                        <?php } ?>
-                    <?php } ?>
+                    <div data-os-parte="pilotofinanceiro"><?php $this->load->view('trifase/resumo-financeiro'); ?></div>
                 </section>
             <?php } ?>
 
@@ -162,3 +129,13 @@ $campos = [
     $this->load->view('trifase/video');
     $this->load->view('trifase/galeria');
 } ?>
+
+<?php if ($pode['editar'] && $verFinanceiro) { ?>
+    <?php foreach (['produto' => 'peça', 'servico' => 'serviço'] as $tipo => $rotulo) { ?>
+        <form id="<?= e('form-excluir-' . $tipo) ?>" method="post" action="<?= e(site_url($tipo === 'produto' ? 'os/excluirProduto' : 'os/excluirServico')) ?>" hidden data-os-acao="<?= e($tipo) ?>">
+            <input type="hidden" name="idOs" value="<?= e($idOs) ?>">
+            <input type="hidden" name="idItem" value="" data-modal-de="<?= e('excluir-' . $tipo) ?>" data-modal-valor="id">
+        </form>
+        <?= component('modal-confirm', ['id' => 'excluir-' . $tipo, 'title' => 'Remover ' . $rotulo . ' da OS?', 'message' => [new HtmlSeguro('<strong data-modal-valor="nome"></strong>'), ' sairá desta OS.' . ($tipo === 'produto' && $controle_estoque ? ' A quantidade voltará ao estoque.' : '') . ' O desconto geral, se houver, será removido porque o total muda.'], 'confirm_label' => 'Remover', 'confirm_attrs' => ['form' => 'form-excluir-' . $tipo]]) ?>
+    <?php } ?>
+<?php } ?>

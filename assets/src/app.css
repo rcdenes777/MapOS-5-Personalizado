@@ -356,3 +356,21 @@ html[data-valores="ocultos"] .kpi-oculto-valores {
   .trifase-os-datas { grid-template-columns: repeat(3, minmax(0, 1fr)); flex-basis: 25rem; width: auto; }
   .trifase-os-datas > div:last-child { grid-column: auto; }
 }
+
+/* Operações de itens no próprio resumo; formulários fora do trecho atualizado. */
+.trifase-os [data-os-parte="pilotoitens"] > * + *,
+.trifase-os [data-os-parte="pilotofinanceiro"] > * + * { margin-block-start: calc(var(--spacing) * 4); }
+.trifase-os-formularios { display: grid; gap: calc(var(--spacing) * 3); }
+.trifase-os-adicionar { border-block-start: 1px solid var(--color-border); padding-block-start: calc(var(--spacing) * 3); }
+.trifase-os-adicionar summary { cursor: pointer; color: var(--color-primary-strong); font-weight: 500; min-height: calc(var(--spacing) * 11); padding-block: calc(var(--spacing) * 2); }
+.trifase-os-adicionar summary:focus-visible { outline: 3px solid var(--color-ring); outline-offset: 3px; }
+.trifase-os-adicionar form { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.trifase-os-adicionar form > .relative,
+.trifase-os-adicionar form > div:last-child { grid-column: 1 / -1; }
+.trifase-os-adicionar form > div { min-width: 0; }
+.trifase-os-lateral [data-os-parte="pilotofinanceiro"] > a { display: flex; justify-content: center; }
+.trifase-os-adicionar form > [data-item-enviar] { order: 1; grid-column: 1 / -1; padding-block-start: 0; }
+.trifase-os-adicionar form > div:last-child { grid-template-columns: minmax(0, 1fr); }
+@media (min-width: 48rem) {
+  .trifase-os-adicionar form > div:last-child { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}

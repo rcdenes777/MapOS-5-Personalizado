@@ -211,7 +211,7 @@ export default function iniciar(raiz, { post = postPadrao, doc = document, naveg
                 form.querySelectorAll('input[type=hidden][id]').forEach((oculto) => {
                     oculto.value = '';
                 });
-                raiz.querySelectorAll('[data-os-estoque-texto]').forEach((aviso) => {
+                form.querySelectorAll('[data-os-estoque-texto]').forEach((aviso) => {
                     aviso.textContent = '';
                 });
                 limparErros(form, doc);

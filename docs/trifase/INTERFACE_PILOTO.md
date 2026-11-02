@@ -46,3 +46,16 @@ Relatórios e capturas locais em `outputs/ui-piloto/` no workspace. Continuar pe
 Os campos de inclusão de itens na OS passam a listar ao focar/clicar, com filtragem progressiva e no máximo25opções por resposta. O atributo opt-in `data-autocomplete-listar` não muda o mínimo dos demais campos. Só os endpoints já autorizados de produto/serviço aceitam termo vazio; sem termo válido nos outros cadastros continua sem resultado. Selecionar preenche o ID/preço; não salva nem adiciona automaticamente. Escape/saída cancelam pesquisa pendente e o clique reabre a lista.
 
 Validação: lista inicial dos dois produtos e do serviço fictícios, filtro mos retornando apenasMOSFET, preço70,00/400,00 preenchido, Escape e reabertura no mesmo campo.414testesPHP direcionados/1288asserções,23testesJS, PHPStan e build aprovados. Nenhum item adicionado ou removido durante esse teste.
+
+
+### Inclusão e remoção no próprio resumo — 02/11/2026
+
+Adicionar peça/serviço agora expande formulários dentro da OS, com os mesmos endpoints, validação, preço sugerido, quantidade e descontos da tela nativa. O formulário foi extraído para `os/partes/formulario-item.php`, compartilhado com a apresentação clássica; prefixos distinguem IDs de campos/erros/autocomplete. Os campos de desconto também aceitam prefixo, mantendo o padrão anterior para outras telas. O botão de envio fica após o desconto no novo layout.
+
+A lista é renderizada por `trifase/itens.php`. Remover pede confirmação com nome e consequência, e usa os endpoints nativos de exclusão. As respostas da OS ganham os trechos `pilotoitens` e, com permissão, `pilotofinanceiro`, somente com flag ligada e contexto resumo. O módulo os/tela já aplica esses trechos; formulários e campos em edição não são substituídos. A limpeza do aviso de estoque passou a ser restrita ao formulário enviado, para não apagar o contexto do outro formulário. Sem novas rotas, migrations, permissões ou regras monetárias.
+
+Verificações reais em OS9001 exclusiva de QA:2fusíveis de15menos5em reais=25; serviço1,5×400menos10%=540; total565, depois540ao remover peça e0ao remover serviço. Valores atualizados também na lateral sem navegação/reload. Produto devolvido ao estoque19, exatamente o valor anterior ao ensaio. OS3 do usuário manteve2produtos,1serviço e4anexos; não foi usada para mutações de QA. Fixture9001 permanece vazia para inspeção, sem novo recebimento.
+
+Validação:1673testesPHP/7839asserções, sem falhas/erros/warnings, mantendo1depreciação e1ignorado; PHPStan sem erros novos/baseline preservado,23JS e build.9 verificaçõesHTTP: formulários nativos preservados, OS faturada sem controles e POST403, item ausente422, remoção inválida404, CSRF403 e perfil sem valores/controles comerciais. Navegador: ciclo real com desconto/fracionamento, confirmação de remoção e validação vazia; larguras360/390sem overflow após estabilizar o layout e sem IDs duplicados. Não é homologação completa ou teste físico. A tentativa inicial de teste revelou idOs ausente no formulário extraído; corrigido e coberto por teste. Uma fixture unitária sem ID de item gerou aviso e foi corrigida; relatório válido é itens-phpunit-final.txt.
+
+As funções de edição técnica, recebimento, compartilhamento e envio de anexos continuam nas telas existentes. Este lote integra operações de itens; não declara toda a fase operacional ou novas entidades implementadas.

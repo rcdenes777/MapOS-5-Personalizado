@@ -35,7 +35,34 @@ final class TrifaseOsViewTest extends \PHPUnit\Framework\TestCase
         $this->assertStringContainsString('Não informado', $html);
     }
 
-    private function renderizar(bool $financeiro, bool $formalizada = true): string
+    public function testFormulariosCompartilhadosTemIdsUnicosEEnviamAMesmaOs(): void
+    {
+        $html = $this->renderizar(true, false, true);
+        $this->assertStringContainsString('id="piloto-produto-nome"', $html);
+        $this->assertStringContainsString('id="piloto-servico-nome"', $html);
+        $this->assertStringContainsString('name="idOs" value="1"', $html);
+        $this->assertStringContainsString('os/adicionarProduto', $html);
+        $this->assertStringContainsString('os/adicionarServico', $html);
+        preg_match_all('/\sid="([^"]+)"/', $html, $ids);
+        $this->assertSame($ids[1], array_values(array_unique($ids[1])), 'Dois formulários não podem compartilhar IDs de campos.');
+    }
+
+    public function testSemFinanceiroNaoExibeFormularioComPrecosMesmoSeEditavel(): void
+    {
+        $html = $this->renderizar(false, false, true);
+        $this->assertStringNotContainsString('os/adicionarProduto', $html);
+        $this->assertStringNotContainsString('os/adicionarServico', $html);
+        $this->assertStringNotContainsString('R$', $html);
+    }
+
+    public function testOsProtegidaNaoOfereceMutacaoDeItens(): void
+    {
+        $html = $this->renderizar(true, true);
+        $this->assertStringNotContainsString('os/adicionarProduto', $html);
+        $this->assertStringNotContainsString('data-modal-abrir="excluir-produto"', $html);
+    }
+
+    private function renderizar(bool $financeiro, bool $formalizada = true, bool $editavel = false): string
     {
         $env = $_ENV;
         $_ENV['TRIFASE_FINANCEIRO_ENABLED'] = 'false';
@@ -78,12 +105,13 @@ final class TrifaseOsViewTest extends \PHPUnit\Framework\TestCase
         try {
             $v->view('trifase/os', [
                 'os' => (object) ['idOs' => 1, 'clientes_id' => 1, 'nomeCliente' => '<script>teste</script>', 'nome' => 'Técnico', 'dataInicial' => '2026-11-02', 'dataFinal' => '2026-11-06', 'descricaoProduto' => 'Placa inverter', 'defeito' => 'Não liga', 'observacoes' => '', 'laudoTecnico' => '', 'status' => 'Finalizado', 'faturado' => (int) $formalizada, 'celular_cliente' => '', 'telefone_cliente' => '', 'garantia' => 90],
-                'pode' => ['editar' => false, 'editar_tecnico' => false, 'ver_cliente' => false],
-                'produtos' => [(object) ['descricao' => 'Fusível', 'quantidade' => 1, 'preco' => 500, 'subTotal' => 500]],
+                'pode' => ['editar' => $editavel, 'editar_tecnico' => false, 'ver_cliente' => false],
+                'produtos' => [(object) ['idProdutos_os' => 1, 'descricao' => 'Fusível', 'quantidade' => 1, 'preco' => 500, 'subTotal' => 500]],
                 'servicos' => [], 'anexos' => [], 'garantia_ate' => null,
                 'totais' => ['produtos' => 500, 'servicos' => 0, 'desconto' => 0, 'total' => 500],
                 'pilotoFinanceiro' => $formalizada ? ['total_c' => 50000, 'recebido_c' => 20000, 'saldo_c' => 30000, 'situacao' => 'Parcialmente pago'] : null,
                 'pilotoLink' => null,
+                'controle_estoque' => true,
             ]);
             return (string) ob_get_clean();
         } finally {

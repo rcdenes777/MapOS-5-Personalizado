@@ -211,11 +211,9 @@ if (($pilotoEquipamento ?? null) !== null
                     <div><dt>Garantia concedida</dt><dd><?= e((int) $os->garantia > 0 ? (int) $os->garantia . ' dias' . ($garantia_ate ? ' · até ' . dataBr($garantia_ate) : '') : 'Não informada') ?></dd></div>
                     <?php } ?>
                 </dl>
-                <div class="trifase-os-links-itens">
-                    <?= component('link', ['label' => 'Anotações internas', 'href' => site_url('os/visualizar/' . $idOs) . '?aba=anotacoes']) ?>
-                    <?= component('link', ['label' => 'Histórico do atendimento', 'href' => site_url('os/visualizar/' . $idOs) . '?aba=historico']) ?>
-                </div>
             </section>
+
+            <?php $this->load->view('trifase/os-anotacoes-historico'); ?>
         </aside>
     </div>
 </div>
@@ -235,6 +233,11 @@ if (($pilotoEquipamento ?? null) !== null
 <?php } ?>
 
 <?php if ($editarTecnico) { ?>
+    <form id="form-excluir-anotacao" method="post" action="<?= e(site_url('os/excluirAnotacao')) ?>" hidden data-os-acao="anotacao">
+        <input type="hidden" name="idOs" value="<?= e($idOs) ?>">
+        <input type="hidden" name="idItem" value="" data-modal-de="excluir-anotacao" data-modal-valor="id">
+    </form>
+    <?= component('modal-confirm', ['id' => 'excluir-anotacao', 'title' => 'Excluir anotação?', 'message' => [new HtmlSeguro('<strong data-modal-valor="nome"></strong>'), ' será removida da OS. Essa ação não pode ser desfeita.'], 'confirm_label' => 'Excluir', 'confirm_attrs' => ['form' => 'form-excluir-anotacao']]) ?>
     <form id="form-excluir-anexo" method="post" action="<?= e(site_url('os/excluirAnexo')) ?>" hidden data-os-acao="anexo">
         <input type="hidden" name="idOs" value="<?= e($idOs) ?>">
         <input type="hidden" name="idItem" value="" data-modal-de="excluir-anexo" data-modal-valor="id">

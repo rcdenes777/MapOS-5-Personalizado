@@ -61,3 +61,9 @@ O início padrão do piloto agora apresenta o painel clássico para usuários co
 Os nove indicadores do painel clássico abrem a lista da fila selecionada no lugar da agenda, mantendo o usuário no painel. O cartão recebe indicação de seleção; a lista tem número com link para a OS, cliente, entrega, status, total e paginação, além de Voltar ao calendário. Reutiliza os filtros canônicos da listagem de OS, sem filtro de período da agenda; nenhuma informação financeira é renderizada. Consulta exige vOs e piloto ativo. Filtros inválidos são ignorados.
 
 Validação: nove indicadores, totais correspondentes, três páginas da fila Abertos sem duplicação, estados vazios, filtro por status, volta à agenda, acesso anônimo recusado, ausência de erros JavaScript e tela móvel 360px sem excesso horizontal. Build, sintaxe, escape, formatação e PHPStan aprovados. Evidências em outputs/painel-lista-filas/. Testes somente de consulta; nenhum registro de negócio alterado.
+
+## Anotações e histórico na própria OS
+
+O resumo piloto tem blocos separados de Anotações internas e Histórico do atendimento, após Dados do atendimento. Reutiliza os trechos e endpoints nativos: quem pode editar tecnicamente inclui anotações e exclui com confirmação, atualizando o bloco sem navegar; consulta sem edição continua vendo os registros. Nome/data, regras de permissão, privacidade e limites existentes são preservados. Histórico mostra as mudanças de status; correções da identificação continuam no histórico próprio do equipamento. Os antigos links para abas saíram do bloco de dados.
+
+Validado no navegador: consulta da OS3; inclusão e exclusão de uma nota fictícia na OS9064, sem abrir outra página/aba; nota removida ao final; leitura sem formulário para perfil somente consulta; sem valores financeiros/erros JavaScript e sem excesso horizontal a360px. Build, escape, diferenças e formatação aprovados. Evidências: outputs/os-anotacoes-inline/. Nenhuma anotação preexistente foi alterada.

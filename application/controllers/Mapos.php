@@ -56,6 +56,28 @@ class Mapos extends MY_Controller
             if (trifaseInterfacePiloto()) {
                 $this->load->model('Trifase_painel_model', 'painel_trifase');
                 $painel['operacional_classico'] = $this->painel_trifase->resumoOperacional();
+                $filtrosPainel = listagemFiltros([
+                    'fila' => array_keys(Trifase_os_fila::opcoes($this->db)),
+                    'status' => ['Orçamento', 'Aprovado', 'Em Andamento', 'Aguardando Peças', 'Cancelado'],
+                ], $this->input->get());
+                if ($filtrosPainel !== []) {
+                    // Uma única fila por vez, como nos indicadores.
+                    if (isset($filtrosPainel['fila'])) {
+                        unset($filtrosPainel['status']);
+                    }
+                    $this->load->model('os_model');
+                    $total = $this->os_model->contar($filtrosPainel);
+                    $limite = max(1, (int) $this->data['configuration']['per_page']);
+                    $offset = max(0, (int) $this->input->get('inicio'));
+                    $offset = min($offset, max(0, (int) (ceil($total / $limite) - 1) * $limite));
+                    $painel['lista_painel'] = [
+                        'filtros' => $filtrosPainel,
+                        'total' => $total,
+                        'rows' => $this->os_model->listar($filtrosPainel, $limite, $offset),
+                        'paginacao' => $this->paginacao(site_url('mapos'), $total, $offset, 'inicio', ['visao' => 'classica'] + $filtrosPainel),
+                    ];
+                }
+
             }
         }
 

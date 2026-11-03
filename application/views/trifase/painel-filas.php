@@ -2,27 +2,27 @@
 /** Filas operacionais: mesmas contagens e destinos do painel da assistência. */
 $cardsFilas = [];
 foreach ($resumoFilas['filas'] as $fila => $resumoFila) {
-    $cardsFilas[] = ['label' => ['andamento' => 'Abertos', 'orcamentos' => 'Aguardando aprovação do cliente'][$fila] ?? $resumoFila['label'], 'value' => $resumoFila['total'], 'accent' => $fila === 'retirada' ? 'success' : ($fila === 'retornos' ? 'warning' : 'info'), 'href' => site_url('os') . listagemQuery(['fila' => $fila])];
+    $cardsFilas[] = ['label' => ['andamento' => 'Abertos', 'orcamentos' => 'Aguardando aprovação do cliente'][$fila] ?? $resumoFila['label'], 'value' => $resumoFila['total'], 'accent' => $fila === 'retirada' ? 'success' : ($fila === 'retornos' ? 'warning' : 'info'), 'href' => site_url('mapos') . listagemQuery(['visao' => 'classica', 'fila' => $fila])];
 }
 array_splice($cardsFilas, min(2, count($cardsFilas)), 0, [[
     'label' => 'Aguardando peças', 'value' => (int) ($resumoFilas['status']['Aguardando Peças'] ?? 0), 'accent' => 'warning',
-    'href' => site_url('os') . listagemQuery(['status' => 'Aguardando Peças']),
+    'href' => site_url('mapos') . listagemQuery(['visao' => 'classica', 'status' => 'Aguardando Peças']),
 ]]);
 array_splice($cardsFilas, 1, 0, [[
     'label' => 'Em orçamento', 'value' => (int) ($resumoFilas['status']['Orçamento'] ?? 0), 'accent' => 'info',
-    'href' => site_url('os') . listagemQuery(['status' => 'Orçamento']),
+    'href' => site_url('mapos') . listagemQuery(['visao' => 'classica', 'status' => 'Orçamento']),
 ]]);
 array_splice($cardsFilas, 3, 0, [[
     'label' => 'Aprovado', 'value' => (int) ($resumoFilas['status']['Aprovado'] ?? 0), 'accent' => 'success',
-    'href' => site_url('os') . listagemQuery(['status' => 'Aprovado']),
+    'href' => site_url('mapos') . listagemQuery(['visao' => 'classica', 'status' => 'Aprovado']),
 ]]);
 array_splice($cardsFilas, 4, 0, [[
     'label' => 'Em andamento', 'value' => (int) ($resumoFilas['status']['Em Andamento'] ?? 0), 'accent' => 'progress',
-    'href' => site_url('os') . listagemQuery(['status' => 'Em Andamento']),
+    'href' => site_url('mapos') . listagemQuery(['visao' => 'classica', 'status' => 'Em Andamento']),
 ]]);
 $cardsFilas[] = [
     'label' => 'Cancelados', 'value' => (int) ($resumoFilas['status']['Cancelado'] ?? 0), 'accent' => 'neutral',
-    'href' => site_url('os') . listagemQuery(['status' => 'Cancelado']),
+    'href' => site_url('mapos') . listagemQuery(['visao' => 'classica', 'status' => 'Cancelado']),
 ];
 ?>
 <section aria-labelledby="painel-filas-titulo">
@@ -32,6 +32,13 @@ $cardsFilas[] = [
     </div>
     <div class="grid grid-cols-2 gap-3 lg:grid-cols-3 xl:grid-cols-9">
         <?php foreach ($cardsFilas as $cardFila) { ?>
+            <?php
+            $selecionado = isset($lista_painel) && $cardFila['href'] === site_url('mapos') . listagemQuery(['visao' => 'classica'] + $lista_painel['filtros']);
+            if ($selecionado) {
+                $cardFila['attrs'] = ['aria-current' => 'true'];
+                $cardFila['class'] = 'ring-2 ring-primary';
+            }
+            ?>
             <?= component('kpi-card', $cardFila) ?>
         <?php } ?>
     </div>

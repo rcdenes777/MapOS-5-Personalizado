@@ -117,7 +117,7 @@ if ($verGraficoOs) {
     <?php } ?>
 
     <?php if ($filasClassicas !== null) {
-        $this->load->view('trifase/painel-filas', ['resumoFilas' => $filasClassicas]);
+        $this->load->view('trifase/painel-filas', ['resumoFilas' => $filasClassicas, 'lista_painel' => $lista_painel ?? null]);
     } ?>
 
     <?php if ($kpis !== []) { ?>
@@ -130,6 +130,9 @@ if ($verGraficoOs) {
 
     <?php if ($pode['os']) { ?>
         <div class="grid gap-4 <?= $verGraficoOs ? 'xl:grid-cols-3' : '' ?>">
+            <?php if (isset($lista_painel)) {
+                $this->load->view('trifase/painel-lista', ['lista' => $lista_painel]);
+            } else { ?>
             <section class="<?= e($caixa) ?> min-w-0 xl:col-span-2" aria-labelledby="titulo-agenda">
                 <div class="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
                     <div>
@@ -151,6 +154,8 @@ if ($verGraficoOs) {
                     <p class="text-caption text-muted" data-agenda-carregando>Carregando a agenda…</p>
                 </div>
             </section>
+
+            <?php } ?>
 
             <?php if ($verGraficoOs) { ?>
             <section class="<?= e($caixa) ?> min-w-0" aria-labelledby="titulo-os-status">

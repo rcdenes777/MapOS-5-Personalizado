@@ -55,3 +55,9 @@ Ordem posterior solicitada no painel clássico: **Abertos → Em orçamento → 
 Incluído **Em andamento** imediatamente após **Aprovado**, contando e filtrando o status nativo `Em Andamento`. O painel passa a oito cartões, com adaptação para celular. Build e verificação de diferenças aprovados; navegador confirmou ordem, filtro e ausência de excesso horizontal em desktop e celular. Evidências: `outputs/painel-classico-oito-filas/`.
 
 O início padrão do piloto agora apresenta o painel clássico para usuários com `vOs` e sem `vLancamento`/`rFinanceiro`, quando não há escolha explícita de visão. Login e acesso direto conferidos no navegador: técnico com oito indicadores sem valores; administrador mantém o painel da assistência. Sintaxe PHP validada.
+
+## Lista de uma fila no próprio painel
+
+Os nove indicadores do painel clássico abrem a lista da fila selecionada no lugar da agenda, mantendo o usuário no painel. O cartão recebe indicação de seleção; a lista tem número com link para a OS, cliente, entrega, status, total e paginação, além de Voltar ao calendário. Reutiliza os filtros canônicos da listagem de OS, sem filtro de período da agenda; nenhuma informação financeira é renderizada. Consulta exige vOs e piloto ativo. Filtros inválidos são ignorados.
+
+Validação: nove indicadores, totais correspondentes, três páginas da fila Abertos sem duplicação, estados vazios, filtro por status, volta à agenda, acesso anônimo recusado, ausência de erros JavaScript e tela móvel 360px sem excesso horizontal. Build, sintaxe, escape, formatação e PHPStan aprovados. Evidências em outputs/painel-lista-filas/. Testes somente de consulta; nenhum registro de negócio alterado.

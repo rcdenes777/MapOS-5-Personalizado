@@ -7,21 +7,27 @@
  * @var array        $totais
  * @var array<string, bool> $pode
  */
+$verValoresItem = $pode['ver_financeiro'] ?? true;
 $colunas = [
     ['label' => 'Produto', 'class' => 'min-w-48 [overflow-wrap:anywhere]', 'render' => fn ($p) => (string) $p->descricao],
     ['label' => 'Qtd.', 'align' => 'right', 'nowrap' => true, 'render' => fn ($p) => (string) (0 + $p->quantidade)],
-    ['label' => 'Preço', 'align' => 'right', 'nowrap' => true, 'render' => fn ($p) => dinheiro($p->preco)],
 ];
 
+if ($verValoresItem) {
+    $colunas[] = ['label' => 'Preço', 'align' => 'right', 'nowrap' => true, 'render' => fn ($p) => dinheiro($p->preco)];
+}
+
 // Desconto individual do item (#2880): a coluna só aparece quando algum item tem.
-if (array_filter($produtos, static fn ($p) => (float) ($p->desconto ?? 0) > 0) !== []) {
+if ($verValoresItem && array_filter($produtos, static fn ($p) => (float) ($p->desconto ?? 0) > 0) !== []) {
     $colunas[] = osColunaDescontoDoItem();
 }
-$colunas[] = ['label' => 'Subtotal', 'align' => 'right', 'nowrap' => true, 'render' => fn ($p) => dinheiro($p->subTotal)];
+if ($verValoresItem) {
+    $colunas[] = ['label' => 'Subtotal', 'align' => 'right', 'nowrap' => true, 'render' => fn ($p) => dinheiro($p->subTotal)];
+}
 
 if ($pode['editar']) {
     $colunas[] = ['label' => 'Ações', 'align' => 'right', 'nowrap' => true, 'render' => fn ($p) => [
-        osBotaoDescontoDoItem($p, 'produto', (int) $p->idProdutos_os, (string) $p->descricao),
+        ! $verValoresItem ? null : osBotaoDescontoDoItem($p, 'produto', (int) $p->idProdutos_os, (string) $p->descricao),
         component('button', [
             'label' => 'Excluir ' . $p->descricao,
             'icon' => 'trash-2',
@@ -45,7 +51,7 @@ if ($pode['editar']) {
             'class' => 'border-0',
         ]),
     ]) ?>
-    <?php if ($produtos !== []) { ?>
+    <?php if ($verValoresItem && $produtos !== []) { ?>
         <p class="text-right text-body-md text-text">Total de produtos: <span class="font-medium tabular-nums"><?= e(dinheiro($totais['produtos'])) ?></span></p>
     <?php } ?>
 </div>

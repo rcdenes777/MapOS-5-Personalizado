@@ -805,6 +805,100 @@ final class OsTelaTest extends MaposTestCase
         return [$controller->output->status, json_decode($controller->output->corpo, true)];
     }
 
+    private function comoTecnico(object $controller): void
+    {
+        $controller->permission = new class() {
+            public function checkPermission($grupo, $permissao): bool
+            {
+                return $permissao === 'eOs';
+            }
+        };
+    }
+
+    public function testTecnicoIncluiERemoveItensComPrecoDoCadastroSemReceberTotais(): void
+    {
+        $env = $_ENV;
+        $_ENV['TRIFASE_UI_PILOTO_ENABLED'] = 'true';
+        try {
+            $this->criarBanco();
+            foreach (['produto' => ['adicionarProduto', 'excluirProduto', 'idProduto', 'produtos_os', 'idProdutos_os', 100.0], 'servico' => ['adicionarServico', 'excluirServico', 'idServico', 'servicos_os', 'idServicos_os', 50.0]] as [$adicionar, $excluir, $campo, $tabela, $chave, $preco]) {
+                $c = $this->controller($this->model(), ['idOs' => '1', $campo => '1', 'quantidade' => '2']);
+                $this->comoTecnico($c);
+                $c->{$adicionar}();
+                [$status, $resposta] = $this->resposta($c);
+                $this->assertSame(200, $status, json_encode($resposta));
+                $this->assertNull($resposta['totais']);
+                $item = $this->db->query('SELECT * FROM ' . $tabela . ' ORDER BY ' . $chave . ' DESC LIMIT 1')->row();
+                $this->assertSame($preco, (float) $item->preco);
+                $this->assertSame(2 * $preco, (float) $item->subTotal);
+                $c = $this->controller($this->model(), ['idOs' => '1', 'idItem' => $item->{$chave}]);
+                $this->comoTecnico($c);
+                $c->{$excluir}();
+                $this->assertSame(200, $this->resposta($c)[0]);
+                $this->assertSame(0, (int) $this->db->where($chave, $item->{$chave})->count_all_results($tabela));
+            }
+        } finally {
+            $_ENV = $env;
+        }
+    }
+
+    public function testTecnicoNaoImpoePrecoOuDescontoNaInclusaoMesmoPorPostDireto(): void
+    {
+        $env = $_ENV;
+        $_ENV['TRIFASE_UI_PILOTO_ENABLED'] = 'true';
+        try {
+            $this->criarBanco();
+            foreach (['preco' => '0.01', 'descontoItem' => '100', 'tipoDescontoItem' => 'porcento'] as $campo => $valor) {
+                foreach (['adicionarProduto' => 'idProduto', 'adicionarServico' => 'idServico'] as $metodo => $id) {
+                    $c = $this->controller($this->model(), ['idOs' => '1', $id => '1', 'quantidade' => '1', $campo => $valor]);
+                    $this->comoTecnico($c);
+                    $c->{$metodo}();
+                    $this->assertSame(403, $this->resposta($c)[0]);
+                }
+            }
+            $this->assertSame(2, $this->db->count_all_results('produtos_os'));
+            $this->assertSame(1, $this->db->count_all_results('servicos_os'));
+        } finally {
+            $_ENV = $env;
+        }
+    }
+
+    public function testTecnicoNaoAplicaDescontosNemFaturaPorPostDireto(): void
+    {
+        $env = $_ENV;
+        $_ENV['TRIFASE_UI_PILOTO_ENABLED'] = 'true';
+        try {
+            $this->criarBanco();
+            foreach (['descontoProduto', 'descontoServico', 'adicionarDesconto', 'faturar'] as $metodo) {
+                $c = $this->controller($this->model(), ['idOs' => '1', 'idItem' => '1', 'desconto' => '50', 'descontoItem' => '50']);
+                $this->comoTecnico($c);
+                $c->{$metodo}();
+                $this->assertSame(403, $this->resposta($c)[0]);
+            }
+            $this->assertSame(350.0, $this->model()->totais($this->model()->getById(1))['total']);
+        } finally {
+            $_ENV = $env;
+        }
+    }
+
+    public function testApresentacaoClassicaEAbasNaoContornamValoresPrivados(): void
+    {
+        $dados = $this->dadosDaTela(true);
+        $dados['pode']['ver_financeiro'] = false;
+        $dados['pode']['faturar'] = false;
+        $dados['pode']['cobrar'] = false;
+        $dados['pode']['ver_cobranca'] = false;
+        foreach (['resumo', 'produtos', 'servicos'] as $aba) {
+            $html = $this->renderizar('os/visualizar', ['aba' => $aba] + $dados);
+            foreach (['R$', '000201PIX', 'form-faturar', 'descontoItem', 'name="preco"'] as $privado) {
+                $this->assertStringNotContainsString($privado, $html);
+            }
+            if ($aba !== 'resumo') {
+                $this->assertStringContainsString('data-os-acao="' . ($aba === 'produtos' ? 'produto' : 'servico') . '"', $html);
+            }
+        }
+    }
+
     public function testExcluirProdutoDevolveAoEstoqueAQuantidadeDoBanco(): void
     {
         $this->criarBanco();

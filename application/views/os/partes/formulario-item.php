@@ -1,5 +1,6 @@
 <?php
 /** Formulário compartilhado entre a aba nativa e o resumo Trifase. */
+$verValoresItem = $pode['ver_financeiro'] ?? true;
 $produto = $tipoItem === 'produto';
 $idOs = (int) $os->idOs;
 ?>
@@ -11,7 +12,7 @@ $idOs = (int) $os->idOs;
                         'data-autocomplete' => site_url($produto ? 'os/autoCompleteProduto' : 'os/autoCompleteServico'),
                         'data-autocomplete-alvo' => $prefixoItem . '-id',
                         'data-autocomplete-listar' => '',
-                        'data-os-preco' => $prefixoItem . '-preco',
+                        'data-os-preco' => $verValoresItem ? $prefixoItem . '-preco' : null,
                         'data-os-estoque' => $produto && $controle_estoque ? $prefixoItem . '-estoque' : null,
                     ]) ?>>
                         <?= component('input', [
@@ -45,6 +46,7 @@ $idOs = (int) $os->idOs;
                             'data-msg-invalido' => $produto ? 'Informe um número inteiro maior que zero.' : 'Informe uma quantidade maior que zero.',
                         ]),
                     ]) ?>
+                    <?php if ($verValoresItem) { ?>
                     <?= component('input', [
                         'name' => 'preco',
                         'id' => $prefixoItem . '-preco',
@@ -58,8 +60,13 @@ $idOs = (int) $os->idOs;
                             'data-msg-vazio' => 'Informe o preço.',
                         ],
                     ]) ?>
+                    <?php } else { ?>
+                        <p class="text-caption text-muted">O preço do cadastro será aplicado. Preços e descontos são controlados pelo financeiro.</p>
+                    <?php } ?>
                     <div class="lg:pt-7" data-item-enviar>
                         <?= component('button', ['label' => 'Adicionar', 'icon' => 'plus', 'variant' => 'outline', 'type' => 'submit', 'attrs' => ['data-rotulo-carregando' => 'Adicionando…']]) ?>
                     </div>
-                    <?php $this->load->view('os/partes/desconto-item-campos', ['prefixoDesconto' => $prefixoItem]); ?>
+                    <?php if ($verValoresItem) {
+                        $this->load->view('os/partes/desconto-item-campos', ['prefixoDesconto' => $prefixoItem]);
+                    } ?>
                 </form>

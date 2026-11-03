@@ -10,21 +10,27 @@
 $preco = static fn ($s) => (float) ($s->preco ?: $s->precoVenda);
 $quantidade = static fn ($s) => (float) ($s->quantidade ?: 1);
 
+$verValoresItem = $pode['ver_financeiro'] ?? true;
 $colunas = [
     ['label' => 'Serviço', 'class' => 'min-w-48 [overflow-wrap:anywhere]', 'render' => fn ($s) => (string) $s->nome],
     ['label' => 'Qtd.', 'align' => 'right', 'nowrap' => true, 'render' => fn ($s) => rtrim(rtrim(number_format($quantidade($s), 2, ',', '.'), '0'), ',')],
-    ['label' => 'Preço', 'align' => 'right', 'nowrap' => true, 'render' => fn ($s) => dinheiro($preco($s))],
 ];
 
+if ($verValoresItem) {
+    $colunas[] = ['label' => 'Preço', 'align' => 'right', 'nowrap' => true, 'render' => fn ($s) => dinheiro($preco($s))];
+}
+
 // Desconto individual do item (#2880): a coluna só aparece quando algum item tem.
-if (array_filter($servicos, static fn ($s) => (float) ($s->desconto ?? 0) > 0) !== []) {
+if ($verValoresItem && array_filter($servicos, static fn ($s) => (float) ($s->desconto ?? 0) > 0) !== []) {
     $colunas[] = osColunaDescontoDoItem();
 }
-$colunas[] = ['label' => 'Subtotal', 'align' => 'right', 'nowrap' => true, 'render' => fn ($s) => dinheiro(osValorDoItem($s))];
+if ($verValoresItem) {
+    $colunas[] = ['label' => 'Subtotal', 'align' => 'right', 'nowrap' => true, 'render' => fn ($s) => dinheiro(osValorDoItem($s))];
+}
 
 if ($pode['editar']) {
     $colunas[] = ['label' => 'Ações', 'align' => 'right', 'nowrap' => true, 'render' => fn ($s) => [
-        osBotaoDescontoDoItem($s, 'servico', (int) $s->idServicos_os, (string) $s->nome),
+        ! $verValoresItem ? null : osBotaoDescontoDoItem($s, 'servico', (int) $s->idServicos_os, (string) $s->nome),
         component('button', [
             'label' => 'Excluir ' . $s->nome,
             'icon' => 'trash-2',
@@ -48,7 +54,7 @@ if ($pode['editar']) {
             'class' => 'border-0',
         ]),
     ]) ?>
-    <?php if ($servicos !== []) { ?>
+    <?php if ($verValoresItem && $servicos !== []) { ?>
         <p class="text-right text-body-md text-text">Total de serviços: <span class="font-medium tabular-nums"><?= e(dinheiro($totais['servicos'])) ?></span></p>
     <?php } ?>
 </div>

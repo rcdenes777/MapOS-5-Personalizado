@@ -1,4 +1,8 @@
 <?php
+if (! ($pode['ver_financeiro'] ?? true)) {
+    return;
+}
+
 /** Projeção financeira autorizada; nunca infere recebido ou saldo. */
 $idOs = (int) $os->idOs;
 $financeiroUrl = site_url('trifase_financeiro/visualizar/' . $idOs);

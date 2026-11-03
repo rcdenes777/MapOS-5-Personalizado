@@ -1,4 +1,8 @@
 <?php
+if (! ($pode['ver_financeiro'] ?? true)) {
+    return;
+}
+
 /**
  * PIX da OS (#2842): QR Code e o código "copia e cola", os dois gerados no
  * servidor com o total atual (Os_model::getQrCode() e getPixPayload()). Na

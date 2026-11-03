@@ -1,4 +1,8 @@
 <?php
+if (! ($pode['ver_financeiro'] ?? true)) {
+    return;
+}
+
 /**
  * Resumo dos valores da OS (#2842) em kpi-card. O total é calculado pelos
  * produtos e serviços menos o desconto (os_model->totais()).

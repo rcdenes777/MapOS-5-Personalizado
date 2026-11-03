@@ -18,7 +18,7 @@ $verFinanceiro = $this->permission->checkPermission($this->session->userdata('pe
                                             <strong><?= e(dinheiro($item->subTotal)) ?></strong>
                                         <?php } ?>
                                     </div>
-                                    <?php if ($pode['editar'] && $verFinanceiro) { ?>
+                                    <?php if ($pode['editar']) { ?>
                                         <?= component('button', ['label' => 'Remover ' . ($tipo === 'Peça' ? $item->descricao : $item->nome), 'icon' => 'trash-2', 'icon_only' => true, 'variant' => 'ghost', 'attrs' => ['data-modal-abrir' => $tipo === 'Peça' ? 'excluir-produto' : 'excluir-servico', 'data-valor-id' => (string) ($tipo === 'Peça' ? $item->idProdutos_os : $item->idServicos_os), 'data-valor-nome' => $tipo === 'Peça' ? $item->descricao : $item->nome]]) ?>
                                     <?php } ?>
                                 </li>

@@ -1,4 +1,8 @@
 <?php
+if (! ($pode['ver_financeiro'] ?? true)) {
+    return;
+}
+
 /**
  * Desconto da OS (#2842), em R$ ou %. O servidor calcula o total com
  * desconto (Os::adicionarDesconto(), osCalcularDesconto()); o módulo os/tela

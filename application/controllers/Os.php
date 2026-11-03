@@ -557,6 +557,12 @@ class Os extends MY_Controller
         return $this->layout();
     }
 
+    /** No piloto, valores comerciais seguem a permissão financeira. */
+    private function verValoresDaOs(): bool
+    {
+        return ! trifaseInterfacePiloto() || $this->permite('vLancamento');
+    }
+
     /** Dados de consulta exclusivos da apresentação opt-in. */
     private function dadosDoPiloto(object $os): array
     {
@@ -633,21 +639,22 @@ class Os extends MY_Controller
 
         $totais = $this->os_model->totais($os);
         $editavel = $this->os_model->isEditable($idOs);
-        $cobrancas = $this->os_model->getCobrancas($idOs);
+        $verValores = $this->verValoresDaOs();
+        $cobrancas = $verValores ? $this->os_model->getCobrancas($idOs) : [];
         $produtos = $this->os_model->getProdutos($idOs);
         $servicos = $this->os_model->getServicos($idOs);
         $anexos = $this->os_model->getAnexos($idOs);
         $anotacoes = $this->os_model->getAnotacoes($idOs);
         $historico = $this->os_model->getHistorico($idOs);
 
-        $pixPayload = $this->os_model->getPixPayload($idOs, $configuracao['pix_key'] ?? null, $emitente);
+        $pixPayload = $verValores ? $this->os_model->getPixPayload($idOs, $configuracao['pix_key'] ?? null, $emitente) : null;
         $telefone = osTelefoneWhatsApp($os->celular_cliente ?: $os->telefone_cliente);
 
         $troca = [
             '{CLIENTE_NOME}' => (string) $os->nomeCliente,
             '{NUMERO_OS}' => (string) $idOs,
             '{STATUS_OS}' => (string) $os->status,
-            '{VALOR_OS}' => dinheiro($totais['total']),
+            '{VALOR_OS}' => $verValores ? dinheiro($totais['total']) : '',
             '{DESCRI_PRODUTOS}' => (string) $os->descricaoProduto,
             '{EMITENTE}' => (string) ($emitente->nome ?? ''),
             '{TELEFONE_EMITENTE}' => (string) ($emitente->telefone ?? ''),
@@ -684,11 +691,12 @@ class Os extends MY_Controller
             'garantia_ate' => osGarantiaDoRegistro($os),
             'pode' => [
                 'editar' => $editavel,
+                'ver_financeiro' => $verValores,
                 'editar_tecnico' => $this->os_model->isEditableTecnico($idOs),
-                'faturar' => ! trifaseFinanceiroHabilitado() && $editavel && (int) $os->faturado === 0 && $os->status !== 'Cancelado',
+                'faturar' => $verValores && ! trifaseFinanceiroHabilitado() && $editavel && (int) $os->faturado === 0 && $os->status !== 'Cancelado',
                 'excluir' => $editavel && $this->permite('dOs'),
-                'cobrar' => ! trifaseFinanceiroOsGerida($this->db, $idOs) && $this->permite('aCobranca') && ! $cobrancas && $totais['total'] > 0,
-                'ver_cobranca' => $this->permite('vCobranca'),
+                'cobrar' => $verValores && ! trifaseFinanceiroOsGerida($this->db, $idOs) && $this->permite('aCobranca') && ! $cobrancas && $totais['total'] > 0,
+                'ver_cobranca' => $verValores && $this->permite('vCobranca'),
                 'ver_cliente' => $this->permite('vCliente'),
             ],
         ];
@@ -873,6 +881,9 @@ class Os extends MY_Controller
         $this->data['servicos'] = $this->os_model->getServicos($this->uri->segment(3));
         $this->data['anexos'] = $this->os_model->getAnexos($this->uri->segment(3));
         $this->data['emitente'] = $this->mapos_model->getEmitente();
+        if (! $this->verValoresDaOs()) {
+            return $this->load->view('os/imprimirTecnica', $this->data);
+        }
         if ($this->data['configuration']['pix_key']) {
             $this->data['qrCode'] = $this->os_model->getQrCode(
                 $this->uri->segment(3),
@@ -905,6 +916,10 @@ class Os extends MY_Controller
         $this->data['produtos'] = $this->os_model->getProdutos($this->uri->segment(3));
         $this->data['servicos'] = $this->os_model->getServicos($this->uri->segment(3));
         $this->data['emitente'] = $this->mapos_model->getEmitente();
+        if (! $this->verValoresDaOs()) {
+            $this->data['termica'] = true;
+            return $this->load->view('os/imprimirTecnica', $this->data);
+        }
         $this->data['qrCode'] = $this->os_model->getQrCode(
             $this->uri->segment(3),
             $this->data['configuration']['pix_key'],
@@ -1187,6 +1202,13 @@ class Os extends MY_Controller
             ? $this->os_model->{$metodo}(mb_strtolower(trim($termo)))
             : [];
 
+        if ($listaInicial && ! $this->verValoresDaOs()) {
+            $itens = array_map(static fn ($item) => [
+                'id' => $item['id'], 'valor' => $item['valor'], 'label' => $item['valor'],
+                'detalhe' => isset($item['estoque']) ? 'Estoque: ' . $item['estoque'] : '',
+            ] + (isset($item['estoque']) ? ['estoque' => $item['estoque']] : []), $itens);
+        }
+
         $this->output
             ->set_content_type('application/json', 'utf-8')
             ->set_output(json_encode($itens));
@@ -1266,7 +1288,15 @@ class Os extends MY_Controller
             : null;
         $controleEstoque = (bool) ($this->data['configuration']['control_estoque'] ?? false);
 
-        [$dados, $erros] = osItemDoFormulario($this->input->post(), $tipo, $cadastro, $controleEstoque);
+        $post = $this->input->post();
+        if (! $this->verValoresDaOs()) {
+            if (array_intersect(['preco', 'descontoItem', 'tipoDescontoItem'], array_keys($post)) !== []) {
+                $this->responderJson(403, ['result' => false, 'message' => 'Sem permissão para alterar preços ou descontos. O preço é definido pelo cadastro.']);
+                return;
+            }
+            $post['preco'] = number_format((float) ($produto ? ($cadastro->precoVenda ?? 0) : ($cadastro->preco ?? 0)), 2, '.', '');
+        }
+        [$dados, $erros] = osItemDoFormulario($post, $tipo, $cadastro, $controleEstoque);
         if ($erros !== []) {
             $this->responderJson(422, ['result' => false, 'message' => 'Confira os campos destacados.', 'erros' => $erros]);
 
@@ -1343,6 +1373,11 @@ class Os extends MY_Controller
      */
     private function descontoDoItem(string $tipo): void
     {
+        if (! $this->verValoresDaOs()) {
+            $this->responderJson(403, ['result' => false, 'message' => 'Sem permissão para alterar valores financeiros.']);
+            return;
+        }
+
         $os = $this->osParaAlterar();
         if (! $os) {
             return;
@@ -1466,7 +1501,7 @@ class Os extends MY_Controller
             'result' => $status < 400,
             'message' => $mensagem,
             'html' => $this->partesDaTela($idOs, $partes),
-            'totais' => $this->os_model->totais($this->os_model->getById($idOs)),
+            'totais' => $this->verValoresDaOs() ? $this->os_model->totais($this->os_model->getById($idOs)) : null,
         ] + $extras);
     }
 
@@ -1672,6 +1707,11 @@ class Os extends MY_Controller
      */
     public function adicionarDesconto()
     {
+        if (! $this->verValoresDaOs()) {
+            $this->responderJson(403, ['result' => false, 'message' => 'Sem permissão para alterar valores financeiros.']);
+            return;
+        }
+
         if (! $this->permission->checkPermission($this->session->userdata('permissao'), 'eOs')) {
             $this->responderJson(403, ['result' => false, 'message' => 'Você não tem permissão para editar O.S.']);
 
@@ -1711,6 +1751,11 @@ class Os extends MY_Controller
      */
     public function faturar()
     {
+        if (! $this->verValoresDaOs()) {
+            $this->responderJson(403, ['result' => false, 'message' => 'Sem permissão para alterar valores financeiros.']);
+            return;
+        }
+
         if (trifaseFinanceiroHabilitado()) {
             $this->responderJson(422, ['result' => false, 'message' => 'Use Financeiro da OS para registrar a cobrança sem mudar o andamento.']);
             return;

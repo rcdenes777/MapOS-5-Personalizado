@@ -50,8 +50,10 @@ final class TrifaseOsViewTest extends \PHPUnit\Framework\TestCase
     public function testSemFinanceiroNaoExibeFormularioComPrecosMesmoSeEditavel(): void
     {
         $html = $this->renderizar(false, false, true);
-        $this->assertStringNotContainsString('os/adicionarProduto', $html);
-        $this->assertStringNotContainsString('os/adicionarServico', $html);
+        $this->assertStringContainsString('os/adicionarProduto', $html);
+        $this->assertStringContainsString('os/adicionarServico', $html);
+        $this->assertStringNotContainsString('name="preco"', $html);
+        $this->assertStringNotContainsString('name="descontoItem"', $html);
         $this->assertStringNotContainsString('R$', $html);
     }
 
@@ -105,7 +107,7 @@ final class TrifaseOsViewTest extends \PHPUnit\Framework\TestCase
         try {
             $v->view('trifase/os', [
                 'os' => (object) ['idOs' => 1, 'clientes_id' => 1, 'nomeCliente' => '<script>teste</script>', 'nome' => 'Técnico', 'dataInicial' => '2026-11-02', 'dataFinal' => '2026-11-06', 'descricaoProduto' => 'Placa inverter', 'defeito' => 'Não liga', 'observacoes' => '', 'laudoTecnico' => '', 'status' => 'Finalizado', 'faturado' => (int) $formalizada, 'celular_cliente' => '', 'telefone_cliente' => '', 'garantia' => 90],
-                'pode' => ['editar' => $editavel, 'editar_tecnico' => false, 'ver_cliente' => false],
+                'pode' => ['editar' => $editavel, 'editar_tecnico' => false, 'ver_cliente' => false, 'ver_financeiro' => $financeiro],
                 'produtos' => [(object) ['idProdutos_os' => 1, 'descricao' => 'Fusível', 'quantidade' => 1, 'preco' => 500, 'subTotal' => 500]],
                 'servicos' => [], 'anexos' => [], 'garantia_ate' => null,
                 'totais' => ['produtos' => 500, 'servicos' => 0, 'desconto' => 0, 'total' => 500],

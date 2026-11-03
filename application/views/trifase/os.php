@@ -102,12 +102,12 @@ if (($pilotoEquipamento ?? null) !== null
             <section class="trifase-os-painel" aria-labelledby="piloto-itens">
                 <div class="trifase-os-secao-titulo">
                     <h2 id="piloto-itens">Peças e serviços da OS</h2>
-                    <?php if ($pode['editar'] && $verFinanceiro) { ?>
+                    <?php if ($pode['editar']) { ?>
                         <?= component('button', ['label' => 'Adicionar itens', 'icon' => 'plus', 'variant' => 'outline', 'href' => '#piloto-formularios-itens']) ?>
                     <?php } ?>
                 </div>
                 <div data-os-parte="pilotoitens"><?php $this->load->view('trifase/itens'); ?></div>
-                <?php if ($pode['editar'] && $verFinanceiro) { ?>
+                <?php if ($pode['editar']) { ?>
                     <div id="piloto-formularios-itens" class="trifase-os-formularios">
                         <?php foreach (['produto' => 'Adicionar peça', 'servico' => 'Adicionar serviço'] as $tipoItem => $tituloItem) { ?>
                             <details class="trifase-os-adicionar">
@@ -142,7 +142,7 @@ if (($pilotoEquipamento ?? null) !== null
             </section>
         </div>
 
-        <aside class="trifase-os-lateral" aria-label="Financeiro, compartilhamento e informações da OS">
+        <aside class="trifase-os-lateral" aria-label="Informações e ações da OS">
             <?php if ($verFinanceiro) { ?>
                 <section class="trifase-os-painel" aria-labelledby="piloto-financeiro">
                     <div data-os-parte="pilotofinanceiro"><?php $this->load->view('trifase/resumo-financeiro'); ?></div>
@@ -224,7 +224,7 @@ if (($pilotoEquipamento ?? null) !== null
     $this->load->view('trifase/galeria');
 } ?>
 
-<?php if ($pode['editar'] && $verFinanceiro) { ?>
+<?php if ($pode['editar']) { ?>
     <?php foreach (['produto' => 'peça', 'servico' => 'serviço'] as $tipo => $rotulo) { ?>
         <form id="<?= e('form-excluir-' . $tipo) ?>" method="post" action="<?= e(site_url($tipo === 'produto' ? 'os/excluirProduto' : 'os/excluirServico')) ?>" hidden data-os-acao="<?= e($tipo) ?>">
             <input type="hidden" name="idOs" value="<?= e($idOs) ?>">

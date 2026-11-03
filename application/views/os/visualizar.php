@@ -223,7 +223,7 @@ foreach ($exclusoes as $tipo => [$rota, $titulo, $consequencia]) { ?>
     ]) ?>
 <?php } ?>
 
-<?php if ($pode['editar'] && ($aba === 'produtos' || $aba === 'servicos')) {
+<?php if (($pode['ver_financeiro'] ?? true) && $pode['editar'] && ($aba === 'produtos' || $aba === 'servicos')) {
     $this->load->view('os/partes/desconto-item-modal', [
         'tipo' => $aba === 'produtos' ? 'produto' : 'servico',
         'rota' => $aba === 'produtos' ? 'os/descontoProduto' : 'os/descontoServico',

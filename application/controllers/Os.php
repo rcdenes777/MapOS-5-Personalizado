@@ -247,6 +247,7 @@ class Os extends MY_Controller
         $this->data['formatados'] = $os === null ? [] : array_values(array_filter(OS_CAMPOS_TEXTO, static fn ($campo) => osTemFormatacao($os->{$campo} ?? null)));
         $this->data['pode'] = [
             'cadastrar_cliente' => $this->permite('aCliente'),
+            'identificar_equipamento' => trifaseEquipamentosHabilitados() && $this->permite('vOs'),
             'ver_os' => $os !== null,
         ];
         $this->data['view'] = 'os/formulario';

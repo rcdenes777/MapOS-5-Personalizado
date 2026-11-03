@@ -66,6 +66,7 @@ $config['permissions_map'] = [
     'Trifase_equipamentos' => [
         'modelos' => 'vOs',
         'unidades' => 'vOs',
+        'unidadesCliente' => ['todas' => ['vOs', 'aOs']],
         'visualizar' => 'vOs',
         'vincular' => ['todas' => ['vOs', 'eOs']],
     ],

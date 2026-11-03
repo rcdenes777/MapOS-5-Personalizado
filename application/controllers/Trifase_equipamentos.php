@@ -39,14 +39,33 @@ class Trifase_equipamentos extends MY_Controller
         }
         $this->somenteLeitura();
         $os = $this->ordem($osId);
+        return $this->json(200, $this->opcoesUnidades((int) $os->clientes_id));
+    }
+
+    /** Consulta anterior à criação: usa o cliente escolhido sem criar OS provisória. */
+    public function unidadesCliente()
+    {
+        if (! $this->permission->checkPermission($this->session->userdata('permissao'), 'vOs')
+            || ! $this->permission->checkPermission($this->session->userdata('permissao'), 'aOs')) {
+            show_error('Você não tem permissão para consultar unidades de uma nova OS.', 403);
+        }
+        $this->somenteLeitura();
+        $cliente = filter_var($this->input->get('cliente_id'), FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
+
+        return $this->json(200, $cliente === false ? [] : $this->opcoesUnidades($cliente));
+    }
+
+    private function opcoesUnidades(int $cliente): array
+    {
         $itens = [];
-        foreach ($this->equipamentos->unidades((int) $os->clientes_id, $this->termo()) as $unidade) {
+        foreach ($this->equipamentos->unidades($cliente, $this->termo()) as $unidade) {
             $itens[] = ['id' => (int) $unidade->id, 'valor' => $unidade->marca . ' · ' . $unidade->modelo,
                 'detalhe' => implode(' · ', array_filter([$unidade->selo !== '' ? 'Selo ' . $unidade->selo : null,
                     $unidade->serie !== '' ? 'Série ' . $unidade->serie : null,
                     $unidade->imei !== '' ? 'IMEI ' . $unidade->imei : null, 'Unidade #' . (int) $unidade->id]))];
         }
-        return $this->json(200, $itens);
+
+        return $itens;
     }
 
     public function vincular($osId = null)

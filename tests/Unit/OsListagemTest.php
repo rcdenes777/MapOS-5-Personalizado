@@ -169,7 +169,7 @@ final class OsListagemTest extends MaposTestCase
     public function testFiltrosDaListagemSaoOsStatusDeOs(): void
     {
         $this->assertSame(array_keys(OS_STATUS_VARIANTES), Os::FILTROS['status']);
-        $this->assertSame(['pesquisa', 'status', 'de', 'ate', 'financeiro', 'saldo'], array_keys(Os::FILTROS));
+        $this->assertSame(['pesquisa', 'status', 'de', 'ate', 'financeiro', 'saldo', 'fila'], array_keys(Os::FILTROS));
     }
 
     public function testTextoCurtoTiraHtmlECorta(): void

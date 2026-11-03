@@ -4,6 +4,7 @@ use Piggly\Pix\StaticPayload;
 
 require_once APPPATH . 'helpers/trifase_financeiro_helper.php';
 require_once APPPATH . 'libraries/Trifase_financeiro_busca.php';
+require_once APPPATH . 'libraries/Trifase_os_fila.php';
 
 class Os_model extends CI_Model
 {
@@ -182,10 +183,13 @@ class Os_model extends CI_Model
 
         if (($filtros['status'] ?? '') !== '') {
             $this->db->where('os.status', $filtros['status']);
-        } elseif ($pesquisa === '' && $statusVisiveis !== null && ! (trifaseFinanceiroHabilitado() && Trifase_financeiro_busca::ativo($filtros))) {
+        } elseif ($pesquisa === '' && $statusVisiveis !== null && ! (trifaseFinanceiroHabilitado() && Trifase_financeiro_busca::ativo($filtros)) && ! isset($filtros['fila'])) {
             $this->db->where_in('os.status', $statusVisiveis);
         }
 
+        if (isset($filtros['fila'])) {
+            Trifase_os_fila::aplicar($this->db, $filtros['fila']);
+        }
         Trifase_financeiro_busca::aplicar($this->db, $filtros);
 
         if (($filtros['de'] ?? '') !== '') {

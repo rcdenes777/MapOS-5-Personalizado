@@ -15,6 +15,7 @@
  * @var array{adicionar: bool, editar: bool, excluir: bool} $pode
  */
 $temFiltro = $filtros !== [];
+$filtrarFilas = ! empty($listaFilas);
 $filtrarFinanceiro = ($trifase_ui_piloto ?? false) && ($listaVerFinanceiro ?? false) && ($listaFinanceiroHabilitado ?? false);
 
 $colunas = [
@@ -126,7 +127,7 @@ $resumo = ($total === 1 ? '1 ordem de serviço' : number_format($total, 0, ',', 
         <p class="text-caption text-muted" aria-live="polite"><?= e($resumo) ?></p>
     </header>
 
-    <form method="get" action="<?= e(site_url('os')) ?>" role="search" aria-label="Filtrar ordens de serviço" class="grid items-end gap-3 rounded-xl border border-border bg-surface p-4 sm:grid-cols-2 <?= e($filtrarFinanceiro ? 'lg:grid-cols-3 xl:grid-cols-4' : 'lg:grid-cols-[minmax(0,1fr)_12rem_10rem_10rem_auto]') ?>">
+    <form method="get" action="<?= e(site_url('os')) ?>" role="search" aria-label="Filtrar ordens de serviço" class="grid items-end gap-3 rounded-xl border border-border bg-surface p-4 sm:grid-cols-2 <?= e(($filtrarFinanceiro || $filtrarFilas) ? 'lg:grid-cols-3 xl:grid-cols-4' : 'lg:grid-cols-[minmax(0,1fr)_12rem_10rem_10rem_auto]') ?>">
         <?= component('input', [
             'name' => 'pesquisa',
             'label' => 'Buscar',
@@ -142,6 +143,9 @@ $resumo = ($total === 1 ? '1 ordem de serviço' : number_format($total, 0, ',', 
             'options' => array_combine(array_keys(OS_STATUS_VARIANTES), array_keys(OS_STATUS_VARIANTES)),
             'selected' => $filtros['status'] ?? null,
         ]) ?>
+        <?php if ($filtrarFilas) { ?>
+            <?= component('select', ['name' => 'fila', 'label' => 'Fila de trabalho', 'placeholder' => 'Todas', 'options' => $listaFilas, 'selected' => $filtros['fila'] ?? null]) ?>
+        <?php } ?>
         <?php if ($filtrarFinanceiro) { ?>
             <?= component('select', ['name' => 'financeiro', 'label' => 'Situação financeira', 'placeholder' => 'Todas', 'options' => Trifase_financeiro_busca::OPCOES, 'selected' => $filtros['financeiro'] ?? null]) ?>
             <?= component('select', ['name' => 'saldo', 'label' => 'Saldo a receber', 'placeholder' => 'Todos', 'options' => ['pendente' => 'Somente com saldo'], 'selected' => $filtros['saldo'] ?? null]) ?>

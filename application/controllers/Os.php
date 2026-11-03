@@ -6,6 +6,7 @@ if (! defined('BASEPATH')) {
 
 require_once APPPATH . 'helpers/trifase_financeiro_helper.php';
 require_once APPPATH . 'libraries/Trifase_financeiro_busca.php';
+require_once APPPATH . 'libraries/Trifase_os_fila.php';
 require_once APPPATH . 'helpers/trifase_entrega_helper.php';
 require_once APPPATH . 'helpers/trifase_equipamento_helper.php';
 require_once APPPATH . 'helpers/trifase_orcamento_helper.php';
@@ -29,6 +30,7 @@ class Os extends MY_Controller
         'ate' => 'texto',
         'financeiro' => ['nao_faturada', 'pendente', 'parcial', 'quitada', 'anterior', 'reembolsada', 'encerrada_garantia'],
         'saldo' => ['pendente'],
+        'fila' => ['andamento', 'orcamentos', 'retirada', 'retornos'],
     ];
 
     public function __construct()
@@ -61,9 +63,10 @@ class Os extends MY_Controller
         $statusVisiveis = osStatusVisiveis($this->data['configuration']['os_status_list'] ?? null);
         $total = $this->os_model->contar($filtros, $statusVisiveis);
 
+        $this->data['listaFilas'] = Trifase_os_fila::opcoes($this->db);
         $this->data['filtros'] = $filtros;
         $this->data['total'] = $total;
-        $this->data['status_ocultos'] = ! isset($filtros['pesquisa']) && ! isset($filtros['status']) && ! Trifase_financeiro_busca::ativo($filtros) && $statusVisiveis !== null
+        $this->data['status_ocultos'] = ! isset($filtros['pesquisa']) && ! isset($filtros['status']) && ! Trifase_financeiro_busca::ativo($filtros) && ! isset($filtros['fila']) && $statusVisiveis !== null
             && array_diff(array_keys(OS_STATUS_VARIANTES), $statusVisiveis) !== [];
         $this->data['results'] = $this->os_model->listar($filtros, (int) $this->data['configuration']['per_page'], $offset, $statusVisiveis);
         $this->data['paginacao'] = $this->paginacao(site_url('os/gerenciar'), $total, $offset, null, $filtros);
@@ -102,6 +105,10 @@ class Os extends MY_Controller
     private function filtrosDaListagem(): array
     {
         $filtros = listagemFiltros(self::FILTROS, $this->input->get());
+
+        if (isset($filtros['fila']) && ! isset(Trifase_os_fila::opcoes($this->db)[$filtros['fila']])) {
+            unset($filtros['fila']);
+        }
 
         if (! trifaseInterfacePiloto() || ! trifaseFinanceiroHabilitado()) {
             unset($filtros['financeiro'], $filtros['saldo']);

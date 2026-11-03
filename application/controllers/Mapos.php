@@ -1,6 +1,7 @@
 <?php if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
+require_once APPPATH . 'helpers/trifase_interface_helper.php';
 class Mapos extends MY_Controller
 {
     public function __construct()
@@ -39,6 +40,10 @@ class Mapos extends MY_Controller
         $painel['avisos_sistema'] = $this->permite('cSistema')
             ? manutencaoAvisos($this->db, $_ENV, ! empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
             : [];
+
+        if (trifaseInterfacePiloto() && $this->input->get('visao') !== 'classica') {
+            return $this->painelPersonalizado($painel);
+        }
 
         if ($pode['os']) {
             $osPorStatus = $this->mapos_model->contarPorStatus('os');
@@ -86,6 +91,41 @@ class Mapos extends MY_Controller
         $this->data['menuPainel'] = 'Painel';
         $this->data['view'] = 'mapos/painel';
 
+        return $this->layout();
+    }
+
+    private function painelPersonalizado(array $painel)
+    {
+        $pode = $painel['pode'];
+        $this->load->model('Trifase_painel_model', 'painel_trifase');
+        $painel['operacional'] = $pode['os'] ? $this->painel_trifase->operacional() : null;
+        $painel['financeiro_os'] = $pode['os'] && $pode['lancamentos'] ? $this->painel_trifase->financeiroOs() : null;
+        if ($pode['lancamentos']) {
+            $this->load->model('financeiro_model');
+            $balanco = painelBalanco($this->financeiro_model->balancoAnual((int) date('Y')), (int) date('Y'));
+            $painel['recebido_mes'] = $balanco['receitas'][(int) date('n') - 1];
+        }
+        $painel['atalhos'] = [];
+        foreach ([
+            ['aCliente', 'Cadastrar cliente', 'clientes/adicionar', 'user'],
+            ['vCliente', 'Clientes', 'clientes', 'users'],
+            ['vProduto', 'Produtos e estoque', 'produtos', 'package'],
+            ['vServico', 'Serviços', 'servicos', 'wrench'],
+            ['vVenda', 'Vendas', 'vendas', 'shopping-cart'],
+            ['vLancamento', 'Financeiro', 'financeiro/lancamentos', 'circle-dollar-sign'],
+        ] as [$permissao, $label, $rota, $icone]) {
+            if ($this->permite($permissao)) {
+                $painel['atalhos'][] = ['label' => $label, 'href' => site_url($rota), 'icon' => $icone];
+            }
+        }
+        $this->data = array_merge($this->data, $painel);
+        if ($this->permite('aOs')) {
+            $this->data['topbar_acao'] = ['label' => 'Nova OS', 'icon' => 'plus', 'href' => site_url('os/adicionar')];
+        } elseif ($this->permite('aVenda')) {
+            $this->data['topbar_acao'] = ['label' => 'Nova venda', 'icon' => 'plus', 'href' => site_url('vendas/adicionar')];
+        }
+        $this->data['menuPainel'] = 'Painel';
+        $this->data['view'] = 'trifase/painel';
         return $this->layout();
     }
 

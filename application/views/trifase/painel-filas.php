@@ -8,13 +8,21 @@ array_splice($cardsFilas, min(2, count($cardsFilas)), 0, [[
     'label' => 'Aguardando peças', 'value' => (int) ($resumoFilas['status']['Aguardando Peças'] ?? 0), 'accent' => 'warning',
     'href' => site_url('os') . listagemQuery(['status' => 'Aguardando Peças']),
 ]]);
+array_splice($cardsFilas, 1, 0, [[
+    'label' => 'Em orçamento', 'value' => (int) ($resumoFilas['status']['Orçamento'] ?? 0), 'accent' => 'info',
+    'href' => site_url('os') . listagemQuery(['status' => 'Orçamento']),
+]]);
+array_splice($cardsFilas, 3, 0, [[
+    'label' => 'Aprovado', 'value' => (int) ($resumoFilas['status']['Aprovado'] ?? 0), 'accent' => 'success',
+    'href' => site_url('os') . listagemQuery(['status' => 'Aprovado']),
+]]);
 ?>
 <section aria-labelledby="painel-filas-titulo">
     <div class="mb-3 flex flex-wrap items-center justify-between gap-2">
         <h2 id="painel-filas-titulo" class="text-heading-md text-text">Ordens de serviço</h2>
         <?= component('button', ['label' => 'Ver OS', 'variant' => 'ghost', 'href' => site_url('os')]) ?>
     </div>
-    <div class="grid grid-cols-2 gap-3 lg:grid-cols-3 xl:grid-cols-5">
+    <div class="grid grid-cols-2 gap-3 lg:grid-cols-3 xl:grid-cols-7">
         <?php foreach ($cardsFilas as $cardFila) { ?>
             <?= component('kpi-card', $cardFila) ?>
         <?php } ?>

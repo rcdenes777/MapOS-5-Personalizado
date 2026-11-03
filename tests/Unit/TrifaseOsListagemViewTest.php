@@ -69,7 +69,7 @@ final class TrifaseOsListagemViewTest extends \PHPUnit\Framework\TestCase
         $html = $this->renderizar([], ['total' => 260, 'faturado' => 0]);
 
         $this->assertSame(['R$ 260,00'], $this->celulas($html, 'Total'));
-        $this->assertSame(['Não registrado'], $this->celulas($html, 'Pagamento'));
+        $this->assertSame(['Não faturada'], $this->celulas($html, 'Pagamento'));
     }
 
     public function testResumoDeOutraOsNaoEAplicadoALinhaAtual(): void
@@ -131,8 +131,32 @@ final class TrifaseOsListagemViewTest extends \PHPUnit\Framework\TestCase
 
         $this->assertSame(['R$ 500,00', 'R$ 123,45', 'R$ 0,00'], $this->celulas($html, 'Total'));
         $this->assertSame(['Parcialmente pago', 'Faturamento anterior', 'Reembolsado'], $this->celulas($html, 'Pagamento'));
-        $this->assertSame(['Finalizado', 'Aberto', 'Em Andamento'], $this->celulas($html, 'Andamento do serviço'));
+        $this->assertSame(['Finalizado', 'Aberto', 'Em Andamento'], $this->celulas($html, 'Andamento'));
         $this->assertSame(['Finalizado', 'Aberto', 'Em Andamento'], array_column($linhas, 'status'));
+    }
+
+    public function testFiltrosESaldoAparecemSomenteComPermissaoEModulosAtivos(): void
+    {
+        $resumos = [1 => ['total_c' => 50000, 'saldo_c' => 30000, 'situacao' => 'Parcialmente pago']];
+        $html = $this->renderizar($resumos, [], ['filtros' => ['financeiro' => 'parcial', 'saldo' => 'pendente']]);
+        $this->assertSame(['R$ 300,00'], $this->celulas($html, 'Saldo a receber'));
+        $dom = new DOMDocument();
+        @$dom->loadHTML($html);
+        $xpath = new DOMXPath($dom);
+        $this->assertCount(1, $xpath->query('//select[@name="financeiro"]/option[@value="parcial" and @selected]'));
+        $this->assertCount(1, $xpath->query('//select[@name="saldo"]/option[@value="pendente" and @selected]'));
+        foreach (['listaVerFinanceiro', 'listaFinanceiroHabilitado', 'trifase_ui_piloto'] as $flag) {
+            $restrito = $this->renderizar($resumos, [], [$flag => false]);
+            $this->assertStringNotContainsString('name="financeiro"', $restrito);
+            $this->assertStringNotContainsString('name="saldo"', $restrito);
+            $this->assertSame([], $this->celulas($restrito, 'Saldo a receber'));
+        }
+    }
+
+    public function testSaldoZeroDaObrigacaoENaoApuradoNoLegadoNaoSeConfundem(): void
+    {
+        $this->assertSame(['R$ 0,00'], $this->celulas($this->renderizar([1 => ['total_c' => 0, 'saldo_c' => 0, 'situacao' => 'Reembolsado']]), 'Saldo a receber'));
+        $this->assertSame(['Não apurado'], $this->celulas($this->renderizar([], ['faturado' => 1]), 'Saldo a receber'));
     }
 
     private function renderizar(array $resumos, array $os = [], array $opcoes = []): string

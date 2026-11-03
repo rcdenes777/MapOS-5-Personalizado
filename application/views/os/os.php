@@ -15,6 +15,7 @@
  * @var array{adicionar: bool, editar: bool, excluir: bool} $pode
  */
 $temFiltro = $filtros !== [];
+$filtrarFinanceiro = ($trifase_ui_piloto ?? false) && ($listaVerFinanceiro ?? false) && ($listaFinanceiroHabilitado ?? false);
 
 $colunas = [
     ['key' => 'idOs', 'label' => 'Nº', 'align' => 'right', 'nowrap' => true],
@@ -54,6 +55,10 @@ $colunas = [
 if ($trifase_ui_piloto ?? false) {
     $adaptadas = [];
     foreach ($colunas as $coluna) {
+        // Prioriza os valores e ações; o responsável continua no detalhe da OS.
+        if ($filtrarFinanceiro && $coluna['label'] === 'Responsável') {
+            continue;
+        }
         if ($coluna['label'] === 'Total') {
             if ($listaVerFinanceiro ?? false) {
                 // A obrigação é a fonte do total das OS geridas, inclusive após
@@ -68,16 +73,25 @@ if ($trifase_ui_piloto ?? false) {
                     $adaptadas[] = ['label' => 'Pagamento', 'render' => static function ($o) use ($listaFinanceiro) {
                         $f = $listaFinanceiro[(int) $o->idOs] ?? null;
                         if ($f === null) {
-                            return (int) $o->faturado === 1 ? 'Faturamento anterior' : 'Não registrado';
+                            return (int) $o->faturado === 1 ? 'Faturamento anterior' : 'Não faturada';
                         }
                         return component('pill-status', ['label' => $f['situacao'], 'variant' => $f['saldo_c'] === 0 ? 'success' : 'warning']);
+                    }];
+                    $adaptadas[] = ['label' => 'Saldo a receber', 'align' => 'right', 'nowrap' => true, 'render' => static function ($o) use ($listaFinanceiro) {
+                        $f = $listaFinanceiro[(int) $o->idOs] ?? null;
+                        return $f === null ? 'Não apurado' : dinheiro($f['saldo_c'] / 100);
                     }];
                 }
             }
             continue;
         }
+        if ($filtrarFinanceiro && in_array($coluna['label'], ['Entrada', 'Entrega', 'Equipamento'], true)) {
+            $coluna['hide_until'] = '2xl';
+        }
         $coluna['label'] = match ($coluna['label']) {
-            'Entrega' => 'Previsão', 'Status' => 'Andamento', default => $coluna['label']
+            'Entrega' => 'Previsão', 'Status' => 'Andamento',
+            'Andamento do serviço' => $filtrarFinanceiro ? 'Andamento' : 'Andamento do serviço',
+            default => $coluna['label']
         };
         $adaptadas[] = $coluna;
     }
@@ -112,7 +126,7 @@ $resumo = ($total === 1 ? '1 ordem de serviço' : number_format($total, 0, ',', 
         <p class="text-caption text-muted" aria-live="polite"><?= e($resumo) ?></p>
     </header>
 
-    <form method="get" action="<?= e(site_url('os')) ?>" role="search" aria-label="Filtrar ordens de serviço" class="grid items-end gap-3 rounded-xl border border-border bg-surface p-4 sm:grid-cols-2 lg:grid-cols-[minmax(0,1fr)_12rem_10rem_10rem_auto]">
+    <form method="get" action="<?= e(site_url('os')) ?>" role="search" aria-label="Filtrar ordens de serviço" class="grid items-end gap-3 rounded-xl border border-border bg-surface p-4 sm:grid-cols-2 <?= e($filtrarFinanceiro ? 'lg:grid-cols-3 xl:grid-cols-4' : 'lg:grid-cols-[minmax(0,1fr)_12rem_10rem_10rem_auto]') ?>">
         <?= component('input', [
             'name' => 'pesquisa',
             'label' => 'Buscar',
@@ -128,6 +142,10 @@ $resumo = ($total === 1 ? '1 ordem de serviço' : number_format($total, 0, ',', 
             'options' => array_combine(array_keys(OS_STATUS_VARIANTES), array_keys(OS_STATUS_VARIANTES)),
             'selected' => $filtros['status'] ?? null,
         ]) ?>
+        <?php if ($filtrarFinanceiro) { ?>
+            <?= component('select', ['name' => 'financeiro', 'label' => 'Situação financeira', 'placeholder' => 'Todas', 'options' => Trifase_financeiro_busca::OPCOES, 'selected' => $filtros['financeiro'] ?? null]) ?>
+            <?= component('select', ['name' => 'saldo', 'label' => 'Saldo a receber', 'placeholder' => 'Todos', 'options' => ['pendente' => 'Somente com saldo'], 'selected' => $filtros['saldo'] ?? null]) ?>
+        <?php } ?>
         <?= component('input', [
             'name' => 'de',
             'label' => 'Entrada a partir de',
@@ -148,8 +166,13 @@ $resumo = ($total === 1 ? '1 ordem de serviço' : number_format($total, 0, ',', 
         </div>
     </form>
 
+    <?php if ($filtrarFinanceiro) { ?>
+        <p class="text-caption text-muted">Saldo considera cobranças registradas, estornos e reembolsos. Faturamento anterior tem saldo não apurado. Os filtros financeiros pesquisam todos os andamentos, salvo quando você escolhe um.</p>
+    <?php } ?>
+
     <?= component('data-table', [
         'columns' => $colunas,
+        'dense' => $filtrarFinanceiro,
         'rows' => $results,
         'empty' => $vazio,
         'caption' => 'Ordens de serviço',

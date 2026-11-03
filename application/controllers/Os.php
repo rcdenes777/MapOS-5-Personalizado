@@ -5,6 +5,7 @@ if (! defined('BASEPATH')) {
 }
 
 require_once APPPATH . 'helpers/trifase_financeiro_helper.php';
+require_once APPPATH . 'libraries/Trifase_financeiro_busca.php';
 require_once APPPATH . 'helpers/trifase_entrega_helper.php';
 require_once APPPATH . 'helpers/trifase_equipamento_helper.php';
 require_once APPPATH . 'helpers/trifase_orcamento_helper.php';
@@ -26,6 +27,8 @@ class Os extends MY_Controller
         'status' => ['Orçamento', 'Negociação', 'Aberto', 'Aprovado', 'Em Andamento', 'Aguardando Peças', 'Finalizado', 'Faturado', 'Cancelado'],
         'de' => 'texto',
         'ate' => 'texto',
+        'financeiro' => ['nao_faturada', 'pendente', 'parcial', 'quitada', 'anterior', 'reembolsada', 'encerrada_garantia'],
+        'saldo' => ['pendente'],
     ];
 
     public function __construct()
@@ -60,7 +63,7 @@ class Os extends MY_Controller
 
         $this->data['filtros'] = $filtros;
         $this->data['total'] = $total;
-        $this->data['status_ocultos'] = ! isset($filtros['pesquisa']) && ! isset($filtros['status']) && $statusVisiveis !== null
+        $this->data['status_ocultos'] = ! isset($filtros['pesquisa']) && ! isset($filtros['status']) && ! Trifase_financeiro_busca::ativo($filtros) && $statusVisiveis !== null
             && array_diff(array_keys(OS_STATUS_VARIANTES), $statusVisiveis) !== [];
         $this->data['results'] = $this->os_model->listar($filtros, (int) $this->data['configuration']['per_page'], $offset, $statusVisiveis);
         $this->data['paginacao'] = $this->paginacao(site_url('os/gerenciar'), $total, $offset, null, $filtros);
@@ -99,6 +102,12 @@ class Os extends MY_Controller
     private function filtrosDaListagem(): array
     {
         $filtros = listagemFiltros(self::FILTROS, $this->input->get());
+
+        if (! trifaseInterfacePiloto() || ! trifaseFinanceiroHabilitado()) {
+            unset($filtros['financeiro'], $filtros['saldo']);
+        } elseif (Trifase_financeiro_busca::ativo($filtros) && ! $this->permite('vLancamento')) {
+            show_error('Você não tem permissão para filtrar dados financeiros.', 403);
+        }
 
         foreach (['de', 'ate'] as $data) {
             if (isset($filtros[$data])) {

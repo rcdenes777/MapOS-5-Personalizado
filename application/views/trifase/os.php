@@ -99,25 +99,20 @@ if (($pilotoEquipamento ?? null) !== null
                     </section>
                 <?php } ?>
             <?php } ?>
-            <section class="trifase-os-painel" aria-labelledby="piloto-itens">
-                <div class="trifase-os-secao-titulo">
-                    <h2 id="piloto-itens">Peças e serviços da OS</h2>
+            <?php foreach (['produto' => 'Peças da OS', 'servico' => 'Serviços da OS'] as $tipoItem => $tituloItem) { ?>
+                <section class="trifase-os-painel" aria-labelledby="<?= e('piloto-' . $tipoItem . '-titulo') ?>">
+                    <h2 id="<?= e('piloto-' . $tipoItem . '-titulo') ?>"><?= e($tituloItem) ?></h2>
+                    <div data-os-parte="<?= e($tipoItem === 'produto' ? 'pilotopecas' : 'pilotoservicos') ?>"><?php $this->load->view('trifase/itens', ['tipoLista' => $tipoItem]); ?></div>
                     <?php if ($pode['editar']) { ?>
-                        <?= component('button', ['label' => 'Adicionar itens', 'icon' => 'plus', 'variant' => 'outline', 'href' => '#piloto-formularios-itens']) ?>
-                    <?php } ?>
-                </div>
-                <div data-os-parte="pilotoitens"><?php $this->load->view('trifase/itens'); ?></div>
-                <?php if ($pode['editar']) { ?>
-                    <div id="piloto-formularios-itens" class="trifase-os-formularios">
-                        <?php foreach (['produto' => 'Adicionar peça', 'servico' => 'Adicionar serviço'] as $tipoItem => $tituloItem) { ?>
+                        <div class="trifase-os-formularios">
                             <details class="trifase-os-adicionar">
-                                <summary><?= e($tituloItem) ?></summary>
+                                <summary><?= e($tipoItem === 'produto' ? 'Adicionar peça' : 'Adicionar serviço') ?></summary>
                                 <?php $this->load->view('os/partes/formulario-item', ['tipoItem' => $tipoItem, 'prefixoItem' => 'piloto-' . $tipoItem]); ?>
                             </details>
-                        <?php } ?>
-                    </div>
-                <?php } ?>
-            </section>
+                        </div>
+                    <?php } ?>
+                </section>
+            <?php } ?>
 
             <?php if (function_exists('trifaseOrcamentoHabilitado') && trifaseOrcamentoHabilitado() && $verFinanceiro) { ?>
                 <section class="trifase-os-painel" aria-labelledby="piloto-orcamento">

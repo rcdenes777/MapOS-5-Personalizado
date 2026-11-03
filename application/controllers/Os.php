@@ -728,7 +728,8 @@ class Os extends MY_Controller
         if (trifaseInterfacePiloto() && $aba === 'resumo'
             && array_intersect($partes, ['produtos', 'servicos', 'desconto']) !== []) {
             $dados = array_merge($dados, $this->dadosDoPiloto($os));
-            $html['pilotoitens'] = $this->load->view('trifase/itens', $dados, true);
+            $html['pilotopecas'] = $this->load->view('trifase/itens', ['tipoLista' => 'produto'] + $dados, true);
+            $html['pilotoservicos'] = $this->load->view('trifase/itens', ['tipoLista' => 'servico'] + $dados, true);
             if ($this->permite('vLancamento')) {
                 $html['pilotofinanceiro'] = $this->load->view('trifase/resumo-financeiro', $dados, true);
                 if (trifaseOrcamentoHabilitado()) {

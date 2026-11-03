@@ -14,6 +14,9 @@ foreach ($financeiroEventos as $e) {
 <div class="flex flex-col gap-4 py-4">
     <header class="flex flex-wrap items-center justify-between gap-3">
         <div><h1 class="text-heading-xl text-text"><?= e('Financeiro da OS #' . $id) ?></h1><p class="mt-2 text-body-md text-muted">O pagamento e o andamento do serviço são controles independentes.</p></div>
+        <?php if (function_exists('trifaseInterfacePiloto') && trifaseInterfacePiloto()) { ?>
+            <?= component('button', ['label' => 'OS e recebimentos', 'variant' => 'outline', 'href' => site_url('financeiro/ordens')]) ?>
+        <?php } ?>
         <?= component('button', ['label' => 'Voltar à OS', 'variant' => 'outline', 'href' => site_url('os/visualizar/' . $id)]) ?>
     </header>
     <div class="flex flex-wrap items-center gap-3"><span class="text-body-md text-muted">Andamento do serviço</span><?= component('pill-status', osStatusPill($osFinanceira->status)) ?></div>

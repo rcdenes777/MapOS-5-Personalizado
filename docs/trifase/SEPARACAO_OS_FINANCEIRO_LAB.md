@@ -26,3 +26,7 @@ Esta mudança trata a listagem de OS e seus filtros/atalhos; não redefine as pe
 - Hashes de37tabelas com dados iguais antes/depois, excluindo sessões/logs. Nenhuma fixture nova, push ou alteração em produção,8200,Penpot ou nos três documentos preexistentes.
 
 Evidências: `outputs/separacao-financeiro/` na pasta canônica do projeto. Mobile físico e regressão integrada para produção continuam pendentes. A referência visual permanece o sistema atual com seus componentes e tema.
+
+## Complemento: detalhe por perfil
+
+A revisão posterior do detalhe está em [DETALHE_OS_PERFIS_LAB.md](DETALHE_OS_PERFIS_LAB.md). Ela completa o piloto com inclusão/remoção técnica de itens a preço de catálogo, sem alteração de preços/descontos pelo técnico, e fecha a diferença de valores entre resumo e apresentação clássica. A observação anterior de que a separação da listagem não redefinia a edição de itens descreve a fatia anterior; esta revisão acrescenta a regra específica no detalhe do piloto.

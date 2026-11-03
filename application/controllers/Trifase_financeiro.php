@@ -2,6 +2,7 @@
 
 defined('BASEPATH') or exit('No direct script access allowed');
 require_once APPPATH . 'helpers/trifase_financeiro_helper.php';
+require_once APPPATH . 'helpers/trifase_interface_helper.php';
 
 /** Extensão financeira com ativação explícita por instalação. */
 class Trifase_financeiro extends MY_Controller

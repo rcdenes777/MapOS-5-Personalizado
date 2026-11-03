@@ -427,3 +427,7 @@ A migração `20261102070000` acrescenta históricos de operações, substituiç
 ### Interface piloto: financeiro das OS
 
 Com `TRIFASE_UI_PILOTO_ENABLED` e `TRIFASE_FINANCEIRO_ENABLED` já ativos, a consulta de cobrança das OS fica em **Financeiro → OS e recebimentos** (`financeiro/ordens`). A rota está no mapa de permissões e exige `vOs+vLancamento`, como o financeiro individual da OS; nenhuma permissão é concedida automaticamente. Não exige nova migração ou variável. A lista operacional mantém andamento, filas e datas; links antigos com filtros financeiros são encaminhados à nova área após as verificações de acesso. Com a interface piloto desligada, a listagem nativa permanece. Veja [a separação das áreas](trifase/SEPARACAO_OS_FINANCEIRO_LAB.md).
+
+### Detalhe piloto: técnico e financeiro
+
+Com `TRIFASE_UI_PILOTO_ENABLED` já ativo, usuários com `eOs` e sem `vLancamento` incluem/removem itens usando o preço atual do catálogo, sem enviar preço ou desconto. Valores, PIX e impressões comerciais na OS dependem de `vLancamento`; sem ela, a impressão é técnica. Não há migração, nova variável ou grant automático. Perfis e integração própria que enviem preço em nome de um técnico precisam usar a permissão financeira apropriada ou omitir o preço para aplicar o catálogo. Veja `docs/trifase/DETALHE_OS_PERFIS_LAB.md`.

@@ -68,6 +68,7 @@ test('mensagemDeErro', () => {
     assert.equal(mensagemDeErro({ status: 403, corpo: { message: 'Você não tem permissão para editar O.S.' } }), 'Você não tem permissão para editar O.S.');
     assert.equal(mensagemDeErro({ status: 422, corpo: { erros: { _geral: 'Adicione produtos.' } }, message: 'x' }, { _geral: 'Adicione produtos.' }), 'Adicione produtos.');
     assert.match(mensagemDeErro({ status: 403, corpo: '<html>The action you have requested is not allowed.</html>' }), /expirou/);
+    assert.match(mensagemDeErro({ status: 413, corpo: '<html>Payload Too Large</html>' }), /tamanho total dos arquivos/);
     assert.equal(mensagemDeErro({ status: 500, corpo: '' }), 'Não foi possível concluir. Tente de novo.');
 });
 

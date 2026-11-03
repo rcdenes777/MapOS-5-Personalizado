@@ -48,3 +48,5 @@ O `down` devolve os arquivos para `assets/anexos` e `assets/arquivos` **da pasta
 Ao restaurar o dump, apague o banco e recrie-o antes (`DROP DATABASE` e `CREATE DATABASE`). Restaurar por cima de um banco já migrado deixa tabelas da v5 (`login_attempts`, `os_historico`, `api_*`, `usuarios_codigos_recuperacao`), e a migração seguinte **falha**: o `php index.php tools migrate` para em `create_login_attempts` (tabela que já existe) e sai com código 8, sem concluir a atualização. Apagar e recriar o banco antes de restaurar evita isso.
 
 Depois do rollback, bloqueie o listing público de `assets/anexos` como na v4.55.1 (nomes aleatórios, `index.html` e bloqueio de scripts).
+
+Quando o corpo de um POST ultrapassa post_max_size, o PHP pode descartar os campos e arquivos antes do CSRF. A aplicação detecta esse caso pelo tamanho informado na requisição e responde413 com orientação de tamanho; os demais POSTs continuam sujeitos ao CSRF. Confirme os limites efetivos no servidor: arquivos .ini posteriores podem sobrescrever uploads.ini. O limite total do POST precisa comportar o arquivo e o multipart (por exemplo,200M por arquivo e210M por POST).

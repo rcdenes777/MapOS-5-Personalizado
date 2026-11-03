@@ -204,6 +204,12 @@ define('DIR_WRITE_MODE', 0755);
 // que a subclasse usa.
 class CI_Security
 {
+    /** @return $this */
+    public function csrf_verify()
+    {
+        return $this;
+    }
+
     /** @var string */
     protected $_csrf_hash;
 

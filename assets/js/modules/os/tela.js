@@ -51,6 +51,9 @@ export function errosDaResposta(corpo) {
 export function mensagemDeErro(erro, erros = {}) {
     const corpoJson = erro?.corpo !== null && typeof erro?.corpo === 'object';
     if (!corpoJson) {
+        if (erro?.status === 413) {
+            return 'O tamanho total dos arquivos excede o limite de envio do servidor. Envie um arquivo por vez ou reduza o tamanho.';
+        }
         return erro?.status === 403
             ? 'A página ficou muito tempo aberta e expirou. Recarregue e tente de novo.'
             : 'Não foi possível concluir. Tente de novo.';

@@ -17,6 +17,17 @@ defined('BASEPATH') or exit('No direct script access allowed');
  */
 class MY_Security extends CI_Security
 {
+    /** O PHP descarta o corpo acima de post_max_size antes da validação CSRF. */
+    public function csrf_verify()
+    {
+        $limite = ini_parse_quantity((string) ini_get('post_max_size'));
+        if (strtoupper($_SERVER['REQUEST_METHOD'] ?? '') === 'POST' && $limite > 0
+            && (int) ($_SERVER['CONTENT_LENGTH'] ?? 0) > $limite) {
+            show_error('O tamanho total dos arquivos excede o limite de envio do servidor. Envie um arquivo por vez ou reduza o tamanho.', 413);
+        }
+        return parent::csrf_verify();
+    }
+
     public function csrf_set_cookie()
     {
         $secure = (bool) config_item('cookie_secure');

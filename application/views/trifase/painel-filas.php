@@ -20,13 +20,17 @@ array_splice($cardsFilas, 4, 0, [[
     'label' => 'Em andamento', 'value' => (int) ($resumoFilas['status']['Em Andamento'] ?? 0), 'accent' => 'progress',
     'href' => site_url('os') . listagemQuery(['status' => 'Em Andamento']),
 ]]);
+$cardsFilas[] = [
+    'label' => 'Cancelados', 'value' => (int) ($resumoFilas['status']['Cancelado'] ?? 0), 'accent' => 'neutral',
+    'href' => site_url('os') . listagemQuery(['status' => 'Cancelado']),
+];
 ?>
 <section aria-labelledby="painel-filas-titulo">
     <div class="mb-3 flex flex-wrap items-center justify-between gap-2">
         <h2 id="painel-filas-titulo" class="text-heading-md text-text">Ordens de serviço</h2>
         <?= component('button', ['label' => 'Ver OS', 'variant' => 'ghost', 'href' => site_url('os')]) ?>
     </div>
-    <div class="grid grid-cols-2 gap-3 lg:grid-cols-3 xl:grid-cols-8">
+    <div class="grid grid-cols-2 gap-3 lg:grid-cols-3 xl:grid-cols-9">
         <?php foreach ($cardsFilas as $cardFila) { ?>
             <?= component('kpi-card', $cardFila) ?>
         <?php } ?>

@@ -75,7 +75,7 @@ final class PainelTest extends MaposTestCase
             'descricaoProduto' => '<p>Notebook <b>Dell</b></p>', 'totalProdutos' => '100', 'totalServicos' => '50', 'valor_desconto' => '0', 'faturado' => '0',
         ];
 
-        $evento = painelEventoDaOs($os, 'http://mapos.test/os/visualizar/7', null);
+        $evento = painelEventoDaOs($os, 'http://mapos.test/os/visualizar/7', null, true);
         $this->assertSame('OS 7 · Ana <b>Souza</b>', $evento['title'], 'O texto vai cru: o JS usa textContent e o FullCalendar escapa o título.');
         $this->assertSame('2026-10-10', $evento['start']);
         $this->assertTrue($evento['allDay']);
@@ -91,7 +91,7 @@ final class PainelTest extends MaposTestCase
 
         $os->valor_desconto = '135';
         $os->faturado = '1';
-        $evento = painelEventoDaOs($os, 'u', 'e');
+        $evento = painelEventoDaOs($os, 'u', 'e', true);
         $this->assertSame('R$ 135,00', $evento['extendedProps']['total']);
         $this->assertTrue($evento['extendedProps']['faturado']);
         $this->assertSame('e', $evento['extendedProps']['urlEditar']);
@@ -295,6 +295,30 @@ final class PainelTest extends MaposTestCase
         $this->assertStringNotContainsString('Saldo do mês', $html);
         $this->assertStringNotContainsString('Estoque baixo', $html);
         $this->assertStringNotContainsString('Balanço de', $html);
+    }
+
+    public function testAgendaSemFinanceiroNaoSerializaTotalNemFaturamento(): void
+    {
+        $os = (object) ['idOs' => 7, 'nomeCliente' => 'Cliente', 'status' => 'Finalizado', 'dataFinal' => '2026-11-10', 'totalProdutos' => 12345, 'totalServicos' => 67, 'valor_desconto' => 9800, 'faturado' => 1];
+        foreach ([painelEventoDaOs($os, 'url', null), painelEventoDaOs($os, 'url', 'editar', false)] as $evento) {
+            $this->assertArrayNotHasKey('total', $evento['extendedProps']);
+            $this->assertArrayNotHasKey('faturado', $evento['extendedProps']);
+            $this->assertSame('Finalizado', $evento['extendedProps']['status']);
+            $this->assertStringNotContainsString('R$', json_encode($evento));
+        }
+    }
+
+    public function testPainelTecnicoNaoIncluiCamposFinanceirosNoModalNemGraficos(): void
+    {
+        $d = $this->dadosCompletos();
+        $d['pode']['lancamentos'] = false;
+        $d['pode']['balanco'] = false;
+        $html = $this->renderizar($d);
+        foreach (['data-agenda-campo="total"', 'data-agenda-campo="faturado"', 'Balanço de', 'Saldo do mês', 'Lançamentos a vencer', 'R$'] as $financeiro) {
+            $this->assertStringNotContainsString($financeiro, $html);
+        }
+        $this->assertStringContainsString('data-agenda-campo="equipamento"', $html);
+        $this->assertStringContainsString('Agenda de entregas', $html);
     }
 
     public function testControllerChecaAsPermissoesEOCalendarioDevolveSoTexto(): void

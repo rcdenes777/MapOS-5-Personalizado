@@ -129,13 +129,11 @@ if (! function_exists('painelEventoDaOs')) {
      *
      * @param  object  $os  Linha de Mapos_model::calendario()
      */
-    function painelEventoDaOs(object $os, string $urlVer, ?string $urlEditar): array
+    function painelEventoDaOs(object $os, string $urlVer, ?string $urlEditar, bool $verFinanceiro = false): array
     {
-        $bruto = (float) ($os->totalProdutos ?? 0) + (float) ($os->totalServicos ?? 0);
-        $total = (float) ($os->valor_desconto ?? 0) > 0 ? (float) $os->valor_desconto : $bruto;
         $pill = osStatusPill($os->status ?? null);
 
-        return [
+        $evento = [
             'id' => (string) $os->idOs,
             'title' => 'OS ' . $os->idOs . ' · ' . ($os->nomeCliente ?? 'Cliente removido'),
             'start' => substr((string) $os->dataFinal, 0, 10),
@@ -148,12 +146,17 @@ if (! function_exists('painelEventoDaOs')) {
                 'dataInicial' => dataBr($os->dataInicial ?? null),
                 'dataFinal' => dataBr($os->dataFinal ?? null),
                 'equipamento' => osTextoCurto($os->descricaoProduto ?? null, 120),
-                'total' => dinheiro($total),
-                'faturado' => (int) ($os->faturado ?? 0) === 1,
                 'url' => $urlVer,
                 'urlEditar' => $urlEditar,
             ],
         ];
+        if ($verFinanceiro) {
+            $bruto = (float) ($os->totalProdutos ?? 0) + (float) ($os->totalServicos ?? 0);
+            $total = (float) ($os->valor_desconto ?? 0) > 0 ? (float) $os->valor_desconto : $bruto;
+            $evento['extendedProps']['total'] = dinheiro($total);
+            $evento['extendedProps']['faturado'] = (int) ($os->faturado ?? 0) === 1;
+        }
+        return $evento;
     }
 }
 

@@ -909,7 +909,8 @@ class Mapos extends MY_Controller
         $events = array_map(fn ($os) => painelEventoDaOs(
             $os,
             site_url('os/visualizar/' . (int) $os->idOs),
-            $podeEditar && $this->os_model->isEditable($os->idOs) ? site_url('os/editar/' . (int) $os->idOs) : null
+            $podeEditar && $this->os_model->isEditable($os->idOs) ? site_url('os/editar/' . (int) $os->idOs) : null,
+            $this->permite('vLancamento')
         ), $allOs);
 
         return $this->output

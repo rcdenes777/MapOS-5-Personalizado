@@ -335,8 +335,9 @@ if ($pode['os']) {
             . '<div><dt class="text-caption text-muted">Entrada</dt><dd class="text-body-md tabular-nums text-text" data-agenda-campo="dataInicial"></dd></div>'
             . '<div><dt class="text-caption text-muted">Entrega</dt><dd class="text-body-md tabular-nums text-text" data-agenda-campo="dataFinal"></dd></div>'
             . '<div class="sm:col-span-2"><dt class="text-caption text-muted">Equipamento</dt><dd class="text-body-md [overflow-wrap:anywhere] text-text" data-agenda-campo="equipamento"></dd></div>'
-            . '<div><dt class="text-caption text-muted">Total</dt><dd class="text-body-md tabular-nums text-text" data-agenda-campo="total"></dd></div>'
-            . '<div><dt class="text-caption text-muted">Faturada</dt><dd class="text-body-md text-text" data-agenda-campo="faturado"></dd></div>'
+            . ($pode['lancamentos'] ?
+                '<div><dt class="text-caption text-muted">Total</dt><dd class="text-body-md tabular-nums text-text" data-agenda-campo="total"></dd></div>'
+            . '<div><dt class="text-caption text-muted">Faturada</dt><dd class="text-body-md text-text" data-agenda-campo="faturado"></dd></div>' : '')
             . '</dl></div>'),
         ],
         'footer' => [

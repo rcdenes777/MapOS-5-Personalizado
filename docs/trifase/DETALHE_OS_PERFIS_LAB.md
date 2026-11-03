@@ -31,3 +31,9 @@ Não redefine acesso aos catálogos globais, vendas, cobranças externas ou e-ma
 - Fixture única criada: **OS9063**, clienteQA existente9050, técnico2. Peça e serviço de teste removidos pela aplicação; os registros de auditoria/estoque/custos do teste podem permanecer. Não repetir o roteiro mutável: `fixture.json` registra a criação e os itens já testados. Não se afirma que toda a passagem mutável deixou o banco idêntico; ela cria a fixture e seus históricos. A passagem final somente leitura comparou37tabelas sem alterações, excluindo sessões/logs.
 
 Evidências locais: `outputs/detalhe-os-perfis/` na pasta canônica, incluindo `browser.json`, `fixture.json`, `banco-passagem-final.json`, logs de testes e capturas. O primeiro roteiro parou em um seletor de link que não existia para a OS sem obrigação; os testes restantes foram concluídos por `final-browser.py`, sem repetir as mutações. Regressão integrada para produção e homologação humana continuam pendentes.
+
+## Complemento — agenda do painel clássico
+
+Na rota `mapos?visao=classica`, os cards de saldo, lançamentos e balanço já seguiam suas permissões, mas a agenda enviava `total` e `faturado` para qualquer usuário com `vOs`. Corrigido no servidor: esses dois campos só integram o JSON com `vLancamento`; o padrão do serializador é omiti-los. O modal também não inclui os campos sem essa capacidade. Agenda, cliente, datas, equipamento e atalhos técnicos permanecem. Sem alteração de perfil ou banco.
+
+Validação desta correção:1857PHP/8750asserções (depreciação e skip antigos), foco459/1245, PHPStan/build/JS/escape/formato aprovados;19checks de navegador com quatro perfis, incluindo resposta real da agenda e abertura do modal técnico. Evidências: `outputs/painel-classico-perfis/`. Nenhuma fixture ou mutação de negócio foi executada nesta passagem.

@@ -40,7 +40,8 @@ if ($pode['lancamentos'] && $pode['balanco'] && isset($balanco['saldo'], $ano) &
 
 // Cards clicáveis com acento de status (kpi-card, prop accent).
 $kpis = [];
-if ($pode['os']) {
+$filasClassicas = $pode['os'] ? ($operacional_classico ?? null) : null;
+if ($pode['os'] && $filasClassicas === null) {
     $aguardando = (int) ($os_por_status['Aguardando Peças'] ?? 0);
     $kpis[] = [
         'label' => 'OS em andamento',
@@ -114,6 +115,10 @@ if ($verGraficoOs) {
     <?php if (! empty($instalador_no_servidor)) { ?>
         <?= component('alert', ['variant' => 'warning', 'message' => 'A pasta install ainda está no servidor. Ela já não funciona, mas apague-a do servidor para não deixar arquivos desnecessários expostos.']) ?>
     <?php } ?>
+
+    <?php if ($filasClassicas !== null) {
+        $this->load->view('trifase/painel-filas', ['resumoFilas' => $filasClassicas]);
+    } ?>
 
     <?php if ($kpis !== []) { ?>
         <div class="grid grid-cols-2 gap-4 xl:grid-cols-4">

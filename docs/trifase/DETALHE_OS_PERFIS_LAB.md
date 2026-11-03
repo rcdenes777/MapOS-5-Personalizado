@@ -41,3 +41,9 @@ Validação desta correção:1857PHP/8750asserções (depreciação e skip antig
 ## Painel técnico sem gráfico de status
 
 A pedido do usuário, o painel clássico do técnico não apresenta **OS por status**, sua legenda/tabela acessível ou os dados dessa série no módulo JavaScript. A agenda ocupa a largura disponível; contadores e lista de atendimentos permanecem. A apresentação gerencial existente foi mantida para quem tem `vOs` e `vLancamento`, sem criar permissões ou modificar perfis. Testado também com a conta técnica solicitada pelo usuário no laboratório8230. Foco459testes/1247asserções, PHPStan/build/formato/escape aprovados; navegador confirmou técnico sem gráfico, administrador com gráfico e agenda preservada. Evidências: `outputs/painel-tecnico-sem-grafico/`.
+
+## Cinco indicadores também no painel clássico
+
+`mapos?visao=classica` agora usa as mesmas filas operacionais do painel da assistência: Em atendimento, Aguardando orçamento, Aguardando peças, Prontas para retirada e Retornos em avaliação. Os dois indicadores nativos de OS são substituídos quando o piloto está ativo, sem duplicação; os demais blocos continuam seguindo suas permissões. Contagens de retirada e retorno usam os estados reais dos módulos, não só o status da OS. Quando um módulo de fila estiver desativado/ausente, mantém-se a disponibilidade definida pelas consultas existentes. Cada cartão abre seu filtro na listagem de OS. O resumo foi extraído no model para compartilhar as contagens sem carregar as listas auxiliares do outro painel.
+
+Foco459testes/1247asserções, PHPStan/build/formato/escape aprovados, detector sem achados.16checks de navegador: comparação com o painel de referência, cinco links filtrados, agenda preservada, técnico sem gráfico/valores e tela360px sem excesso horizontal. Capturas desktop/celular conferidas. Sem mudança de dados ou permissões; evidências em `outputs/painel-classico-cinco-filas/`.

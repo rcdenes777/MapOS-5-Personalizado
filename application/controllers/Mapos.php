@@ -50,6 +50,10 @@ class Mapos extends MY_Controller
             $painel['os_por_status'] = $osPorStatus;
             $painel['os_grafico'] = $pode['lancamentos'] ? painelOsPorStatus($osPorStatus) : [];
             $painel['os_lista'] = $this->mapos_model->osParaPainel(PAINEL_OS_ANDAMENTO, 8);
+            if (trifaseInterfacePiloto()) {
+                $this->load->model('Trifase_painel_model', 'painel_trifase');
+                $painel['operacional_classico'] = $this->painel_trifase->resumoOperacional();
+            }
         }
 
         if ($pode['vendas']) {

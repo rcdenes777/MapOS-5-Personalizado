@@ -7,7 +7,7 @@ require_once APPPATH . 'helpers/trifase_financeiro_helper.php';
 /** Consultas de leitura para a visão operacional do painel. */
 class Trifase_painel_model extends CI_Model
 {
-    public function operacional(): array
+    public function resumoOperacional(): array
     {
         $status = [];
         foreach ($this->db->select('status, COUNT(*) AS total')->group_by('status')->get('os')->result() as $linha) {
@@ -19,9 +19,14 @@ class Trifase_painel_model extends CI_Model
             Trifase_os_fila::aplicar($this->db, $fila);
             $filas[$fila] = ['label' => $label, 'total' => (int) $this->db->count_all_results()];
         }
-        return ['status' => $status, 'filas' => $filas,
-            'atencao' => $this->lista(null),
-            'retirada' => isset($filas['retirada']) ? $this->lista('retirada') : [],
+        return ['status' => $status, 'filas' => $filas];
+    }
+
+    public function operacional(): array
+    {
+        $resumo = $this->resumoOperacional();
+        return $resumo + ['atencao' => $this->lista(null),
+            'retirada' => isset($resumo['filas']['retirada']) ? $this->lista('retirada') : [],
         ];
     }
 

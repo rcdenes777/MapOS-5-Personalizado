@@ -117,10 +117,6 @@ if (($pilotoEquipamento ?? null) !== null
                         <?php } ?>
                     </div>
                 <?php } ?>
-                <div class="trifase-os-links-itens">
-                    <?= component('link', ['label' => $pode['editar'] ? 'Gerenciar peças' : 'Consultar peças', 'href' => site_url('os/visualizar/' . $idOs) . '?aba=produtos']) ?>
-                    <?= component('link', ['label' => $pode['editar'] ? 'Gerenciar serviços' : 'Consultar serviços', 'href' => site_url('os/visualizar/' . $idOs) . '?aba=servicos']) ?>
-                </div>
             </section>
 
             <?php if (function_exists('trifaseOrcamentoHabilitado') && trifaseOrcamentoHabilitado() && $verFinanceiro) { ?>

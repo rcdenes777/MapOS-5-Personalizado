@@ -69,6 +69,7 @@ $config['permissions_map'] = [
         'unidadesCliente' => ['todas' => ['vOs', 'aOs']],
         'visualizar' => 'vOs',
         'vincular' => ['todas' => ['vOs', 'eOs']],
+        'corrigir' => ['todas' => ['vOs', 'eOs']],
     ],
     'Trifase_entregas' => [
         'registrar' => ['todas' => ['vOs', 'registrarEntrega']],

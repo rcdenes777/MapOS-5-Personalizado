@@ -4,7 +4,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
 require_once APPPATH . 'libraries/Trifase_os_lock.php';
 require_once APPPATH . 'helpers/trifase_garantia_helper.php';
 
-/** Modelo não é unidade: o retrato de cada atendimento permanece imutável. */
+/** Modelo não é unidade: o retrato original é preservado e correções têm histórico próprio. */
 class Trifase_equipamento_model extends CI_Model
 {
     public function modelos(string $termo): array
@@ -38,7 +38,78 @@ class Trifase_equipamento_model extends CI_Model
 
     public function porOs(int $id): ?object
     {
-        return $this->db->where('os_id', $id)->get('trifase_os_equipamentos', 1)->row() ?: null;
+        $retrato = $this->db->where('os_id', $id)->get('trifase_os_equipamentos', 1)->row() ?: null;
+        if ($retrato !== null) {
+            $retrato->correcao_versao = 0;
+            $eventos = $this->correcoes($id);
+            if ($eventos !== []) {
+                foreach (json_decode($eventos[0]->depois, true, 512, JSON_THROW_ON_ERROR) as $campo => $valor) {
+                    $retrato->$campo = $valor;
+                }
+                $retrato->correcao_versao = (int) $eventos[0]->id;
+            }
+        }
+        return $retrato;
+    }
+
+    public function correcoes(int $osId): array
+    {
+        return $this->db->table_exists('trifase_equipamento_correcoes')
+            ? $this->db->where('os_id', $osId)->order_by('id', 'DESC')->get('trifase_equipamento_correcoes')->result()
+            : [];
+    }
+
+    /** Apenas o retrato desta OS: cadastro, vínculo físico e comprovantes não mudam. */
+    public function corrigir(int $osId, array $dados, int $versao, string $motivo, int $usuario, string $chave): int
+    {
+        if (! $this->db->table_exists('trifase_equipamento_correcoes') || $usuario <= 0 || $versao < 0
+            || ! preg_match('/\A[a-zA-Z0-9_-]{16,64}\z/', $chave)) {
+            throw new DomainException('Correção indisponível ou identificador inválido. Recarregue a OS.');
+        }
+        $campos = ['marca' => 100, 'modelo' => 160, 'selo' => 100, 'serie' => 100, 'imei' => 100, 'itens_recebidos' => 10000, 'estado_entrada' => 10000];
+        if (array_diff(array_keys($dados), array_keys($campos)) !== []) {
+            throw new DomainException('A correção não altera o vínculo nem outros campos da OS.');
+        }
+        $novo = [];
+        foreach ($campos as $campo => $limite) {
+            $novo[$campo] = $this->texto($dados[$campo] ?? '', $limite, in_array($campo, ['marca', 'modelo', 'itens_recebidos', 'estado_entrada'], true));
+        }
+        if ($novo['selo'] === '' && $novo['serie'] === '' && $novo['imei'] === '') {
+            throw new DomainException('Informe selo, série ou IMEI.');
+        }
+        $motivo = $this->texto($motivo, 2000, true);
+        $hash = hash('sha256', json_encode([$osId, $novo, $versao, $motivo, $usuario], JSON_THROW_ON_ERROR));
+        $lock = new Trifase_os_lock($this->db, $osId);
+        try {
+            $repetido = $this->db->where('operacao', $chave)->get('trifase_equipamento_correcoes', 1)->row();
+            if ($repetido !== null) {
+                if (! hash_equals($repetido->payload_hash, $hash)) {
+                    throw new DomainException('Identificador já utilizado com outros dados.');
+                }
+                $lock->finalizar(true);
+                return (int) $repetido->id;
+            }
+            $atual = $this->porOs($osId);
+            if ($atual === null) {
+                throw new DomainException('Identifique a unidade antes de corrigir seus dados.');
+            }
+            if ((int) $atual->correcao_versao !== $versao) {
+                throw new DomainException('Outra correção foi registrada. Recarregue antes de salvar.');
+            }
+            $antes = array_intersect_key((array) $atual, $campos);
+            if ($antes === $novo) {
+                throw new DomainException('Altere pelo menos um campo antes de salvar.');
+            }
+            $this->inserir('trifase_equipamento_correcoes', ['os_id' => $osId, 'usuario_id' => $usuario,
+                'antes' => json_encode($antes, JSON_THROW_ON_ERROR), 'depois' => json_encode($novo, JSON_THROW_ON_ERROR),
+                'motivo' => $motivo, 'criado_em' => date('Y-m-d H:i:s'), 'operacao' => $chave, 'payload_hash' => $hash]);
+            $id = (int) $this->db->insert_id();
+            $lock->finalizar(true);
+            return $id;
+        } catch (Throwable $e) {
+            $lock->finalizar(false);
+            throw $e;
+        }
     }
 
     public function historico(int $unidade): array

@@ -3,6 +3,7 @@
 require_once APPPATH . 'models/Trifase_equipamento_model.php';
 require_once APPPATH . 'helpers/trifase_equipamento_helper.php';
 require_once APPPATH . 'database/migrations/20261102010000_trifase_equipamentos.php';
+require_once APPPATH . 'database/migrations/20261103010000_trifase_equipamento_correcoes.php';
 require_once BASEPATH . 'database/DB_forge.php';
 require_once BASEPATH . 'database/drivers/sqlite3/sqlite3_forge.php';
 
@@ -27,6 +28,49 @@ final class TrifaseEquipamentoTest extends MaposTestCase
         $m->up();
         $this->modelo = new Trifase_equipamento_model();
         $this->modelo->db = $this->db;
+    }
+
+    public function testCorrecaoPreservaOriginalUnidadeEOutrasOsEImpedeConflito(): void
+    {
+        $m = new class() extends Migration_trifase_equipamento_correcoes {
+            public object $dbforge;
+        };
+        $m->db = $this->db;
+        $m->dbforge = new CI_DB_sqlite3_forge($this->db);
+        $m->up();
+        $m->up();
+        $unidade = $this->modelo->vincular(1, $this->dados(), 1, 'CORR_VINCULO_0001');
+        $original = $this->db->get('trifase_os_equipamentos')->result_array();
+        $cadastros = $this->db->get('trifase_equipamentos')->result_array();
+        $os = $this->db->get('os')->result_array();
+        $novo = array_intersect_key((array) $this->modelo->porOs(1), array_flip(['marca', 'modelo', 'selo', 'serie', 'imei', 'itens_recebidos', 'estado_entrada']));
+        $novo['marca'] = 'Marca corrigida';
+        $novo['estado_entrada'] = 'Estado corrigido';
+        $id = $this->modelo->corrigir(1, $novo, 0, 'Erro de digitação', 1, 'CORR_EVENTO_00001');
+        $this->assertSame($id, $this->modelo->corrigir(1, $novo, 0, 'Erro de digitação', 1, 'CORR_EVENTO_00001'));
+        $this->assertCount(1, $this->modelo->correcoes(1));
+        $this->assertSame('Marca corrigida', $this->modelo->porOs(1)->marca);
+        $this->assertSame($unidade, (int) $this->modelo->porOs(1)->equipamento_id);
+        $this->assertSame($original, $this->db->get('trifase_os_equipamentos')->result_array());
+        $this->assertSame($cadastros, $this->db->get('trifase_equipamentos')->result_array());
+        $this->assertSame($os, $this->db->get('os')->result_array());
+        $this->assertSame([], $this->modelo->correcoes(2));
+        foreach ([[$novo, 0, 'Motivo', 'CORR_EVENTO_00002'], [$novo, $id, '', 'CORR_EVENTO_00003'], [$novo + ['equipamento_id' => 3], $id, 'Motivo', 'CORR_EVENTO_00004']] as [$dados, $versao, $motivo, $chave]) {
+            try {
+                $this->modelo->corrigir(1, $dados, $versao, $motivo, 1, $chave);
+                $this->fail('Correção inválida foi aceita.');
+            } catch (DomainException $e) {
+                $this->assertNotSame('', $e->getMessage());
+            }
+        }
+        $novo['marca'] = 'Segunda correção';
+        $novo['estado_entrada'] = str_repeat('界', 10000);
+        $this->modelo->corrigir(1, $novo, $id, 'Conferência', 1, 'CORR_EVENTO_00005');
+        $this->assertSame('Segunda correção', $this->modelo->porOs(1)->marca);
+        $this->assertSame($novo['estado_entrada'], $this->modelo->porOs(1)->estado_entrada);
+        $this->assertCount(2, $this->modelo->correcoes(1));
+        $this->expectException(DomainException::class);
+        $this->modelo->corrigir(1, $novo, $id, 'Conferência', 1, 'CORR_EVENTO_00001');
     }
 
     private function dados(string $selo = 'T-001'): array

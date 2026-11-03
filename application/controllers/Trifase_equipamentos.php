@@ -98,6 +98,37 @@ class Trifase_equipamentos extends MY_Controller
         }
     }
 
+    public function corrigir($osId = null)
+    {
+        if (! $this->permission->checkPermission($this->session->userdata('permissao'), 'vOs')
+            || ! $this->permission->checkPermission($this->session->userdata('permissao'), 'eOs')) {
+            show_error('Sem permissão para editar a identificação desta OS.', 403);
+        }
+        if ($this->input->method(true) !== 'POST') {
+            show_error('Use o formulário para corrigir a identificação.', 405);
+        }
+        $os = $this->ordem($osId);
+        try {
+            $dados = [];
+            foreach (['marca', 'modelo', 'selo', 'serie', 'imei', 'itens_recebidos', 'estado_entrada'] as $campo) {
+                $dados[$campo] = $this->input->post($campo) ?? '';
+            }
+            $versao = filter_var($this->input->post('versao'), FILTER_VALIDATE_INT, ['options' => ['min_range' => 0]]);
+            $motivo = $this->input->post('motivo');
+            $chave = $this->input->post('operacao');
+            if ($versao === false || ! is_string($motivo) || ! is_string($chave)) {
+                throw new DomainException('Confira motivo e versão. Recarregue a OS.');
+            }
+            $this->equipamentos->corrigir((int) $os->idOs, $dados, $versao, $motivo, (int) $this->session->userdata('id_admin'), $chave);
+            $this->session->set_flashdata('success', 'Identificação corrigida nesta OS. Dados anteriores preservados no histórico.');
+            return $this->json(200, ['result' => true, 'redirecionar' => site_url('os/visualizar/' . (int) $os->idOs)]);
+        } catch (DomainException $e) {
+            return $this->json(422, ['result' => false, 'message' => $e->getMessage()]);
+        } catch (RuntimeException $e) {
+            return $this->json(500, ['result' => false, 'message' => 'Não foi possível confirmar a correção. Recarregue antes de tentar novamente.']);
+        }
+    }
+
     public function visualizar($id = null)
     {
         if (! $this->permission->checkPermission($this->session->userdata('permissao'), 'vOs')) {

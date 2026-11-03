@@ -431,3 +431,7 @@ Com `TRIFASE_UI_PILOTO_ENABLED` e `TRIFASE_FINANCEIRO_ENABLED` já ativos, a con
 ### Detalhe piloto: técnico e financeiro
 
 Com `TRIFASE_UI_PILOTO_ENABLED` já ativo, usuários com `eOs` e sem `vLancamento` incluem/removem itens usando o preço atual do catálogo, sem enviar preço ou desconto. Valores, PIX e impressões comerciais na OS dependem de `vLancamento`; sem ela, a impressão é técnica. Não há migração, nova variável ou grant automático. Perfis e integração própria que enviem preço em nome de um técnico precisam usar a permissão financeira apropriada ou omitir o preço para aplicar o catálogo. Veja `docs/trifase/DETALHE_OS_PERFIS_LAB.md`.
+
+### Correções da identificação de uma OS (Trifase)
+
+A migração `20261103010000` adiciona somente o histórico `trifase_equipamento_correcoes`. Com equipamentos Trifase já ativos, **Editar identificação** exige `vOs` e `eOs`, sem concessão automática. Motivo, operador e valores anteriores ficam registrados; a consulta da OS apresenta a última correção. O retrato original, cadastro da unidade, outras OS, comprovantes e prazos não são reescritos. A correção não transfere cliente nem troca a unidade física. Sem a tabela, a consulta antiga funciona e a edição não é oferecida. Não apagar o histórico ao desativar o módulo. Veja [o guia de correção](trifase/CORRECAO_IDENTIFICACAO_LAB.md).

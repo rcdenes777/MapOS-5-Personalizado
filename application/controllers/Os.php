@@ -617,9 +617,13 @@ class Os extends MY_Controller
         }
         $dados['pilotoEquipamento'] = null;
         $dados['pilotoPodeIdentificar'] = false;
+        $dados['pilotoCorrecoesEquipamento'] = [];
+        $dados['pilotoPodeCorrigirEquipamento'] = false;
         if (trifaseEquipamentosHabilitados()) {
             $this->load->model('Trifase_equipamento_model', 'equipamentos_os');
             $dados['pilotoEquipamento'] = $this->equipamentos_os->porOs((int) $os->idOs);
+            $dados['pilotoCorrecoesEquipamento'] = $this->equipamentos_os->correcoes((int) $os->idOs);
+            $dados['pilotoPodeCorrigirEquipamento'] = $this->permite('eOs') && $this->db->table_exists('trifase_equipamento_correcoes');
             $dados['pilotoPodeIdentificar'] = $this->permite('eOs') && ! trifaseEntregaTemHistorico($this->db, (int) $os->idOs);
         }
         return $dados;

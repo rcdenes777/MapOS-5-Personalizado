@@ -17,6 +17,7 @@ $idEquipamentoOs = (int) $os->idOs;
             <?php } ?>
         </div>
         <p class="trifase-os-ajuda">Identificação registrada neste atendimento. Outra OS reutiliza a unidade e pede novos dados de entrada.</p>
+        <?php $this->load->view('trifase/equipamento-correcao', ['os' => $os, 'equipamentoDaOs' => $equipamentoDaOs, 'pilotoPodeCorrigirEquipamento' => $pilotoPodeCorrigirEquipamento ?? false, 'pilotoCorrecoesEquipamento' => $pilotoCorrecoesEquipamento ?? []]); ?>
     <?php } else { ?>
         <p class="text-muted">Sem unidade identificada. A descrição original da OS continua preservada.</p>
         <?php if ($pilotoPodeIdentificar ?? false) { ?>

@@ -48,7 +48,7 @@ class Mapos extends MY_Controller
         if ($pode['os']) {
             $osPorStatus = $this->mapos_model->contarPorStatus('os');
             $painel['os_por_status'] = $osPorStatus;
-            $painel['os_grafico'] = painelOsPorStatus($osPorStatus);
+            $painel['os_grafico'] = $pode['lancamentos'] ? painelOsPorStatus($osPorStatus) : [];
             $painel['os_lista'] = $this->mapos_model->osParaPainel(PAINEL_OS_ANDAMENTO, 8);
         }
 

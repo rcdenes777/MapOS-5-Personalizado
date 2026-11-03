@@ -314,7 +314,7 @@ final class PainelTest extends MaposTestCase
         $d['pode']['lancamentos'] = false;
         $d['pode']['balanco'] = false;
         $html = $this->renderizar($d);
-        foreach (['data-agenda-campo="total"', 'data-agenda-campo="faturado"', 'Balanço de', 'Saldo do mês', 'Lançamentos a vencer', 'R$'] as $financeiro) {
+        foreach (['data-agenda-campo="total"', 'data-agenda-campo="faturado"', 'Balanço de', 'Saldo do mês', 'Lançamentos a vencer', 'R$', 'OS por status', 'data-grafico="os"'] as $financeiro) {
             $this->assertStringNotContainsString($financeiro, $html);
         }
         $this->assertStringContainsString('data-agenda-campo="equipamento"', $html);

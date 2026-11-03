@@ -83,11 +83,12 @@ if ($pode['lancamentos']) {
     ];
 }
 
+$verGraficoOs = $pode['os'] && $pode['lancamentos'];
 $dadosDoModulo = [];
 if ($pode['balanco']) {
     $dadosDoModulo['balanco'] = $balanco;
 }
-if ($pode['os']) {
+if ($verGraficoOs) {
     $dadosDoModulo['os'] = $os_grafico;
 }
 ?>
@@ -123,7 +124,7 @@ if ($pode['os']) {
     <?php } ?>
 
     <?php if ($pode['os']) { ?>
-        <div class="grid gap-4 xl:grid-cols-3">
+        <div class="grid gap-4 <?= $verGraficoOs ? 'xl:grid-cols-3' : '' ?>">
             <section class="<?= e($caixa) ?> min-w-0 xl:col-span-2" aria-labelledby="titulo-agenda">
                 <div class="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
                     <div>
@@ -146,6 +147,7 @@ if ($pode['os']) {
                 </div>
             </section>
 
+            <?php if ($verGraficoOs) { ?>
             <section class="<?= e($caixa) ?> min-w-0" aria-labelledby="titulo-os-status">
                 <div class="flex flex-wrap items-center justify-between gap-2">
                     <h2 id="titulo-os-status" class="text-heading-sm text-text">OS por status</h2>
@@ -168,6 +170,7 @@ if ($pode['os']) {
                     </table></div>
                 <?php } ?>
             </section>
+            <?php } ?>
         </div>
     <?php } ?>
 

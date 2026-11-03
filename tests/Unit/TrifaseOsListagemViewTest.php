@@ -1,0 +1,182 @@
+<?php
+
+if (! function_exists('site_url')) {
+    function site_url($uri = '')
+    {
+        return 'http://localhost/' . ltrim($uri, '/');
+    }
+}
+
+if (! function_exists('base_url')) {
+    function base_url($uri = '')
+    {
+        return 'http://localhost/' . ltrim($uri, '/');
+    }
+}
+
+final class TrifaseOsListagemViewTest extends \PHPUnit\Framework\TestCase
+{
+    #[\PHPUnit\Framework\Attributes\DataProvider('totais')]
+    public function testTotalDaObrigacaoPrevaleceSobreItensSemUsarRecebidoOuSaldo(int $total, string $esperado): void
+    {
+        $recebido = min(20000, intdiv($total, 2));
+        $html = $this->renderizar([
+            1 => ['total_c' => $total, 'recebido_c' => $recebido, 'saldo_c' => $total - $recebido, 'situacao' => 'Parcialmente pago'],
+        ]);
+
+        $this->assertSame([$esperado], $this->celulas($html, 'Total'));
+        $this->assertSame(['Parcialmente pago'], $this->celulas($html, 'Pagamento'));
+    }
+
+    public static function totais(): array
+    {
+        return [
+            'cobranca sem itens na lista' => [50000, 'R$ 500,00'],
+            'desconto da obrigacao ja aplicado' => [45000, 'R$ 450,00'],
+            'centavos preservados' => [12345, 'R$ 123,45'],
+        ];
+    }
+
+    public function testAbatimentoTotalZeroNaoRetornaAoTotalDosItens(): void
+    {
+        $html = $this->renderizar([
+            1 => ['total_c' => 0, 'recebido_c' => 0, 'saldo_c' => 0, 'situacao' => 'Reembolsado'],
+        ], ['total' => 550]);
+
+        $this->assertSame(['R$ 0,00'], $this->celulas($html, 'Total'));
+        $this->assertSame(['Reembolsado'], $this->celulas($html, 'Pagamento'));
+    }
+
+    public function testAbatimentoParcialUsaTotalLiquidoENaoTotalOriginal(): void
+    {
+        $html = $this->renderizar([
+            1 => ['total_c' => 45000, 'total_original_c' => 50000, 'recebido_c' => 15000, 'saldo_c' => 30000, 'situacao' => 'Parcialmente pago'],
+        ], ['total' => 500]);
+
+        $this->assertSame(['R$ 450,00'], $this->celulas($html, 'Total'));
+    }
+
+    public function testFaturamentoAntigoSemObrigacaoPreservaTotalNativoComDesconto(): void
+    {
+        $html = $this->renderizar([], ['total' => 150, 'faturado' => 1]);
+
+        $this->assertSame(['R$ 150,00'], $this->celulas($html, 'Total'));
+        $this->assertSame(['Faturamento anterior'], $this->celulas($html, 'Pagamento'));
+    }
+
+    public function testOsAindaNaoFaturadaPreservaTotalNativo(): void
+    {
+        $html = $this->renderizar([], ['total' => 260, 'faturado' => 0]);
+
+        $this->assertSame(['R$ 260,00'], $this->celulas($html, 'Total'));
+        $this->assertSame(['Não registrado'], $this->celulas($html, 'Pagamento'));
+    }
+
+    public function testResumoDeOutraOsNaoEAplicadoALinhaAtual(): void
+    {
+        $html = $this->renderizar([
+            2 => ['total_c' => 50000, 'recebido_c' => 20000, 'saldo_c' => 30000, 'situacao' => 'Parcialmente pago'],
+        ], ['total' => 77.33]);
+
+        $this->assertSame(['R$ 77,33'], $this->celulas($html, 'Total'));
+    }
+
+    public function testSemPermissaoNaoExibeValoresMesmoComResumoFornecido(): void
+    {
+        $html = $this->renderizar([
+            1 => ['total_c' => 50000, 'recebido_c' => 20000, 'saldo_c' => 30000, 'situacao' => 'Parcialmente pago'],
+        ], ['total' => 777], ['listaVerFinanceiro' => false]);
+
+        $this->assertSame([], $this->celulas($html, 'Total'));
+        $this->assertSame([], $this->celulas($html, 'Pagamento'));
+        $this->assertStringNotContainsString('R$', $html);
+    }
+
+    public function testModuloFinanceiroDesligadoMantemColunaNativa(): void
+    {
+        $html = $this->renderizar([
+            1 => ['total_c' => 50000],
+        ], ['total' => 88], ['listaFinanceiroHabilitado' => false]);
+
+        $this->assertSame(['R$ 88,00'], $this->celulas($html, 'Total'));
+        $this->assertSame([], $this->celulas($html, 'Pagamento'));
+    }
+
+    public function testInterfacePilotoDesligadaMantemListagemNativa(): void
+    {
+        $html = $this->renderizar([
+            1 => ['total_c' => 50000],
+        ], ['total' => 88], ['trifase_ui_piloto' => false]);
+
+        $this->assertSame(['R$ 88,00'], $this->celulas($html, 'Total'));
+        $this->assertSame([], $this->celulas($html, 'Pagamento'));
+    }
+
+    public function testPaginaMistaUsaResumoPorIdEPreservaAndamentoDeCadaOs(): void
+    {
+        $linhas = [];
+        foreach ([1 => 'Finalizado', 2 => 'Aberto', 3 => 'Em Andamento'] as $id => $status) {
+            $linhas[] = (object) [
+                'idOs' => $id, 'nomeCliente' => 'Cliente de teste', 'clientes_id' => 1,
+                'descricaoProduto' => 'Placa', 'responsavel' => 'Técnico',
+                'dataInicial' => '2026-11-02', 'dataFinal' => '2026-11-06',
+                'status' => $status, 'faturado' => 1, 'total' => 123.45,
+            ];
+        }
+        // Mapa fora da ordem das linhas; o total zero também deve prevalecer.
+        $html = $this->renderizar([
+            3 => ['total_c' => 0, 'saldo_c' => 0, 'situacao' => 'Reembolsado'],
+            1 => ['total_c' => 50000, 'saldo_c' => 30000, 'situacao' => 'Parcialmente pago'],
+        ], [], ['results' => $linhas]);
+
+        $this->assertSame(['R$ 500,00', 'R$ 123,45', 'R$ 0,00'], $this->celulas($html, 'Total'));
+        $this->assertSame(['Parcialmente pago', 'Faturamento anterior', 'Reembolsado'], $this->celulas($html, 'Pagamento'));
+        $this->assertSame(['Finalizado', 'Aberto', 'Em Andamento'], $this->celulas($html, 'Andamento do serviço'));
+        $this->assertSame(['Finalizado', 'Aberto', 'Em Andamento'], array_column($linhas, 'status'));
+    }
+
+    private function renderizar(array $resumos, array $os = [], array $opcoes = []): string
+    {
+        $dados = array_replace([
+            'filtros' => [],
+            'total' => 1,
+            'status_ocultos' => false,
+            'controle_editos' => false,
+            'pode' => ['adicionar' => false, 'editar' => false, 'excluir' => false],
+            'paginacao' => ['total_pages' => 1, 'current' => 1, 'url' => 'http://localhost/os/gerenciar/{page}'],
+            'trifase_ui_piloto' => true,
+            'listaVerFinanceiro' => true,
+            'listaFinanceiroHabilitado' => true,
+            'listaFinanceiro' => $resumos,
+            'results' => [(object) array_replace([
+                'idOs' => 1, 'nomeCliente' => 'Cliente de teste', 'clientes_id' => 1,
+                'descricaoProduto' => 'Placa', 'responsavel' => 'Técnico',
+                'dataInicial' => '2026-11-02', 'dataFinal' => '2026-11-06',
+                'status' => 'Finalizado', 'faturado' => 1, 'total' => 0,
+            ], $os)],
+        ], $opcoes);
+
+        extract($dados);
+        ob_start();
+        try {
+            include APPPATH . 'views/os/os.php';
+
+            return (string) ob_get_contents();
+        } finally {
+            ob_end_clean();
+        }
+    }
+
+    private function celulas(string $html, string $coluna): array
+    {
+        $dom = new DOMDocument();
+        @$dom->loadHTML('<?xml encoding="UTF-8">' . $html);
+        $xpath = new DOMXPath($dom);
+        $valores = [];
+        foreach ($xpath->query('//td[@data-label="' . $coluna . '"]') as $celula) {
+            $valores[] = trim(preg_replace('/\s+/u', ' ', $celula->textContent));
+        }
+
+        return $valores;
+    }
+}

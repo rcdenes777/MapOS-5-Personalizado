@@ -56,6 +56,13 @@ if ($trifase_ui_piloto ?? false) {
     foreach ($colunas as $coluna) {
         if ($coluna['label'] === 'Total') {
             if ($listaVerFinanceiro ?? false) {
+                // A obrigação é a fonte do total das OS geridas, inclusive após
+                // abatimentos; a soma nativa dos itens fica para as demais OS.
+                $coluna['render'] = static function ($o) use ($listaFinanceiro, $listaFinanceiroHabilitado) {
+                    $resumo = $listaFinanceiroHabilitado ? ($listaFinanceiro[(int) $o->idOs] ?? null) : null;
+
+                    return dinheiro($resumo === null ? $o->total : $resumo['total_c'] / 100);
+                };
                 $adaptadas[] = $coluna;
                 if ($listaFinanceiroHabilitado ?? false) {
                     $adaptadas[] = ['label' => 'Pagamento', 'render' => static function ($o) use ($listaFinanceiro) {

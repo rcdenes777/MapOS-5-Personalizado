@@ -1,5 +1,7 @@
 # Filtros financeiros na listagem de OS — laboratório 8230
 
+**Localização atual:** por solicitação do usuário, filtros e colunas de cobrança ficam em **Financeiro → OS e recebimentos** (`financeiro/ordens`). A listagem técnica de Ordens de serviço não os exibe, inclusive para administrador. As regras de cálculo abaixo continuam válidas. Links antigos filtrados são encaminhados à área financeira, com as mesmas permissões. Consulte `SEPARACAO_OS_FINANCEIRO_LAB.md`.
+
 Etapa de 03/11/2026, sobre `247e33a`, branch `v5-trifase`.
 
 A listagem permite combinar andamento do serviço, situação financeira, saldo a receber, pesquisa e datas. A situação financeira oferece não faturada, em aberto, parcialmente paga, quitada, faturamento anterior, reembolsada e encerrada por garantia. A coluna Saldo a receber usa o resumo canônico em centavos; sem obrigação registrada mostra **Não apurado**, sem inventar saldo zero para faturas antigas.

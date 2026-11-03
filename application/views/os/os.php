@@ -15,13 +15,16 @@
  * @var array{adicionar: bool, editar: bool, excluir: bool} $pode
  */
 $temFiltro = $filtros !== [];
+$contextoFinanceiro = $contextoFinanceiro ?? false;
+$urlLista = site_url($contextoFinanceiro ? 'financeiro/ordens' : 'os');
+$clienteComLink = ! $contextoFinanceiro || ($listaVerCliente ?? false);
 $filtrarFilas = ! empty($listaFilas);
-$filtrarFinanceiro = ($trifase_ui_piloto ?? false) && ($listaVerFinanceiro ?? false) && ($listaFinanceiroHabilitado ?? false);
+$filtrarFinanceiro = $contextoFinanceiro && ($trifase_ui_piloto ?? false) && ($listaVerFinanceiro ?? false) && ($listaFinanceiroHabilitado ?? false);
 
 $colunas = [
     ['key' => 'idOs', 'label' => 'Nº', 'align' => 'right', 'nowrap' => true],
     ['label' => 'Cliente', 'class' => 'min-w-40', 'render' => fn ($o) => $o->nomeCliente !== null
-        ? component('link', ['label' => $o->nomeCliente, 'href' => site_url('clientes/visualizar/' . $o->clientes_id), 'class' => 'font-medium'])
+        ? ($clienteComLink ? component('link', ['label' => $o->nomeCliente, 'href' => site_url('clientes/visualizar/' . $o->clientes_id), 'class' => 'font-medium']) : (string) $o->nomeCliente)
         : 'Cliente removido'],
     // A descrição pode ter HTML (vinha do editor); aqui só um resumo em texto.
     ['label' => 'Equipamento', 'hide_until' => 'lg', 'class' => 'max-w-64', 'render' => fn ($o) => osTextoCurto($o->descricaoProduto, 60)],
@@ -30,12 +33,15 @@ $colunas = [
     ['label' => 'Entrega', 'align' => 'right', 'nowrap' => true, 'hide_until' => 'xl', 'render' => fn ($o) => dataBr($o->dataFinal)],
     ['label' => ($trifase_ui_piloto ?? false) ? 'Andamento do serviço' : 'Status', 'nowrap' => true, 'render' => fn ($o) => component('pill-status', osStatusPill($o->status))],
     ['label' => 'Total', 'align' => 'right', 'nowrap' => true, 'render' => fn ($o) => dinheiro($o->total)],
-    ['label' => 'Ações', 'align' => 'right', 'nowrap' => true, 'render' => function ($o) use ($pode, $controle_editos) {
+    ['label' => 'Ações', 'align' => 'right', 'nowrap' => true, 'render' => function ($o) use ($pode, $controle_editos, $contextoFinanceiro) {
         $numero = 'OS ' . $o->idOs;
         $editavel = osEditavel($o, $pode['editar'], $controle_editos);
         $acoes = [
             component('button', ['label' => 'Ver ' . $numero, 'icon' => 'eye', 'icon_only' => true, 'variant' => 'ghost', 'size' => 'sm', 'href' => site_url('os/visualizar/' . $o->idOs)]),
         ];
+        if ($contextoFinanceiro) {
+            $acoes[] = component('button', ['label' => 'Recebimentos da ' . $numero, 'icon' => 'circle-dollar-sign', 'icon_only' => true, 'variant' => 'ghost', 'size' => 'sm', 'href' => site_url('trifase_financeiro/visualizar/' . (int) $o->idOs)]);
+        }
         if ($editavel) {
             $acoes[] = component('button', ['label' => 'Editar ' . $numero, 'icon' => 'pencil', 'icon_only' => true, 'variant' => 'ghost', 'size' => 'sm', 'href' => site_url('os/editar/' . $o->idOs)]);
         }
@@ -60,7 +66,13 @@ if ($trifase_ui_piloto ?? false) {
         if ($filtrarFinanceiro && $coluna['label'] === 'Responsável') {
             continue;
         }
+        if ($contextoFinanceiro && $coluna['label'] === 'Equipamento') {
+            continue;
+        }
         if ($coluna['label'] === 'Total') {
+            if (! $contextoFinanceiro) {
+                continue;
+            }
             if ($listaVerFinanceiro ?? false) {
                 // A obrigação é a fonte do total das OS geridas, inclusive após
                 // abatimentos; a soma nativa dos itens fica para as demais OS.
@@ -104,7 +116,7 @@ $vazio = $temFiltro
         'title' => 'Nenhuma OS encontrada',
         'message' => 'Nada corresponde aos filtros. Confira a busca ou limpe os filtros.',
         'icon' => 'search-x',
-        'action' => component('button', ['label' => 'Limpar filtros', 'variant' => 'outline', 'href' => site_url('os')]),
+        'action' => component('button', ['label' => 'Limpar filtros', 'variant' => 'outline', 'href' => $urlLista]),
         'class' => 'border-0',
     ])
     : component('empty-state', [
@@ -123,11 +135,15 @@ $resumo = ($total === 1 ? '1 ordem de serviço' : number_format($total, 0, ',', 
 ?>
 <div class="flex flex-col gap-4 pt-2 pb-8">
     <header>
-        <h1 class="font-display text-heading-xl text-text">Ordens de serviço</h1>
+        <h1 class="font-display text-heading-xl text-text"><?= e($contextoFinanceiro ? 'Financeiro das OS' : 'Ordens de serviço') ?></h1>
         <p class="text-caption text-muted" aria-live="polite"><?= e($resumo) ?></p>
     </header>
 
-    <form method="get" action="<?= e(site_url('os')) ?>" role="search" aria-label="Filtrar ordens de serviço" class="grid items-end gap-3 rounded-xl border border-border bg-surface p-4 sm:grid-cols-2 <?= e(($filtrarFinanceiro || $filtrarFilas) ? 'lg:grid-cols-3 xl:grid-cols-4' : 'lg:grid-cols-[minmax(0,1fr)_12rem_10rem_10rem_auto]') ?>">
+    <?php if ($contextoFinanceiro) { ?>
+        <?= component('tabs', ['label' => 'Áreas do financeiro', 'items' => [['label' => 'Lançamentos', 'url' => site_url('financeiro/lancamentos')], ['label' => 'OS e recebimentos', 'url' => site_url('financeiro/ordens'), 'active' => true]]]) ?>
+    <?php } ?>
+
+    <form method="get" action="<?= e($urlLista) ?>" role="search" aria-label="Filtrar ordens de serviço" class="grid items-end gap-3 rounded-xl border border-border bg-surface p-4 sm:grid-cols-2 <?= e(($filtrarFinanceiro || $filtrarFilas) ? 'lg:grid-cols-3 xl:grid-cols-4' : 'lg:grid-cols-[minmax(0,1fr)_12rem_10rem_10rem_auto]') ?>">
         <?= component('input', [
             'name' => 'pesquisa',
             'label' => 'Buscar',
@@ -165,7 +181,7 @@ $resumo = ($total === 1 ? '1 ordem de serviço' : number_format($total, 0, ',', 
         <div class="flex gap-2">
             <?= component('button', ['label' => 'Filtrar', 'icon' => 'search', 'variant' => 'outline', 'type' => 'submit']) ?>
             <?php if ($temFiltro) { ?>
-                <?= component('button', ['label' => 'Limpar', 'icon' => 'x', 'variant' => 'ghost', 'href' => site_url('os')]) ?>
+                <?= component('button', ['label' => 'Limpar', 'icon' => 'x', 'variant' => 'ghost', 'href' => $urlLista]) ?>
             <?php } ?>
         </div>
     </form>

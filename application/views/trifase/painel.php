@@ -130,7 +130,7 @@ if ($operacional !== null) {
                             <dd class="mt-1">
                                 <div class="font-display text-heading-lg text-text"><?= component('valor-sensivel', ['value' => dinheiro($financeiro_os['saldo_c'] / 100)]) ?></div>
                                 <p class="mt-2 text-caption text-muted"><?= component('valor-sensivel', ['value' => $financeiro_os['quantidade'] . ' OS com saldo registrado. Faturas antigas sem apuração não entram.']) ?></p>
-                                <div class="mt-2"><?= component('button', ['label' => 'Ver OS com saldo', 'variant' => 'ghost', 'href' => site_url('os') . listagemQuery(['saldo' => 'pendente'])]) ?></div>
+                                <div class="mt-2"><?= component('button', ['label' => 'Ver OS com saldo', 'variant' => 'ghost', 'href' => site_url('financeiro/ordens') . listagemQuery(['saldo' => 'pendente'])]) ?></div>
                             </dd>
                         </div>
                     <?php } ?>

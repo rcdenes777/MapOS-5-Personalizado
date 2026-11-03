@@ -5,6 +5,8 @@ if (! defined('BASEPATH')) {
 }
 
 require_once APPPATH . 'helpers/trifase_financeiro_helper.php';
+require_once APPPATH . 'libraries/Trifase_financeiro_busca.php';
+require_once APPPATH . 'libraries/Trifase_os_fila.php';
 
 class Financeiro extends MY_Controller
 {
@@ -49,6 +51,7 @@ class Financeiro extends MY_Controller
         $offset = (int) $this->uri->segment(3);
         $total = $this->financeiro_model->contar($filtros, $hoje);
 
+        $this->data['podeFinanceiroOs'] = trifaseInterfacePiloto() && trifaseFinanceiroHabilitado() && $this->permite('vOs');
         $this->data['hoje'] = $hoje;
         $this->data['filtros'] = $filtros;
         $this->data['total'] = $total;
@@ -90,6 +93,61 @@ class Financeiro extends MY_Controller
         $this->data['view'] = 'financeiro/lancamentos';
 
         return $this->layout();
+    }
+
+    /** Consulta de cobranças das OS, separada da área operacional. */
+    public function ordens()
+    {
+        if (! $this->permission->checkPermission($this->session->userdata('permissao'), 'vLancamento')
+            || ! $this->permission->checkPermission($this->session->userdata('permissao'), 'vOs')) {
+            show_error('Você não tem permissão para consultar o financeiro das OS.', 403);
+        }
+        if (! trifaseInterfacePiloto() || ! trifaseFinanceiroHabilitado()) {
+            show_404('', false);
+        }
+        if (! in_array($this->input->method(true), ['GET', 'HEAD'], true)) {
+            show_error('Método não permitido.', 405);
+        }
+        $this->load->helper('os');
+        $this->load->model('os_model');
+        $this->load->model('Trifase_financeiro_model', 'financeiro_os');
+        $filtros = $this->filtrosDasOrdens();
+        $offset = (int) $this->uri->segment(3);
+        $total = $this->os_model->contar($filtros);
+        $linhas = $this->os_model->listar($filtros, (int) $this->data['configuration']['per_page'], $offset);
+        $this->data = array_merge($this->data, [
+            'contextoFinanceiro' => true, 'listaVerFinanceiro' => true, 'listaFinanceiroHabilitado' => true,
+            'listaVerCliente' => $this->permite('vCliente'), 'listaFilas' => Trifase_os_fila::opcoes($this->db),
+            'listaFinanceiro' => $this->financeiro_os->resumos(array_map(static fn ($o) => (int) $o->idOs, $linhas)),
+            'filtros' => $filtros, 'total' => $total, 'results' => $linhas, 'status_ocultos' => false,
+            'controle_editos' => false, 'pode' => ['adicionar' => false, 'editar' => false, 'excluir' => false],
+            'paginacao' => $this->paginacao(site_url('financeiro/ordens'), $total, $offset, null, $filtros),
+            'view' => 'os/os',
+        ]);
+        return $this->layout();
+    }
+
+    private function filtrosDasOrdens(): array
+    {
+        $filtros = listagemFiltros([
+            'pesquisa' => 'texto', 'status' => array_keys(OS_STATUS_VARIANTES),
+            'financeiro' => array_keys(Trifase_financeiro_busca::OPCOES), 'saldo' => ['pendente'],
+            'fila' => array_keys(Trifase_os_fila::OPCOES), 'de' => 'texto', 'ate' => 'texto',
+        ], $this->input->get());
+        foreach (['de', 'ate'] as $data) {
+            if (isset($filtros[$data])) {
+                $valida = dataIsoParaYmd($filtros[$data]);
+                if ($valida === null) {
+                    unset($filtros[$data]);
+                } else {
+                    $filtros[$data] = $valida;
+                }
+            }
+        }
+        if (isset($filtros['fila']) && ! isset(Trifase_os_fila::opcoes($this->db)[$filtros['fila']])) {
+            unset($filtros['fila']);
+        }
+        return $filtros;
     }
 
     /**

@@ -59,6 +59,10 @@ class Os extends MY_Controller
         }
 
         $filtros = $this->filtrosDaListagem();
+        if (Trifase_financeiro_busca::ativo($filtros)) {
+            redirect(site_url('financeiro/ordens') . listagemQuery($filtros));
+            return;
+        }
         $offset = (int) $this->uri->segment(3);
         $statusVisiveis = osStatusVisiveis($this->data['configuration']['os_status_list'] ?? null);
         $total = $this->os_model->contar($filtros, $statusVisiveis);
@@ -66,7 +70,7 @@ class Os extends MY_Controller
         $this->data['listaFilas'] = Trifase_os_fila::opcoes($this->db);
         $this->data['filtros'] = $filtros;
         $this->data['total'] = $total;
-        $this->data['status_ocultos'] = ! isset($filtros['pesquisa']) && ! isset($filtros['status']) && ! Trifase_financeiro_busca::ativo($filtros) && ! isset($filtros['fila']) && $statusVisiveis !== null
+        $this->data['status_ocultos'] = ! isset($filtros['pesquisa']) && ! isset($filtros['status']) && ! isset($filtros['fila']) && $statusVisiveis !== null
             && array_diff(array_keys(OS_STATUS_VARIANTES), $statusVisiveis) !== [];
         $this->data['results'] = $this->os_model->listar($filtros, (int) $this->data['configuration']['per_page'], $offset, $statusVisiveis);
         $this->data['paginacao'] = $this->paginacao(site_url('os/gerenciar'), $total, $offset, null, $filtros);
@@ -82,13 +86,10 @@ class Os extends MY_Controller
         }
 
         $this->load->helper('trifase_interface');
-        $this->data['listaVerFinanceiro'] = $this->permite('vLancamento');
+        // A listagem operacional não consulta nem exibe informações de cobrança.
+        $this->data['listaVerFinanceiro'] = false;
         $this->data['listaFinanceiro'] = [];
         $this->data['listaFinanceiroHabilitado'] = trifaseFinanceiroHabilitado();
-        if (trifaseInterfacePiloto() && trifaseFinanceiroHabilitado() && $this->data['listaVerFinanceiro']) {
-            $this->load->model('Trifase_financeiro_model', 'piloto_financeiro');
-            $this->data['listaFinanceiro'] = $this->piloto_financeiro->resumos(array_map(static fn ($os) => (int) $os->idOs, $this->data['results']));
-        }
 
         $this->data['view'] = 'os/os';
 

@@ -140,6 +140,7 @@ $config['permissions_map'] = [
     ],
 
     'Financeiro' => [
+        'ordens' => ['todas' => ['vLancamento', 'vOs']],
         'index' => 'vLancamento',
         'lancamentos' => 'vLancamento',
         'adicionar' => 'aLancamento',

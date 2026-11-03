@@ -85,6 +85,10 @@ $resumo = ($total === 1 ? '1 lançamento' : number_format($total, 0, ',', '.') .
         <p class="text-caption text-muted" aria-live="polite"><?= e($resumo) ?></p>
     </header>
 
+    <?php if ($podeFinanceiroOs ?? false) { ?>
+        <?= component('tabs', ['label' => 'Áreas do financeiro', 'items' => [['label' => 'Lançamentos', 'url' => site_url('financeiro/lancamentos'), 'active' => true], ['label' => 'OS e recebimentos', 'url' => site_url('financeiro/ordens')]]]) ?>
+    <?php } ?>
+
     <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 2xl:grid-cols-4">
         <?= component('kpi-card', [
             'label' => 'Receitas',

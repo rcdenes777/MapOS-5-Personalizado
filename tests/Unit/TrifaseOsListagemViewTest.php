@@ -159,9 +159,30 @@ final class TrifaseOsListagemViewTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(['Não apurado'], $this->celulas($this->renderizar([], ['faturado' => 1]), 'Saldo a receber'));
     }
 
+    public function testAreaTecnicaNaoMostraCobrancaMesmoAoAdministrador(): void
+    {
+        $html = $this->renderizar([1 => ['total_c' => 50000, 'saldo_c' => 30000, 'situacao' => 'Parcialmente pago']], [], ['contextoFinanceiro' => false]);
+        $this->assertStringNotContainsString('name="financeiro"', $html);
+        $this->assertStringNotContainsString('name="saldo"', $html);
+        $this->assertSame([], $this->celulas($html, 'Total'));
+        $this->assertSame([], $this->celulas($html, 'Pagamento'));
+        $this->assertSame([], $this->celulas($html, 'Saldo a receber'));
+        $this->assertStringNotContainsString('R$', $html);
+    }
+
+    public function testFinanceiroTemFormularioNaSuaRotaESemEdicaoTecnica(): void
+    {
+        $html = $this->renderizar([]);
+        $this->assertStringContainsString('Financeiro das OS', $html);
+        $this->assertStringContainsString('action="' . site_url('financeiro/ordens') . '"', $html);
+        $this->assertStringContainsString('OS e recebimentos', $html);
+        $this->assertStringContainsString('trifase_financeiro/visualizar/1', $html);
+    }
+
     private function renderizar(array $resumos, array $os = [], array $opcoes = []): string
     {
         $dados = array_replace([
+            'contextoFinanceiro' => true, 'listaVerCliente' => true,
             'filtros' => [],
             'total' => 1,
             'status_ocultos' => false,

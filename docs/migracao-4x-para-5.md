@@ -422,3 +422,8 @@ A ativação foi ensaiada somente no laboratório8230. Usar permissões nativas 
 ### Trifase: execução das soluções de garantia (opcional)
 
 A migração `20261102070000` acrescenta históricos de operações, substituições físicas e devoluções. A interface fica desligada por padrão (`TRIFASE_GARANTIA_OPERACOES_ENABLED=false`). A ativação exige os módulos Trifase relacionados e concessão explícita de `trocarGarantia`/`reembolsarGarantia`; a migração não altera perfis. Devoluções registram dinheiro já devolvido fora do sistema, com abatimento da cobrança original; não fazem transferências bancárias. Registros e seus efeitos financeiros permanecem protegidos ao desligar a interface. Consulte [o guia de operações de garantia](trifase/GARANTIA_OPERACOES_LAB.md) antes de ativar; backup e conciliação são necessários para restauração, sem apagar históricos.
+
+
+### Interface piloto: financeiro das OS
+
+Com `TRIFASE_UI_PILOTO_ENABLED` e `TRIFASE_FINANCEIRO_ENABLED` já ativos, a consulta de cobrança das OS fica em **Financeiro → OS e recebimentos** (`financeiro/ordens`). A rota está no mapa de permissões e exige `vOs+vLancamento`, como o financeiro individual da OS; nenhuma permissão é concedida automaticamente. Não exige nova migração ou variável. A lista operacional mantém andamento, filas e datas; links antigos com filtros financeiros são encaminhados à nova área após as verificações de acesso. Com a interface piloto desligada, a listagem nativa permanece. Veja [a separação das áreas](trifase/SEPARACAO_OS_FINANCEIRO_LAB.md).

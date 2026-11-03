@@ -41,7 +41,11 @@ class Mapos extends MY_Controller
             ? manutencaoAvisos($this->db, $_ENV, ! empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
             : [];
 
-        if (trifaseInterfacePiloto() && $this->input->get('visao') !== 'classica') {
+        $visao = $this->input->get('visao');
+        $inicioTecnico = $pode['os'] && ! $pode['lancamentos'] && ! $pode['balanco'];
+        $visaoClassica = $visao === 'classica' || ($visao === null && $inicioTecnico);
+
+        if (trifaseInterfacePiloto() && ! $visaoClassica) {
             return $this->painelPersonalizado($painel);
         }
 

@@ -41,7 +41,7 @@ export default function iniciar(elemento) {
     const atualizarEntrada = () => {
         entrada.disabled = !cliente.value || (modoAtual() !== 'novo' && (modoAtual() !== 'existente' || !unidade.value));
         if (!unidade.value) {
-            confirmada.textContent = 'Nenhuma unidade selecionada.';
+            confirmada.textContent = 'Nenhum equipamento selecionado.';
             if (modoAtual() !== 'novo') {
                 if (descricaoAutomatica !== null && descricao?.value === descricaoAutomatica) descricao.value = '';
                 descricaoAutomatica = null;
@@ -72,7 +72,7 @@ export default function iniciar(elemento) {
         }
     };
     busca.addEventListener('autocomplete-escolha', (evento) => {
-        confirmada.textContent = evento.detail?.item?.detalhe || `Unidade #${unidade.value}`;
+        confirmada.textContent = evento.detail?.item?.detalhe || `Equipamento #${unidade.value}`;
         descrever(evento.detail?.item?.valor || '');
         atualizarEntrada();
     });

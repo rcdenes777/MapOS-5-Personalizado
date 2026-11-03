@@ -2,7 +2,7 @@
 /** Filas operacionais: mesmas contagens e destinos do painel da assistência. */
 $cardsFilas = [];
 foreach ($resumoFilas['filas'] as $fila => $resumoFila) {
-    $cardsFilas[] = ['label' => $resumoFila['label'], 'value' => $resumoFila['total'], 'accent' => $fila === 'retirada' ? 'success' : ($fila === 'retornos' ? 'warning' : 'info'), 'href' => site_url('os') . listagemQuery(['fila' => $fila])];
+    $cardsFilas[] = ['label' => ['andamento' => 'Abertos', 'orcamentos' => 'Aguardando aprovação do cliente'][$fila] ?? $resumoFila['label'], 'value' => $resumoFila['total'], 'accent' => $fila === 'retirada' ? 'success' : ($fila === 'retornos' ? 'warning' : 'info'), 'href' => site_url('os') . listagemQuery(['fila' => $fila])];
 }
 array_splice($cardsFilas, min(2, count($cardsFilas)), 0, [[
     'label' => 'Aguardando peças', 'value' => (int) ($resumoFilas['status']['Aguardando Peças'] ?? 0), 'accent' => 'warning',

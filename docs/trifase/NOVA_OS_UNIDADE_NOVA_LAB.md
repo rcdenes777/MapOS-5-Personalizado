@@ -31,3 +31,9 @@ O campo Cliente lista até25cadastros ao clicar e filtra desde a primeira letra;
 Por autorização explícita do usuário nesta etapa, somente o perfil técnico2 do laboratório8230 recebeu aCliente; demais permissões foram preservadas e a cópia anterior está em work/ui-piloto/backups/perfil2-antes-cadastro-cliente.json. Não há grant automático em código, nova permissão ou alteração de produção.
 
 Validação:21testesPHP/143asserções; navegador com técnico conferiu listagem vazia, filtro de uma letra, seleção existente, resultado inexistente, cadastro no modal, retorno com id selecionado, preservação de equipamento/defeito/observações e apenas uma aba. Cliente fictício9054(QA Busca Cliente Inline 20261103), sem documento/contato inventado; nenhuma OS criada. Tela360px sem excesso horizontal, sem errosJS. Build, escape, formatação e diferenças aprovados; evidências em outputs/nova-os-busca-cliente/.
+
+## Selo aplicado após a finalização
+
+A pedido do usuário, selo, série e IMEI são opcionais na entrada. Cadastro/vinculação e correção da identificação aceitam os três campos vazios; cada equipamento continua com id interno próprio e selo vazio não participa da chave única. O selo pode ser informado depois por Editar identificação, com histórico desta OS. Não altera automaticamente o cadastro da unidade para próximos atendimentos, nem muda prazo de garantia. Regras de selo duplicado quando preenchido e exigências próprias da troca em garantia permanecem.
+
+Validação:12testesPHP/77asserções, incluindo duas unidades distintas sem identificador, reenvio sem duplicação e preenchimento posterior do selo; suíteJS e build aprovados; navegador confirmou identificadores vazios válidos na Nova OS, sem criar registros. Formatação e diferenças aprovadas.

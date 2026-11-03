@@ -4,7 +4,6 @@ export default function iniciarNovaUnidade(secao, atualizarDescricao) {
     if (!busca) return;
     const campo = (nome) => secao.querySelector(`[name=equipamento_${nome}]`);
     const id = campo('modelo_id'), marca = campo('marca'), modelo = campo('modelo'), tipo = campo('tipo');
-    const selo = campo('selo'), serie = campo('serie'), imei = campo('imei');
     const atualizarModelo = () => {
         marca.readOnly = modelo.readOnly = Boolean(id.value);
         tipo.disabled = Boolean(id.value);
@@ -33,11 +32,6 @@ export default function iniciarNovaUnidade(secao, atualizarDescricao) {
         descrever();
         marca.focus();
     });
-    const identificar = () => {
-        selo.setCustomValidity([selo, serie, imei].some((c) => c.value.trim()) ? '' : 'Informe pelo menos selo de garantia, série ou IMEI.');
-    };
-    [selo, serie, imei].forEach((c) => c.addEventListener('input', identificar));
     atualizarModelo();
-    identificar();
     return descrever;
 }

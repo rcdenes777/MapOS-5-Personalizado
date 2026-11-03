@@ -34,10 +34,10 @@ $idEquipamentoOs = (int) $os->idOs;
                     <?= component('select', ['name' => 'tipo', 'id' => 'piloto-equipamento-tipo', 'label' => 'Tipo de equipamento', 'options' => ['placa' => 'Placa eletrônica', 'celular' => 'Celular', 'outro' => 'Outro equipamento'], 'selected' => 'placa', 'required' => true]) ?>
                     <?= component('input', ['name' => 'marca', 'id' => 'piloto-equipamento-marca', 'label' => 'Marca', 'required' => true, 'attrs' => ['maxlength' => 100]]) ?>
                     <?= component('input', ['name' => 'modelo', 'id' => 'piloto-equipamento-modelo', 'label' => 'Modelo', 'required' => true, 'attrs' => ['maxlength' => 160]]) ?>
-                    <?= component('input', ['name' => 'selo', 'id' => 'piloto-equipamento-selo', 'label' => 'Número do selo de garantia', 'help' => 'Identificador físico único. O selo não altera o prazo da garantia.', 'attrs' => ['maxlength' => 100]]) ?>
+                    <?= component('input', ['name' => 'selo', 'id' => 'piloto-equipamento-selo', 'label' => 'Número do selo de garantia', 'help' => 'Opcional na entrada. Informe depois, quando o selo for colocado; o prazo de garantia não muda.', 'attrs' => ['maxlength' => 100]]) ?>
                     <?= component('input', ['name' => 'serie', 'id' => 'piloto-equipamento-serie', 'label' => 'Número de série', 'attrs' => ['maxlength' => 100]]) ?>
                     <?= component('input', ['name' => 'imei', 'id' => 'piloto-equipamento-imei', 'label' => 'IMEI (quando aplicável)', 'attrs' => ['maxlength' => 100]]) ?>
-                    <p class="text-caption text-muted">Informe ao menos selo, série ou IMEI para distinguir esta unidade de outras do mesmo modelo.</p>
+                    <p class="text-caption text-muted">Selo, série e IMEI são opcionais na entrada. O equipamento recebe um número interno e pode ser identificado depois.</p>
                     <?= component('textarea', ['name' => 'itens_recebidos', 'id' => 'piloto-equipamento-itens', 'label' => 'Itens recebidos e acessórios', 'required' => true, 'help' => 'Ex.: placa e dissipador; ou somente o aparelho, sem acessórios.', 'attrs' => ['maxlength' => 10000, 'rows' => 3]]) ?>
                     <?= component('textarea', ['name' => 'estado_entrada', 'id' => 'piloto-equipamento-estado', 'label' => 'Estado na entrada', 'required' => true, 'attrs' => ['maxlength' => 10000, 'rows' => 3]]) ?>
                     <?= component('button', ['label' => 'Salvar identificação', 'type' => 'submit']) ?>

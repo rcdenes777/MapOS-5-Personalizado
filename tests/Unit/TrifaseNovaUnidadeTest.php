@@ -76,12 +76,18 @@ final class TrifaseNovaUnidadeTest extends MaposTestCase
         }
     }
 
-    public function testIdentificacaoAusenteNaoCriaNada(): void
+    public function testEntradaSemSeloSerieOuImeiCriaEquipamentoComIdProprio(): void
     {
-        $this->assertNull($this->salvar(array_replace($this->entrada(), ['selo' => ''])));
-        foreach (['os', 'os_historico', 'trifase_equipamentos', 'trifase_equipamento_modelos'] as $tabela) {
-            $this->assertSame(0, $this->db->count_all($tabela), $tabela);
-        }
+        $a = $this->salvar(array_replace($this->entrada(), ['selo' => '', 'serie' => '', 'imei' => '']));
+        $b = $this->salvar(array_replace($this->entrada(), ['selo' => '', 'serie' => '', 'imei' => '', 'operacao' => str_repeat('z', 24)]));
+        $this->assertNotNull($a);
+        $this->assertNotNull($b);
+        $this->assertNotSame($a, $b);
+        $unidades = $this->db->get('trifase_equipamentos')->result();
+        $this->assertCount(2, $unidades);
+        $this->assertNotSame($unidades[0]->id, $unidades[1]->id);
+        $this->assertSame('', $unidades[0]->selo);
+        $this->assertNull($unidades[0]->selo_chave);
     }
 
     public function testMesmoModeloPermiteUnidadesFisicasDistintas(): void
@@ -97,7 +103,7 @@ final class TrifaseNovaUnidadeTest extends MaposTestCase
 
     public function testChaveReenviadaNaoDuplicaOsMesmoSemSelo(): void
     {
-        $dados = array_replace($this->entrada(), ['selo' => '', 'serie' => 'SERIE-001']);
+        $dados = array_replace($this->entrada(), ['selo' => '', 'serie' => '', 'imei' => '']);
         $this->assertNotNull($this->salvar($dados));
         $this->assertNull($this->salvar($dados));
         $this->assertSame(1, $this->db->count_all('os'));

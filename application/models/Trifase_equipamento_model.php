@@ -74,9 +74,6 @@ class Trifase_equipamento_model extends CI_Model
         foreach ($campos as $campo => $limite) {
             $novo[$campo] = $this->texto($dados[$campo] ?? '', $limite, in_array($campo, ['marca', 'modelo', 'itens_recebidos', 'estado_entrada'], true));
         }
-        if ($novo['selo'] === '' && $novo['serie'] === '' && $novo['imei'] === '') {
-            throw new DomainException('Informe selo, série ou IMEI.');
-        }
         $motivo = $this->texto($motivo, 2000, true);
         $hash = hash('sha256', json_encode([$osId, $novo, $versao, $motivo, $usuario], JSON_THROW_ON_ERROR));
         $lock = new Trifase_os_lock($this->db, $osId);
@@ -175,9 +172,6 @@ class Trifase_equipamento_model extends CI_Model
                 $selo = $this->texto($dados['selo'], 100);
                 $serie = $this->texto($dados['serie'], 100);
                 $imei = $this->texto($dados['imei'], 100);
-                if ($selo === '' && $serie === '' && $imei === '') {
-                    throw new DomainException('Informe selo de garantia, série ou IMEI para identificar esta unidade.');
-                }
                 $seloChave = $selo === '' ? null : hash('sha256', mb_strtoupper(preg_replace('/\s+/u', '', $selo), 'UTF-8'));
                 if ($seloChave !== null && $this->db->where('selo_chave', $seloChave)->count_all_results('trifase_equipamentos') > 0) {
                     throw new DomainException('Este selo já foi cadastrado. Procure a unidade existente antes de continuar.');

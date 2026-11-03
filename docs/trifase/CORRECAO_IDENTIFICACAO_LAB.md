@@ -1,10 +1,10 @@
 # Correção da identificação de uma OS
 
-No laboratório 8230, o quadro **Identificação do equipamento** oferece **Editar identificação** para quem pode consultar e editar OS (`vOs` + `eOs`). Marca, modelo, selo, série, IMEI, itens recebidos e estado na entrada podem ser corrigidos. O motivo é obrigatório; pelo menos selo, série ou IMEI deve continuar preenchido.
+No laboratório 8230, o quadro **Identificação do equipamento** oferece **Editar identificação** para quem pode consultar e editar OS (`vOs` + `eOs`). Marca, modelo, selo, série, IMEI, itens recebidos e estado na entrada podem ser corrigidos. O motivo é obrigatório. Selo, série e IMEI podem ficar vazios enquanto a identificação física ainda não foi aplicada.
 
 A correção acrescenta um evento com operador, data, motivo e todos os campos antes/depois. A OS exibe o último evento; o histórico mostra as diferenças. O retrato original em `trifase_os_equipamentos` não é alterado. Cadastro da unidade/modelo, unidade vinculada, cliente, demais OS, entrega, garantia, financeiro, estoque e mídias não são reescritos. Correção não equivale a substituição física nem a recadastro da unidade para futuros atendimentos. Comprovantes anteriores continuam com seus dados registrados.
 
-Migração aditiva `20261103010000`, sem novos perfis ou concessões. O endpoint `trifase_equipamentos/corrigir/{os}` aceita POST autenticado com CSRF e exige `vOs` + `eOs`. Trata campos, tamanhos e identificadores no servidor. Trava compartilhada por OS, versão otimista e chave idempotente evitam perda de correção concorrente ou duplicação por reenvio. Ausência de mudança, conflito, motivo vazio ou identificação física totalmente vazia são recusados. A correção fica disponível também em OS encerradas, sem reabrir o atendimento ou alterar comprovantes.
+Migração aditiva `20261103010000`, sem novos perfis ou concessões. O endpoint `trifase_equipamentos/corrigir/{os}` aceita POST autenticado com CSRF e exige `vOs` + `eOs`. Trata campos, tamanhos e identificadores no servidor. Trava compartilhada por OS, versão otimista e chave idempotente evitam perda de correção concorrente ou duplicação por reenvio. Ausência de mudança, conflito, motivo vazio são recusados. A correção fica disponível também em OS encerradas, sem reabrir o atendimento ou alterar comprovantes.
 
 ## Validação no laboratório
 

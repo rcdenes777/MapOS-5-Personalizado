@@ -39,17 +39,19 @@ final class TrifaseEquipamentoTest extends MaposTestCase
         $m->dbforge = new CI_DB_sqlite3_forge($this->db);
         $m->up();
         $m->up();
-        $unidade = $this->modelo->vincular(1, $this->dados(), 1, 'CORR_VINCULO_0001');
+        $unidade = $this->modelo->vincular(1, array_replace($this->dados(), ['selo' => '', 'serie' => '', 'imei' => '']), 1, 'CORR_VINCULO_0001');
         $original = $this->db->get('trifase_os_equipamentos')->result_array();
         $cadastros = $this->db->get('trifase_equipamentos')->result_array();
         $os = $this->db->get('os')->result_array();
         $novo = array_intersect_key((array) $this->modelo->porOs(1), array_flip(['marca', 'modelo', 'selo', 'serie', 'imei', 'itens_recebidos', 'estado_entrada']));
         $novo['marca'] = 'Marca corrigida';
+        $novo['selo'] = 'SELO-APLICADO-DEPOIS';
         $novo['estado_entrada'] = 'Estado corrigido';
         $id = $this->modelo->corrigir(1, $novo, 0, 'Erro de digitação', 1, 'CORR_EVENTO_00001');
         $this->assertSame($id, $this->modelo->corrigir(1, $novo, 0, 'Erro de digitação', 1, 'CORR_EVENTO_00001'));
         $this->assertCount(1, $this->modelo->correcoes(1));
         $this->assertSame('Marca corrigida', $this->modelo->porOs(1)->marca);
+        $this->assertSame('SELO-APLICADO-DEPOIS', $this->modelo->porOs(1)->selo);
         $this->assertSame($unidade, (int) $this->modelo->porOs(1)->equipamento_id);
         $this->assertSame($original, $this->db->get('trifase_os_equipamentos')->result_array());
         $this->assertSame($cadastros, $this->db->get('trifase_equipamentos')->result_array());
@@ -141,7 +143,7 @@ final class TrifaseEquipamentoTest extends MaposTestCase
 
     public function testDadosInvalidosECampoFinanceiroNaoAlteramCadastro(): void
     {
-        foreach ([['selo' => ''], ['estado_entrada' => ''], ['marca' => []], ['preco' => '1'], ['imei' => "invalido\0"], ['tipo' => 'invalido'], ['modelo_id' => 'invalido']] as $invalido) {
+        foreach ([['estado_entrada' => ''], ['marca' => []], ['preco' => '1'], ['imei' => "invalido\0"], ['tipo' => 'invalido'], ['modelo_id' => 'invalido']] as $invalido) {
             try {
                 $this->modelo->vincular(1, array_replace($this->dados(), $invalido), 7, $this->chave('invalido'));
                 $this->fail('Aceitou dados inválidos de identificação');

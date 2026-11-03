@@ -39,11 +39,11 @@ $clienteUnidadeOs = $valores['clientes_id'] !== '';
             <?= component('select', ['name' => 'equipamento_tipo', 'id' => 'nova-os-tipo', 'label' => 'Tipo de equipamento', 'selected' => $valorUnidadeNovaOs('tipo') ?: 'placa', 'options' => ['placa' => 'Placa eletrônica', 'celular' => 'Celular', 'outro' => 'Outro equipamento'], 'required' => true]) ?>
             <?= component('input', ['name' => 'equipamento_marca', 'id' => 'nova-os-marca', 'label' => 'Marca', 'value' => $valorUnidadeNovaOs('marca'), 'required' => true, 'attrs' => ['maxlength' => 100]]) ?>
             <?= component('input', ['name' => 'equipamento_modelo', 'id' => 'nova-os-modelo', 'label' => 'Modelo', 'value' => $valorUnidadeNovaOs('modelo'), 'required' => true, 'attrs' => ['maxlength' => 160]]) ?>
-            <?= component('input', ['name' => 'equipamento_selo', 'id' => 'nova-os-selo', 'label' => 'Número do selo de garantia', 'value' => $valorUnidadeNovaOs('selo'), 'help' => 'O selo identifica esta unidade física; não define o prazo da garantia.', 'attrs' => ['maxlength' => 100]]) ?>
+            <?= component('input', ['name' => 'equipamento_selo', 'id' => 'nova-os-selo', 'label' => 'Número do selo de garantia', 'value' => $valorUnidadeNovaOs('selo'), 'help' => 'Opcional na entrada. Preencha depois, quando o selo for colocado; isso não altera o prazo da garantia.', 'attrs' => ['maxlength' => 100]]) ?>
             <?= component('input', ['name' => 'equipamento_serie', 'id' => 'nova-os-serie', 'label' => 'Número de série', 'value' => $valorUnidadeNovaOs('serie'), 'attrs' => ['maxlength' => 100]]) ?>
             <?= component('input', ['name' => 'equipamento_imei', 'id' => 'nova-os-imei', 'label' => 'IMEI (quando aplicável)', 'value' => $valorUnidadeNovaOs('imei'), 'attrs' => ['maxlength' => 100]]) ?>
         </div>
-        <p class="text-caption text-muted">Informe o selo, série ou IMEI do equipamento que está chegando. Equipamentos diferentes podem ter a mesma marca e modelo.</p>
+        <p class="text-caption text-muted">Selo, série e IMEI são opcionais na entrada. O equipamento recebe um número interno; o selo pode ser informado depois em Editar identificação.</p>
     </fieldset>
     <input type="hidden" name="equipamento_operacao" value="<?= e(is_string($entradaNovaOs['operacao'] ?? null) ? $entradaNovaOs['operacao'] : bin2hex(random_bytes(16))) ?>">
     <fieldset class="<?= e($grade) ?>" data-nova-os-unidade-entrada <?= e(($novaUnidadeOs && $clienteUnidadeOs) || ($buscaUnidadeOs && $unidadeNovaOs !== null) ? '' : 'disabled') ?>>

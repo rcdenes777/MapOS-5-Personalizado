@@ -242,6 +242,7 @@ class Os extends MY_Controller
         }
         $this->data['equipamentoNovaOs'] = $this->equipamentoNovaOs;
         $this->data['entradaEquipamentoNovaOs'] = $this->entradaEquipamentoNovaOs;
+        $this->data['modoEquipamentoNovaOs'] = $this->input->method() === 'post' && is_string($this->input->post('equipamento_modo')) ? $this->input->post('equipamento_modo') : 'existente';
         $this->data['erros'] = $erros;
         // Campos com formatação do editor antigo (Trumbowyg), que sai ao salvar.
         $this->data['formatados'] = $os === null ? [] : array_values(array_filter(OS_CAMPOS_TEXTO, static fn ($campo) => osTemFormatacao($os->{$campo} ?? null)));
@@ -257,8 +258,16 @@ class Os extends MY_Controller
 
     private function prepararEquipamentoNovaOs(): void
     {
-        $id = $this->input->method() === 'post' ? $this->input->post('equipamento_id') : $this->input->get('equipamento_id');
-        if ($id === null || $id === '') {
+        $post = $this->input->method() === 'post';
+        $modo = $post ? ($this->input->post('equipamento_modo') ?? 'existente') : 'existente';
+        if (! is_string($modo) || ! in_array($modo, ['', 'existente', 'novo'], true)) {
+            show_error('Escolha como identificar o equipamento.', 422);
+        }
+        $id = $post ? $this->input->post('equipamento_id') : $this->input->get('equipamento_id');
+        if ($modo !== 'existente' && $id !== null && $id !== '') {
+            show_error('Escolha somente uma forma de identificar a unidade.', 422);
+        }
+        if ($modo !== 'novo' && ($id === null || $id === '')) {
             return;
         }
         if (! trifaseEquipamentosHabilitados()) {
@@ -267,8 +276,27 @@ class Os extends MY_Controller
         if (! $this->permite('vOs')) {
             show_error('Você não tem permissão para consultar a unidade deste atendimento.', 403);
         }
-        $id = filter_var($id, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
         $this->load->model('Trifase_equipamento_model', 'equipamentos_os');
+        if ($modo === 'novo') {
+            $this->entradaEquipamentoNovaOs = ['modo' => 'novo'];
+            foreach (['tipo', 'marca', 'modelo', 'modelo_id', 'selo', 'serie', 'imei'] as $campo) {
+                $this->entradaEquipamentoNovaOs[$campo] = $this->input->post('equipamento_' . $campo) ?? '';
+            }
+            $modeloId = filter_var($this->entradaEquipamentoNovaOs['modelo_id'], FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
+            $modelo = $modeloId !== false ? $this->db->where('id', $modeloId)->get('trifase_equipamento_modelos', 1)->row() : null;
+            if ($modelo) {
+                foreach (['tipo', 'marca', 'modelo'] as $campo) {
+                    $this->entradaEquipamentoNovaOs[$campo] = $modelo->$campo;
+                }
+            }
+            $this->entradaEquipamentoNovaOs += [
+                'itens_recebidos' => $this->input->post('equipamento_itens') ?? '',
+                'estado_entrada' => $this->input->post('equipamento_estado') ?? '',
+                'operacao' => $this->input->post('equipamento_operacao') ?? '',
+            ];
+            return;
+        }
+        $id = filter_var($id, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
         $this->equipamentoNovaOs = $id !== false ? $this->equipamentos_os->unidade($id) : null;
         if ($this->equipamentoNovaOs === null) {
             show_404('', false);
@@ -284,13 +312,22 @@ class Os extends MY_Controller
     /** Quando há unidade, criar a OS e vinculá-la é uma única transação. */
     private function criarOs(array $dados): ?int
     {
-        $comEquipamento = $this->equipamentoNovaOs !== null;
+        $comEquipamento = $this->entradaEquipamentoNovaOs !== [];
         $comConclusao = trifaseAtendimentoHabilitado() && $dados['status'] === 'Finalizado';
         $transacional = $comEquipamento || $comConclusao;
         if ($transacional && ! $this->db->trans_begin()) {
             return null;
         }
         try {
+            if ($comEquipamento) {
+                $operacao = $this->entradaEquipamentoNovaOs['operacao'] ?? null;
+                if (! is_string($operacao) || ! preg_match('/\A[a-zA-Z0-9_-]{16,64}\z/', $operacao)) {
+                    throw new DomainException('Identificador inválido. Recarregue o formulário.');
+                }
+                if ($this->db->where('operacao', $operacao)->count_all_results('trifase_os_equipamentos') > 0) {
+                    throw new DomainException('Este formulário já foi utilizado. Confira a lista de OS antes de cadastrar novamente.');
+                }
+            }
             $id = $this->os_model->add('os', $dados + ['faturado' => 0], true);
             if (! is_numeric($id)) {
                 if ($transacional) {

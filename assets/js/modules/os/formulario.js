@@ -4,6 +4,7 @@
 // <form>.
 
 import { iniciarAutocompletes } from '../../lib/autocomplete.js';
+import iniciarNovaUnidade from '../trifase/nova-unidade.js';
 
 export function urlUnidadesCliente(base, cliente) {
     const id = /^\d+$/.test(String(cliente)) && Number(cliente) > 0 ? String(cliente) : '';
@@ -32,13 +33,19 @@ export default function iniciar(elemento) {
     const entrada = secao.querySelector('[data-nova-os-unidade-entrada]');
     const confirmada = secao.querySelector('[data-nova-os-unidade-confirmada]');
     const descricao = elemento.querySelector('[name=descricaoProduto]');
+    const modo = secao.querySelector('[name=equipamento_modo]');
+    const existente = secao.querySelector('[data-nova-os-unidade-existente]');
+    const nova = secao.querySelector('[data-nova-os-unidade-nova]');
+    const modoAtual = () => modo ? modo.value : 'existente';
     let descricaoAutomatica = unidade.value && descricao?.value === campo.value ? descricao.value : null;
     const atualizarEntrada = () => {
-        entrada.disabled = !unidade.value;
+        entrada.disabled = !cliente.value || (modoAtual() !== 'novo' && (modoAtual() !== 'existente' || !unidade.value));
         if (!unidade.value) {
             confirmada.textContent = 'Nenhuma unidade selecionada.';
-            if (descricaoAutomatica !== null && descricao?.value === descricaoAutomatica) descricao.value = '';
-            descricaoAutomatica = null;
+            if (modoAtual() !== 'novo') {
+                if (descricaoAutomatica !== null && descricao?.value === descricaoAutomatica) descricao.value = '';
+                descricaoAutomatica = null;
+            }
         }
     };
     const limpar = () => {
@@ -52,19 +59,30 @@ export default function iniciar(elemento) {
     };
     const atualizarCliente = () => {
         busca.dataset.autocomplete = urlUnidadesCliente(busca.dataset.unidadeClienteUrl, cliente.value);
-        campo.disabled = !cliente.value;
+        campo.disabled = !cliente.value || modoAtual() !== 'existente';
+        if (existente) { existente.disabled = modoAtual() !== 'existente'; existente.hidden = existente.disabled; }
+        if (nova) { nova.disabled = !cliente.value || modoAtual() !== 'novo'; nova.hidden = modoAtual() !== 'novo'; }
     };
     cliente.addEventListener('change', () => { limpar(); atualizarCliente(); });
     unidade.addEventListener('change', atualizarEntrada);
+    const descrever = (valor) => {
+        if (descricao && (!descricao.value.trim() || descricao.value === descricaoAutomatica)) {
+            descricao.value = valor;
+            descricaoAutomatica = valor;
+        }
+    };
     busca.addEventListener('autocomplete-escolha', (evento) => {
         confirmada.textContent = evento.detail?.item?.detalhe || `Unidade #${unidade.value}`;
-        if (descricao && (!descricao.value.trim() || descricao.value === descricaoAutomatica)) {
-            descricao.value = evento.detail?.item?.valor || '';
-            descricaoAutomatica = descricao.value;
-        }
+        descrever(evento.detail?.item?.valor || '');
         atualizarEntrada();
     });
     secao.querySelector('[data-nova-os-unidade-limpar]').addEventListener('click', limpar);
+    const atualizarNova = iniciarNovaUnidade(secao, (valor) => { if (modoAtual() === 'novo') descrever(valor); });
+    modo?.addEventListener('change', () => {
+        limpar(); atualizarCliente(); atualizarEntrada();
+        secao.querySelector('[data-nova-os-modelo-busca] input:not([type=hidden])')?.dispatchEvent(new Event('blur'));
+        if (modoAtual() === 'novo') atualizarNova?.();
+    });
     atualizarCliente();
     atualizarEntrada();
 }

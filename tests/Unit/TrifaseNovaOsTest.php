@@ -113,6 +113,23 @@ final class TrifaseNovaOsTest extends \PHPUnit\Framework\TestCase
         }
     }
 
+    public function testNovaUnidadePreservaRascunhoEscapaIdentificadoresEAtivaEntrada(): void
+    {
+        $html = $this->formulario([
+            'modoEquipamentoNovaOs' => 'novo',
+            'valores' => array_replace(osValoresDoFormulario(null, null), ['clientes_id' => '7']),
+            'entradaEquipamentoNovaOs' => ['modo' => 'novo', 'marca' => '<LG>', 'modelo' => 'INV', 'selo' => '"<script>', 'itens_recebidos' => 'Placa', 'estado_entrada' => 'Conferido', 'operacao' => str_repeat('c', 32)],
+        ]);
+        $dom = $this->dom($html);
+        $this->assertCount(1, $dom->query('//fieldset[@data-nova-os-unidade-nova and not(@disabled) and not(@hidden)]'));
+        $this->assertCount(1, $dom->query('//fieldset[@data-nova-os-unidade-existente and @disabled and @hidden]'));
+        $this->assertCount(1, $dom->query('//fieldset[@data-nova-os-unidade-entrada and not(@disabled)]'));
+        $this->assertSame('<LG>', $dom->query('//input[@name="equipamento_marca"]')->item(0)->getAttribute('value'));
+        $this->assertSame('"<script>', $dom->query('//input[@name="equipamento_selo"]')->item(0)->getAttribute('value'));
+        $this->assertCount(0, $dom->query('//script'));
+        $this->assertSame('Placa', $dom->query('//textarea[@name="equipamento_itens"]')->item(0)->textContent);
+    }
+
     private function consulta(array $permissoes, array $query): object
     {
         return new class($permissoes, $query) extends Trifase_equipamentos {

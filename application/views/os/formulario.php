@@ -185,7 +185,7 @@ if (function_exists('trifaseFinanceiroHabilitado') && trifaseFinanceiroHabilitad
         <section class="<?= e($caixa) ?>" aria-labelledby="secao-equipamento">
             <h2 id="secao-equipamento" class="text-heading-sm text-text">Equipamento e serviço</h2>
             <div class="<?= e($grade) ?>">
-                <?= component('textarea', $texto('descricaoProduto', 'Descrição do produto ou serviço', ($equipamentoNovaOs ?? null) !== null ? 'Descrição geral. Selo, série e IMEI ficam na identificação privada da unidade.' : 'Equipamento, modelo, número de série, acessórios.')) ?>
+                <?= component('textarea', $texto('descricaoProduto', 'Descrição do produto ou serviço', (($pode['identificar_equipamento'] ?? false) || ($equipamentoNovaOs ?? null) !== null) ? 'Descrição geral. Selo, série e IMEI ficam na identificação privada da unidade.' : 'Equipamento, modelo, número de série, acessórios.')) ?>
                 <?= component('textarea', $texto('defeito', 'Defeito', 'O que o cliente relatou.')) ?>
                 <?= component('textarea', $texto('observacoes', 'Observações')) ?>
                 <?= component('textarea', $texto('laudoTecnico', 'Laudo técnico', 'Diagnóstico e o que foi feito.')) ?>

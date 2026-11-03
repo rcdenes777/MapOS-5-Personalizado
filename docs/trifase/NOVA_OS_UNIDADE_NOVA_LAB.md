@@ -23,3 +23,11 @@ Fixture única criada: **OS 9060**, cliente QA existente 9050, selo `QA-NOVA-202
 ## Limites
 
 Testes confinados ao 8230. Não houve push nem alterações em produção, 8200, Penpot, master ou trabalho. Mobile físico e corrida simultânea deste formulário não foram executados. A bateria completa integrada antes de produção continua necessária. Unicidade de série/IMEI segue o modelo preexistente; esta etapa não altera suas regras.
+
+## Busca e cadastro de cliente na Nova OS
+
+O campo Cliente lista até25cadastros ao clicar e filtra desde a primeira letra; o servidor permite busca vazia e ordena por nome. O cadastro rápido existente é aberto pelo rodapé Cadastrar novo cliente ou pelo botão Cadastrar cliente, preenche o nome digitado, salva sem navegar e seleciona o novo cliente. Não salva OS provisória nem perde os demais campos do formulário. A opção exige aCliente.
+
+Por autorização explícita do usuário nesta etapa, somente o perfil técnico2 do laboratório8230 recebeu aCliente; demais permissões foram preservadas e a cópia anterior está em work/ui-piloto/backups/perfil2-antes-cadastro-cliente.json. Não há grant automático em código, nova permissão ou alteração de produção.
+
+Validação:21testesPHP/143asserções; navegador com técnico conferiu listagem vazia, filtro de uma letra, seleção existente, resultado inexistente, cadastro no modal, retorno com id selecionado, preservação de equipamento/defeito/observações e apenas uma aba. Cliente fictício9054(QA Busca Cliente Inline 20261103), sem documento/contato inventado; nenhuma OS criada. Tela360px sem excesso horizontal, sem errosJS. Build, escape, formatação e diferenças aprovados; evidências em outputs/nova-os-busca-cliente/.

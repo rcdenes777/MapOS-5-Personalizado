@@ -1202,12 +1202,13 @@ class Os extends MY_Controller
     private function responderAutocomplete(bool $permitido, string $metodo): void
     {
         $termo = $this->input->get('term');
-        $listaInicial = in_array($metodo, ['autoCompleteProduto', 'autoCompleteServico'], true);
+        $itensCatalogo = in_array($metodo, ['autoCompleteProduto', 'autoCompleteServico'], true);
+        $listaInicial = $itensCatalogo || $metodo === 'autoCompleteCliente';
         $itens = $permitido && is_string($termo) && (trim($termo) !== '' || $listaInicial)
             ? $this->os_model->{$metodo}(mb_strtolower(trim($termo)))
             : [];
 
-        if ($listaInicial && ! $this->verValoresDaOs()) {
+        if ($itensCatalogo && ! $this->verValoresDaOs()) {
             $itens = array_map(static fn ($item) => [
                 'id' => $item['id'], 'valor' => $item['valor'], 'label' => $item['valor'],
                 'detalhe' => isset($item['estoque']) ? 'Estoque: ' . $item['estoque'] : '',

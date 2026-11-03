@@ -273,6 +273,8 @@ final class OsFormularioTest extends MaposTestCase
     {
         $model = $this->modelComBanco();
 
+        $this->assertSame(['Ana Souza'], array_column($model->autoCompleteCliente(''), 'valor'));
+        $this->assertSame(['Ana Souza'], array_column($model->autoCompleteCliente('a'), 'valor'));
         $clientes = $model->autoCompleteCliente('ana');
         $this->assertCount(1, $clientes);
         $this->assertSame('Ana Souza', $clientes[0]['valor']);

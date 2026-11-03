@@ -373,7 +373,7 @@ class Os_model extends CI_Model
         $this->db->or_like('documento', $q);
 
         $itens = [];
-        foreach ($this->db->get('clientes')->result_array() as $row) {
+        foreach ($this->db->order_by('nomeCliente', 'ASC')->get('clientes')->result_array() as $row) {
             $detalhe = array_filter([$row['documento'], $row['celular'] ?: $row['telefone']], static fn ($v) => (string) $v !== '');
             $itens[] = [
                 'label' => $row['nomeCliente'] . ' | Telefone: ' . $row['telefone'] . ' | Celular: ' . $row['celular'] . ' | Documento: ' . $row['documento'],

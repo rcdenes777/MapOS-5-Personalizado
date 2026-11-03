@@ -90,15 +90,16 @@ if (function_exists('trifaseFinanceiroHabilitado') && trifaseFinanceiroHabilitad
         <section class="<?= e($caixa) ?>" aria-labelledby="secao-responsaveis">
             <h2 id="secao-responsaveis" class="text-heading-sm text-text">Cliente e responsável</h2>
             <div class="<?= e($grade) ?>">
-                <div<?= componenteAtributos($wrapper(site_url('os/autoCompleteCliente'), 'clientes_id', $pode['cadastrar_cliente'] ? [
+                <div<?= componenteAtributos($wrapper(site_url('os/autoCompleteCliente'), 'clientes_id', ['data-autocomplete-listar' => ''] + ($pode['cadastrar_cliente'] ? [
                     'data-autocomplete-novo' => site_url('clientes/adicionar'),
                     'data-autocomplete-novo-modal' => 'cliente-rapido',
                     'data-autocomplete-novo-rotulo' => 'Cadastrar novo cliente',
-                ] : [])) ?>>
+                ] : []))) ?>>
                     <?= component('input', $visivel('cliente', [
                         'label' => 'Cliente',
                         'required' => true,
-                        'placeholder' => 'Nome, documento ou telefone',
+                        'placeholder' => 'Clique para listar ou digite nome, documento ou telefone',
+                        'help' => $pode['cadastrar_cliente'] ? 'Não encontrou? Use Cadastrar novo cliente na lista. Seus dados da OS serão mantidos.' : 'Clique para listar ou digite para filtrar os clientes cadastrados.',
                         'attrs' => [
                             'autofocus' => ! $editando,
                             'data-msg-vazio' => 'Escolha o cliente da OS.',

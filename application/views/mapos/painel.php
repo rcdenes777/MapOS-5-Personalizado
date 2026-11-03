@@ -11,7 +11,7 @@
  * - Balanço do ano (receitas, despesas e saldo por mês) e OS por status,
  *   em Chart.js 4. Os números vão para o módulo em page_data e também numa
  *   tabela para leitores de tela.
- * - Listas do que pede atenção: OS em andamento, vendas em aberto,
+ * - Listas do que pede atenção: vendas em aberto,
  *   lançamentos a vencer e estoque baixo.
  *
  * O módulo painel/painel carrega o Chart.js e o FullCalendar de
@@ -220,31 +220,6 @@ if ($verGraficoOs) {
     <?php } ?>
 
     <div class="grid gap-4 2xl:grid-cols-2">
-        <?php if ($pode['os']) { ?>
-            <section class="<?= e($caixa) ?> min-w-0" aria-labelledby="titulo-lista-os">
-                <div class="flex flex-wrap items-center justify-between gap-2">
-                    <h2 id="titulo-lista-os" class="text-heading-sm text-text">OS em andamento</h2>
-                    <?= component('button', ['label' => 'Ver todas', 'variant' => 'ghost', 'size' => 'sm', 'href' => site_url('os')]) ?>
-                </div>
-                <div class="mt-3">
-                    <?= component('data-table', [
-                        'caption' => 'OS em andamento, pela data de entrega',
-                        'dense' => true,
-                        'rows' => $os_lista,
-                        'columns' => [
-                            ['label' => 'Nº', 'align' => 'right', 'nowrap' => true, 'render' => fn ($o) => component('link', ['label' => (string) $o->idOs, 'href' => site_url('os/visualizar/' . (int) $o->idOs)])],
-                            ['label' => 'Cliente', 'class' => 'min-w-32 [overflow-wrap:anywhere]', 'render' => fn ($o) => (string) ($o->nomeCliente ?? 'Cliente removido')],
-                            ['label' => 'Entrega', 'align' => 'right', 'nowrap' => true, 'render' => fn ($o) => $o->dataFinal !== null && substr((string) $o->dataFinal, 0, 10) < $hoje
-                                ? component('pill-status', ['label' => 'Atrasada · ' . dataBr($o->dataFinal), 'variant' => 'warning'])
-                                : ($o->dataFinal !== null ? dataBr($o->dataFinal) : '—')],
-                            ['label' => 'Status', 'nowrap' => true, 'render' => fn ($o) => component('pill-status', osStatusPill($o->status))],
-                        ],
-                        'empty' => component('empty-state', ['title' => 'Nenhuma OS em andamento', 'message' => 'OS abertas, aprovadas, em andamento ou aguardando peças aparecem aqui.', 'icon' => 'wrench', 'class' => 'border-0']),
-                    ]) ?>
-                </div>
-            </section>
-        <?php } ?>
-
         <?php if ($pode['vendas']) { ?>
             <section class="<?= e($caixa) ?> min-w-0" aria-labelledby="titulo-lista-vendas">
                 <div class="flex flex-wrap items-center justify-between gap-2">

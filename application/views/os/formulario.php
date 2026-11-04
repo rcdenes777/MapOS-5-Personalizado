@@ -168,7 +168,7 @@ if (function_exists('trifaseFinanceiroHabilitado') && trifaseFinanceiroHabilitad
                     'type' => 'number',
                     'value' => $valores['garantia'] !== '' ? $valores['garantia'] : null,
                     'error' => $errosDeCampo['garantia'] ?? null,
-                    'help' => 'Em branco ou 0 quando não há garantia.',
+                    'help' => 'Novas OS começam com 90 dias. Digite outro prazo se necessário; em branco ou 0 quando não há garantia.',
                     'attrs' => ['min' => 0, 'max' => 9999, 'step' => 1, 'inputmode' => 'numeric', 'data-msg-invalido' => 'Informe a garantia em dias, de 0 a 9999.'],
                 ]) ?>
                 <div<?= componenteAtributos($wrapper(site_url('os/autoCompleteTermoGarantia'), 'garantias_id', ['data-autocomplete-min' => '1'])) ?>>

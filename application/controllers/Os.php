@@ -247,6 +247,7 @@ class Os extends MY_Controller
                 'tecnico' => (string) $this->session->userdata('nome_admin'),
                 'usuarios_id' => (string) $this->session->userdata('id_admin'),
                 'status' => 'Aberto',
+                'garantia' => '90',
                 'dataInicial' => date('Y-m-d'),
             ]
         );

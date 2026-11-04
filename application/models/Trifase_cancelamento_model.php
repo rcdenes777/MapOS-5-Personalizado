@@ -115,7 +115,9 @@ class Trifase_cancelamento_model extends CI_Model
             if ($c['pecas'] !== [] && ! $controlaEstoque) {
                 throw new DomainException('Confira o controle de estoque antes de devolver as peças da OS.');
             }
-            $motivo = $this->texto($dados['conferencia'] ?? '', 2000);
+            $observacoes = $this->texto($dados['conferencia'] ?? '', 2000, false);
+            $motivo = $observacoes !== '' ? $observacoes : 'Conferência confirmada pelos campos de peças, serviços e financeiro; sem observações adicionais.';
+            $c['conferencia'] = ['pecas_nao_utilizadas' => true, 'servicos_nao_executados' => true, 'financeiro_conferido' => true, 'observacoes' => $observacoes];
             require_once APPPATH . 'models/Trifase_estoque_model.php';
             $estoque = new Trifase_estoque_model();
             $estoque->db = $this->db;
@@ -144,9 +146,9 @@ class Trifase_cancelamento_model extends CI_Model
         return $p;
     }
 
-    private function texto(mixed $valor, int $limite): string
+    private function texto(mixed $valor, int $limite, bool $obrigatorio = true): string
     {
-        if (! is_string($valor) || ! mb_check_encoding($valor, 'UTF-8') || trim($valor) === '' || mb_strlen($valor) > $limite || preg_match('/[\x00-\x08\x0b\x0c\x0e-\x1f\x7f]/', $valor)) {
+        if (! is_string($valor) || ! mb_check_encoding($valor, 'UTF-8') || ($obrigatorio && trim($valor) === '') || mb_strlen($valor) > $limite || preg_match('/[\x00-\x08\x0b\x0c\x0e-\x1f\x7f]/', $valor)) {
             throw new DomainException('Informe solicitante, motivo e conferência válidos, respeitando os limites dos campos.');
         }
         return trim($valor);

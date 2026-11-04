@@ -63,7 +63,7 @@ $pendenteCancelamento = ($pedidoCancelamento->tipo ?? '') === 'solicitar'; ?>
                 <?= component('checkbox', ['name' => 'pecas_nao_utilizadas', 'value' => '1', 'label' => 'Conferi: todas as peças ainda vinculadas estão sem uso, aptas a retornar ao estoque; não há peça utilizada pendente de conciliação.', 'required' => true]) ?>
                 <?= component('checkbox', ['name' => 'servicos_nao_executados', 'value' => '1', 'label' => 'Conferi: os serviços ainda vinculados não foram executados; não há serviço executado pendente de conciliação.', 'required' => true]) ?>
                 <?= component('checkbox', ['name' => 'financeiro_conferido', 'value' => '1', 'label' => 'Conferi: não há cobrança, pagamento recebido, reembolso ou valor a acertar neste cancelamento.', 'required' => true]) ?>
-                <?= component('textarea', ['name' => 'conferencia', 'label' => 'Registro da conferência e conciliação realizada', 'value' => $valoresCancelamento['conferencia'], 'required' => true, 'attrs' => ['maxlength' => 2000]]) ?>
+                <?= component('textarea', ['name' => 'conferencia', 'label' => 'Observações da conferência (opcional)', 'value' => $valoresCancelamento['conferencia'], 'attrs' => ['maxlength' => 2000]]) ?>
                 <?= component('checkbox', ['name' => 'confirmar', 'value' => '1', 'label' => 'Confirmo o cancelamento da OS e a devolução das peças não utilizadas listadas acima. O histórico será preservado.', 'required' => true]) ?>
                 <?= component('button', ['label' => 'Confirmar cancelamento da OS', 'type' => 'submit']) ?>
             </form>

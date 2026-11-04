@@ -90,7 +90,7 @@ final class TrifaseCancelamentoTest extends MaposTestCase
         $this->assertSame($pedido, $this->pedido());
         $this->assertSame('Aprovado', $this->db->where('idOs', 1)->get('os')->row()->status);
         $this->assertSame(8, (int) $this->db->get('produtos')->row()->estoque);
-        $dados = $this->dados();
+        $dados = array_replace($this->dados(), ['conferencia' => '']);
         $id = $this->modelo->confirmar(1, $pedido, $dados, 7, 'confirmacao_12345678', true);
         $this->assertSame($id, $this->modelo->confirmar(1, $pedido, $dados, 7, 'confirmacao_12345678', true));
         $this->assertSame('Cancelado', $this->db->where('idOs', 1)->get('os')->row()->status);
@@ -104,6 +104,9 @@ final class TrifaseCancelamentoTest extends MaposTestCase
         $retrato = json_decode($this->modelo->atual(1)->retrato, true);
         $this->assertSame('Aprovado', $retrato['status']);
         $this->assertSame('Reparo', $retrato['servicos'][0]['nome']);
+        $this->assertSame('', $retrato['conferencia']['observacoes']);
+        $this->assertTrue($retrato['conferencia']['financeiro_conferido']);
+        $this->assertStringContainsString('sem observações adicionais', $this->modelo->atual(1)->motivo);
     }
 
     public function testPecaUsadaServicoExecutadoOuFinanceiroNaoConferidoBloqueiam(): void

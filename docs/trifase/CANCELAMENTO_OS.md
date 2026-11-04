@@ -10,7 +10,7 @@ O técnico pode registrar/retirar o pedido e devolver peças não utilizadas pel
 
 ## Conferência e confirmação
 
-A página lista as peças e os serviços atuais e pede declaração expressa de que as peças ainda vinculadas não foram utilizadas, os serviços ainda vinculados não foram executados e não há dinheiro ou cobrança a acertar. Exige registro escrito da conferência. Se existir peça utilizada ou serviço executado pendente, não confirmar: o pedido permanece aguardando a conciliação.
+A página lista as peças e os serviços atuais e pede declaração expressa de que as peças ainda vinculadas não foram utilizadas, os serviços ainda vinculados não foram executados e não há dinheiro ou cobrança a acertar. O campo “Observações da conferência (opcional)” aceita texto adicional, mas pode ficar vazio: as confirmações dos itens e do financeiro continuam obrigatórias. Se existir peça utilizada ou serviço executado pendente, não confirmar: o pedido permanece aguardando a conciliação.
 
 A confirmação revalida sob trava o pedido e o hash dos dados atuais. A OS passa para Cancelado e recebe histórico com operador/horário. As peças expressamente conferidas como não utilizadas retornam ao estoque auditável, com evento por item, motivo e chave idempotente. Itens e serviços permanecem vinculados como histórico; o retrato do pedido também é preservado. O formulário precisa ser reaberto se os itens ou o estado mudarem. Qualquer falha reverte status, evento e estoque juntos.
 
@@ -34,3 +34,5 @@ O pedido pode ser retirado com motivo antes da confirmação, preservando os eve
 O formulário inicia em **Solicitado pelo cliente**, utilizando o cliente vinculado à OS. A alternativa é **Por iniciativa da assistência**. Não há mais digitação livre do solicitante. O servidor aceita somente essas origens e consulta o cliente sob a trava da OS, sem confiar em nome enviado pelo formulário. O retrato do pedido preserva origem, ID e nome completo do cliente; o operador continua em `usuario_id`, separado do solicitante. Registros anteriores são preservados.
 
 Validação da alteração: oito testes de cancelamento/acesso passaram (49 asserções), incluindo origem inválida, cliente ausente, cliente correto e iniciativa da assistência. PHPStan, formatação e build passaram. No navegador, OS 9058 exibiu o cliente “Teste” e a opção de cliente selecionada por padrão; nenhum pedido foi registrado nessa conferência.
+
+As confirmações de peças, serviços e financeiro são preservadas no retrato do evento, mesmo sem observações. Nesse caso o histórico registra que a conferência foi confirmada sem observações adicionais. O motivo original do pedido continua preservado. Validado por oito testes de cancelamento/acesso, com 52 asserções, inclusive confirmação efetiva com o campo vazio.

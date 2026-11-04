@@ -158,28 +158,35 @@ if (($pilotoEquipamento ?? null) !== null
                 <section class="trifase-os-painel" aria-labelledby="piloto-publico">
                     <h2 id="piloto-publico">Link público desta OS</h2>
                     <?= component('pill-status', ['label' => $pilotoLink !== null ? 'Link ativo' : 'Sem link ativo', 'variant' => $pilotoLink !== null ? 'success' : 'neutral']) ?>
-                    <p class="text-muted">Somente esta OS, anexos autorizados e orçamento publicado.</p>
-                    <?php if ($pilotoLink !== null) { ?><p><?= e('Válido até ' . date('d/m/Y', (int) $pilotoLink->expira_em)) ?></p><?php } ?>
                     <?php if (($pilotoUrlPublica ?? null) !== null) { ?>
-                        <label for="piloto-link-publico" class="text-label-md text-text">Endereço para o cliente</label>
-                        <input id="piloto-link-publico" readonly value="<?= e($pilotoUrlPublica) ?>" class="w-full min-w-0 rounded-sm border border-input bg-field p-3 text-body-md text-text">
                         <div class="trifase-os-links-itens">
-                            <?= component('button', ['label' => 'Copiar link', 'icon' => 'copy', 'variant' => 'outline', 'attrs' => ['data-copiar' => 'piloto-link-publico', 'data-copiar-mensagem' => 'Link copiado.']]) ?>
                             <?= component('link', ['label' => 'Abrir link', 'href' => $pilotoUrlPublica, 'attrs' => ['target' => '_blank', 'rel' => 'noopener noreferrer']]) ?>
+                            <?= component('link', ['label' => 'Compartilhar no WhatsApp', 'href' => 'https://wa.me/?text=' . rawurlencode('Acompanhe sua OS: ' . $pilotoUrlPublica), 'attrs' => ['target' => '_blank', 'rel' => 'noopener noreferrer']]) ?>
                         </div>
-                    <?php } elseif ($pilotoLink !== null) { ?>
-                        <p class="text-muted">Este link antigo não pode ser recuperado. Gere outro se não tiver guardado o endereço.</p>
                     <?php } ?>
-                    <div class="trifase-os-links-itens">
-                        <?php foreach (($pilotoLink !== null ? ['renovar' => 'Renovar validade', 'revogar' => 'Revogar link'] : ['gerar' => 'Gerar link público']) as $acaoLink => $rotuloLink) { ?>
-                            <form id="<?= e('piloto-link-' . $acaoLink) ?>" method="post" action="<?= e(site_url('trifase/' . $acaoLink . '/' . $idOs)) ?>">
-                                <input type="hidden" name="<?= e($this->security->get_csrf_token_name()) ?>" value="<?= e($this->security->get_csrf_hash()) ?>">
-                                <input type="hidden" name="voltar" value="resumo">
-                                <?= component('button', ['label' => $rotuloLink, 'variant' => 'outline', 'type' => $acaoLink === 'revogar' ? 'button' : 'submit', 'attrs' => $acaoLink === 'revogar' ? ['data-modal-abrir' => 'piloto-revogar-link'] : []]) ?>
-                            </form>
-                        <?php } ?>
-                    </div>
-                    <?= component('link', ['label' => 'Mais opções de compartilhamento', 'href' => site_url('trifase/gerenciar/' . $idOs)]) ?>
+                    <details class="trifase-os-adicionar mt-4">
+                        <summary>Mais opções de compartilhamento</summary>
+                        <div class="grid min-w-0 gap-3 p-3">
+                            <p class="text-muted">Somente esta OS, anexos autorizados e orçamento publicado.</p>
+                            <?php if ($pilotoLink !== null) { ?><p><?= e('Válido até ' . date('d/m/Y', (int) $pilotoLink->expira_em)) ?></p><?php } ?>
+                            <?php if (($pilotoUrlPublica ?? null) !== null) { ?>
+                                <label for="piloto-link-publico" class="text-label-md text-text">Endereço para o cliente</label>
+                                <input id="piloto-link-publico" readonly value="<?= e($pilotoUrlPublica) ?>" class="w-full min-w-0 rounded-sm border border-input bg-field p-3 text-body-md text-text">
+                                <div><?= component('button', ['label' => 'Copiar link', 'icon' => 'copy', 'variant' => 'outline', 'attrs' => ['data-copiar' => 'piloto-link-publico', 'data-copiar-mensagem' => 'Link copiado.']]) ?></div>
+                            <?php } elseif ($pilotoLink !== null) { ?>
+                                <p class="text-muted">Este link antigo não pode ser recuperado. Gere outro se não tiver guardado o endereço.</p>
+                            <?php } ?>
+                            <div class="trifase-os-links-itens">
+                                <?php foreach (($pilotoLink !== null ? ['renovar' => 'Renovar validade', 'revogar' => 'Revogar link'] : ['gerar' => 'Gerar link público']) as $acaoLink => $rotuloLink) { ?>
+                                    <form id="<?= e('piloto-link-' . $acaoLink) ?>" method="post" action="<?= e(site_url('trifase/' . $acaoLink . '/' . $idOs)) ?>">
+                                        <input type="hidden" name="<?= e($this->security->get_csrf_token_name()) ?>" value="<?= e($this->security->get_csrf_hash()) ?>">
+                                        <input type="hidden" name="voltar" value="resumo">
+                                        <?= component('button', ['label' => $rotuloLink, 'variant' => 'outline', 'type' => $acaoLink === 'revogar' ? 'button' : 'submit', 'attrs' => $acaoLink === 'revogar' ? ['data-modal-abrir' => 'piloto-revogar-link'] : []]) ?>
+                                    </form>
+                                <?php } ?>
+                            </div>
+                        </div>
+                    </details>
                     <?php if ($pilotoLink !== null) { ?>
                         <?= component('modal-confirm', ['id' => 'piloto-revogar-link', 'title' => 'Revogar link público?', 'message' => 'O endereço enviado ao cliente deixará de funcionar. Os anexos continuam guardados na OS.', 'confirm_label' => 'Revogar link', 'confirm_attrs' => ['form' => 'piloto-link-revogar']]) ?>
                     <?php } ?>

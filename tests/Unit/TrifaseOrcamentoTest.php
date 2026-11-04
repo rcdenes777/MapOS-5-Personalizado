@@ -24,6 +24,7 @@ final class TrifaseOrcamentoTest extends MaposTestCase
         $this->db->insert('servicos', ['idServicos' => 1, 'nome' => 'Serviço de teste', 'preco' => 100]);
         $this->db->insert('produtos_os', ['idProdutos_os' => 1, 'os_id' => 1, 'produtos_id' => 1, 'preco' => 30, 'quantidade' => 2, 'subTotal' => 50, 'desconto' => 10, 'tipo_desconto' => 'real']);
         $this->db->insert('servicos_os', ['idServicos_os' => 1, 'os_id' => 1, 'servicos_id' => 1, 'preco' => 100, 'quantidade' => 1, 'subTotal' => 100, 'desconto' => 0]);
+        $this->db->query('CREATE TABLE os_historico (os_id INTEGER, status_anterior TEXT, status_novo TEXT, usuarios_id INTEGER, data_hora TEXT)');
         $this->db->query('CREATE TABLE trifase_publico_links (os_id INTEGER, token_hash TEXT, expira_em INTEGER)');
         $this->token = str_repeat('a', 64);
         $this->db->insert('trifase_publico_links', ['os_id' => 1, 'token_hash' => hash('sha256', $this->token), 'expira_em' => time() + 86400]);
@@ -89,6 +90,57 @@ final class TrifaseOrcamentoTest extends MaposTestCase
             } catch (DomainException $e) {
                 $this->assertSame(0, $this->db->count_all('trifase_orcamento_versoes'));
             }
+        }
+    }
+
+    public function testAprovacaoMudaSomenteOrcamentoOuNegociacaoUmaVez(): void
+    {
+        foreach (['Orçamento', 'Negociação', 'Aberto', 'Em Andamento', 'Aguardando Peças', 'Finalizado', 'Aprovado'] as $indice => $status) {
+            $this->db->where('idOs', 1)->update('os', ['status' => $status]);
+            $this->db->empty_table('os_historico');
+            $id = $this->publicar('publicar-' . $indice);
+            $antes = $this->db->where('idOs', 1)->get('os')->row_array();
+            $this->modelo->responder(1, $this->token, $id, 'aprovar', 'Cliente QA', '1', $this->chave('aprovar-' . $indice));
+            $this->modelo->responder(1, $this->token, $id, 'aprovar', 'Cliente QA', '1', $this->chave('aprovar-' . $indice));
+            $muda = in_array($status, ['Orçamento', 'Negociação'], true);
+            $depois = $this->db->where('idOs', 1)->get('os')->row_array();
+            $this->assertSame($muda ? 'Aprovado' : $status, $depois['status']);
+            unset($antes['status'], $depois['status']);
+            $this->assertSame($antes, $depois);
+            $this->assertSame($muda ? 1 : 0, $this->db->count_all('os_historico'));
+            if ($muda) {
+                $h = $this->db->get('os_historico')->row();
+                $this->assertNull($h->usuarios_id);
+                $this->assertSame($status, $h->status_anterior);
+                $this->assertSame($this->modelo->decisao($id)->criado_em, $h->data_hora);
+            }
+        }
+    }
+
+    public function testRecusaMantemNegociacaoESemMudancaNoHistorico(): void
+    {
+        $this->db->where('idOs', 1)->update('os', ['status' => 'Negociação']);
+        $id = $this->publicar();
+        $this->modelo->responder(1, $this->token, $id, 'recusar', 'Cliente QA', '1', $this->chave('recusar'));
+        $this->assertSame('Negociação', $this->db->where('idOs', 1)->get('os')->row()->status);
+        $this->assertSame(0, $this->db->count_all('os_historico'));
+    }
+
+    public function testFalhaNoHistoricoReverteTambemAResposta(): void
+    {
+        $this->db->where('idOs', 1)->update('os', ['status' => 'Orçamento']);
+        $id = $this->publicar();
+        $this->db->db_debug = false;
+        $this->db->query("CREATE TRIGGER falha_historico BEFORE INSERT ON os_historico BEGIN SELECT RAISE(FAIL, 'falha historico'); END");
+        set_error_handler(static fn ($nivel, $mensagem) => $mensagem === 'SQLite3::exec(): falha historico');
+        try {
+            $this->modelo->responder(1, $this->token, $id, 'aprovar', 'Cliente QA', '1', $this->chave('falha'));
+            $this->fail('Registrou decisão sem histórico');
+        } catch (RuntimeException $e) {
+            $this->assertNull($this->modelo->decisao($id));
+            $this->assertSame('Orçamento', $this->db->where('idOs', 1)->get('os')->row()->status);
+        } finally {
+            restore_error_handler();
         }
     }
 

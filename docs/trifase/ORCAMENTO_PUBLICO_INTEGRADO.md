@@ -19,6 +19,17 @@ Versões antigas continuam válidas sem novos textos; para acrescentá-los é ne
 
 ## Resposta no andamento da OS
 
-O bloco superior de andamento agora mostra “Aprovado pelo cliente” ou “Recusado pelo cliente”, com data e hora da resposta da versão atual. Também fica disponível ao técnico: a projeção contém somente tipo da decisão, horário e validade; não recebe o conteúdo financeiro do orçamento. Se a versão estiver retirada, cancelada ou com itens alterados, a resposta fica neutra e avisa para conferir o orçamento. Uma nova versão sem resposta não reutiliza a aprovação antiga. O status técnico não é alterado automaticamente.
+O bloco superior de andamento agora mostra “Aprovado pelo cliente” ou “Recusado pelo cliente”, com data e hora da resposta da versão atual. Também fica disponível ao técnico: a projeção contém somente tipo da decisão, horário e validade; não recebe o conteúdo financeiro do orçamento. Se a versão estiver retirada, cancelada ou com itens alterados, a resposta fica neutra e avisa para conferir o orçamento. Uma nova versão sem resposta não reutiliza a aprovação antiga. Ao aprovar uma versão vigente, o status muda automaticamente de Orçamento ou Negociação para Aprovado. Outros status são preservados.
 
 Verificado na OS 9058 pelo navegador: aprovação de 04/11/2026 às 14:27 apareceu no bloco superior, sem alterar registros. Testes de renderização cobrem aprovação, recusa, versão indisponível e ausência de valores para técnico. Suíte: 1.865 testes e 8.856 asserções sem falhas, com a depreciação e o teste ignorado anteriores; PHPStan, escape, formatação e build passaram.
+
+
+## Aprovação automática do andamento
+
+A decisão e a transição são gravadas sob a mesma trava e transação da OS. A aprovação vigente altera somente Orçamento/Negociação para Aprovado, incluindo os_historico com usuário interno nulo e horário da decisão. A leitura do histórico identifica “Cliente, pelo link público” pela aprovação registrada naquele horário. Recusa mantém o andamento; Aberto, Aprovado, Em Andamento, Aguardando Peças e Finalizado não são alterados por essa automação. OS cancelada/versão retirada, substituída ou desatualizada continuam impedindo a resposta. Reenvio idempotente não repete a transição.
+
+Se falhar histórico ou atualização de status, a decisão também é revertida. Não há faturamento, baixa de estoque, recebimento, entrega ou conclusão técnica nessa operação.
+
+Validação: 1.868 testes/8.887 asserções sem falhas, com a depreciação e o teste ignorado anteriores; PHPStan e formatação passaram. Novos testes executam transição nos dois status, preservação dos demais campos/status, reenvio, recusa e rollback em falha do histórico.
+
+Conciliação pontual autorizada no laboratório: OS 9058, versão 2 já aprovada, mudou de Negociação para Aprovado usando o horário original da decisão (04/11/2026 14:27:56). Nenhuma nova resposta foi criada. Verificação antes/depois preservou financeiro, estoque, itens, anexos, dados técnicos e entrega. Navegador confirmou Aprovado no topo e a origem no histórico. Outras aprovações antigas não foram migradas automaticamente.

@@ -160,6 +160,15 @@ class Trifase_orcamento_model extends CI_Model
                 throw new DomainException('Esta versão já recebeu uma decisão. Fale com a assistência para solicitar uma revisão.');
             }
             $this->evento($id, $versao, $tipo, $nome, null, $versao, $chave, $hash);
+            if ($tipo === 'aprovar' && in_array($os->status, ['Orçamento', 'Negociação'], true)) {
+                $decisao = $this->decisao($versao);
+                if ($decisao === null || ! $this->db->insert('os_historico', [
+                    'os_id' => $id, 'status_anterior' => $os->status, 'status_novo' => 'Aprovado',
+                    'usuarios_id' => null, 'data_hora' => $decisao->criado_em,
+                ]) || ! $this->db->where('idOs', $id)->update('os', ['status' => 'Aprovado'])) {
+                    throw new RuntimeException('Não foi possível registrar a aprovação e o andamento.');
+                }
+            }
         });
     }
 

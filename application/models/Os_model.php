@@ -699,7 +699,7 @@ class Os_model extends CI_Model
             return [];
         }
 
-        return $this->db
+        $historico = $this->db
             ->select('os_historico.*, usuarios.nome AS autor')
             ->from('os_historico')
             ->join('usuarios', 'usuarios.idUsuarios = os_historico.usuarios_id', 'left')
@@ -708,5 +708,16 @@ class Os_model extends CI_Model
             ->order_by('os_historico.idHistorico', 'desc')
             ->get()
             ->result();
+        if ($historico !== [] && $this->db->table_exists('trifase_orcamento_eventos')) {
+            $aprovacoes = array_column($this->db->select('criado_em')->where('os_id', $idOs)->where('tipo', 'aprovar')->get('trifase_orcamento_eventos')->result_array(), 'criado_em');
+            foreach ($historico as $mudanca) {
+                if ($mudanca->usuarios_id === null && $mudanca->status_novo === 'Aprovado'
+                    && in_array($mudanca->status_anterior, ['Orçamento', 'Negociação'], true)
+                    && in_array($mudanca->data_hora, $aprovacoes, true)) {
+                    $mudanca->autor = 'Cliente, pelo link público';
+                }
+            }
+        }
+        return $historico;
     }
 }

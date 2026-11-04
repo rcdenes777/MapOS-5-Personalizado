@@ -32,8 +32,23 @@ class Trifase_orcamentos extends MY_Controller
         $os = $this->ordem($id);
         $this->data['ordemOrcamento'] = $os;
         $this->data['retratoOrcamento'] = $this->orcamentos->retrato($os);
+        $this->data['apresentacaoOrcamento'] = [
+            'equipamento' => trifaseOrcamentoTexto($os->descricaoProduto ?? ''),
+            'defeito' => trifaseOrcamentoTexto($os->defeito ?? ''),
+            'diagnostico' => trifaseOrcamentoTexto($os->laudoTecnico ?? ''),
+            'pagamento' => '', 'prazo' => '',
+            'garantia' => isset($os->garantia) && $os->garantia !== '' ? $os->garantia . ' dias' : '',
+        ];
         $this->data['hashOrcamento'] = $this->orcamentos->hash($this->data['retratoOrcamento']);
         $this->data['orcamentoAtual'] = $this->orcamentos->atual((int) $os->idOs);
+        if ($this->data['orcamentoAtual'] !== null) {
+            $publicadoAnterior = json_decode($this->data['orcamentoAtual']->conteudo, true, 32, JSON_THROW_ON_ERROR);
+            foreach (['pagamento', 'prazo', 'garantia'] as $campo) {
+                if (isset($publicadoAnterior['apresentacao'][$campo])) {
+                    $this->data['apresentacaoOrcamento'][$campo] = $publicadoAnterior['apresentacao'][$campo];
+                }
+            }
+        }
         $this->data['versoesOrcamento'] = $this->orcamentos->historico((int) $os->idOs);
         $this->data['eventosOrcamento'] = $this->orcamentos->eventos((int) $os->idOs);
         $this->data['podePublicarOrcamento'] = $this->permite('eOs') && $this->permite('publicarOrcamento');
@@ -56,7 +71,7 @@ class Trifase_orcamentos extends MY_Controller
             if ($this->input->post('confirmar') !== '1') {
                 throw new DomainException('Confirme que deseja compartilhar estes itens e valores pelo link da OS.');
             }
-            $this->orcamentos->publicar((int) $os->idOs, $this->textoPost('retrato_hash'), (int) $this->session->userdata('id_admin'), $this->textoPost('operacao'));
+            $this->orcamentos->publicar((int) $os->idOs, $this->textoPost('retrato_hash'), (int) $this->session->userdata('id_admin'), $this->textoPost('operacao'), $this->apresentacaoPost());
             $this->session->set_flashdata('success', 'Versão publicada. O link ativo desta OS passa a permitir consultar estes itens e valores.');
         } catch (DomainException $e) {
             return $this->falha($e->getMessage());
@@ -88,6 +103,15 @@ class Trifase_orcamentos extends MY_Controller
             return $this->falha('Não foi possível confirmar a retirada. Recarregue e confira o histórico.', 500);
         }
         redirect('trifase_orcamentos/visualizar/' . (int) $os->idOs);
+    }
+
+    private function apresentacaoPost(): array
+    {
+        $dados = [];
+        foreach (['equipamento', 'defeito', 'diagnostico', 'pagamento', 'prazo', 'garantia'] as $campo) {
+            $dados[$campo] = $this->input->post('publico_' . $campo);
+        }
+        return trifaseOrcamentoApresentacao($dados);
     }
 
     private function ordem($id): object

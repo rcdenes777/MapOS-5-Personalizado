@@ -71,7 +71,7 @@ class Orcamento_publico extends CI_Controller
             return $this->pagina($token, 'Não foi possível confirmar a resposta. Reabra o link antes de tentar novamente.');
         }
         // Redirecionamento fechado ao mesmo token validado, sem dados pessoais na URL.
-        redirect(trifasePublicoBase(base_url()) . (config_item('index_page') ? config_item('index_page') . '/' : '') . 'orcamento_publico/ver/' . $token);
+        redirect(trifasePublicoBase(base_url()) . (config_item('index_page') ? config_item('index_page') . '/' : '') . 'publico/os/' . $token . '#orcamento');
     }
 
     private function pagina(mixed $token, ?string $erro = null)

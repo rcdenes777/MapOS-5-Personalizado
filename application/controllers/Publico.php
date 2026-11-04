@@ -54,18 +54,25 @@ class Publico extends CI_Controller
         // Erros e respostas binárias continuam sem execução de scripts.
         $nonce = base64_encode(random_bytes(18));
         foreach (trifasePublicoCabecalhos($nonce) as $nome => $valor) {
+            $valor = str_replace("form-action 'none'", "form-action 'self'", $valor);
             $this->output->set_header($nome . ': ' . $valor);
             header($nome . ': ' . $valor);
         }
-        $orcamentoUrl = null;
+        $dadosOrcamento = [];
         require_once APPPATH . 'helpers/trifase_orcamento_helper.php';
         if (trifaseOrcamentoHabilitado() && $this->db->table_exists('trifase_orcamento_estado')) {
             $this->load->model('Trifase_orcamento_model', 'orcamentos');
-            if ($this->orcamentos->publicado((int) $os->idOs, $token) !== null) {
-                $orcamentoUrl = $prefixo . 'orcamento_publico/ver/' . $token;
+            if (($versao = $this->orcamentos->publicado((int) $os->idOs, $token)) !== null) {
+                $dadosOrcamento = [
+                    'versaoOrcamento' => $versao,
+                    'retratoOrcamento' => json_decode($versao->conteudo, true, 32, JSON_THROW_ON_ERROR),
+                    'decisaoOrcamento' => $this->orcamentos->decisao((int) $versao->id),
+                    'erroOrcamento' => null,
+                    'responderOrcamentoUrl' => $prefixo . 'orcamento_publico/responder/' . $token,
+                ];
             }
         }
-        $this->load->view('trifase/publico', ['orcamentoUrl' => $orcamentoUrl, 'os' => trifasePublicoDados($os), 'anexos' => $anexos, 'basePublica' => $base, 'noncePublico' => $nonce]);
+        $this->load->view('trifase/publico', $dadosOrcamento + ['os' => trifasePublicoDados($os), 'anexos' => $anexos, 'basePublica' => $base, 'noncePublico' => $nonce]);
     }
 
     public function anexo($token = null, $id = null)

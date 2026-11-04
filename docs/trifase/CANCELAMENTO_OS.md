@@ -28,3 +28,9 @@ O pedido pode ser retirado com motivo antes da confirmação, preservando os eve
 - Suíte PHP: 1.883 testes, 8.959 asserções, sem falhas; uma depreciação e um teste ignorado anteriores. PHPStan, escape, formatação e build passaram.
 - Testes executam pedido idempotente, devolução de estoque uma só vez, preservação de itens/dados técnicos, pedido de outra OS, conferência antiga, retirada de pedido, bloqueio de peça utilizada/serviço executado, obrigação com recebimento, rollback após falha no histórico e POST de confirmação negado ao técnico. Renderização técnica testa escape e ausência de valores/formulário financeiro.
 - O teste de devolução de peças foi executado em SQLite isolado; o ciclo no navegador usou uma fixture sem peças. Concorrência real com múltiplas conexões e pagamentos externos não foi simulada.
+
+## Origem do pedido
+
+O formulário inicia em **Solicitado pelo cliente**, utilizando o cliente vinculado à OS. A alternativa é **Por iniciativa da assistência**. Não há mais digitação livre do solicitante. O servidor aceita somente essas origens e consulta o cliente sob a trava da OS, sem confiar em nome enviado pelo formulário. O retrato do pedido preserva origem, ID e nome completo do cliente; o operador continua em `usuario_id`, separado do solicitante. Registros anteriores são preservados.
+
+Validação da alteração: oito testes de cancelamento/acesso passaram (49 asserções), incluindo origem inválida, cliente ausente, cliente correto e iniciativa da assistência. PHPStan, formatação e build passaram. No navegador, OS 9058 exibiu o cliente “Teste” e a opção de cliente selecionada por padrão; nenhum pedido foi registrado nessa conferência.

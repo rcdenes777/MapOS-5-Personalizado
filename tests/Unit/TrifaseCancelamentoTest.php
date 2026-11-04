@@ -16,8 +16,10 @@ final class TrifaseCancelamentoTest extends MaposTestCase
         parent::setUp();
         $this->ambiente = $_ENV;
         $_ENV['TRIFASE_ESTOQUE_ENABLED'] = 'true';
-        $this->db->query('CREATE TABLE os (idOs INTEGER PRIMARY KEY, status TEXT, faturado INTEGER, lancamento INTEGER, defeito TEXT)');
-        $this->db->query("INSERT INTO os VALUES (1, 'Aprovado', 0, NULL, 'Não liga'), (2, 'Aberto', 0, NULL, 'Outro')");
+        $this->db->query('CREATE TABLE os (idOs INTEGER PRIMARY KEY, status TEXT, faturado INTEGER, lancamento INTEGER, defeito TEXT, clientes_id INTEGER)');
+        $this->db->query("INSERT INTO os VALUES (1, 'Aprovado', 0, NULL, 'Não liga', 3), (2, 'Aberto', 0, NULL, 'Outro', 4)");
+        $this->db->query('CREATE TABLE clientes (idClientes INTEGER PRIMARY KEY, nomeCliente TEXT)');
+        $this->db->query("INSERT INTO clientes VALUES (3, 'Cliente da OS'), (4, 'Outro cliente')");
         $this->db->query('CREATE TABLE produtos (idProdutos INTEGER PRIMARY KEY, descricao TEXT, estoque INTEGER, precoCompra TEXT)');
         $this->db->query("INSERT INTO produtos VALUES (1, 'Peça', 8, '10.00')");
         $this->db->query('CREATE TABLE servicos (idServicos INTEGER PRIMARY KEY, nome TEXT)');
@@ -57,7 +59,29 @@ final class TrifaseCancelamentoTest extends MaposTestCase
 
     private function pedido(): int
     {
-        return $this->modelo->solicitar(1, 'Cliente QA', 'Desistiu antes do reparo', 7, 'solicitacao_123456789');
+        return $this->modelo->solicitar(1, 'cliente', 'Desistiu antes do reparo', 7, 'solicitacao_123456789');
+    }
+
+    public function testOrigemDoClienteUsaCadastroDaOsEAssisteciaFicaSeparadaDoOperador(): void
+    {
+        $pedido = $this->pedido();
+        $p = $this->modelo->atual(1);
+        $this->assertSame('Cliente: Cliente da OS', $p->solicitante);
+        $this->assertSame(7, (int) $p->usuario_id);
+        $snapshot = json_decode($p->retrato, true);
+        $this->assertSame(['origem' => 'cliente', 'cliente_id' => 3, 'nome_cliente' => 'Cliente da OS'], $snapshot['solicitacao']);
+        $this->modelo->retirar(1, $pedido, 'Correção da origem', 7, 'retirar_origem_12345');
+        $this->modelo->solicitar(1, 'assistencia', 'Assistência não poderá executar', 7, 'assistencia_12345678');
+        $this->assertSame('Por iniciativa da assistência', $this->modelo->atual(1)->solicitante);
+        try {
+            $this->modelo->solicitar(2, 'Nome inventado', 'Teste', 7, 'invalida_123456789');
+            $this->fail('Aceitou nome livre no lugar da origem');
+        } catch (DomainException $e) {
+            $this->assertNull($this->modelo->atual(2));
+        }
+        $this->db->where('idClientes', 4)->delete('clientes');
+        $this->expectException(DomainException::class);
+        $this->modelo->solicitar(2, 'cliente', 'Teste', 7, 'semcliente_123456789');
     }
 
     public function testPedidoPreservaStatusEstoqueEItensEConfirmacaoDevolveSomenteUmaVez(): void

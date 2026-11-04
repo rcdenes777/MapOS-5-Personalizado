@@ -65,7 +65,7 @@ class Trifase_cancelamentos extends MY_Controller
             $usuario = (int) $this->session->userdata('id_admin');
             $op = $this->texto('operacao');
             if ($tipo === 'solicitar') {
-                $this->cancelamentos->solicitar((int) $os->idOs, $this->texto('solicitante'), $this->texto('motivo'), $usuario, $op);
+                $this->cancelamentos->solicitar((int) $os->idOs, $this->texto('origem'), $this->texto('motivo'), $usuario, $op);
             } else {
                 $pedido = filter_var($this->input->post('pedido_id'), FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
                 if ($pedido === false) {
@@ -100,6 +100,7 @@ class Trifase_cancelamentos extends MY_Controller
     private function pagina(object $os, ?string $erro = null)
     {
         $c = $this->cancelamentos->conferencia($os);
+        $cliente = $this->db->select('nomeCliente')->where('idClientes', (int) $os->clientes_id)->get('clientes', 1)->row();
         $pecas = array_map(static fn ($i) => ['nome' => $i['nome'], 'quantidade' => $i['quantidade']], $c['pecas']);
         $servicos = array_map(static fn ($i) => ['nome' => $i['nome'], 'quantidade' => $i['quantidade']], $c['servicos']);
         if ($pecas !== [] && ! ($this->data['configuration']['control_estoque'] ?? false)) {
@@ -113,7 +114,8 @@ class Trifase_cancelamentos extends MY_Controller
             'financeiroCancelamento' => $this->permite('vLancamento') ? $c['financeiro'] : null,
             'podePedirCancelamento' => $this->permite('eOs'),
             'podeConfirmarCancelamento' => $this->permite('eOs') && $this->permite('vLancamento') && $this->permite('eLancamento'),
-            'valoresCancelamento' => ['solicitante' => $this->texto('solicitante'), 'motivo' => $this->texto('motivo'), 'conferencia' => $this->texto('conferencia')],
+            'clienteCancelamento' => (string) ($cliente->nomeCliente ?? 'Cliente não localizado'),
+            'valoresCancelamento' => ['origem' => $this->input->method(true) === 'POST' ? $this->texto('origem') : 'cliente', 'motivo' => $this->texto('motivo'), 'conferencia' => $this->texto('conferencia')],
         ];
         $this->data['view'] = 'trifase/cancelamento';
         return $this->layout();

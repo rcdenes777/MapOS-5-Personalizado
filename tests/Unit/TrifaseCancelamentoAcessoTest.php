@@ -39,7 +39,8 @@ final class TrifaseCancelamentoAcessoTest extends \PHPUnit\Framework\TestCase
             'historicoCancelamento' => [], 'pecasCancelamento' => [['nome' => 'Peça', 'quantidade' => 1]], 'servicosCancelamento' => [],
             'financeiroCancelamento' => null, 'podeConfirmarCancelamento' => false, 'podePedirCancelamento' => true,
             'bloqueiosCancelamento' => [], 'erroCancelamento' => null, 'hashCancelamento' => 'hash',
-            'valoresCancelamento' => ['solicitante' => '', 'motivo' => '', 'conferencia' => ''],
+            'clienteCancelamento' => 'Cliente da OS',
+            'valoresCancelamento' => ['origem' => 'cliente', 'motivo' => '', 'conferencia' => ''],
         ]);
         $this->assertStringContainsString('Pedido pendente', $html);
         $this->assertStringContainsString('&lt;script&gt;QA&lt;/script&gt;', $html);

@@ -67,15 +67,25 @@ class Trifase_cancelamento_model extends CI_Model
         return $retrato + ['hash' => hash('sha256', json_encode($retrato, JSON_THROW_ON_ERROR))];
     }
 
-    public function solicitar(int $id, string $solicitante, string $motivo, int $usuario, string $operacao): int
+    public function solicitar(int $id, string $origem, string $motivo, int $usuario, string $operacao): int
     {
-        $solicitante = $this->texto($solicitante, 160);
+        if (! in_array($origem, ['cliente', 'assistencia'], true)) {
+            throw new DomainException('Escolha se o pedido foi feito pelo cliente ou por iniciativa da assistência.');
+        }
         $motivo = $this->texto($motivo, 2000);
-        return $this->executar($id, $usuario, $operacao, ['solicitar', $solicitante, $motivo], function ($os) use ($id, $solicitante, $motivo, $usuario, $operacao) {
+        return $this->executar($id, $usuario, $operacao, ['solicitar', $origem, $motivo], function ($os) use ($id, $origem, $motivo, $usuario, $operacao) {
             if ($os->status === 'Cancelado' || ($this->atual($id)->tipo ?? '') === 'solicitar') {
                 throw new DomainException('Esta OS já está cancelada ou tem pedido pendente. Confira o histórico.');
             }
-            return $this->evento($id, 'solicitar', null, $solicitante, $motivo, $this->conferencia($os), $usuario, $operacao);
+            $cliente = $this->db->select('nomeCliente')->where('idClientes', (int) $os->clientes_id)->get('clientes', 1)->row();
+            if ($origem === 'cliente' && ($cliente === null || trim((string) $cliente->nomeCliente) === '')) {
+                throw new DomainException('Confira o cliente vinculado à OS antes de registrar o pedido.');
+            }
+            $nome = (string) ($cliente->nomeCliente ?? '');
+            $solicitante = $origem === 'cliente' ? mb_substr('Cliente: ' . $nome, 0, 160) : 'Por iniciativa da assistência';
+            $retrato = $this->conferencia($os);
+            $retrato['solicitacao'] = ['origem' => $origem, 'cliente_id' => (int) $os->clientes_id, 'nome_cliente' => $nome];
+            return $this->evento($id, 'solicitar', null, $solicitante, $motivo, $retrato, $usuario, $operacao);
         });
     }
 

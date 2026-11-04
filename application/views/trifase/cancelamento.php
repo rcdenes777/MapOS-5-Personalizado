@@ -11,7 +11,8 @@ $pendenteCancelamento = ($pedidoCancelamento->tipo ?? '') === 'solicitar'; ?>
             <form method="post" action="<?= e(site_url('trifase_cancelamentos/solicitar/' . $idCancelamento)) ?>" class="mt-4 grid gap-4" <?= js_module('formulario/padrao') ?>>
                 <input type="hidden" name="<?= e($this->security->get_csrf_token_name()) ?>" value="<?= e($this->security->get_csrf_hash()) ?>">
                 <input type="hidden" name="operacao" value="<?= e(bin2hex(random_bytes(16))) ?>">
-                <?= component('input', ['name' => 'solicitante', 'label' => 'Quem solicitou o cancelamento?', 'value' => $valoresCancelamento['solicitante'], 'required' => true, 'attrs' => ['maxlength' => 160]]) ?>
+                <?= component('select', ['name' => 'origem', 'label' => 'Origem do pedido', 'selected' => $valoresCancelamento['origem'], 'required' => true, 'options' => ['cliente' => 'Solicitado pelo cliente', 'assistencia' => 'Por iniciativa da assistência']]) ?>
+                <p class="text-body-md text-muted"><?= e('Cliente vinculado à OS: ' . $clienteCancelamento) ?></p>
                 <?= component('textarea', ['name' => 'motivo', 'label' => 'Motivo do pedido', 'value' => $valoresCancelamento['motivo'], 'required' => true, 'attrs' => ['maxlength' => 2000]]) ?>
                 <?= component('button', ['label' => 'Registrar pedido', 'type' => 'submit']) ?>
             </form>

@@ -51,6 +51,47 @@ final class TrifaseOrcamentoTest extends MaposTestCase
         return $this->modelo->publicar(1, $this->modelo->hash($this->retrato()), 7, $this->chave($chave));
     }
 
+    public function testApresentacaoPublicadaCongelaTextosSemVazarDadosInternos(): void
+    {
+        $this->db->query('ALTER TABLE os ADD COLUMN laudoTecnico TEXT');
+        $this->db->query('ALTER TABLE os ADD COLUMN observacoes TEXT');
+        $this->db->where('idOs', 1)->update('os', ['laudoTecnico' => 'LAUDO_INTERNO', 'observacoes' => 'NOTA_PRIVADA']);
+        $dados = ['equipamento' => 'LG · Inverter', 'defeito' => 'Não liga', 'diagnostico' => 'Falha na fonte', 'pagamento' => 'Na retirada', 'prazo' => '5 dias úteis', 'garantia' => '90 dias', 'observacoes' => 'NAO_PUBLICAR'];
+        $hash = $this->modelo->hash($this->retrato());
+        $id = $this->modelo->publicar(1, $hash, 7, $this->chave('texto'), $dados);
+        $this->assertSame($id, $this->modelo->publicar(1, $hash, 7, $this->chave('texto'), $dados));
+        $publicado = $this->modelo->publicado(1, $this->token);
+        $this->assertNotNull($publicado);
+        $conteudo = json_decode($publicado->conteudo, true);
+        $this->assertSame('Falha na fonte', $conteudo['apresentacao']['diagnostico']);
+        $this->assertSame(14500, $conteudo['total_c']);
+        foreach (['NOTA_PRIVADA', 'LAUDO_INTERNO', 'NAO_PUBLICAR'] as $privado) {
+            $this->assertStringNotContainsString($privado, $publicado->conteudo);
+        }
+        $this->db->where('idOs', 1)->update('os', ['laudoTecnico' => 'Outro laudo']);
+        $this->assertSame($publicado->conteudo, $this->modelo->publicado(1, $this->token)->conteudo);
+        try {
+            $this->modelo->publicar(1, $hash, 7, $this->chave('texto'), array_replace($dados, ['diagnostico' => 'Outro diagnóstico']));
+            $this->fail('Reutilizou chave com texto diferente');
+        } catch (DomainException $e) {
+            $this->assertSame(1, $this->db->count_all('trifase_orcamento_versoes'));
+        }
+        $this->modelo->responder(1, $this->token, $id, 'aprovar', 'Cliente QA', '1', $this->chave('resposta-texto'));
+        $this->assertSame('aprovar', $this->modelo->decisao($id)->tipo);
+    }
+
+    public function testTextosInvalidosNaoPublicam(): void
+    {
+        foreach ([['diagnostico' => []], ['defeito' => str_repeat('a', 4001)], ['garantia' => "teste\0"]] as $dados) {
+            try {
+                $this->modelo->publicar(1, $this->modelo->hash($this->retrato()), 7, $this->chave('invalido'), $dados);
+                $this->fail('Aceitou texto inválido');
+            } catch (DomainException $e) {
+                $this->assertSame(0, $this->db->count_all('trifase_orcamento_versoes'));
+            }
+        }
+    }
+
     public function testVersaoExplicitaImutavelECentavosNaoExpondoCusto(): void
     {
         $antes = $this->db->get('os')->result_array();

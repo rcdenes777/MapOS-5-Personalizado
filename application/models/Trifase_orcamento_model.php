@@ -67,14 +67,15 @@ class Trifase_orcamento_model extends CI_Model
         return $this->db->where('decisao_versao', $versao)->get('trifase_orcamento_eventos', 1)->row() ?: null;
     }
 
-    public function publicar(int $id, string $esperado, int $usuario, string $chave): int
+    public function publicar(int $id, string $esperado, int $usuario, string $chave, array $apresentacao = []): int
     {
         $this->validarOperacao($chave);
         if ($usuario <= 0 || ! preg_match('/\A[a-f0-9]{64}\z/', $esperado)) {
             throw new DomainException('Reabra a prévia antes de publicar.');
         }
-        $hash = $this->hash(['publicar', $id, $esperado, $usuario]);
-        return $this->transacao($id, function ($os) use ($id, $esperado, $usuario, $chave, $hash) {
+        $apresentacao = trifaseOrcamentoApresentacao($apresentacao);
+        $hash = $this->hash(['publicar', $id, $esperado, $usuario, $apresentacao]);
+        return $this->transacao($id, function ($os) use ($id, $esperado, $usuario, $chave, $hash, $apresentacao) {
             if ($anterior = $this->reenvio($id, $chave, $hash)) {
                 return (int) $anterior->versao_id;
             }
@@ -84,6 +85,9 @@ class Trifase_orcamento_model extends CI_Model
             $retrato = $this->retrato($os);
             if ($retrato['itens'] === [] || ! hash_equals($esperado, $this->hash($retrato))) {
                 throw new DomainException('Os itens ou valores mudaram. Reabra e confira a prévia antes de publicar.');
+            }
+            if ($apresentacao !== []) {
+                $retrato['apresentacao'] = $apresentacao;
             }
             if (strlen(json_encode($retrato, JSON_THROW_ON_ERROR)) > 60000) {
                 throw new DomainException('Orçamento muito extenso. Reduza os itens antes de publicar.');

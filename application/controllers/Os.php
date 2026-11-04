@@ -274,6 +274,7 @@ class Os extends MY_Controller
             'identificar_equipamento' => trifaseEquipamentosHabilitados() && $this->permite('vOs'),
             'ver_os' => $os !== null,
         ];
+        $this->data['cancelamentoFluxoDisponivel'] = $this->db->table_exists('trifase_cancelamentos');
         $this->data['view'] = 'os/formulario';
 
         return $this->layout();
@@ -335,6 +336,10 @@ class Os extends MY_Controller
     /** Quando há unidade, criar a OS e vinculá-la é uma única transação. */
     private function criarOs(array $dados): ?int
     {
+        if ($dados['status'] === 'Cancelado' && $this->db->table_exists('trifase_cancelamentos')) {
+            $this->erroEquipamentoNovaOs = 'Crie o atendimento antes de registrar o pedido de cancelamento com motivo e conferência.';
+            return null;
+        }
         $comEquipamento = $this->entradaEquipamentoNovaOs !== [];
         $comConclusao = trifaseAtendimentoHabilitado() && $dados['status'] === 'Finalizado';
         $transacional = $comEquipamento || $comConclusao;
@@ -410,11 +415,22 @@ class Os extends MY_Controller
      */
     private function salvarOs(object $os, array $dados): ?int
     {
-        if (! trifaseFinanceiroHabilitado() && ! trifaseEstoqueHabilitado() && ! $this->db->table_exists('trifase_orcamento_versoes') && ! $this->db->table_exists('trifase_atendimentos') && trifaseEquipamentoDaOs($this->db, (int) $os->idOs) === null) {
+        if ($this->db->table_exists('trifase_cancelamentos') && $dados['status'] !== $os->status
+            && ($dados['status'] === 'Cancelado' || $os->status === 'Cancelado')) {
+            $this->erroEquipamentoNovaOs = 'Use Cancelamento da OS para registrar pedido e conferir estoque e financeiro. Atendimento cancelado deve permanecer no histórico; abra outra OS.';
+            return null;
+        }
+        if (! trifaseFinanceiroHabilitado() && ! trifaseEstoqueHabilitado() && ! $this->db->table_exists('trifase_orcamento_versoes') && ! $this->db->table_exists('trifase_atendimentos') && ! $this->db->table_exists('trifase_cancelamentos') && trifaseEquipamentoDaOs($this->db, (int) $os->idOs) === null) {
             return $this->salvarOsSemTrava($os, $dados);
         }
         $lock = new Trifase_os_lock($this->db, (int) $os->idOs);
         try {
+            if ($this->db->table_exists('trifase_cancelamentos') && $dados['status'] !== $lock->os->status
+                && ($dados['status'] === 'Cancelado' || $lock->os->status === 'Cancelado')) {
+                $this->erroEquipamentoNovaOs = 'Use o fluxo de cancelamento com conferência. Preserve a OS cancelada e abra outro atendimento.';
+                $lock->finalizar(false);
+                return null;
+            }
             if (! trifaseEquipamentoClienteValido($this->db, (int) $os->idOs, (int) $dados['clientes_id'])) {
                 $lock->finalizar(false);
                 $this->erroEquipamentoNovaOs = 'Não é possível trocar o cliente de uma OS com unidade identificada.';
@@ -600,6 +616,9 @@ class Os extends MY_Controller
             $dados['pilotoUrlPublica'] = $token !== null ? trifasePublicoUrl($token, base_url(), (string) config_item('index_page')) : null;
             $dados['pilotoPublicados'] = array_map(static fn ($anexo) => (int) $anexo->idAnexos, $this->piloto_publico->anexos((int) $os->idOs, true));
         }
+        $dados['pilotoCancelamentoDisponivel'] = $this->db->table_exists('trifase_cancelamentos');
+        $dados['pilotoCancelamento'] = $dados['pilotoCancelamentoDisponivel']
+            ? $this->db->select('id, tipo, criado_em')->where('os_id', (int) $os->idOs)->order_by('id', 'desc')->get('trifase_cancelamentos', 1)->row() : null;
         $dados['pilotoEntrega'] = null;
         $dados['pilotoEntregasHistorico'] = [];
         if (trifaseEntregaHabilitada()) {
@@ -1087,6 +1106,11 @@ class Os extends MY_Controller
             $this->session->set_flashdata('error', 'OS com histórico de custos não pode ser excluída.');
             $lock?->finalizar(false);
             return redirect('os/visualizar/' . $id);
+        }
+        if ($this->db->table_exists('trifase_cancelamentos') && $this->db->where('os_id', $id)->count_all_results('trifase_cancelamentos')) {
+            $this->session->set_flashdata('error', 'OS com histórico de cancelamento não pode ser excluída.');
+            $lock?->finalizar(false);
+            redirect('os/visualizar/' . $id);
         }
         if (trifaseAtendimentoDaOs($this->db, $id) !== null) {
             $this->session->set_flashdata('error', 'OS com conclusão técnica registrada não pode ser excluída.');

@@ -435,3 +435,7 @@ Com `TRIFASE_UI_PILOTO_ENABLED` já ativo, usuários com `eOs` e sem `vLancament
 ### Correções da identificação de uma OS (Trifase)
 
 A migração `20261103010000` adiciona somente o histórico `trifase_equipamento_correcoes`. Com equipamentos Trifase já ativos, **Editar identificação** exige `vOs` e `eOs`, sem concessão automática. Motivo, operador e valores anteriores ficam registrados; a consulta da OS apresenta a última correção. O retrato original, cadastro da unidade, outras OS, comprovantes e prazos não são reescritos. A correção não transfere cliente nem troca a unidade física. Sem a tabela, a consulta antiga funciona e a edição não é oferecida. Não apagar o histórico ao desativar o módulo. Veja [o guia de correção](trifase/CORRECAO_IDENTIFICACAO_LAB.md).
+
+### Cancelamento conferido da OS (extensão Trifase)
+
+A migração aditiva `20261104010000` cria o histórico privado de pedidos e confirmações de cancelamento. Após aplicá-la, o cancelamento utiliza o bloco **Cancelamento da OS**, com conferência de estoque e financeiro, em vez de mudar diretamente o status no editor. A confirmação exige edição de OS e consulta/edição de lançamentos. O técnico pode registrar o pedido e devolver peças não utilizadas, sem acesso a dinheiro. Obrigações financeiras ou encerramentos pendentes impedem confirmar; nenhum reembolso é automático. Preserve a tabela ao desabilitar a extensão. Veja [CANCELAMENTO_OS.md](trifase/CANCELAMENTO_OS.md).

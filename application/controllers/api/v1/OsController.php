@@ -168,6 +168,10 @@ class OsController extends REST_Controller
 
         $_POST = (array) json_decode(file_get_contents('php://input'), true);
 
+        if ($this->db->table_exists('trifase_cancelamentos') && $this->post('status', true) === 'Cancelado') {
+            $this->response(['status' => false, 'message' => 'Registre o pedido e a conferência no fluxo de cancelamento do painel.'], 409);
+            return;
+        }
         $this->load->library('form_validation');
 
         if ($this->form_validation->run('os') == false) {
@@ -299,6 +303,11 @@ class OsController extends REST_Controller
             ], REST_Controller::HTTP_BAD_REQUEST);
         }
 
+        if ($this->db->table_exists('trifase_cancelamentos') && $os->status !== $this->put('status', true)
+            && ($os->status === 'Cancelado' || $this->put('status', true) === 'Cancelado')) {
+            $this->response(['status' => false, 'message' => 'Use o fluxo de cancelamento conferido. Preserve a OS cancelada e abra outro atendimento.'], 409);
+            return;
+        }
         if (trifaseFinanceiroHabilitado() && (int) $os->faturado === 1) {
             $this->response(['status' => false, 'message' => 'Concilie o faturamento antigo antes de alterar esta OS.'], 409);
         }
@@ -416,6 +425,10 @@ class OsController extends REST_Controller
     public function index_delete($id)
     {
         $this->logged_user();
+        if ($this->db->table_exists('trifase_cancelamentos') && $this->db->where('os_id', (int) $id)->count_all_results('trifase_cancelamentos')) {
+            $this->response(['status' => false, 'message' => 'OS com histórico de cancelamento não pode ser excluída.'], REST_Controller::HTTP_FORBIDDEN);
+            return;
+        }
         if ($this->db->table_exists('trifase_os_custos') && $this->db->where('os_id', (int) $id)->count_all_results('trifase_os_custos')) {
             $this->response(['status' => false, 'message' => 'OS com custos históricos não pode ser excluída.'], REST_Controller::HTTP_FORBIDDEN);
             return;

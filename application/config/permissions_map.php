@@ -71,6 +71,12 @@ $config['permissions_map'] = [
         'vincular' => ['todas' => ['vOs', 'eOs']],
         'corrigir' => ['todas' => ['vOs', 'eOs']],
     ],
+    'Trifase_cancelamentos' => [
+        'visualizar' => 'vOs',
+        'solicitar' => ['todas' => ['vOs', 'eOs']],
+        'retirar' => ['todas' => ['vOs', 'eOs']],
+        'confirmar' => ['todas' => ['vOs', 'eOs', 'vLancamento', 'eLancamento']],
+    ],
     'Trifase_entregas' => [
         'registrar' => ['todas' => ['vOs', 'registrarEntrega']],
         'cancelar' => ['todas' => ['vOs', 'corrigirEntrega']],

@@ -272,6 +272,9 @@ if (! function_exists('layoutBreadcrumb')) {
         if (strtolower($controller) === 'trifase_retornos') {
             return array_merge($itens, [['label' => 'Ordens de serviço', 'url' => $siteUrl('os')], ['label' => 'Retorno em garantia']]);
         }
+        if (strtolower($controller) === 'trifase_cancelamentos') {
+            return array_merge($itens, [['label' => 'Ordens de serviço', 'url' => $siteUrl('os')], ['label' => 'Cancelamento da OS']]);
+        }
         if (strtolower($controller) === 'trifase_orcamentos') {
             return array_merge($itens, [['label' => 'Ordens de serviço', 'url' => $siteUrl('os')], ['label' => 'Orçamento']]);
         }

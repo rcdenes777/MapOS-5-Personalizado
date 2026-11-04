@@ -53,6 +53,9 @@ $texto = static fn (string $nome, string $label, ?string $ajuda = null) => [
 ];
 
 $statusOpcoes = array_combine(array_keys(OS_STATUS_VARIANTES), array_keys(OS_STATUS_VARIANTES));
+if (($cancelamentoFluxoDisponivel ?? false) && ($os->status ?? '') !== 'Cancelado') {
+    unset($statusOpcoes['Cancelado']);
+}
 if (function_exists('trifaseFinanceiroHabilitado') && trifaseFinanceiroHabilitado()) {
     unset($statusOpcoes['Faturado']);
 }
@@ -140,7 +143,7 @@ if (function_exists('trifaseFinanceiroHabilitado') && trifaseFinanceiroHabilitad
                     'options' => $statusOpcoes,
                     'selected' => $valores['status'] !== '' ? $valores['status'] : null,
                     'error' => $errosDeCampo['status'] ?? null,
-                    'help' => (function_exists('trifaseAtendimentoHabilitado') && trifaseAtendimentoHabilitado()) ? 'Finalizar pela primeira vez registra a conclusão de hoje e o prazo concedido. Cancelar devolve produtos ao estoque.' : ($editando ? 'Cancelar a OS devolve os produtos ao estoque.' : null),
+                    'help' => ($cancelamentoFluxoDisponivel ?? false) ? 'Para cancelar, use o bloco Cancelamento da OS, com motivo e conferência.' : ((function_exists('trifaseAtendimentoHabilitado') && trifaseAtendimentoHabilitado()) ? 'Finalizar pela primeira vez registra a conclusão de hoje e o prazo concedido. Cancelar devolve produtos ao estoque.' : ($editando ? 'Cancelar a OS devolve os produtos ao estoque.' : null)),
                 ]) ?>
                 <div class="hidden sm:block" aria-hidden="true"></div>
                 <?= component('input', [

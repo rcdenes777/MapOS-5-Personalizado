@@ -207,6 +207,15 @@ if (($pilotoEquipamento ?? null) !== null
                 $this->load->view('trifase/entrega');
             } ?>
 
+            <?php if ($pilotoCancelamentoDisponivel ?? false) { ?>
+                <section class="trifase-os-painel" aria-labelledby="piloto-cancelamento">
+                    <h2 id="piloto-cancelamento">Cancelamento da OS</h2>
+                    <p class="text-body-md"><?= e(match ($pilotoCancelamento->tipo ?? '') {
+                        'solicitar' => 'Pedido de cancelamento pendente de conferência', 'confirmar' => 'Cancelamento confirmado', 'retirar' => 'Pedido retirado; atendimento preservado', default => 'Nenhum pedido registrado'
+                    }) ?></p>
+                    <?= component('button', ['label' => ($pilotoCancelamento->tipo ?? '') === 'solicitar' ? 'Conferir pedido de cancelamento' : 'Pedido e histórico de cancelamento', 'variant' => 'outline', 'href' => site_url('trifase_cancelamentos/visualizar/' . $idOs)]) ?>
+                </section>
+            <?php } ?>
             <section class="trifase-os-painel" aria-labelledby="piloto-atendimento">
                 <h2 id="piloto-atendimento">Dados do atendimento</h2>
                 <dl class="trifase-os-dados">

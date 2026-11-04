@@ -30,7 +30,6 @@ if (($pilotoEquipamento ?? null) !== null
         </div>
         <div class="trifase-os-acoes">
             <?= component('button', ['label' => 'Imprimir OS', 'icon' => 'printer', 'variant' => 'outline', 'href' => site_url('os/imprimir/' . $idOs), 'attrs' => ['target' => '_blank', 'rel' => 'noopener']]) ?>
-            <?= component('button', ['label' => 'Mais ações', 'variant' => 'outline', 'href' => site_url('os/visualizar/' . $idOs) . '?apresentacao=classica', 'attrs' => ['title' => 'Abrir todas as ações na apresentação atual']]) ?>
         </div>
     </header>
 

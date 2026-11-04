@@ -618,7 +618,7 @@ class Os extends MY_Controller
         }
         $dados['pilotoCancelamentoDisponivel'] = $this->db->table_exists('trifase_cancelamentos');
         $dados['pilotoCancelamento'] = $dados['pilotoCancelamentoDisponivel']
-            ? $this->db->select('id, tipo, criado_em')->where('os_id', (int) $os->idOs)->order_by('id', 'desc')->get('trifase_cancelamentos', 1)->row() : null;
+            ? $this->db->select('id, tipo, criado_em')->where('os_id', (int) $os->idOs)->where_in('tipo', ['solicitar', 'retirar', 'confirmar'])->order_by('id', 'desc')->get('trifase_cancelamentos', 1)->row() : null;
         $dados['pilotoEntrega'] = null;
         $dados['pilotoEntregasHistorico'] = [];
         if (trifaseEntregaHabilitada()) {

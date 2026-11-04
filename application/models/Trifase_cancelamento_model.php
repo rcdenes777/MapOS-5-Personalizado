@@ -17,7 +17,7 @@ class Trifase_cancelamento_model extends CI_Model
 
     public function atual(int $os): ?object
     {
-        return $this->db->where('os_id', $os)->order_by('id', 'desc')->get('trifase_cancelamentos', 1)->row() ?: null;
+        return $this->db->where('os_id', $os)->where_in('tipo', ['solicitar', 'retirar', 'confirmar'])->order_by('id', 'desc')->get('trifase_cancelamentos', 1)->row() ?: null;
     }
 
     public function conferencia(object $os): array
@@ -98,36 +98,68 @@ class Trifase_cancelamento_model extends CI_Model
         });
     }
 
-    public function confirmar(int $id, int $pedido, array $dados, int $usuario, string $operacao, bool $controlaEstoque): int
+    public function hashTecnico(array $c): string
     {
-        return $this->executar($id, $usuario, $operacao, ['confirmar', $pedido, $dados, $controlaEstoque], function ($os) use ($id, $pedido, $dados, $usuario, $operacao, $controlaEstoque) {
+        $pecas = array_map(static fn ($i) => [$i['id'], $i['produtos_id'], $i['quantidade']], $c['pecas']);
+        $servicos = array_map(static fn ($i) => [$i['idServicos_os'], $i['servicos_id'], $i['quantidade']], $c['servicos']);
+        return hash('sha256', json_encode([$c['os'], $c['status'], $pecas, $servicos], JSON_THROW_ON_ERROR));
+    }
+
+    public function tecnicaValida(int $id, int $pedido, array $c): ?object
+    {
+        $e = $this->db->where('os_id', $id)->where('pedido_id', $pedido)->where('tipo', 'tecnica')->order_by('id', 'desc')->get('trifase_cancelamentos', 1)->row();
+        if ($e === null || $c['pecas'] !== []) {
+            return null;
+        }
+        $r = json_decode($e->retrato, true, 32, JSON_THROW_ON_ERROR);
+        return isset($r['hash_tecnico']) && hash_equals($r['hash_tecnico'], $this->hashTecnico($c)) ? $e : null;
+    }
+
+    public function conferirTecnica(int $id, int $pedido, array $dados, int $usuario, string $operacao): int
+    {
+        return $this->executar($id, $usuario, $operacao, ['tecnica', $pedido, $dados], function ($os) use ($id, $pedido, $dados, $usuario, $operacao) {
+            $p = $this->pedido($id, $pedido);
+            $c = $this->conferencia($os);
+            if ($os->status === 'Cancelado' || ! is_string($dados['hash_tecnico'] ?? null) || ! hash_equals($this->hashTecnico($c), $dados['hash_tecnico'])) {
+                throw new DomainException('Os dados técnicos mudaram. Reabra a conferência.');
+            }
+            if ($c['pecas'] !== []) {
+                throw new DomainException('Remova da OS as peças devolvidas pelo controle de peças antes de liberar a conferência financeira.');
+            }
+            if (($dados['pecas_nao_utilizadas'] ?? '') !== '1' || ($dados['servicos_nao_executados'] ?? '') !== '1') {
+                throw new DomainException('Confirme peças e serviços. Pendências técnicas precisam ser conciliadas antes de liberar o financeiro.');
+            }
+            if (isset($dados['financeiro_conferido'])) {
+                throw new DomainException('A conferência técnica não registra conferência financeira.');
+            }
+            $obs = $this->texto($dados['observacoes_tecnicas'] ?? '', 2000, false);
+            $c['hash_tecnico'] = $this->hashTecnico($c);
+            $c['tecnica'] = ['pecas_devolvidas' => true, 'servicos_conferidos' => true, 'observacoes' => $obs];
+            return $this->evento($id, 'tecnica', $pedido, $p->solicitante, $obs !== '' ? $obs : 'Peças e serviços conferidos pelo responsável técnico.', $c, $usuario, $operacao);
+        });
+    }
+
+    public function confirmar(int $id, int $pedido, array $dados, int $usuario, string $operacao): int
+    {
+        return $this->executar($id, $usuario, $operacao, ['confirmar', $pedido, $dados], function ($os) use ($id, $pedido, $dados, $usuario, $operacao) {
             $p = $this->pedido($id, $pedido);
             $c = $this->conferencia($os);
             if (! is_string($dados['hash'] ?? null) || ! hash_equals($c['hash'], $dados['hash'])) {
                 throw new DomainException('A OS mudou desde a conferência. Reabra o cancelamento e confira os dados atuais.');
             }
+            $tecnica = $this->tecnicaValida($id, $pedido, $c);
+            if ($tecnica === null) {
+                throw new DomainException('A conferência financeira exige peças removidas da OS e conferência técnica registrada para os itens atuais.');
+            }
             if ($c['bloqueios'] !== []) {
                 throw new DomainException(implode(' ', $c['bloqueios']));
             }
-            if (($dados['pecas_nao_utilizadas'] ?? '') !== '1' || ($dados['servicos_nao_executados'] ?? '') !== '1' || ($dados['financeiro_conferido'] ?? '') !== '1' || ($dados['confirmar'] ?? '') !== '1') {
-                throw new DomainException('Confirme a conferência. Peças utilizadas, serviços executados ou valores pendentes exigem conciliação antes do cancelamento.');
-            }
-            if ($c['pecas'] !== [] && ! $controlaEstoque) {
-                throw new DomainException('Confira o controle de estoque antes de devolver as peças da OS.');
+            if (($dados['financeiro_conferido'] ?? '') !== '1' || ($dados['confirmar'] ?? '') !== '1') {
+                throw new DomainException('Confirme a conferência financeira e o cancelamento.');
             }
             $observacoes = $this->texto($dados['conferencia'] ?? '', 2000, false);
-            $motivo = $observacoes !== '' ? $observacoes : 'Conferência confirmada pelos campos de peças, serviços e financeiro; sem observações adicionais.';
-            $c['conferencia'] = ['pecas_nao_utilizadas' => true, 'servicos_nao_executados' => true, 'financeiro_conferido' => true, 'observacoes' => $observacoes];
-            require_once APPPATH . 'models/Trifase_estoque_model.php';
-            $estoque = new Trifase_estoque_model();
-            $estoque->db = $this->db;
-            foreach ($c['pecas'] as $peca) {
-                $q = filter_var($peca['quantidade'], FILTER_VALIDATE_INT, ['options' => ['min_range' => 1, 'max_range' => 1000000]]);
-                if ($q === false) {
-                    throw new DomainException('Confira a quantidade inteira das peças antes de cancelar.');
-                }
-                $estoque->movimentar((int) $peca['produtos_id'], 'os_devolucao', $q, null, date('Y-m-d'), 'Cancelamento conferido da OS #' . $id . ': ' . mb_substr($motivo, 0, 1800), 'OS #' . $id, $usuario, hash('sha256', $operacao . ':' . $peca['id']));
-            }
+            $motivo = $observacoes !== '' ? $observacoes : 'Conferência financeira confirmada após a liberação técnica; sem observações adicionais.';
+            $c['conferencia'] = ['tecnica_evento_id' => (int) $tecnica->id, 'tecnico_id' => (int) $tecnica->usuario_id, 'financeiro_conferido' => true, 'observacoes' => $observacoes];
             $evento = $this->evento($id, 'confirmar', $pedido, $p->solicitante, $motivo, $c, $usuario, $operacao);
             if (! $this->db->insert('os_historico', ['os_id' => $id, 'status_anterior' => $os->status, 'status_novo' => 'Cancelado', 'usuarios_id' => $usuario, 'data_hora' => date('Y-m-d H:i:s')])
                 || ! $this->db->where('idOs', $id)->update('os', ['status' => 'Cancelado'])) {

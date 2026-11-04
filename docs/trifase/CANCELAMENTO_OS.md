@@ -8,13 +8,16 @@ Registrar pedido exige `vOs` + `eOs`. O registro contém solicitante, motivo, op
 
 O técnico pode registrar/retirar o pedido e devolver peças não utilizadas pelo controle nativo de peças da OS. Não recebe valores financeiros nem o formulário de confirmação. Confirmação exige `vOs`, `eOs`, `vLancamento` e `eLancamento`, no mapa de rotas e no controlador; o nome do cargo não concede acesso. As permissões existentes do administrador do laboratório já atendem a essas condições; nenhum perfil foi ampliado nesta etapa.
 
-## Conferência e confirmação
+## Conferência técnica e financeira em etapas
 
-A página lista as peças e os serviços atuais e pede declaração expressa de que as peças ainda vinculadas não foram utilizadas, os serviços ainda vinculados não foram executados e não há dinheiro ou cobrança a acertar. O campo “Observações da conferência (opcional)” aceita texto adicional, mas pode ficar vazio: as confirmações dos itens e do financeiro continuam obrigatórias. Se existir peça utilizada ou serviço executado pendente, não confirmar: o pedido permanece aguardando a conciliação.
+1. O técnico remove as peças devolvidas pelo controle nativo de peças da OS, que registra a devolução no estoque. Não remover peça utilizada como se fosse uma devolução: esse caso exige conciliação.
+2. Com nenhuma peça vinculada, o técnico marca as duas confirmações de peças e serviços e usa **Registrar conferência técnica**. Essa etapa exige `vOs` + `eOs`, aceita observações opcionais e grava responsável, horário e um retrato dos itens. Não registra conferência financeira nem movimenta dinheiro. Um campo financeiro enviado nessa operação é recusado.
+3. Somente quem tem `vOs`, `eOs`, `vLancamento` e `eLancamento` vê a conferência financeira e a confirmação final. A caixa financeira fica desabilitada até existirem zero peças vinculadas e uma conferência técnica válida para o pedido e os itens atuais. Depois disso ainda valem os bloqueios financeiros e de encerramento.
+4. A confirmação final registra Cancelado e o histórico, sem movimentar estoque ou dinheiro. As devoluções já aconteceram na remoção das peças; não há segunda devolução automática. Observações da conferência financeira são opcionais; sua declaração continua obrigatória.
 
-A confirmação revalida sob trava o pedido e o hash dos dados atuais. A OS passa para Cancelado e recebe histórico com operador/horário. As peças expressamente conferidas como não utilizadas retornam ao estoque auditável, com evento por item, motivo e chave idempotente. Itens e serviços permanecem vinculados como histórico; o retrato do pedido também é preservado. O formulário precisa ser reaberto se os itens ou o estado mudarem. Qualquer falha reverte status, evento e estoque juntos.
+A validação é executada novamente no servidor sob a trava da OS. Novas peças, alterações nos IDs/quantidades dos itens ou no status invalidam a liberação técnica e exigem nova conferência. Mudanças apenas em preços não transformam a etapa técnica em controle financeiro. A confirmação final guarda o ID da conferência técnica e o responsável, separado de quem confirmou o financeiro. Eventos técnicos não encerram o pedido; retirada e nova solicitação não reaproveitam a liberação de um pedido anterior. Não há alteração dos registros históricos já confirmados pelo fluxo anterior.
 
-Bloqueios efetivos: obrigação financeira formalizada, faturamento/lançamento legado, cobrança associada, eventos financeiros sem obrigação, conclusão técnica, entrega física ativa, retorno derivado/solução de garantia, quantidade inválida e estoque auditável desabilitado. O cancelamento não estorna, reembolsa, zera ou exclui qualquer valor.
+Bloqueios efetivos: obrigação financeira formalizada, faturamento/lançamento legado, cobrança associada, eventos financeiros sem obrigação, conclusão técnica, entrega física ativa e retorno derivado/solução de garantia. Peça ainda vinculada também impede a liberação financeira. O cancelamento não estorna, reembolsa, zera ou exclui qualquer valor.
 
 **Limite deliberado:** esta tela não executa a conciliação de uma obrigação formalizada nem libera uma obrigação apenas por estar paga. Esses casos continuam pendentes e exigem tratamento pelo financeiro; não foi criado um atalho para apagar cobranças ou histórico. Também não há pedido anônimo pelo link público.
 
@@ -36,3 +39,13 @@ O formulário inicia em **Solicitado pelo cliente**, utilizando o cliente vincul
 Validação da alteração: oito testes de cancelamento/acesso passaram (49 asserções), incluindo origem inválida, cliente ausente, cliente correto e iniciativa da assistência. PHPStan, formatação e build passaram. No navegador, OS 9058 exibiu o cliente “Teste” e a opção de cliente selecionada por padrão; nenhum pedido foi registrado nessa conferência.
 
 As confirmações de peças, serviços e financeiro são preservadas no retrato do evento, mesmo sem observações. Nesse caso o histórico registra que a conferência foi confirmada sem observações adicionais. O motivo original do pedido continua preservado. Validado por oito testes de cancelamento/acesso, com 52 asserções, inclusive confirmação efetiva com o campo vazio.
+
+## Ajuste da separação por responsabilidade
+
+A devolução automática na confirmação, descrita nas evidências iniciais, foi substituída pelas etapas acima. Não é necessária nova migração: a tabela existente recebe eventos `tecnica` separados dos eventos de pedido/retirada/confirmação. Nenhum perfil foi ampliado.
+
+Os testes passaram a executar remoção prévia com evento real do modelo de estoque, registro técnico por usuário distinto, bloqueio financeiro antes de cada etapa, rejeição de campo financeiro forjado no envio técnico, invalidação por mudança nos itens, confirmação idempotente sem segunda devolução e falha no histórico preservando a devolução anterior e a liberação técnica. A renderização verifica caixa financeira ausente para técnico e desabilitada para financeiro até a liberação.
+
+No navegador, consulta da OS 9058 confirmou que os itens já estavam removidos pelo usuário, as duas caixas técnicas estavam disponíveis e a caixa financeira ainda estava desabilitada aguardando o registro técnico. Nenhuma conferência foi registrada nem o cancelamento confirmado nessa consulta.
+
+Validação final desta separação: 1.887 testes, 8.978 asserções, sem falhas; uma depreciação e um teste ignorado anteriores. PHPStan, escape, formatação e build passaram.

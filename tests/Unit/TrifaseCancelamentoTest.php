@@ -1,6 +1,7 @@
 <?php
 
 require_once APPPATH . 'models/Trifase_cancelamento_model.php';
+require_once APPPATH . 'models/Trifase_estoque_model.php';
 require_once APPPATH . 'database/migrations/20261104010000_trifase_cancelamentos.php';
 require_once APPPATH . 'database/migrations/20261102060000_trifase_estoque_custos.php';
 require_once BASEPATH . 'database/DB_forge.php';
@@ -84,70 +85,116 @@ final class TrifaseCancelamentoTest extends MaposTestCase
         $this->modelo->solicitar(2, 'cliente', 'Teste', 7, 'semcliente_123456789');
     }
 
-    public function testPedidoPreservaStatusEstoqueEItensEConfirmacaoDevolveSomenteUmaVez(): void
+    private function dadosTecnicos(): array
+    {
+        $c = $this->modelo->conferencia($this->db->where('idOs', 1)->get('os')->row());
+        return ['hash_tecnico' => $this->modelo->hashTecnico($c), 'pecas_nao_utilizadas' => '1', 'servicos_nao_executados' => '1'];
+    }
+
+    private function devolverPecas(): void
+    {
+        $e = new Trifase_estoque_model();
+        $e->db = $this->db;
+        $e->movimentar(1, 'os_devolucao', 2, null, date('Y-m-d'), 'Remoção de peça da OS', 'OS #1', 2, 'devolucao_123456789');
+        $this->db->where('os_id', 1)->delete('produtos_os');
+    }
+
+    public function testPedidoTecnicaEFinanceiroSeparadosSemSegundaDevolucao(): void
     {
         $pedido = $this->pedido();
         $this->assertSame($pedido, $this->pedido());
-        $this->assertSame('Aprovado', $this->db->where('idOs', 1)->get('os')->row()->status);
         $this->assertSame(8, (int) $this->db->get('produtos')->row()->estoque);
+        try {
+            $this->modelo->confirmar(1, $pedido, $this->dados(), 7, 'confirmacao_12345678');
+            $this->fail('Liberou peças vinculadas');
+        } catch (DomainException $e) {
+            $this->assertSame(8, (int) $this->db->get('produtos')->row()->estoque);
+        }
+        $this->devolverPecas();
+        try {
+            $this->modelo->confirmar(1, $pedido, $this->dados(), 7, 'confirmacao_12345678');
+            $this->fail('Liberou sem conferência técnica');
+        } catch (DomainException $e) {
+            $this->assertSame('Aprovado', $this->db->where('idOs', 1)->get('os')->row()->status);
+        }
+        $tecnica = $this->modelo->conferirTecnica(1, $pedido, $this->dadosTecnicos(), 2, 'tecnica_123456789');
+        $this->assertSame($tecnica, $this->modelo->conferirTecnica(1, $pedido, $this->dadosTecnicos(), 2, 'tecnica_123456789'));
+        $this->assertSame($pedido, (int) $this->modelo->atual(1)->id);
         $dados = array_replace($this->dados(), ['conferencia' => '']);
-        $id = $this->modelo->confirmar(1, $pedido, $dados, 7, 'confirmacao_12345678', true);
-        $this->assertSame($id, $this->modelo->confirmar(1, $pedido, $dados, 7, 'confirmacao_12345678', true));
+        $id = $this->modelo->confirmar(1, $pedido, $dados, 7, 'confirmacao_12345678');
+        $this->assertSame($id, $this->modelo->confirmar(1, $pedido, $dados, 7, 'confirmacao_12345678'));
         $this->assertSame('Cancelado', $this->db->where('idOs', 1)->get('os')->row()->status);
         $this->assertSame('Não liga', $this->db->where('idOs', 1)->get('os')->row()->defeito);
         $this->assertSame(10, (int) $this->db->get('produtos')->row()->estoque);
         $this->assertSame(1, $this->db->count_all('trifase_estoque_eventos'));
-        $this->assertSame(1, $this->db->count_all('produtos_os'));
+        $this->assertSame(0, $this->db->count_all('produtos_os'));
         $this->assertSame(1, $this->db->count_all('servicos_os'));
         $this->assertSame(1, $this->db->count_all('os_historico'));
-        $this->assertSame(2, $this->db->count_all('trifase_cancelamentos'));
-        $retrato = json_decode($this->modelo->atual(1)->retrato, true);
-        $this->assertSame('Aprovado', $retrato['status']);
-        $this->assertSame('Reparo', $retrato['servicos'][0]['nome']);
-        $this->assertSame('', $retrato['conferencia']['observacoes']);
-        $this->assertTrue($retrato['conferencia']['financeiro_conferido']);
-        $this->assertStringContainsString('sem observações adicionais', $this->modelo->atual(1)->motivo);
+        $this->assertSame(3, $this->db->count_all('trifase_cancelamentos'));
+        $r = json_decode($this->modelo->atual(1)->retrato, true);
+        $this->assertSame($tecnica, $r['conferencia']['tecnica_evento_id']);
+        $this->assertSame(2, $r['conferencia']['tecnico_id']);
+        $this->assertSame('', $r['conferencia']['observacoes']);
     }
 
-    public function testPecaUsadaServicoExecutadoOuFinanceiroNaoConferidoBloqueiam(): void
+    public function testEtapaTecnicaNaoLiberaComPecasPendenciasOuCampoFinanceiroForjado(): void
     {
         $pedido = $this->pedido();
-        foreach (['pecas_nao_utilizadas', 'servicos_nao_executados', 'financeiro_conferido', 'confirmar'] as $campo) {
+        try {
+            $this->modelo->conferirTecnica(1, $pedido, $this->dadosTecnicos(), 2, 'tecnica_123456789');
+            $this->fail('Aceitou peças vinculadas');
+        } catch (DomainException $e) {
+            $this->assertSame(1, $this->db->count_all('trifase_cancelamentos'));
+        }
+        $this->devolverPecas();
+        foreach ([['pecas_nao_utilizadas' => '0'], ['servicos_nao_executados' => '0'], ['financeiro_conferido' => '1']] as $dados) {
             try {
-                $this->modelo->confirmar(1, $pedido, array_replace($this->dados(), [$campo => '0']), 7, 'confirmacao_12345678', true);
-                $this->fail('Confirmou pendência');
+                $this->modelo->conferirTecnica(1, $pedido, array_replace($this->dadosTecnicos(), $dados), 2, 'tecnica_123456789');
+                $this->fail('Aceitou pendência ou financeiro na técnica');
+            } catch (DomainException $e) {
+                $this->assertSame(1, $this->db->count_all('trifase_cancelamentos'));
+            }
+        }
+        $this->modelo->conferirTecnica(1, $pedido, $this->dadosTecnicos(), 2, 'tecnica_123456789');
+        foreach (['financeiro_conferido', 'confirmar'] as $campo) {
+            try {
+                $this->modelo->confirmar(1, $pedido, array_replace($this->dados(), [$campo => '0']), 7, 'confirmacao_12345678');
+                $this->fail('Aceitou financeiro não conferido');
             } catch (DomainException $e) {
                 $this->assertSame('Aprovado', $this->db->where('idOs', 1)->get('os')->row()->status);
-                $this->assertSame(8, (int) $this->db->get('produtos')->row()->estoque);
-                $this->assertSame(1, $this->db->count_all('trifase_cancelamentos'));
             }
         }
     }
 
-    public function testMudancaDeItensOutraOsERetiradaImpedemConfirmacaoAntiga(): void
+    public function testMudancaDosItensInvalidaTecnicaSemDependerDePrecos(): void
     {
         $pedido = $this->pedido();
-        $dados = $this->dados();
-        $this->db->where('idProdutos_os', 1)->update('produtos_os', ['quantidade' => 3]);
+        $this->devolverPecas();
+        $this->modelo->conferirTecnica(1, $pedido, $this->dadosTecnicos(), 2, 'tecnica_123456789');
+        $this->db->where('idServicos_os', 1)->update('servicos_os', ['quantidade' => 2]);
         try {
-            $this->modelo->confirmar(1, $pedido, $dados, 7, 'confirmacao_12345678', true);
-            $this->fail('Aceitou conferência antiga');
+            $this->modelo->confirmar(1, $pedido, $this->dados(), 7, 'confirmacao_12345678');
+            $this->fail('Usou técnica desatualizada');
         } catch (DomainException $e) {
-            $this->assertSame(8, (int) $this->db->get('produtos')->row()->estoque);
+            $this->assertStringContainsString('conferência técnica', $e->getMessage());
         }
-        try {
-            $this->modelo->confirmar(2, $pedido, $dados, 7, 'confirmacao_12345678', true);
-            $this->fail('Aceitou pedido de outra OS');
-        } catch (DomainException $e) {
-            $this->assertNull($this->modelo->atual(2));
-        }
+        $this->assertSame('solicitar', $this->modelo->atual(1)->tipo);
+        $this->expectException(DomainException::class);
+        $this->modelo->conferirTecnica(2, $pedido, $this->dadosTecnicos(), 2, 'outra_os_123456789');
+    }
+
+    public function testRetiradaEncerraPedidoMesmoAposConferenciaTecnica(): void
+    {
+        $pedido = $this->pedido();
+        $this->devolverPecas();
+        $this->modelo->conferirTecnica(1, $pedido, $this->dadosTecnicos(), 2, 'tecnica_123456789');
         $id = $this->modelo->retirar(1, $pedido, 'Cliente decidiu continuar', 7, 'retirada_123456789');
         $this->assertSame($id, $this->modelo->retirar(1, $pedido, 'Cliente decidiu continuar', 7, 'retirada_123456789'));
         $this->expectException(DomainException::class);
-        $this->modelo->confirmar(1, $pedido, $this->dados(), 7, 'confirmacao_12345678', true);
+        $this->modelo->confirmar(1, $pedido, $this->dados(), 7, 'confirmacao_12345678');
     }
 
-    public function testObrigacaoComRecebimentoBloqueiaSemEstornarDinheiro(): void
+    public function testObrigacaoComRecebimentoBloqueiaMesmoComTecnicaPronta(): void
     {
         $this->db->query('CREATE TABLE trifase_financeiro_obrigacoes (os_id INTEGER, bruto_c INTEGER, desconto_c INTEGER)');
         $this->db->query('INSERT INTO trifase_financeiro_obrigacoes VALUES (1, 10000, 0)');
@@ -155,31 +202,36 @@ final class TrifaseCancelamentoTest extends MaposTestCase
         $this->db->query("INSERT INTO trifase_financeiro_eventos VALUES (1, 'receber', 5000, 1)");
         $this->db->data_cache = [];
         $pedido = $this->pedido();
+        $this->devolverPecas();
+        $this->modelo->conferirTecnica(1, $pedido, $this->dadosTecnicos(), 2, 'tecnica_123456789');
         try {
-            $this->modelo->confirmar(1, $pedido, $this->dados(), 7, 'confirmacao_12345678', true);
+            $this->modelo->confirmar(1, $pedido, $this->dados(), 7, 'confirmacao_12345678');
             $this->fail('Cancelou cobrança');
         } catch (DomainException $e) {
+            $this->assertStringContainsString('financeira', $e->getMessage());
             $this->assertSame(5000, (int) $this->db->get('trifase_financeiro_eventos')->row()->valor_c);
             $this->assertSame('Aprovado', $this->db->where('idOs', 1)->get('os')->row()->status);
         }
     }
 
-    public function testFalhaNoHistoricoReverteDevolucaoDeEstoqueEConfirmacao(): void
+    public function testFalhaNoHistoricoPreservaConferenciaTecnicaSemCancelarParcialmente(): void
     {
         $pedido = $this->pedido();
+        $this->devolverPecas();
+        $this->modelo->conferirTecnica(1, $pedido, $this->dadosTecnicos(), 2, 'tecnica_123456789');
         $this->db->db_debug = false;
         $this->db->query("CREATE TRIGGER falha_historico BEFORE INSERT ON os_historico BEGIN SELECT RAISE(FAIL, 'falha cancelamento'); END");
         set_error_handler(static fn ($nivel, $mensagem) => $mensagem === 'SQLite3::exec(): falha cancelamento');
         try {
-            $this->modelo->confirmar(1, $pedido, $this->dados(), 7, 'confirmacao_12345678', true);
+            $this->modelo->confirmar(1, $pedido, $this->dados(), 7, 'confirmacao_12345678');
             $this->fail('Confirmou parcialmente');
         } catch (RuntimeException $e) {
-            $this->assertSame(8, (int) $this->db->get('produtos')->row()->estoque);
-            $this->assertSame(0, $this->db->count_all('trifase_estoque_eventos'));
-            $this->assertSame(1, $this->db->count_all('trifase_cancelamentos'));
+            $this->assertSame(10, (int) $this->db->get('produtos')->row()->estoque);
+            $this->assertSame(1, $this->db->count_all('trifase_estoque_eventos'));
+            $this->assertSame(2, $this->db->count_all('trifase_cancelamentos'));
+            $this->assertSame('Aprovado', $this->db->where('idOs', 1)->get('os')->row()->status);
         } finally {
             restore_error_handler();
         }
     }
-
 }

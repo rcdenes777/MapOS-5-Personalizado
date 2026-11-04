@@ -72,6 +72,7 @@ $config['permissions_map'] = [
         'corrigir' => ['todas' => ['vOs', 'eOs']],
     ],
     'Trifase_cancelamentos' => [
+        'tecnica' => ['todas' => ['vOs', 'eOs']],
         'visualizar' => 'vOs',
         'solicitar' => ['todas' => ['vOs', 'eOs']],
         'retirar' => ['todas' => ['vOs', 'eOs']],

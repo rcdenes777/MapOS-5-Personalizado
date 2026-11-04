@@ -44,6 +44,15 @@ class Trifase_cancelamentos extends MY_Controller
         return $this->mutacao($id, 'retirar');
     }
 
+    public function tecnica($id = null)
+    {
+        if (! $this->permission->checkPermission($this->session->userdata('permissao'), 'vOs')
+            || ! $this->permission->checkPermission($this->session->userdata('permissao'), 'eOs')) {
+            show_error('Você não tem permissão para conferir peças e serviços.', 403);
+        }
+        return $this->mutacao($id, 'tecnica');
+    }
+
     public function confirmar($id = null)
     {
         if (! $this->permission->checkPermission($this->session->userdata('permissao'), 'vOs')
@@ -73,19 +82,28 @@ class Trifase_cancelamentos extends MY_Controller
                 }
                 if ($tipo === 'retirar') {
                     $this->cancelamentos->retirar((int) $os->idOs, $pedido, $this->texto('motivo'), $usuario, $op);
+                } elseif ($tipo === 'tecnica') {
+                    $dados = [];
+                    foreach (['hash_tecnico', 'pecas_nao_utilizadas', 'servicos_nao_executados', 'observacoes_tecnicas', 'financeiro_conferido'] as $campo) {
+                        if ($this->input->post($campo) !== null) {
+                            $dados[$campo] = $this->input->post($campo);
+                        }
+                    }
+                    $this->cancelamentos->conferirTecnica((int) $os->idOs, $pedido, $dados, $usuario, $op);
                 } else {
                     $dados = [];
-                    foreach (['hash', 'pecas_nao_utilizadas', 'servicos_nao_executados', 'financeiro_conferido', 'confirmar', 'conferencia'] as $campo) {
+                    foreach (['hash', 'financeiro_conferido', 'confirmar', 'conferencia'] as $campo) {
                         $dados[$campo] = $this->input->post($campo);
                     }
-                    $this->cancelamentos->confirmar((int) $os->idOs, $pedido, $dados, $usuario, $op, (bool) ($this->data['configuration']['control_estoque'] ?? false));
+                    $this->cancelamentos->confirmar((int) $os->idOs, $pedido, $dados, $usuario, $op);
                 }
             }
             log_info('Cancelamento de OS #' . (int) $os->idOs . ': ' . $tipo);
             $this->session->set_flashdata('success', match ($tipo) {
                 'solicitar' => 'Pedido registrado. A OS continua no andamento atual até a conferência e confirmação.',
                 'retirar' => 'Pedido retirado com motivo. O histórico foi preservado.',
-                default => 'Cancelamento confirmado. Peças conferidas como não utilizadas foram devolvidas ao estoque; nenhum pagamento foi alterado.',
+                'tecnica' => 'Conferência técnica registrada. Financeiro e pagamentos foram preservados.',
+                default => 'Cancelamento confirmado após as conferências técnica e financeira. Nenhum pagamento ou estoque foi alterado nesta confirmação.',
             });
             redirect('os/visualizar/' . (int) $os->idOs);
         } catch (DomainException $e) {
@@ -106,8 +124,12 @@ class Trifase_cancelamentos extends MY_Controller
         if ($pecas !== [] && ! ($this->data['configuration']['control_estoque'] ?? false)) {
             $c['bloqueios'][] = 'Confira a configuração de controle de estoque antes da devolução de peças.';
         }
+        $pedido = $this->cancelamentos->atual((int) $os->idOs);
+        $tecnica = ($pedido->tipo ?? '') === 'solicitar' ? $this->cancelamentos->tecnicaValida((int) $os->idOs, (int) $pedido->id, $c) : null;
         $this->data += ['erroCancelamento' => $erro, 'osCancelamento' => $os,
-            'pedidoCancelamento' => $this->cancelamentos->atual((int) $os->idOs),
+            'pedidoCancelamento' => $pedido,
+            'hashTecnicoCancelamento' => $this->cancelamentos->hashTecnico($c),
+            'tecnicaCancelamento' => $tecnica !== null ? ['usuario_id' => (int) $tecnica->usuario_id, 'criado_em' => $tecnica->criado_em] : null,
             'historicoCancelamento' => $this->cancelamentos->historico((int) $os->idOs),
             'pecasCancelamento' => $pecas, 'servicosCancelamento' => $servicos,
             'bloqueiosCancelamento' => $c['bloqueios'], 'hashCancelamento' => $c['hash'],
@@ -115,7 +137,7 @@ class Trifase_cancelamentos extends MY_Controller
             'podePedirCancelamento' => $this->permite('eOs'),
             'podeConfirmarCancelamento' => $this->permite('eOs') && $this->permite('vLancamento') && $this->permite('eLancamento'),
             'clienteCancelamento' => (string) ($cliente->nomeCliente ?? 'Cliente não localizado'),
-            'valoresCancelamento' => ['origem' => $this->input->method(true) === 'POST' ? $this->texto('origem') : 'cliente', 'motivo' => $this->texto('motivo'), 'conferencia' => $this->texto('conferencia')],
+            'valoresCancelamento' => ['origem' => $this->input->method(true) === 'POST' ? $this->texto('origem') : 'cliente', 'motivo' => $this->texto('motivo'), 'conferencia' => $this->texto('conferencia'), 'observacoes_tecnicas' => $this->texto('observacoes_tecnicas')],
         ];
         $this->data['view'] = 'trifase/cancelamento';
         return $this->layout();

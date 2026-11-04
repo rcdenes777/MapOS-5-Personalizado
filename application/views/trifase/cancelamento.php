@@ -54,29 +54,51 @@ $pendenteCancelamento = ($pedidoCancelamento->tipo ?? '') === 'solicitar'; ?>
             <ul class="mt-2 grid gap-2 text-warning-ink"><?php foreach ($bloqueiosCancelamento as $bloqueioCancelamento) { ?><li><?= e($bloqueioCancelamento) ?></li><?php } ?></ul>
         <?php } ?>
     </section>
-    <?php if ($pendenteCancelamento && $podeConfirmarCancelamento && $bloqueiosCancelamento === []) { ?>
+    <?php if ($pendenteCancelamento) { ?>
+        <?php $tecnicaLiberada = ($tecnicaCancelamento ?? null) !== null && $pecasCancelamento === []; ?>
         <section class="rounded-card border border-border bg-surface p-4">
-            <h2 class="text-heading-sm">Confirmar cancelamento após conferência</h2>
-            <form method="post" action="<?= e(site_url('trifase_cancelamentos/confirmar/' . $idCancelamento)) ?>" class="mt-4 grid gap-4" <?= js_module('formulario/padrao') ?>>
-                <input type="hidden" name="<?= e($this->security->get_csrf_token_name()) ?>" value="<?= e($this->security->get_csrf_hash()) ?>">
-                <input type="hidden" name="operacao" value="<?= e(bin2hex(random_bytes(16))) ?>"><input type="hidden" name="pedido_id" value="<?= e((int) $pedidoCancelamento->id) ?>"><input type="hidden" name="hash" value="<?= e($hashCancelamento) ?>">
-                <?= component('checkbox', ['name' => 'pecas_nao_utilizadas', 'value' => '1', 'label' => 'Conferi: todas as peças ainda vinculadas estão sem uso, aptas a retornar ao estoque; não há peça utilizada pendente de conciliação.', 'required' => true]) ?>
-                <?= component('checkbox', ['name' => 'servicos_nao_executados', 'value' => '1', 'label' => 'Conferi: os serviços ainda vinculados não foram executados; não há serviço executado pendente de conciliação.', 'required' => true]) ?>
-                <?= component('checkbox', ['name' => 'financeiro_conferido', 'value' => '1', 'label' => 'Conferi: não há cobrança, pagamento recebido, reembolso ou valor a acertar neste cancelamento.', 'required' => true]) ?>
-                <?= component('textarea', ['name' => 'conferencia', 'label' => 'Observações da conferência (opcional)', 'value' => $valoresCancelamento['conferencia'], 'attrs' => ['maxlength' => 2000]]) ?>
-                <?= component('checkbox', ['name' => 'confirmar', 'value' => '1', 'label' => 'Confirmo o cancelamento da OS e a devolução das peças não utilizadas listadas acima. O histórico será preservado.', 'required' => true]) ?>
-                <?= component('button', ['label' => 'Confirmar cancelamento da OS', 'type' => 'submit']) ?>
-            </form>
+            <h2 class="text-heading-sm">Conferência técnica — peças e serviços</h2>
+            <?php if ($tecnicaLiberada) { ?>
+                <p class="mt-3 text-success-ink"><?= e('Conferência técnica registrada em ' . date('d/m/Y H:i', strtotime($tecnicaCancelamento['criado_em'])) . ' · Usuário #' . $tecnicaCancelamento['usuario_id']) ?></p>
+            <?php } ?>
+            <?php if ($pecasCancelamento !== []) { ?><p class="mt-3 text-warning-ink">Remova da OS as peças devolvidas pelo controle de peças. Enquanto houver peça vinculada, a conferência financeira fica bloqueada.</p><?php } ?>
+            <?php if ($podePedirCancelamento) { ?>
+                <form method="post" action="<?= e(site_url('trifase_cancelamentos/tecnica/' . $idCancelamento)) ?>" class="mt-4 grid gap-4" <?= js_module('formulario/padrao') ?>>
+                    <input type="hidden" name="<?= e($this->security->get_csrf_token_name()) ?>" value="<?= e($this->security->get_csrf_hash()) ?>">
+                    <input type="hidden" name="operacao" value="<?= e(bin2hex(random_bytes(16))) ?>"><input type="hidden" name="pedido_id" value="<?= e((int) $pedidoCancelamento->id) ?>"><input type="hidden" name="hash_tecnico" value="<?= e($hashTecnicoCancelamento) ?>">
+                    <?= component('checkbox', ['name' => 'pecas_nao_utilizadas', 'value' => '1', 'label' => 'Conferi: as peças não utilizadas foram removidas da OS e devolvidas ao estoque; não há peça utilizada pendente de conciliação.', 'required' => true, 'checked' => $tecnicaLiberada, 'disabled' => $tecnicaLiberada]) ?>
+                    <?= component('checkbox', ['name' => 'servicos_nao_executados', 'value' => '1', 'label' => 'Conferi: os serviços ainda vinculados não foram executados; não há serviço executado pendente de conciliação.', 'required' => true, 'checked' => $tecnicaLiberada, 'disabled' => $tecnicaLiberada]) ?>
+                    <?php if (! $tecnicaLiberada) { ?>
+                        <?= component('textarea', ['name' => 'observacoes_tecnicas', 'label' => 'Observações técnicas (opcional)', 'value' => $valoresCancelamento['observacoes_tecnicas'] ?? '', 'attrs' => ['maxlength' => 2000]]) ?>
+                        <?= component('button', ['label' => 'Registrar conferência técnica', 'variant' => 'outline', 'type' => 'submit', 'disabled' => $pecasCancelamento !== []]) ?>
+                    <?php } ?>
+                </form>
+            <?php } ?>
         </section>
-    <?php } elseif ($pendenteCancelamento && ! $podeConfirmarCancelamento) { ?>
-        <p class="text-body-md text-muted">A confirmação final exige permissão para editar OS e lançamentos financeiros. O técnico registra o pedido e devolve peças sem acesso a dinheiro.</p>
+        <?php if ($podeConfirmarCancelamento) { ?>
+            <?php $financeiroBloqueado = ! $tecnicaLiberada || $bloqueiosCancelamento !== []; ?>
+            <section class="rounded-card border border-border bg-surface p-4">
+                <h2 class="text-heading-sm">Conferência financeira e confirmação</h2>
+                <?php if (! $tecnicaLiberada) { ?><p class="mt-3 text-warning-ink">Aguardando a remoção das peças devolvidas e a conferência técnica registrada. Esta etapa só será liberada depois.</p><?php } ?>
+                <form method="post" action="<?= e(site_url('trifase_cancelamentos/confirmar/' . $idCancelamento)) ?>" class="mt-4 grid gap-4" <?= js_module('formulario/padrao') ?>>
+                    <input type="hidden" name="<?= e($this->security->get_csrf_token_name()) ?>" value="<?= e($this->security->get_csrf_hash()) ?>">
+                    <input type="hidden" name="operacao" value="<?= e(bin2hex(random_bytes(16))) ?>"><input type="hidden" name="pedido_id" value="<?= e((int) $pedidoCancelamento->id) ?>"><input type="hidden" name="hash" value="<?= e($hashCancelamento) ?>">
+                    <?= component('checkbox', ['name' => 'financeiro_conferido', 'value' => '1', 'label' => 'Conferi: não há cobrança, pagamento recebido, reembolso ou valor a acertar neste cancelamento.', 'required' => true, 'disabled' => $financeiroBloqueado]) ?>
+                    <?= component('textarea', ['name' => 'conferencia', 'label' => 'Observações da conferência (opcional)', 'value' => $valoresCancelamento['conferencia'], 'attrs' => ['maxlength' => 2000]]) ?>
+                    <?= component('checkbox', ['name' => 'confirmar', 'value' => '1', 'label' => 'Confirmo o cancelamento da OS após as conferências técnica e financeira. Esta confirmação não movimenta estoque nem dinheiro.', 'required' => true, 'disabled' => $financeiroBloqueado]) ?>
+                    <?= component('button', ['label' => 'Confirmar cancelamento da OS', 'type' => 'submit', 'disabled' => $financeiroBloqueado]) ?>
+                </form>
+            </section>
+        <?php } else { ?>
+            <p class="text-body-md text-muted">O técnico confere peças e serviços. Somente o financeiro ou administrador, com as permissões correspondentes, confere pagamentos e confirma o cancelamento.</p>
+        <?php } ?>
     <?php } ?>
     <section class="rounded-card border border-border bg-surface p-4">
         <h2 class="text-heading-sm">Histórico do cancelamento</h2>
         <ol class="mt-4 grid gap-4">
             <?php foreach ($historicoCancelamento as $eventoCancelamento) { ?>
                 <li><p class="text-label-md"><?= e(match ($eventoCancelamento->tipo) {
-                    'solicitar' => 'Pedido registrado', 'retirar' => 'Pedido retirado', default => 'Cancelamento confirmado'
+                    'solicitar' => 'Pedido registrado', 'tecnica' => 'Conferência técnica registrada', 'retirar' => 'Pedido retirado', default => 'Cancelamento confirmado'
                 }) ?></p>
                     <p class="text-caption text-muted"><?= e(date('d/m/Y H:i', strtotime($eventoCancelamento->criado_em)) . ' · Usuário #' . (int) $eventoCancelamento->usuario_id . ' · Solicitante: ' . $eventoCancelamento->solicitante) ?></p>
                     <p class="mt-1 whitespace-pre-wrap break-words"><?= e($eventoCancelamento->motivo) ?></p>

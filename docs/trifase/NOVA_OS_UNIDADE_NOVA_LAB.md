@@ -37,3 +37,11 @@ Validação:21testesPHP/143asserções; navegador com técnico conferiu listagem
 A pedido do usuário, selo, série e IMEI são opcionais na entrada. Cadastro/vinculação e correção da identificação aceitam os três campos vazios; cada equipamento continua com id interno próprio e selo vazio não participa da chave única. O selo pode ser informado depois por Editar identificação, com histórico desta OS. Não altera automaticamente o cadastro da unidade para próximos atendimentos, nem muda prazo de garantia. Regras de selo duplicado quando preenchido e exigências próprias da troca em garantia permanecem.
 
 Validação:12testesPHP/77asserções, incluindo duas unidades distintas sem identificador, reenvio sem duplicação e preenchimento posterior do selo; suíteJS e build aprovados; navegador confirmou identificadores vazios válidos na Nova OS, sem criar registros. Formatação e diferenças aprovadas.
+
+## Descrição automática e texto anterior
+
+Na Nova OS com equipamento selecionado/cadastrado, o campo livre de descrição fica oculto e a descrição usada é Marca · Modelo, sem selo/série/IMEI. O servidor confirma essa descrição a partir da identificação vinculada na mesma transação de criação. Ao escolher Identificar depois, o campo livre aparece; alternar opções preserva o rascunho manual.
+
+Edição de OS identificada não sobrescreve descrição existente: se houver texto diferente de Marca · Modelo, ele continua editável em Descrição anterior da OS, recolhida inicialmente. Descrições iguais ao modelo ou vazias ficam ocultas; OS sem identificação mantém o campo disponível. Nenhum registro antigo foi atualizado nesta mudança.
+
+Navegador conferiu Nova OS nos modos de descrição manual/novo equipamento, geração LG · MODELO-QA e restauração do rascunho; consulta da edição9058 confirmou texto anterior preservado em bloco recolhido. Nenhum formulário foi salvo no laboratório. Build, suíteJS e PHPStan aprovados. Testes da criação com vínculo conferem a descrição persistida; fixtures dos testes de view foram atualizadas para incluir anotações/histórico já presentes no resumo.

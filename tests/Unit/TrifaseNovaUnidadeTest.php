@@ -14,7 +14,7 @@ final class TrifaseNovaUnidadeTest extends MaposTestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->db->query('CREATE TABLE os (idOs INTEGER PRIMARY KEY, clientes_id INTEGER, status TEXT, dataInicial TEXT, faturado INTEGER)');
+        $this->db->query('CREATE TABLE os (idOs INTEGER PRIMARY KEY, clientes_id INTEGER, status TEXT, dataInicial TEXT, faturado INTEGER, descricaoProduto TEXT)');
         $this->db->query('CREATE TABLE os_historico (os_id INTEGER, status_anterior TEXT, status_novo TEXT, usuarios_id INTEGER, data_hora TEXT)');
         $migration = new class() extends Migration_trifase_equipamentos {
             public object $dbforge;
@@ -62,6 +62,7 @@ final class TrifaseNovaUnidadeTest extends MaposTestCase
         $unidade = $this->db->get('trifase_equipamentos')->row();
         $this->assertSame(42, (int) $unidade->cliente_id);
         $this->assertSame('NOVA-001', $unidade->selo);
+        $this->assertSame('LG · INV', $this->db->where('idOs', $id)->get('os')->row()->descricaoProduto);
         $this->assertSame('Placa e cabo', $this->controller->equipamentos_os->porOs($id)->itens_recebidos);
         $this->assertSame(1, $this->db->count_all('os_historico'));
     }

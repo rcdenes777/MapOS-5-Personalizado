@@ -37,6 +37,15 @@ export default function iniciar(elemento) {
     const existente = secao.querySelector('[data-nova-os-unidade-existente]');
     const nova = secao.querySelector('[data-nova-os-unidade-nova]');
     const modoAtual = () => modo ? modo.value : 'existente';
+    const descricaoBloco = elemento.querySelector('[data-equipamento-descricao]');
+    let descricaoManual = descricao?.value || '';
+    const atualizarDescricaoVisivel = () => {
+        if (descricaoBloco) descricaoBloco.hidden = modoAtual() !== '';
+    };
+    descricao?.addEventListener('input', () => {
+        if (modoAtual() === '') descricaoManual = descricao.value;
+    });
+
     let descricaoAutomatica = unidade.value && descricao?.value === campo.value ? descricao.value : null;
     const atualizarEntrada = () => {
         entrada.disabled = !cliente.value || (modoAtual() !== 'novo' && (modoAtual() !== 'existente' || !unidade.value));
@@ -66,7 +75,7 @@ export default function iniciar(elemento) {
     cliente.addEventListener('change', () => { limpar(); atualizarCliente(); });
     unidade.addEventListener('change', atualizarEntrada);
     const descrever = (valor) => {
-        if (descricao && (!descricao.value.trim() || descricao.value === descricaoAutomatica)) {
+        if (descricao && modoAtual() !== '') {
             descricao.value = valor;
             descricaoAutomatica = valor;
         }
@@ -82,7 +91,11 @@ export default function iniciar(elemento) {
         limpar(); atualizarCliente(); atualizarEntrada();
         secao.querySelector('[data-nova-os-modelo-busca] input:not([type=hidden])')?.dispatchEvent(new Event('blur'));
         if (modoAtual() === 'novo') atualizarNova?.();
+        if (modoAtual() === '' && descricao) { descricao.value = descricaoManual; descricaoAutomatica = null; }
+        atualizarDescricaoVisivel();
     });
     atualizarCliente();
     atualizarEntrada();
+    atualizarDescricaoVisivel();
+    if (modoAtual() === 'novo') atualizarNova?.();
 }

@@ -15,13 +15,13 @@ function tela() {
     iniciar({ querySelector: (s) => s === '[data-nova-os-modelo-busca]' ? busca : s === '[data-nova-os-modelo-limpar]' ? limpar : campos[s.match(/equipamento_(.+)\]/)[1]] }, (v) => descricoes.push(v));
     return { campos, busca, limpar, descricoes, input };
 }
-test('nova unidade: exige pelo menos um identificador e aceita série ou IMEI sem selo', () => {
+test('nova unidade: selo, série e IMEI são opcionais na entrada', () => {
     const { campos: c } = tela();
-    assert.ok(c.selo.message);
+    assert.ok(!c.selo.message);
     c.serie.value = 'SERIE PRIVADA'; c.serie.dispatchEvent(new Event('input'));
-    assert.equal(c.selo.message, '');
+    assert.ok(!c.selo.message);
     c.serie.value = ''; c.imei.value = 'IMEI PRIVADO'; c.imei.dispatchEvent(new Event('input'));
-    assert.equal(c.selo.message, '');
+    assert.ok(!c.selo.message);
 });
 test('nova unidade: modelo escolhido bloqueia catálogo e limpar permite cadastro sem expor identificadores na descrição', () => {
     const t = tela(), c = t.campos;

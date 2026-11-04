@@ -258,6 +258,11 @@ class Os extends MY_Controller
             // Não transportar selo/IMEI para a descrição que a página pública já exibe.
             $this->data['valores']['descricaoProduto'] = $this->equipamentoNovaOs->marca . ' · ' . $this->equipamentoNovaOs->modelo;
         }
+        $this->data['equipamentoDoFormulario'] = null;
+        if ($os !== null && trifaseEquipamentosHabilitados()) {
+            $this->load->model('Trifase_equipamento_model', 'equipamentos_os');
+            $this->data['equipamentoDoFormulario'] = $this->equipamentos_os->porOs((int) $os->idOs);
+        }
         $this->data['equipamentoNovaOs'] = $this->equipamentoNovaOs;
         $this->data['entradaEquipamentoNovaOs'] = $this->entradaEquipamentoNovaOs;
         $this->data['modoEquipamentoNovaOs'] = $this->input->method() === 'post' && is_string($this->input->post('equipamento_modo')) ? $this->input->post('equipamento_modo') : 'existente';
@@ -362,6 +367,13 @@ class Os extends MY_Controller
                     throw new DomainException('Identificador inválido. Recarregue o formulário.');
                 }
                 $this->equipamentos_os->vincular((int) $id, $entrada, (int) $this->usuarioLogado(), $operacao);
+                $identificacao = $this->equipamentos_os->porOs((int) $id);
+                if ($identificacao === null || ! $this->db->where('idOs', (int) $id)->update('os', [
+                    'descricaoProduto' => $identificacao->marca . ' · ' . $identificacao->modelo,
+                ])) {
+                    throw new RuntimeException('Não foi possível confirmar a descrição do equipamento.');
+                }
+
             }
             if ($comConclusao) {
                 require_once APPPATH . 'models/Trifase_atendimento_model.php';

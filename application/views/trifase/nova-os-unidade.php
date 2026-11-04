@@ -9,7 +9,7 @@ $clienteUnidadeOs = $valores['clientes_id'] !== '';
 ?>
 <section class="<?= e($caixa) ?>" aria-labelledby="secao-unidade-reutilizada" data-nova-os-unidade>
     <h2 id="secao-unidade-reutilizada" class="text-heading-sm text-text">Identificação e estado de entrada</h2>
-    <p class="mt-2 text-caption text-muted">Selecione um equipamento físico deste cliente ou cadastre outro equipamento. Informe os dados desta entrada; os atendimentos anteriores ficam preservados.</p>
+    <p class="mt-2 text-caption text-muted">Selecione um equipamento físico deste cliente ou cadastre outro equipamento. Informe o novo defeito e os dados desta entrada; os atendimentos anteriores ficam preservados.</p>
     <div class="mt-4">
         <?= component('select', ['name' => 'equipamento_modo', 'id' => 'nova-os-equipamento-modo', 'label' => 'Como identificar o equipamento?', 'selected' => $modoNovaOs, 'options' => ['existente' => 'Selecionar equipamento deste cliente', 'novo' => 'Cadastrar outro equipamento', '' => 'Identificar depois'], 'help' => 'O equipamento será vinculado ao cliente selecionado quando você salvar a OS.']) ?>
     </div>

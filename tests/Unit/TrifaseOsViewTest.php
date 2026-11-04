@@ -110,6 +110,7 @@ final class TrifaseOsViewTest extends \PHPUnit\Framework\TestCase
                 'pode' => ['editar' => $editavel, 'editar_tecnico' => false, 'ver_cliente' => false, 'ver_financeiro' => $financeiro],
                 'produtos' => [(object) ['idProdutos_os' => 1, 'descricao' => 'Fusível', 'quantidade' => 1, 'preco' => 500, 'subTotal' => 500]],
                 'servicos' => [], 'anexos' => [], 'garantia_ate' => null,
+                'anotacoes' => [], 'historico' => [], 'historico_disponivel' => true,
                 'totais' => ['produtos' => 500, 'servicos' => 0, 'desconto' => 0, 'total' => 500],
                 'pilotoFinanceiro' => $formalizada ? ['total_c' => 50000, 'recebido_c' => 20000, 'saldo_c' => 30000, 'situacao' => 'Parcialmente pago'] : null,
                 'pilotoLink' => null,

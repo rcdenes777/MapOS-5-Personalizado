@@ -11,11 +11,13 @@ class Campo extends EventTarget {
 }
 function tela({ cliente = '', unidade = '', descricao = '', cadastro = false } = {}) {
     const c = new Campo(cliente), u = new Campo(unidade), campo = new Campo(unidade ? 'LG · INV' : '');
+    const modo = new Campo('existente'), descricaoBloco = {};
     const d = new Campo(descricao), entrada = new Campo(), confirmada = new Campo(), limpar = new Campo();
     const busca = new Campo();
     busca.dataset.unidadeClienteUrl = 'http://localhost/index.php/trifase_equipamentos/unidadesCliente';
     busca.querySelector = (s) => s === 'input[type=hidden]' ? u : campo;
     const itens = {
+        '[name=equipamento_modo]': modo,
         '[data-nova-os-unidade-busca]': busca, '[data-nova-os-unidade-entrada]': entrada,
         '[data-nova-os-unidade-confirmada]': confirmada, '[data-nova-os-unidade-limpar]': limpar,
     };
@@ -29,10 +31,10 @@ function tela({ cliente = '', unidade = '', descricao = '', cadastro = false } =
     const raiz = {
         querySelectorAll: () => [], // O autocomplete genérico possui sua própria suíte.
         querySelector: (s) => ({ '[data-nova-os-unidade]': secao, '[name=clientes_id]': c,
-            '[name=descricaoProduto]': d, '[data-nova-os-cliente]': cadastro ? botao : null })[s],
+            '[name=descricaoProduto]': d, '[data-equipamento-descricao]': descricaoBloco, '[data-nova-os-cliente]': cadastro ? botao : null })[s],
     };
     iniciar(raiz);
-    return { c, u, campo, d, entrada, confirmada, limpar, busca, botao, origem, aberturas: () => aberturas };
+    return { modo, descricaoBloco, c, u, campo, d, entrada, confirmada, limpar, busca, botao, origem, aberturas: () => aberturas };
 }
 function escolher(t, id = '42', valor = 'LG · INV') {
     t.u.value = id;
@@ -61,14 +63,17 @@ test('unidades: descrição automática só recebe marca/modelo, sem selo nem s�
     assert.equal(t.d.value, 'LG · INV');
     assert.equal(t.confirmada.textContent, 'Selo T-42 · Série privada');
 });
-test('unidades: trocar cliente limpa id/opções mas preserva descrição digitada manualmente', () => {
+test('unidades: trocar cliente limpa identificação; Identificar depois recupera a descrição manual', () => {
     const t = tela({ cliente: '7', descricao: 'Meu relato já preenchido' });
     escolher(t);
     t.c.value = '8'; t.c.dispatchEvent(new Event('change'));
     assert.equal(t.u.value, '');
     assert.equal(t.campo.value, '');
     assert.equal(t.entrada.disabled, true);
+    assert.equal(t.d.value, '');
+    t.modo.value = ''; t.modo.dispatchEvent(new Event('change'));
     assert.equal(t.d.value, 'Meu relato já preenchido');
+    assert.equal(t.descricaoBloco.hidden, false);
     assert.match(t.busca.dataset.autocomplete, /cliente_id=8$/);
 });
 test('unidades: limpar remove só descrição automática; nova escolha pode atualizá-la', () => {

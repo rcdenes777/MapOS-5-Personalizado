@@ -186,7 +186,18 @@ if (function_exists('trifaseFinanceiroHabilitado') && trifaseFinanceiroHabilitad
         <section class="<?= e($caixa) ?>" aria-labelledby="secao-equipamento">
             <h2 id="secao-equipamento" class="text-heading-sm text-text">Equipamento e serviço</h2>
             <div class="<?= e($grade) ?>">
-                <?= component('textarea', $texto('descricaoProduto', 'Descrição do produto ou serviço', (($pode['identificar_equipamento'] ?? false) || ($equipamentoNovaOs ?? null) !== null) ? 'Descrição geral. Selo, série e IMEI ficam na identificação privada da unidade.' : 'Equipamento, modelo, número de série, acessórios.')) ?>
+                <?php
+                $identificacaoFormulario = $equipamentoDoFormulario ?? null;
+$descricaoAnterior = $editando && $identificacaoFormulario !== null && $valores['descricaoProduto'] !== ''
+    && trim($valores['descricaoProduto']) !== $identificacaoFormulario->marca . ' · ' . $identificacaoFormulario->modelo;
+$esconderDescricao = $editando ? $identificacaoFormulario !== null && ! $descricaoAnterior
+    : (($pode['identificar_equipamento'] ?? false) && ($modoEquipamentoNovaOs ?? 'existente') !== '');
+?>
+                <div data-equipamento-descricao <?= e($esconderDescricao ? 'hidden' : '') ?>>
+                    <?php if ($descricaoAnterior) { ?><details><summary class="text-label-md text-text">Descrição anterior da OS</summary><?php } ?>
+                    <?= component('textarea', $texto('descricaoProduto', 'Descrição do produto ou serviço', $descricaoAnterior ? 'Texto já registrado nesta OS, preservado para consulta e edição.' : 'Descreva o equipamento recebido. Ao selecionar ou cadastrar um equipamento, a descrição será Marca · Modelo.')) ?>
+                    <?php if ($descricaoAnterior) { ?></details><?php } ?>
+                </div>
                 <?= component('textarea', $texto('defeito', 'Defeito', 'O que o cliente relatou.')) ?>
                 <?= component('textarea', $texto('observacoes', 'Observações')) ?>
                 <?= component('textarea', $texto('laudoTecnico', 'Laudo técnico', 'Diagnóstico e o que foi feito.')) ?>

@@ -39,6 +39,16 @@ if (($pilotoEquipamento ?? null) !== null
             <div><dt>Entrada</dt><dd><?= e(dataBr($os->dataInicial)) ?></dd></div>
             <div><dt>Previsão de entrega</dt><dd><?= e(dataBr($os->dataFinal) ?: 'Não informada') ?></dd></div>
             <div><dt>Técnico responsável</dt><dd><?= e($os->nome) ?></dd></div>
+            <?php if (($pilotoRespostaCliente ?? null) !== null) { ?>
+                <div>
+                    <dt>Resposta do cliente ao orçamento</dt>
+                    <dd class="flex flex-col gap-1">
+                        <?= component('pill-status', ['label' => $pilotoRespostaCliente['tipo'] === 'aprovar' ? 'Aprovado pelo cliente' : 'Recusado pelo cliente', 'variant' => $pilotoRespostaCliente['atual'] ? ($pilotoRespostaCliente['tipo'] === 'aprovar' ? 'success' : 'danger') : 'neutral']) ?>
+                        <time datetime="<?= e(date('c', strtotime($pilotoRespostaCliente['criado_em']))) ?>"><?= e(date('d/m/Y', strtotime($pilotoRespostaCliente['criado_em'])) . ' às ' . date('H:i', strtotime($pilotoRespostaCliente['criado_em']))) ?></time>
+                        <?php if (! $pilotoRespostaCliente['atual']) { ?><span class="text-caption text-warning-ink">Resposta de uma versão indisponível ou alterada. Confira o orçamento antes de executar.</span><?php } ?>
+                    </dd>
+                </div>
+            <?php } ?>
         </dl>
         <?php if (trifaseAtendimentoHabilitado() && $permite('eOs')) { ?>
             <?php $this->load->view('trifase/andamento-tecnico'); ?>

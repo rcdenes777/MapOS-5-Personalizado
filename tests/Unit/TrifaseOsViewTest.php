@@ -5,6 +5,18 @@ require_once APPPATH . 'helpers/trifase_financeiro_helper.php';
 
 final class TrifaseOsViewTest extends \PHPUnit\Framework\TestCase
 {
+    public function testRespostaNoAndamentoSemExporFinanceiroAoTecnico(): void
+    {
+        $html = $this->renderizar(false, false, false, ['tipo' => 'aprovar', 'criado_em' => '2026-11-04 14:27:00', 'atual' => true]);
+        $this->assertStringContainsString('Aprovado pelo cliente', $html);
+        $this->assertStringContainsString('04/11/2026 às 14:27', $html);
+        $this->assertStringNotContainsString('R$', $html);
+        $this->assertStringNotContainsString('Resposta de uma versão indisponível', $html);
+        $recusa = $this->renderizar(false, false, false, ['tipo' => 'recusar', 'criado_em' => '2026-11-04 14:28:00', 'atual' => false]);
+        $this->assertStringContainsString('Recusado pelo cliente', $recusa);
+        $this->assertStringContainsString('Resposta de uma versão indisponível', $recusa);
+    }
+
     public function testPerfilSemFinanceiroNaoRecebeValoresMesmoComResumoFornecido(): void
     {
         $html = $this->renderizar(false);
@@ -64,7 +76,7 @@ final class TrifaseOsViewTest extends \PHPUnit\Framework\TestCase
         $this->assertStringNotContainsString('data-modal-abrir="excluir-produto"', $html);
     }
 
-    private function renderizar(bool $financeiro, bool $formalizada = true, bool $editavel = false): string
+    private function renderizar(bool $financeiro, bool $formalizada = true, bool $editavel = false, ?array $resposta = null): string
     {
         $env = $_ENV;
         $_ENV['TRIFASE_FINANCEIRO_ENABLED'] = 'false';
@@ -113,7 +125,7 @@ final class TrifaseOsViewTest extends \PHPUnit\Framework\TestCase
                 'anotacoes' => [], 'historico' => [], 'historico_disponivel' => true,
                 'totais' => ['produtos' => 500, 'servicos' => 0, 'desconto' => 0, 'total' => 500],
                 'pilotoFinanceiro' => $formalizada ? ['total_c' => 50000, 'recebido_c' => 20000, 'saldo_c' => 30000, 'situacao' => 'Parcialmente pago'] : null,
-                'pilotoLink' => null,
+                'pilotoLink' => null, 'pilotoRespostaCliente' => $resposta,
                 'controle_estoque' => true,
             ]);
             return (string) ob_get_clean();

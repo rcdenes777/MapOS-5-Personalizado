@@ -610,13 +610,23 @@ class Os extends MY_Controller
         $dados['pilotoOrcamento'] = null;
         $dados['pilotoOrcamentoDecisao'] = null;
         $dados['pilotoOrcamentoValido'] = false;
-        if (trifaseOrcamentoHabilitado() && $this->permite('vLancamento')) {
+        $dados['pilotoRespostaCliente'] = null;
+        if (trifaseOrcamentoHabilitado()) {
             $this->load->model('Trifase_orcamento_model', 'orcamentos_os');
-            $dados['pilotoOrcamento'] = $this->orcamentos_os->atual((int) $os->idOs);
-            if ($dados['pilotoOrcamento'] !== null) {
-                $dados['pilotoOrcamentoDecisao'] = $this->orcamentos_os->decisao((int) $dados['pilotoOrcamento']->id);
-                $dados['pilotoOrcamentoValido'] = $os->status !== 'Cancelado' && (bool) $dados['pilotoOrcamento']->ativo
-                    && hash_equals($dados['pilotoOrcamento']->conteudo_hash, $this->orcamentos_os->hash($this->orcamentos_os->retrato($os)));
+            $atualOrcamento = $this->orcamentos_os->atual((int) $os->idOs);
+            if ($atualOrcamento !== null) {
+                $decisaoOrcamento = $this->orcamentos_os->decisao((int) $atualOrcamento->id);
+                $orcamentoValido = $os->status !== 'Cancelado' && (bool) $atualOrcamento->ativo
+                    && hash_equals($atualOrcamento->conteudo_hash, $this->orcamentos_os->hash($this->orcamentos_os->retrato($os)));
+                if ($decisaoOrcamento !== null) {
+                    // O técnico recebe somente a resposta, sem nome, itens ou valores do orçamento.
+                    $dados['pilotoRespostaCliente'] = ['tipo' => $decisaoOrcamento->tipo, 'criado_em' => $decisaoOrcamento->criado_em, 'atual' => $orcamentoValido];
+                }
+                if ($this->permite('vLancamento')) {
+                    $dados['pilotoOrcamento'] = $atualOrcamento;
+                    $dados['pilotoOrcamentoDecisao'] = $decisaoOrcamento;
+                    $dados['pilotoOrcamentoValido'] = $orcamentoValido;
+                }
             }
         }
         $dados['pilotoRetorno'] = null;

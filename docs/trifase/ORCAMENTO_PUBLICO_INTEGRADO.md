@@ -16,3 +16,9 @@ Versões antigas continuam válidas sem novos textos; para acrescentá-los é ne
 - Renderização testa orçamento/formulário junto a foto e vídeo autorizados, escape de HTML e ausência de valores/formulário quando não publicado.
 - Navegador: leitura da OS 9058 confirmou acompanhamento e imagens existentes. Não havia orçamento publicado; nenhum orçamento ou resposta foi criado nessa OS. O ciclo desta nova apresentação não foi submetido pelo navegador com dados do usuário.
 - Alteração somente no checkout/laboratório 8230; sem push.
+
+## Resposta no andamento da OS
+
+O bloco superior de andamento agora mostra “Aprovado pelo cliente” ou “Recusado pelo cliente”, com data e hora da resposta da versão atual. Também fica disponível ao técnico: a projeção contém somente tipo da decisão, horário e validade; não recebe o conteúdo financeiro do orçamento. Se a versão estiver retirada, cancelada ou com itens alterados, a resposta fica neutra e avisa para conferir o orçamento. Uma nova versão sem resposta não reutiliza a aprovação antiga. O status técnico não é alterado automaticamente.
+
+Verificado na OS 9058 pelo navegador: aprovação de 04/11/2026 às 14:27 apareceu no bloco superior, sem alterar registros. Testes de renderização cobrem aprovação, recusa, versão indisponível e ausência de valores para técnico. Suíte: 1.865 testes e 8.856 asserções sem falhas, com a depreciação e o teste ignorado anteriores; PHPStan, escape, formatação e build passaram.

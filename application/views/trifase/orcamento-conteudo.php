@@ -11,7 +11,6 @@
                 <p class="mt-3 text-heading-sm"><?= e(trifaseOrcamentoSituacao($decisaoOrcamento)) ?></p>
                 <p class="mt-2 text-body-md"><?= e('Nome informado: ' . $decisaoOrcamento->nome) ?></p>
                 <p class="mt-2 text-caption text-muted"><?= e('Registrado em ' . date('d/m/Y H:i', strtotime($decisaoOrcamento->criado_em))) ?></p>
-                <p class="mt-3 text-body-md text-muted">Para alterar sua decisão, solicite uma nova versão à assistência.</p>
             <?php } else { ?>
                 <form method="post" action="<?= e($responderOrcamentoUrl) ?>" class="mt-4 grid gap-4">
                     <input type="hidden" name="<?= e($this->security->get_csrf_token_name()) ?>" value="<?= e($this->security->get_csrf_hash()) ?>">

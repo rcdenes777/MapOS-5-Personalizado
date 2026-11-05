@@ -49,6 +49,7 @@ $pendenteCancelamento = ($pedidoCancelamento->tipo ?? '') === 'solicitar'; ?>
         <?= component('link', ['label' => 'Conferir peças e serviços na OS', 'href' => site_url('os/visualizar/' . $idCancelamento)]) ?>
         <?php if ($financeiroCancelamento !== null) { ?><p class="mt-4"><?= e('Recebido líquido: ' . dinheiro($financeiroCancelamento['recebido_c'] / 100) . ' · Saldo: ' . dinheiro($financeiroCancelamento['saldo_c'] / 100)) ?></p><?php } ?>
         <?php if ($podeConfirmarCancelamento) { ?><?= component('link', ['label' => 'Conferir cobranças e pagamentos', 'href' => site_url('trifase_financeiro/visualizar/' . $idCancelamento)]) ?><?php } ?>
+        <?php if ($podeClassificarClienteCancelamento ?? false) { ?><?= component('link', ['label' => 'Classificação e orientações internas do cliente', 'href' => site_url('trifase_cadastros/cliente/' . (int) $osCancelamento->clientes_id)]) ?><?php } ?>
         <?php if ($bloqueiosCancelamento !== []) { ?>
             <h3 class="mt-4 text-label-md">Pendências que impedem confirmar</h3>
             <ul class="mt-2 grid gap-2 text-warning-ink"><?php foreach ($bloqueiosCancelamento as $bloqueioCancelamento) { ?><li><?= e($bloqueioCancelamento) ?></li><?php } ?></ul>

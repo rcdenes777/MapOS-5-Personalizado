@@ -92,4 +92,18 @@ final class TrifaseCadastroTest extends MaposTestCase
         }
     }
 
+    public function testPermissaoDeClassificacaoClienteAutorizaAdministradorEFinanceiroSemTecnico(): void
+    {
+        $admin = static fn (string $p): bool => in_array($p, ['vCliente', 'eCliente'], true);
+        $financeiro = static fn (string $p): bool => in_array($p, ['vCliente', 'vLancamento', 'eLancamento'], true);
+        $tecnico = static fn (string $p): bool => in_array($p, ['vCliente', 'aCliente', 'vOs', 'eOs'], true);
+        $soLancamentoSemCliente = static fn (string $p): bool => in_array($p, ['vLancamento', 'eLancamento'], true);
+        $soConsultaFinanceira = static fn (string $p): bool => in_array($p, ['vCliente', 'vLancamento'], true);
+
+        $this->assertTrue(trifasePodeClassificarCliente($admin));
+        $this->assertTrue(trifasePodeClassificarCliente($financeiro));
+        $this->assertFalse(trifasePodeClassificarCliente($tecnico));
+        $this->assertFalse(trifasePodeClassificarCliente($soLancamentoSemCliente));
+        $this->assertFalse(trifasePodeClassificarCliente($soConsultaFinanceira));
+    }
 }

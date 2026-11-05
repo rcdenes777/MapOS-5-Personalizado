@@ -53,6 +53,9 @@ final class TrifaseCancelamentoAcessoTest extends \PHPUnit\Framework\TestCase
         $this->assertStringContainsString('name="pecas_nao_utilizadas"', $html);
         $this->assertStringContainsString('name="servicos_nao_executados"', $html);
         $this->assertStringNotContainsString('name="financeiro_conferido"', $html);
+        $this->assertStringNotContainsString('trifase_cadastros/cliente/', $html);
+        $htmlFinanceiro = $v->renderizar(array_replace($dados, ['osCancelamento' => (object) ['idOs' => 1, 'status' => 'Aprovado', 'clientes_id' => 9], 'podeConfirmarCancelamento' => true, 'podeClassificarClienteCancelamento' => true]));
+        $this->assertStringContainsString('trifase_cadastros/cliente/9', $htmlFinanceiro);
         foreach ([[false, false], [true, false], [false, true], [true, true]] as [$semPecas, $tecnica]) {
             $d = array_replace($dados, ['podeConfirmarCancelamento' => true, 'pecasCancelamento' => $semPecas ? [] : $dados['pecasCancelamento'], 'tecnicaCancelamento' => $tecnica ? ['usuario_id' => 2, 'criado_em' => '2026-11-04 12:01:00'] : null]);
             $dom = new DOMDocument();

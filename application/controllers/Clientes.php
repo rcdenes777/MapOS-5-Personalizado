@@ -250,7 +250,8 @@ class Clientes extends MY_Controller
                 'cadastroIntegrado' => true, 'tipoCadastro' => 'cliente', 'idCadastro' => $id,
                 'tituloCadastro' => 'Relacionamento interno',
                 'valoresCadastro' => $relacao['dados'] + ['categoria' => 'nao_classificado', 'orientacoes' => ''],
-                'versaoCadastro' => $relacao['versao'], 'podeEditarCadastro' => $this->permite('eCliente'),
+                'versaoCadastro' => $relacao['versao'],
+                'podeEditarCadastro' => trifasePodeClassificarCliente(fn (string $p): bool => $this->permite($p)),
                 'erroCadastro' => null, 'historicoCadastro' => $this->cadastros_cliente->historico('cliente', $id),
             ]);
         }

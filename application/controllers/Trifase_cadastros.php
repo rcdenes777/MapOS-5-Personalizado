@@ -66,10 +66,12 @@ class Trifase_cadastros extends MY_Controller
             return;
         }
         $leitura = $tipo === 'cliente' ? 'vCliente' : 'vOs';
-        $edicao = $tipo === 'cliente' ? 'eCliente' : 'eOs';
         if (! $this->permite($leitura)) {
             show_error('Sem permissão para consultar este cadastro.', 403);
         }
+        $podeEditar = $tipo === 'cliente'
+            ? trifasePodeClassificarCliente(fn (string $p): bool => $this->permite($p))
+            : $this->permite('eOs');
         $id = filter_var($id, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
         [$tabela, $pk] = match ($tipo) {
             'cliente' => ['clientes', 'idClientes'], 'modelo' => ['trifase_equipamento_modelos', 'id'], 'unidade' => ['trifase_equipamentos', 'id']
@@ -88,7 +90,7 @@ class Trifase_cadastros extends MY_Controller
         $valores = $tipo === 'cliente' ? ($atual['dados'] + ['categoria' => 'nao_classificado', 'orientacoes' => '']) : array_intersect_key((array) $registro, array_flip($campos));
         $erro = null;
         if ($this->input->method(true) === 'POST') {
-            if (! $this->permite($edicao)) {
+            if (! $podeEditar) {
                 show_error('Sem permissão para alterar este cadastro.', 403);
             }
             try {
@@ -126,7 +128,7 @@ class Trifase_cadastros extends MY_Controller
         };
         $this->data['valoresCadastro'] = $valores;
         $this->data['versaoCadastro'] = $atual['versao'];
-        $this->data['podeEditarCadastro'] = $this->permite($edicao);
+        $this->data['podeEditarCadastro'] = $podeEditar;
         $this->data['erroCadastro'] = $erro;
         $this->data['historicoCadastro'] = $this->cadastros->historico($tipo, $id);
         $this->data['view'] = 'trifase/cadastro';

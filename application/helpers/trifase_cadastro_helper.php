@@ -10,6 +10,12 @@ function trifaseCategoriasClientes(): array
     return ['nao_classificado' => 'Não classificado', 'bronze' => 'Bronze', 'prata' => 'Prata', 'ouro' => 'Ouro'];
 }
 
+/** O Financeiro também pode classificar e anotar orientações internas, sem editar o cadastro completo do cliente. */
+function trifasePodeClassificarCliente(callable $permite): bool
+{
+    return $permite('vCliente') && ($permite('eCliente') || ($permite('vLancamento') && $permite('eLancamento')));
+}
+
 function trifaseCadastroTemHistorico(object $db, string $tipo, int $id): bool
 {
     return $db->table_exists('trifase_cadastros_eventos')

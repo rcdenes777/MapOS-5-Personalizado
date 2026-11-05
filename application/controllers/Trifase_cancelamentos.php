@@ -1,6 +1,7 @@
 <?php
 
 defined('BASEPATH') or exit('No direct script access allowed');
+require_once APPPATH . 'helpers/trifase_cadastro_helper.php';
 
 class Trifase_cancelamentos extends MY_Controller
 {
@@ -136,6 +137,7 @@ class Trifase_cancelamentos extends MY_Controller
             'financeiroCancelamento' => $this->permite('vLancamento') ? $c['financeiro'] : null,
             'podePedirCancelamento' => $this->permite('eOs'),
             'podeConfirmarCancelamento' => $this->permite('eOs') && $this->permite('vLancamento') && $this->permite('eLancamento'),
+            'podeClassificarClienteCancelamento' => trifaseCadastrosHabilitados() && $this->db->table_exists('trifase_cadastros_eventos') && (int) ($os->clientes_id ?? 0) > 0 && trifasePodeClassificarCliente(fn (string $p): bool => $this->permite($p)),
             'clienteCancelamento' => (string) ($cliente->nomeCliente ?? 'Cliente não localizado'),
             'valoresCancelamento' => ['origem' => $this->input->method(true) === 'POST' ? $this->texto('origem') : 'cliente', 'motivo' => $this->texto('motivo'), 'conferencia' => $this->texto('conferencia'), 'observacoes_tecnicas' => $this->texto('observacoes_tecnicas')],
         ];

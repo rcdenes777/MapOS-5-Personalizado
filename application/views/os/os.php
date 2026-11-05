@@ -39,7 +39,7 @@ $colunas = [
     ['label' => ($trifase_ui_piloto ?? false) ? 'Andamento do serviço' : 'Status', 'nowrap' => true, 'render' => function ($o) use ($contextoFinanceiro, $mapaCancelamentosPendentes) {
         $pill = component('pill-status', osStatusPill($o->status));
         if ($contextoFinanceiro && isset($mapaCancelamentosPendentes[(int) $o->idOs]) && $o->status !== 'Cancelado') {
-            return new HtmlSeguro('<div class="flex flex-col items-start gap-1">' . $pill . component('pill-status', ['label' => 'Cancelamento solicitado — aguardando análise financeira', 'variant' => 'warning']) . '</div>');
+            return new HtmlSeguro('<div class="flex flex-col items-start gap-1">' . $pill . component('pill-status', ['label' => 'Cancelamento solicitado — aguardando análise financeira', 'variant' => 'warning', 'class' => 'max-w-full whitespace-normal']) . '</div>');
         }
         return $pill;
     }],

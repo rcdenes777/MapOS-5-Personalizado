@@ -49,3 +49,19 @@ Os testes passaram a executar remoção prévia com evento real do modelo de est
 No navegador, consulta da OS 9058 confirmou que os itens já estavam removidos pelo usuário, as duas caixas técnicas estavam disponíveis e a caixa financeira ainda estava desabilitada aguardando o registro técnico. Nenhuma conferência foi registrada nem o cancelamento confirmado nessa consulta.
 
 Validação final desta separação: 1.887 testes, 8.978 asserções, sem falhas; uma depreciação e um teste ignorado anteriores. PHPStan, escape, formatação e build passaram.
+
+## Fila no Financeiro, acerto financeiro e classificação interna do cliente
+
+1. **Aviso e Fila de Cancelamentos pendentes (`Financeiro → Ordens`):**
+   - Enquanto houver pedido de cancelamento ativo (`solicitar`), a OS exibe **Cancelamento solicitado — aguardando análise financeira** (na própria OS, na listagem financeira e no financeiro da OS). A OS só passa para `Cancelado` após a confirmação final.
+   - Em `financeiro/ordens`, o bloco **Cancelamentos pendentes** (e o filtro `Situação financeira → Cancelamentos pendentes`) lista nº da OS, cliente, situação da conferência técnica (*Concluída* ou *Pendente*), total, recebido, já devolvido, saldo e a ação direta **Analisar cancelamento**.
+2. **Acerto financeiro do cancelamento (cálculo automático + decisão manual):**
+   - Na confirmação financeira (`vOs` + `eOs` + `vLancamento` + `eLancamento`), o financeiro informa o **Valor devido pelo trabalho ou diagnóstico (R$)** e o **Desconto negociado (R$)**, podendo simular o cálculo antes de confirmar.
+   - O sistema cruza o total final devido (`valor devido - desconto`) com os recebimentos e devoluções já registrados na OS e calcula automaticamente um dos três resultados:
+     - **Sem valores a acertar** (ex.: R$ 50,00 de diagnóstico com R$ 50,00 de desconto → R$ 0,00; ou valor pago igual ao valor devido);
+     - **Valor a devolver ao cliente** (ex.: cliente pagou R$ 200,00 e ficou combinado R$ 50,00 de diagnóstico → calcula R$ 150,00 a devolver, exigindo valor, data, forma e comprovante/referência da devolução antes de concluir);
+     - **Valor a receber do cliente** (quando o valor líquido devido pelo trabalho/diagnóstico supera o recebido líquido, ajustando a obrigação para permitir a baixa do saldo residual).
+   - O motivo interno / justificativa e a confirmação explícita do acerto são obrigatórios sempre que houver obrigação financeira ou valores/desconto informados.
+3. **Classificação interna do cliente pelo Financeiro e Administrador:**
+   - Tanto o **Administrador** (`vCliente` + `eCliente`) quanto o **Financeiro** (`vCliente` + `vLancamento` + `eLancamento`, mesmo com `eCliente=0`) podem atualizar a **Categoria interna** (*Não classificado, Bronze, Prata, Ouro*) e as **Orientações de atendimento** em `trifase_cadastros/cliente/<id>` e na aba Dados de `clientes/visualizar/<id>`, sem liberar a edição do cadastro completo do cliente (`clientes/editar/<id>` continua exigindo `eCliente`).
+   - Conceder desconto no cancelamento nunca altera a categoria do cliente automaticamente; a tela de cancelamento oferece o atalho **Classificação e orientações internas do cliente** para registro manual e separado.

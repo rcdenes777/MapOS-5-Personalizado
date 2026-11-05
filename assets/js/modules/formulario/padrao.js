@@ -73,6 +73,10 @@ export default function iniciar(formulario) {
     });
 
     formulario.addEventListener('submit', (evento) => {
+        if (evento.submitter?.hasAttribute('formnovalidate')) {
+            marcarCarregando(evento.submitter, true);
+            return;
+        }
         let primeiro = null;
 
         for (const campo of formulario.querySelectorAll(CAMPOS)) {

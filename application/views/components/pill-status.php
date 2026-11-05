@@ -23,9 +23,10 @@ $variantes = [
     'neutral' => 'bg-neutral-soft text-neutral-ink',
 ];
 
+$quebra = str_contains((string) ($class ?? ''), 'whitespace-normal') ? 'whitespace-normal' : 'whitespace-nowrap';
 $atributos = [
     'id' => $id,
-    'class' => componenteClasses('inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[0.8125rem] leading-[1.6] font-semibold whitespace-nowrap', $variantes[$variant], $class),
+    'class' => componenteClasses('inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[0.8125rem] leading-[1.6] font-semibold ' . $quebra, $variantes[$variant], $class),
 ];
 ?>
 <span<?= componenteAtributos(componenteMesclarAtributos($atributos, $attrs)) ?>><?php if ($dot) { ?><span class="size-1.5 shrink-0 rounded-full bg-current" aria-hidden="true"></span><?php } ?><?= e($label) ?></span>

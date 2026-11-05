@@ -4,7 +4,7 @@ $pendenteCancelamento = ($pedidoCancelamento->tipo ?? '') === 'solicitar'; ?>
     <h1 class="text-heading-xl"><?= e('Cancelamento da OS #' . $idCancelamento) ?></h1>
     <?php if ($pendenteCancelamento && $osCancelamento->status !== 'Cancelado') { ?>
         <div class="flex flex-wrap items-center gap-2">
-            <?= component('pill-status', ['label' => 'Cancelamento solicitado — aguardando análise financeira', 'variant' => 'warning']) ?>
+            <?= component('pill-status', ['label' => 'Cancelamento solicitado — aguardando análise financeira', 'variant' => 'warning', 'class' => 'max-w-full whitespace-normal']) ?>
         </div>
     <?php } ?>
     <?= component('link', ['label' => 'Voltar à OS', 'href' => site_url('os/visualizar/' . $idCancelamento)]) ?>
@@ -104,8 +104,8 @@ $pendenteCancelamento = ($pedidoCancelamento->tipo ?? '') === 'solicitar'; ?>
                     <div class="flex flex-wrap items-center justify-between gap-2">
                         <h3 class="text-label-md">Cálculo do acerto financeiro</h3>
                         <?= component('pill-status', match ($acerto['resultado']) {
-                            'a_devolver' => ['label' => 'Valor a devolver ao cliente: ' . dinheiro($acerto['a_devolver_c'] / 100), 'variant' => 'warning'],
-                            'a_receber' => ['label' => 'Valor a receber do cliente: ' . dinheiro($acerto['a_receber_c'] / 100), 'variant' => 'warning'],
+                            'a_devolver' => ['label' => 'Valor a devolver ao cliente: ' . dinheiro($acerto['a_devolver_c'] / 100), 'variant' => 'warning', 'class' => 'max-w-full whitespace-normal'],
+                            'a_receber' => ['label' => 'Valor a receber do cliente: ' . dinheiro($acerto['a_receber_c'] / 100), 'variant' => 'warning', 'class' => 'max-w-full whitespace-normal'],
                             default => ['label' => 'Sem valores a acertar', 'variant' => 'success'],
                         }) ?>
                     </div>

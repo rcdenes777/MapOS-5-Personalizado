@@ -14,7 +14,7 @@ No histórico de equipamento, **Identificação atual e correções** permite co
 
 `trifase_cadastros_eventos` guarda antes/depois, motivo obrigatório, operador, horário, chave idempotente e hash do pedido. Trava o cadastro antes da alteração e exige a versão vista pelo operador; uma janela antiga não sobrescreve a nova. Reenvio idêntico não duplica; mesma chave com outros dados é recusada. Selo e chave normalizada de modelo continuam únicos.
 
-Consulta de relacionamento exige `vCliente`; POST também exige `eCliente`. Catálogo/unidade exigem `vOs`, e POST também `eOs`. Controles ocultos não substituem essas checagens. Sem nova permissão automática por nome de cargo. Usuário autorizou expressamente seis permissões nativas de adicionar/editar cliente/produto/serviço somente no perfil1 do laboratório; perfis restritos não foram ampliados e nenhuma exclusão foi concedida.
+Consulta de relacionamento exige `vCliente`; POST exige `eCliente` (Administrador) ou `vLancamento` + `eLancamento` (Financeiro, permitindo classificar o cliente e anotar orientações internas sem editar o cadastro completo). Catálogo/unidade exigem `vOs`, e POST também `eOs`. Controles ocultos não substituem essas checagens. Sem nova permissão automática por nome de cargo. Usuário autorizou expressamente seis permissões nativas de adicionar/editar cliente/produto/serviço somente no perfil1 do laboratório; perfis restritos não foram ampliados e nenhuma exclusão foi concedida.
 
 A exclusão nativa/API de cliente verifica os históricos protegidos antes de remover OS/itens em cascata. A proteção continua com a apresentação desligada. A manutenção não altera técnico, financeiro, estoque, datas ou garantia.
 

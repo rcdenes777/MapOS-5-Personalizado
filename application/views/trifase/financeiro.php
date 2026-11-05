@@ -22,7 +22,7 @@ foreach ($financeiroEventos as $e) {
     <div class="flex flex-wrap items-center gap-3">
         <span class="text-body-md text-muted">Andamento do serviço</span><?= component('pill-status', osStatusPill($osFinanceira->status)) ?>
         <?php if ($cancelamentoPendenteFinanceiro ?? false) { ?>
-            <?= component('pill-status', ['label' => 'Cancelamento solicitado — aguardando análise financeira', 'variant' => 'warning']) ?>
+            <?= component('pill-status', ['label' => 'Cancelamento solicitado — aguardando análise financeira', 'variant' => 'warning', 'class' => 'max-w-full whitespace-normal']) ?>
             <?= component('button', ['label' => 'Analisar cancelamento', 'variant' => 'outline', 'size' => 'sm', 'href' => site_url('trifase_cancelamentos/visualizar/' . $id)]) ?>
         <?php } ?>
     </div>

@@ -39,7 +39,7 @@ if (($pilotoEquipamento ?? null) !== null
             <div class="flex flex-wrap items-center gap-2">
                 <?= component('pill-status', osStatusPill($os->status)) ?>
                 <?php if (($pilotoCancelamento->tipo ?? '') === 'solicitar' && $os->status !== 'Cancelado') { ?>
-                    <?= component('pill-status', ['label' => 'Cancelamento solicitado — aguardando análise financeira', 'variant' => 'warning']) ?>
+                    <?= component('pill-status', ['label' => 'Cancelamento solicitado — aguardando análise financeira', 'variant' => 'warning', 'class' => 'max-w-full whitespace-normal']) ?>
                 <?php } ?>
             </div>
         </div>

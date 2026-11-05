@@ -11,6 +11,7 @@ final class Trifase_financeiro_busca
         'anterior' => 'Faturamento anterior',
         'reembolsada' => 'Reembolsada',
         'encerrada_garantia' => 'Encerrada por garantia',
+        'cancelamento_pendente' => 'Cancelamentos pendentes',
     ];
 
     public static function ativo(array $filtros): bool
@@ -20,6 +21,16 @@ final class Trifase_financeiro_busca
 
     public static function aplicar(object $db, array $filtros): void
     {
+        if (($filtros['financeiro'] ?? '') === 'cancelamento_pendente') {
+            if (! $db->table_exists('trifase_cancelamentos')) {
+                $db->where('1 = 0', null, false);
+            } else {
+                $db->where("os.status != 'Cancelado' AND COALESCE((SELECT tfc.tipo FROM trifase_cancelamentos tfc WHERE tfc.os_id = os.idOs AND tfc.tipo IN ('solicitar', 'retirar', 'confirmar') ORDER BY tfc.id DESC LIMIT 1), '') = 'solicitar'", null, false);
+            }
+            if (($filtros['saldo'] ?? '') !== 'pendente') {
+                return;
+            }
+        }
         if (! self::ativo($filtros) || ! trifaseFinanceiroHabilitado()
             || ! $db->table_exists('trifase_financeiro_obrigacoes') || ! $db->table_exists('trifase_financeiro_eventos')) {
             return;
@@ -36,7 +47,7 @@ final class Trifase_financeiro_busca
             . ' FROM trifase_financeiro_obrigacoes o LEFT JOIN ' . $eventos . ' e ON e.os_id = o.os_id'
             . ' LEFT JOIN ' . $creditos . ' c ON c.origem_id = o.os_id) tf_os_financeiro';
         $db->join($projecao, 'tf_os_financeiro.os_id = os.idOs', 'left', false);
-        if (isset(self::OPCOES[$filtros['financeiro'] ?? ''])) {
+        if (isset(self::OPCOES[$filtros['financeiro'] ?? '']) && $filtros['financeiro'] !== 'cancelamento_pendente') {
             $situacao = "CASE WHEN tf_os_financeiro.os_id IS NULL THEN CASE WHEN COALESCE(os.faturado, 0) = 1 THEN 'anterior' ELSE 'nao_faturada' END"
                 . " WHEN tf_os_financeiro.total_c = 0 AND tf_os_financeiro.credito_c > 0 THEN CASE WHEN tf_os_financeiro.reembolsado_c > 0 THEN 'reembolsada' ELSE 'encerrada_garantia' END"
                 . " WHEN tf_os_financeiro.recebido_c = 0 THEN 'pendente'"

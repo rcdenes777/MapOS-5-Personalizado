@@ -179,6 +179,23 @@ final class TrifaseOsListagemViewTest extends \PHPUnit\Framework\TestCase
         $this->assertStringContainsString('trifase_financeiro/visualizar/1', $html);
     }
 
+    public function testFilaCancelamentosPendentesMostraValoresStatusTecnicoEAcaoDeAnalise(): void
+    {
+        $pendentes = [[
+            'os_id' => 1, 'pedido_id' => 9, 'clientes_id' => 1, 'nomeCliente' => 'Cliente <script>x</script>',
+            'solicitante' => 'Cliente', 'motivo' => 'Desistiu', 'criado_em' => '2026-11-05 10:00:00',
+            'tecnica_concluida' => true, 'total_c' => 50000, 'recebido_c' => 20000, 'devolvido_c' => 5000, 'saldo_c' => 30000,
+        ]];
+        $html = $this->renderizar([1 => ['total_c' => 50000, 'recebido_c' => 15000, 'saldo_c' => 30000, 'situacao' => 'Parcialmente pago']], ['status' => 'Aprovado'], ['cancelamentosPendentes' => $pendentes]);
+        $this->assertStringContainsString('Cancelamentos pendentes', $html);
+        $this->assertStringContainsString('Cancelamento solicitado — aguardando análise financeira', $html);
+        $this->assertStringContainsString('Analisar cancelamento', $html);
+        $this->assertStringContainsString('trifase_cancelamentos/visualizar/1', $html);
+        $this->assertStringContainsString('Concluída', $html);
+        $this->assertStringContainsString('R$ 50,00', $html);
+        $this->assertStringNotContainsString('<script>x</script>', $html);
+    }
+
     private function renderizar(array $resumos, array $os = [], array $opcoes = []): string
     {
         $dados = array_replace([

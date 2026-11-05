@@ -20,6 +20,60 @@ class Trifase_cancelamento_model extends CI_Model
         return $this->db->where('os_id', $os)->where_in('tipo', ['solicitar', 'retirar', 'confirmar'])->order_by('id', 'desc')->get('trifase_cancelamentos', 1)->row() ?: null;
     }
 
+    /** Fila de cancelamentos pendentes para análise financeira, sem N+1. */
+    public function pendentes(array $resumos = []): array
+    {
+        if (! $this->db->table_exists('trifase_cancelamentos')) {
+            return [];
+        }
+        $ultimos = '(SELECT os_id, MAX(id) AS max_id FROM trifase_cancelamentos WHERE tipo IN (\'solicitar\', \'retirar\', \'confirmar\') GROUP BY os_id) tf_ultimos';
+        $linhas = $this->db->select('c.id AS pedido_id, c.os_id, c.solicitante, c.motivo, c.criado_em, o.status, o.clientes_id, o.faturado, cl.nomeCliente')
+            ->from('trifase_cancelamentos c')
+            ->join($ultimos, 'tf_ultimos.max_id = c.id')
+            ->join('os o', 'o.idOs = c.os_id')
+            ->join('clientes cl', 'cl.idClientes = o.clientes_id', 'left')
+            ->where('c.tipo', 'solicitar')
+            ->where('o.status !=', 'Cancelado')
+            ->order_by('c.id', 'desc')
+            ->get()
+            ->result();
+        if ($linhas === []) {
+            return [];
+        }
+        $ids = array_map(static fn ($l) => (int) $l->os_id, $linhas);
+        $faltantes = array_values(array_diff($ids, array_keys($resumos)));
+        if ($faltantes !== [] && trifaseFinanceiroHabilitado() && $this->db->table_exists('trifase_financeiro_obrigacoes')) {
+            require_once APPPATH . 'models/Trifase_financeiro_model.php';
+            $f = new Trifase_financeiro_model();
+            $f->db = $this->db;
+            $resumos += $f->resumos($faltantes);
+        }
+        $itens = [];
+        foreach ($linhas as $l) {
+            $osId = (int) $l->os_id;
+            $osObj = (object) ['idOs' => $osId, 'status' => $l->status, 'faturado' => $l->faturado];
+            $c = $this->conferencia($osObj);
+            $tecnica = $this->tecnicaValida($osId, (int) $l->pedido_id, $c);
+            $r = $resumos[$osId] ?? null;
+            $itens[] = [
+                'os_id' => $osId,
+                'pedido_id' => (int) $l->pedido_id,
+                'clientes_id' => (int) $l->clientes_id,
+                'nomeCliente' => (string) ($l->nomeCliente ?? 'Cliente removido'),
+                'solicitante' => (string) $l->solicitante,
+                'motivo' => (string) $l->motivo,
+                'criado_em' => (string) $l->criado_em,
+                'tecnica_concluida' => $tecnica !== null && $c['pecas'] === [],
+                'total_c' => $r !== null ? (int) $r['total_c'] : null,
+                'recebido_c' => $r !== null ? (int) ($r['recebido_original_c'] ?? $r['recebido_c']) : null,
+                'devolvido_c' => $r !== null ? (int) ($r['reembolsado_c'] ?? 0) : null,
+                'saldo_c' => $r !== null ? (int) $r['saldo_c'] : null,
+                'resumo' => $r,
+            ];
+        }
+        return $itens;
+    }
+
     public function conferencia(object $os): array
     {
         $id = (int) $os->idOs;

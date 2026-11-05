@@ -278,7 +278,11 @@ class Trifase_financeiro extends MY_Controller
     private function tela(object $os, ?string $erro = null)
     {
         $gerida = trifaseFinanceiroOsGerida($this->db, (int) $os->idOs);
+        $cancelamentoPendente = $this->db->table_exists('trifase_cancelamentos')
+            ? $this->db->select('id, tipo, criado_em')->where('os_id', (int) $os->idOs)->where_in('tipo', ['solicitar', 'retirar', 'confirmar'])->order_by('id', 'desc')->get('trifase_cancelamentos', 1)->row()
+            : null;
         $this->data['osFinanceira'] = $os;
+        $this->data['cancelamentoPendenteFinanceiro'] = ($cancelamentoPendente->tipo ?? '') === 'solicitar' && $os->status !== 'Cancelado';
         $this->data['financeiroResumo'] = $gerida ? $this->financeiro_os->resumo((int) $os->idOs) : null;
         $this->data['financeiroEventos'] = $gerida ? $this->financeiro_os->historico((int) $os->idOs) : [];
         $this->data['financeiroErro'] = $erro;

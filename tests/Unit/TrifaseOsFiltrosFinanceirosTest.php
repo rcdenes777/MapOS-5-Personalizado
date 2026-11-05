@@ -62,13 +62,22 @@ final class TrifaseOsFiltrosFinanceirosTest extends MaposTestCase
         $mapa = ['Pendente' => 'pendente', 'Quitado' => 'quitada', 'Parcialmente pago' => 'parcial', 'Reembolsado' => 'reembolsada', 'Encerrado por garantia' => 'encerrada_garantia'];
         foreach (Trifase_financeiro_busca::OPCOES as $filtro => $label) {
             $esperados = match ($filtro) {
-                'nao_faturada' => [1], 'anterior' => [2],
+                'nao_faturada' => [1], 'anterior' => [2], 'cancelamento_pendente' => [],
                 default => array_keys(array_filter($resumos, static fn ($r) => $mapa[$r['situacao']] === $filtro)),
             };
             rsort($esperados);
             $this->assertSame($esperados, $this->ids(['financeiro' => $filtro]), $label);
             $this->assertSame(count($esperados), $this->model->contar(['financeiro' => $filtro]));
         }
+        $this->db->query('CREATE TABLE trifase_cancelamentos (id INTEGER PRIMARY KEY AUTOINCREMENT, os_id INTEGER, tipo TEXT)');
+        $this->db->insert('trifase_cancelamentos', ['os_id' => 4, 'tipo' => 'solicitar']);
+        $this->db->insert('trifase_cancelamentos', ['os_id' => 5, 'tipo' => 'solicitar']);
+        $this->db->insert('trifase_cancelamentos', ['os_id' => 5, 'tipo' => 'retirar']);
+        $this->db->insert('trifase_cancelamentos', ['os_id' => 9, 'tipo' => 'solicitar']);
+        $this->db->insert('trifase_cancelamentos', ['os_id' => 9, 'tipo' => 'tecnica']);
+        $this->db->data_cache = [];
+        $this->assertSame([9, 4], $this->ids(['financeiro' => 'cancelamento_pendente']));
+        $this->assertSame(2, $this->model->contar(['financeiro' => 'cancelamento_pendente']));
         $this->assertSame([12, 9, 6, 4, 3], $this->ids(['saldo' => 'pendente']));
         $this->assertSame([12, 9, 4], $this->ids(['financeiro' => 'parcial', 'saldo' => 'pendente']));
     }

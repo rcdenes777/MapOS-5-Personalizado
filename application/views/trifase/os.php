@@ -34,7 +34,15 @@ if (($pilotoEquipamento ?? null) !== null
     </header>
 
     <section class="trifase-os-andamento" aria-label="Andamento do atendimento">
-        <div><h2>Andamento do serviço</h2><?= component('pill-status', osStatusPill($os->status)) ?></div>
+        <div>
+            <h2>Andamento do serviço</h2>
+            <div class="flex flex-wrap items-center gap-2">
+                <?= component('pill-status', osStatusPill($os->status)) ?>
+                <?php if (($pilotoCancelamento->tipo ?? '') === 'solicitar' && $os->status !== 'Cancelado') { ?>
+                    <?= component('pill-status', ['label' => 'Cancelamento solicitado — aguardando análise financeira', 'variant' => 'warning']) ?>
+                <?php } ?>
+            </div>
+        </div>
         <dl class="trifase-os-datas">
             <div><dt>Entrada</dt><dd><?= e(dataBr($os->dataInicial)) ?></dd></div>
             <div><dt>Previsão de entrega</dt><dd><?= e(dataBr($os->dataFinal) ?: 'Não informada') ?></dd></div>
@@ -211,7 +219,7 @@ if (($pilotoEquipamento ?? null) !== null
                 <section class="trifase-os-painel" aria-labelledby="piloto-cancelamento">
                     <h2 id="piloto-cancelamento">Cancelamento da OS</h2>
                     <p class="text-body-md"><?= e(match ($pilotoCancelamento->tipo ?? '') {
-                        'solicitar' => 'Pedido de cancelamento pendente de conferência', 'confirmar' => 'Cancelamento confirmado', 'retirar' => 'Pedido retirado; atendimento preservado', default => 'Nenhum pedido registrado'
+                        'solicitar' => 'Cancelamento solicitado — aguardando análise financeira', 'confirmar' => 'Cancelamento confirmado', 'retirar' => 'Pedido retirado; atendimento preservado', default => 'Nenhum pedido registrado'
                     }) ?></p>
                     <?= component('button', ['label' => ($pilotoCancelamento->tipo ?? '') === 'solicitar' ? 'Conferir pedido de cancelamento' : 'Pedido e histórico de cancelamento', 'variant' => 'outline', 'href' => site_url('trifase_cancelamentos/visualizar/' . $idOs)]) ?>
                 </section>

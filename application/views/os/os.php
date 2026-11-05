@@ -20,6 +20,11 @@ $urlLista = site_url($contextoFinanceiro ? 'financeiro/ordens' : 'os');
 $clienteComLink = ! $contextoFinanceiro || ($listaVerCliente ?? false);
 $filtrarFilas = ! empty($listaFilas);
 $filtrarFinanceiro = $contextoFinanceiro && ($trifase_ui_piloto ?? false) && ($listaVerFinanceiro ?? false) && ($listaFinanceiroHabilitado ?? false);
+$cancelamentosPendentes = $cancelamentosPendentes ?? [];
+$mapaCancelamentosPendentes = [];
+foreach ($cancelamentosPendentes as $cp) {
+    $mapaCancelamentosPendentes[(int) $cp['os_id']] = $cp;
+}
 
 $colunas = [
     ['key' => 'idOs', 'label' => 'Nº', 'align' => 'right', 'nowrap' => true],
@@ -31,14 +36,23 @@ $colunas = [
     ['key' => 'responsavel', 'label' => 'Responsável', 'nowrap' => true, 'hide_until' => '2xl'],
     ['label' => 'Entrada', 'align' => 'right', 'nowrap' => true, 'hide_until' => 'xl', 'render' => fn ($o) => dataBr($o->dataInicial)],
     ['label' => 'Entrega', 'align' => 'right', 'nowrap' => true, 'hide_until' => 'xl', 'render' => fn ($o) => dataBr($o->dataFinal)],
-    ['label' => ($trifase_ui_piloto ?? false) ? 'Andamento do serviço' : 'Status', 'nowrap' => true, 'render' => fn ($o) => component('pill-status', osStatusPill($o->status))],
+    ['label' => ($trifase_ui_piloto ?? false) ? 'Andamento do serviço' : 'Status', 'nowrap' => true, 'render' => function ($o) use ($contextoFinanceiro, $mapaCancelamentosPendentes) {
+        $pill = component('pill-status', osStatusPill($o->status));
+        if ($contextoFinanceiro && isset($mapaCancelamentosPendentes[(int) $o->idOs]) && $o->status !== 'Cancelado') {
+            return new HtmlSeguro('<div class="flex flex-col items-start gap-1">' . $pill . component('pill-status', ['label' => 'Cancelamento solicitado — aguardando análise financeira', 'variant' => 'warning']) . '</div>');
+        }
+        return $pill;
+    }],
     ['label' => 'Total', 'align' => 'right', 'nowrap' => true, 'render' => fn ($o) => dinheiro($o->total)],
-    ['label' => 'Ações', 'align' => 'right', 'nowrap' => true, 'render' => function ($o) use ($pode, $controle_editos, $contextoFinanceiro) {
+    ['label' => 'Ações', 'align' => 'right', 'nowrap' => true, 'render' => function ($o) use ($pode, $controle_editos, $contextoFinanceiro, $mapaCancelamentosPendentes) {
         $numero = 'OS ' . $o->idOs;
         $editavel = osEditavel($o, $pode['editar'], $controle_editos);
         $acoes = [
             component('button', ['label' => 'Ver ' . $numero, 'icon' => 'eye', 'icon_only' => true, 'variant' => 'ghost', 'size' => 'sm', 'href' => site_url('os/visualizar/' . $o->idOs)]),
         ];
+        if ($contextoFinanceiro && isset($mapaCancelamentosPendentes[(int) $o->idOs])) {
+            $acoes[] = component('button', ['label' => 'Analisar cancelamento', 'variant' => 'outline', 'size' => 'sm', 'href' => site_url('trifase_cancelamentos/visualizar/' . (int) $o->idOs)]);
+        }
         if ($contextoFinanceiro) {
             $acoes[] = component('button', ['label' => 'Recebimentos da ' . $numero, 'icon' => 'circle-dollar-sign', 'icon_only' => true, 'variant' => 'ghost', 'size' => 'sm', 'href' => site_url('trifase_financeiro/visualizar/' . (int) $o->idOs)]);
         }
@@ -141,6 +155,37 @@ $resumo = ($total === 1 ? '1 ordem de serviço' : number_format($total, 0, ',', 
 
     <?php if ($contextoFinanceiro) { ?>
         <?= component('tabs', ['label' => 'Áreas do financeiro', 'items' => [['label' => 'Lançamentos', 'url' => site_url('financeiro/lancamentos')], ['label' => 'OS e recebimentos', 'url' => site_url('financeiro/ordens'), 'active' => true]]]) ?>
+        <?php if ($cancelamentosPendentes !== []) { ?>
+            <section class="rounded-xl border border-border bg-surface p-4" aria-labelledby="fila-cancelamentos-pendentes">
+                <div class="mb-3 flex flex-wrap items-center justify-between gap-2">
+                    <div>
+                        <h2 id="fila-cancelamentos-pendentes" class="text-heading-sm text-text">Cancelamentos pendentes</h2>
+                        <p class="text-caption text-muted">Cancelamento solicitado — aguardando análise financeira. A OS só fica Cancelada depois da conferência final.</p>
+                    </div>
+                    <?= component('pill-status', ['label' => count($cancelamentosPendentes) . (count($cancelamentosPendentes) === 1 ? ' pendente' : ' pendentes'), 'variant' => 'warning']) ?>
+                </div>
+                <?= component('data-table', [
+                    'caption' => 'Cancelamentos pendentes de análise financeira',
+                    'dense' => true,
+                    'rows' => $cancelamentosPendentes,
+                    'empty' => 'Nenhum cancelamento pendente.',
+                    'columns' => [
+                        ['label' => 'OS', 'align' => 'right', 'nowrap' => true, 'render' => fn ($c) => '#' . (int) $c['os_id']],
+                        ['label' => 'Cliente', 'render' => fn ($c) => $clienteComLink && $c['clientes_id'] > 0
+                            ? component('link', ['label' => $c['nomeCliente'], 'href' => site_url('clientes/visualizar/' . $c['clientes_id']), 'class' => 'font-medium'])
+                            : $c['nomeCliente']],
+                        ['label' => 'Conferência técnica', 'nowrap' => true, 'render' => fn ($c) => component('pill-status', $c['tecnica_concluida']
+                            ? ['label' => 'Concluída', 'variant' => 'success']
+                            : ['label' => 'Pendente', 'variant' => 'warning'])],
+                        ['label' => 'Total', 'align' => 'right', 'nowrap' => true, 'render' => fn ($c) => $c['total_c'] === null ? 'Não faturada' : dinheiro($c['total_c'] / 100)],
+                        ['label' => 'Recebido', 'align' => 'right', 'nowrap' => true, 'render' => fn ($c) => $c['recebido_c'] === null ? 'R$ 0,00' : dinheiro($c['recebido_c'] / 100)],
+                        ['label' => 'Já devolvido', 'align' => 'right', 'nowrap' => true, 'render' => fn ($c) => $c['devolvido_c'] === null ? 'R$ 0,00' : dinheiro($c['devolvido_c'] / 100)],
+                        ['label' => 'Saldo', 'align' => 'right', 'nowrap' => true, 'render' => fn ($c) => $c['saldo_c'] === null ? 'R$ 0,00' : dinheiro($c['saldo_c'] / 100)],
+                        ['label' => 'Ações', 'align' => 'right', 'nowrap' => true, 'render' => fn ($c) => component('button', ['label' => 'Analisar cancelamento', 'variant' => 'outline', 'size' => 'sm', 'href' => site_url('trifase_cancelamentos/visualizar/' . (int) $c['os_id'])])],
+                    ],
+                ]) ?>
+            </section>
+        <?php } ?>
     <?php } ?>
 
     <form method="get" action="<?= e($urlLista) ?>" role="search" aria-label="Filtrar ordens de serviço" class="grid items-end gap-3 rounded-xl border border-border bg-surface p-4 sm:grid-cols-2 <?= e(($filtrarFinanceiro || $filtrarFilas) ? 'lg:grid-cols-3 xl:grid-cols-4' : 'lg:grid-cols-[minmax(0,1fr)_12rem_10rem_10rem_auto]') ?>">

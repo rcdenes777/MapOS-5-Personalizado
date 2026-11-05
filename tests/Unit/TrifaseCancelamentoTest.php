@@ -190,8 +190,26 @@ final class TrifaseCancelamentoTest extends MaposTestCase
         $this->modelo->conferirTecnica(1, $pedido, $this->dadosTecnicos(), 2, 'tecnica_123456789');
         $id = $this->modelo->retirar(1, $pedido, 'Cliente decidiu continuar', 7, 'retirada_123456789');
         $this->assertSame($id, $this->modelo->retirar(1, $pedido, 'Cliente decidiu continuar', 7, 'retirada_123456789'));
+        $this->assertSame([], $this->modelo->pendentes());
         $this->expectException(DomainException::class);
         $this->modelo->confirmar(1, $pedido, $this->dados(), 7, 'confirmacao_12345678');
+    }
+
+    public function testFilaDeCancelamentosPendentesAcompanhaConferenciaTecnicaEResumoFinanceiro(): void
+    {
+        $pedido = $this->pedido();
+        $fila = $this->modelo->pendentes([1 => ['total_c' => 20000, 'recebido_c' => 15000, 'recebido_original_c' => 20000, 'reembolsado_c' => 5000, 'saldo_c' => 5000]]);
+        $this->assertCount(1, $fila);
+        $this->assertSame(1, $fila[0]['os_id']);
+        $this->assertFalse($fila[0]['tecnica_concluida']);
+        $this->assertSame(20000, $fila[0]['total_c']);
+        $this->assertSame(20000, $fila[0]['recebido_c']);
+        $this->assertSame(5000, $fila[0]['devolvido_c']);
+        $this->assertSame(5000, $fila[0]['saldo_c']);
+        $this->devolverPecas();
+        $this->modelo->conferirTecnica(1, $pedido, $this->dadosTecnicos(), 2, 'tecnica_123456789');
+        $fila = $this->modelo->pendentes();
+        $this->assertTrue($fila[0]['tecnica_concluida']);
     }
 
     public function testObrigacaoComRecebimentoBloqueiaMesmoComTecnicaPronta(): void

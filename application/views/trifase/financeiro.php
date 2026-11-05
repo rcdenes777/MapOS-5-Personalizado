@@ -19,7 +19,13 @@ foreach ($financeiroEventos as $e) {
         <?php } ?>
         <?= component('button', ['label' => 'Voltar à OS', 'variant' => 'outline', 'href' => site_url('os/visualizar/' . $id)]) ?>
     </header>
-    <div class="flex flex-wrap items-center gap-3"><span class="text-body-md text-muted">Andamento do serviço</span><?= component('pill-status', osStatusPill($osFinanceira->status)) ?></div>
+    <div class="flex flex-wrap items-center gap-3">
+        <span class="text-body-md text-muted">Andamento do serviço</span><?= component('pill-status', osStatusPill($osFinanceira->status)) ?>
+        <?php if ($cancelamentoPendenteFinanceiro ?? false) { ?>
+            <?= component('pill-status', ['label' => 'Cancelamento solicitado — aguardando análise financeira', 'variant' => 'warning']) ?>
+            <?= component('button', ['label' => 'Analisar cancelamento', 'variant' => 'outline', 'size' => 'sm', 'href' => site_url('trifase_cancelamentos/visualizar/' . $id)]) ?>
+        <?php } ?>
+    </div>
     <?php if ($financeiroErro) { ?><?= component('alert', ['variant' => 'danger', 'message' => $financeiroErro]) ?><?php } ?>
     <?php if ($financeiroResumo === null) { ?>
         <section class="rounded-card border border-border bg-surface p-4">

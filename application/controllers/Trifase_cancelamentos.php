@@ -93,7 +93,7 @@ class Trifase_cancelamentos extends MY_Controller
                     $this->cancelamentos->conferirTecnica((int) $os->idOs, $pedido, $dados, $usuario, $op);
                 } else {
                     $dados = [];
-                    foreach (['hash', 'financeiro_conferido', 'confirmar', 'conferencia'] as $campo) {
+                    foreach (['hash', 'financeiro_conferido', 'confirmar', 'conferencia', 'valor_devido', 'desconto', 'acerto_confirmado', 'valor_devolucao', 'data_devolucao', 'forma_devolucao', 'referencia_devolucao'] as $campo) {
                         $dados[$campo] = $this->input->post($campo);
                     }
                     $this->cancelamentos->confirmar((int) $os->idOs, $pedido, $dados, $usuario, $op);
@@ -104,7 +104,7 @@ class Trifase_cancelamentos extends MY_Controller
                 'solicitar' => 'Pedido registrado. A OS continua no andamento atual até a conferência e confirmação.',
                 'retirar' => 'Pedido retirado com motivo. O histórico foi preservado.',
                 'tecnica' => 'Conferência técnica registrada. Financeiro e pagamentos foram preservados.',
-                default => 'Cancelamento confirmado após as conferências técnica e financeira. Nenhum pagamento ou estoque foi alterado nesta confirmação.',
+                default => 'Cancelamento confirmado após as conferências técnica e financeira e o acerto registrado.',
             });
             redirect('os/visualizar/' . (int) $os->idOs);
         } catch (DomainException $e) {
@@ -127,6 +127,21 @@ class Trifase_cancelamentos extends MY_Controller
         }
         $pedido = $this->cancelamentos->atual((int) $os->idOs);
         $tecnica = ($pedido->tipo ?? '') === 'solicitar' ? $this->cancelamentos->tecnicaValida((int) $os->idOs, (int) $pedido->id, $c) : null;
+        $podeConfirmar = $this->permite('eOs') && $this->permite('vLancamento') && $this->permite('eLancamento');
+        $post = $this->input->method(true) === 'POST';
+        $devidoTexto = $post ? $this->texto('valor_devido') : ($this->input->get('valor_devido') !== null ? (string) $this->input->get('valor_devido') : ($c['financeiro'] !== null ? number_format((int) $c['financeiro']['total_c'] / 100, 2, ',', '.') : '0,00'));
+        $descontoTexto = $post ? $this->texto('desconto') : ($this->input->get('desconto') !== null ? (string) $this->input->get('desconto') : '0,00');
+        $acerto = null;
+        if ($podeConfirmar) {
+            try {
+                $acerto = $this->cancelamentos->calcularAcerto($c['financeiro'], $this->cancelamentos->centavos($devidoTexto), $this->cancelamentos->centavos($descontoTexto));
+            } catch (DomainException $e) {
+                $acerto = $this->cancelamentos->calcularAcerto($c['financeiro'], (int) ($c['financeiro']['total_c'] ?? 0), 0);
+                if ($erro === null) {
+                    $erro = $e->getMessage();
+                }
+            }
+        }
         $this->data += ['erroCancelamento' => $erro, 'osCancelamento' => $os,
             'pedidoCancelamento' => $pedido,
             'hashTecnicoCancelamento' => $this->cancelamentos->hashTecnico($c),
@@ -135,11 +150,23 @@ class Trifase_cancelamentos extends MY_Controller
             'pecasCancelamento' => $pecas, 'servicosCancelamento' => $servicos,
             'bloqueiosCancelamento' => $c['bloqueios'], 'hashCancelamento' => $c['hash'],
             'financeiroCancelamento' => $this->permite('vLancamento') ? $c['financeiro'] : null,
+            'acertoCancelamento' => $acerto,
             'podePedirCancelamento' => $this->permite('eOs'),
-            'podeConfirmarCancelamento' => $this->permite('eOs') && $this->permite('vLancamento') && $this->permite('eLancamento'),
+            'podeConfirmarCancelamento' => $podeConfirmar,
             'podeClassificarClienteCancelamento' => trifaseCadastrosHabilitados() && $this->db->table_exists('trifase_cadastros_eventos') && (int) ($os->clientes_id ?? 0) > 0 && trifasePodeClassificarCliente(fn (string $p): bool => $this->permite($p)),
             'clienteCancelamento' => (string) ($cliente->nomeCliente ?? 'Cliente não localizado'),
-            'valoresCancelamento' => ['origem' => $this->input->method(true) === 'POST' ? $this->texto('origem') : 'cliente', 'motivo' => $this->texto('motivo'), 'conferencia' => $this->texto('conferencia'), 'observacoes_tecnicas' => $this->texto('observacoes_tecnicas')],
+            'valoresCancelamento' => [
+                'origem' => $post ? $this->texto('origem') : 'cliente',
+                'motivo' => $this->texto('motivo'),
+                'conferencia' => $this->texto('conferencia'),
+                'observacoes_tecnicas' => $this->texto('observacoes_tecnicas'),
+                'valor_devido' => $devidoTexto,
+                'desconto' => $descontoTexto,
+                'valor_devolucao' => $post && $this->texto('valor_devolucao') !== '' ? $this->texto('valor_devolucao') : ($acerto !== null && $acerto['a_devolver_c'] > 0 ? number_format($acerto['a_devolver_c'] / 100, 2, ',', '.') : ''),
+                'data_devolucao' => $post && $this->texto('data_devolucao') !== '' ? $this->texto('data_devolucao') : date('Y-m-d'),
+                'forma_devolucao' => $post && $this->texto('forma_devolucao') !== '' ? $this->texto('forma_devolucao') : 'Pix',
+                'referencia_devolucao' => $this->texto('referencia_devolucao'),
+            ],
         ];
         $this->data['view'] = 'trifase/cancelamento';
         return $this->layout();

@@ -59,7 +59,7 @@ foreach ($financeiroEventos as $e) {
             <?php } ?>
         </div>
         <div class="flex flex-wrap items-center gap-3"><span class="text-body-md text-muted">Situação de pagamento</span><?= component('pill-status', ['label' => $financeiroResumo['situacao'], 'variant' => $financeiroResumo['saldo_c'] === 0 ? 'success' : 'warning']) ?></div>
-        <?php if ($permite('aLancamento') && $financeiroResumo['saldo_c'] > 0 && $osFinanceira->status !== 'Cancelado') { ?>
+        <?php if ($permite('aLancamento') && $financeiroResumo['saldo_c'] > 0 && ($osFinanceira->status !== 'Cancelado' || ($acertoCancelamentoReceber ?? false))) { ?>
             <section class="rounded-card border border-border bg-surface p-4">
                 <h2 class="mb-3 text-heading-sm text-text">Registrar recebimento</h2>
                 <?php $this->load->view('trifase/formulario-recebimento', ['recebimentoIntegrado' => false]); ?>
@@ -71,7 +71,7 @@ foreach ($financeiroEventos as $e) {
             <ul class="flex flex-col gap-3">
                 <?php foreach ($financeiroEventos as $e) { ?>
                     <li class="border-b border-border pb-3 text-body-md text-text">
-                        <?= e('#' . $e->id . ' · ' . ($e->tipo === 'receber' ? 'Recebimento' : 'Estorno do registro #' . $e->referencia_id) . ' · ' . dinheiro($e->valor_c / 100) . ' · ' . dataBr($e->data_evento) . ' · ' . $e->forma . ' · Operador #' . $e->usuario_id) ?>
+                        <?= e('#' . $e->id . ' · ' . ($e->tipo === 'receber' ? 'Recebimento' : ($e->tipo === 'devolver' ? 'Devolução por cancelamento' : 'Estorno do registro #' . $e->referencia_id)) . ' · ' . dinheiro($e->valor_c / 100) . ' · ' . dataBr($e->data_evento) . ' · ' . $e->forma . ' · Operador #' . $e->usuario_id) ?>
                         <?php if ($e->tipo === 'receber') { ?>
                             <div class="mt-2"><?= component('link', ['label' => in_array($e->id, $estornados) ? 'Consultar registro estornado' : 'Abrir recibo deste recebimento', 'href' => site_url('trifase_financeiro/recibo/' . $id . '/' . (int) $e->id), 'attrs' => ['target' => '_blank', 'rel' => 'noopener']]) ?></div>
                         <?php } ?>

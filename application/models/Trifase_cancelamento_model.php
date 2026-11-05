@@ -90,14 +90,15 @@ class Trifase_cancelamento_model extends CI_Model
             $f = new Trifase_financeiro_model();
             $f->db = $this->db;
             $financeiro = $f->resumo($id);
-            $bloqueios[] = 'Existe obrigação financeira formalizada. Concilie cobrança, recebimentos e eventuais devoluções antes de confirmar; este fluxo não baixa nem apaga a obrigação.';
-        }
-        if ((int) ($os->faturado ?? 0) === 1 || ! empty($os->lancamento)) {
-            $bloqueios[] = 'Existe faturamento ou lançamento associado. A regularização financeira deve ser concluída antes do cancelamento.';
+        } elseif ((int) ($os->faturado ?? 0) === 1 || ! empty($os->lancamento)) {
+            $bloqueios[] = 'Existe faturamento ou lançamento anterior não conciliado. Concilie-o no financeiro antes do cancelamento.';
         }
         require_once APPPATH . 'helpers/os_helper.php';
         if ($this->db->table_exists('lancamentos') && $this->db->where_in('descricao', osDescricoesDaFatura($id))->count_all_results('lancamentos')) {
-            $bloqueios[] = 'Existem lançamentos nativos vinculados à fatura desta OS. Concilie-os no financeiro.';
+            if ($financeiro === null || ! $this->db->table_exists('trifase_financeiro_projecoes')
+                || $this->db->where_in('descricao', osDescricoesDaFatura($id))->where('NOT EXISTS (SELECT 1 FROM trifase_financeiro_projecoes tfp WHERE tfp.lancamento_id = lancamentos.idLancamentos AND tfp.os_id = ' . $id . ')', null, false)->count_all_results('lancamentos') > 0) {
+                $bloqueios[] = 'Existem lançamentos nativos vinculados à fatura desta OS. Concilie-os no financeiro.';
+            }
         }
         if ($this->db->table_exists('trifase_financeiro_eventos') && $this->db->where('os_id', $id)->count_all_results('trifase_financeiro_eventos') && $financeiro === null) {
             $bloqueios[] = 'Há eventos financeiros sem obrigação identificada. Solicite conferência do financeiro.';
@@ -193,6 +194,63 @@ class Trifase_cancelamento_model extends CI_Model
         });
     }
 
+    /** Cálculo do acerto financeiro de cancelamento: 3 resultados possíveis sem cobrança automática. */
+    public function calcularAcerto(?array $financeiro, int $devido, int $desconto): array
+    {
+        if ($devido < 0 || $devido > 999999999 || $desconto < 0 || $desconto > $devido) {
+            throw new DomainException('Informe valor devido e desconto negociado válidos (o desconto não pode superar o valor devido).');
+        }
+        $liquido = $devido - $desconto;
+        $recebidoBruto = $financeiro !== null ? (int) ($financeiro['recebido_original_c'] ?? $financeiro['recebido_c']) : 0;
+        $jaDevolvido = $financeiro !== null ? (int) ($financeiro['reembolsado_c'] ?? 0) : 0;
+        $retido = $financeiro !== null ? (int) $financeiro['recebido_c'] : 0;
+        $aDevolver = max(0, $retido - $liquido);
+        $aReceber = max(0, $liquido - $retido);
+        $resultado = $aDevolver > 0 ? 'a_devolver' : ($aReceber > 0 ? 'a_receber' : 'sem_pendencias');
+        return [
+            'valor_devido_c' => $devido,
+            'desconto_c' => $desconto,
+            'total_final_c' => $liquido,
+            'recebido_bruto_c' => $recebidoBruto,
+            'ja_devolvido_c' => $jaDevolvido,
+            'recebido_liquido_c' => $retido,
+            'a_devolver_c' => $aDevolver,
+            'a_receber_c' => $aReceber,
+            'resultado' => $resultado,
+        ];
+    }
+
+    public function centavos(mixed $valor, bool $padraoZero = true): int
+    {
+        if (is_int($valor)) {
+            if ($valor < 0 || $valor > 999999999) {
+                throw new DomainException('Valor monetário inválido.');
+            }
+            return $valor;
+        }
+        if (! is_string($valor)) {
+            if ($padraoZero && $valor === null) {
+                return 0;
+            }
+            throw new DomainException('Valor monetário inválido.');
+        }
+        $t = trim(str_replace(['R$', ' '], '', $valor));
+        if ($t === '') {
+            if ($padraoZero) {
+                return 0;
+            }
+            throw new DomainException('Informe o valor monetário.');
+        }
+        if (str_contains($t, ',')) {
+            $t = str_replace('.', '', $t);
+            $t = str_replace(',', '.', $t);
+        }
+        if (! preg_match('/\A(\d{1,7})(?:\.(\d{1,2}))?\z/', $t, $m)) {
+            throw new DomainException('Valor monetário inválido.');
+        }
+        return (int) $m[1] * 100 + (int) str_pad($m[2] ?? '', 2, '0');
+    }
+
     public function confirmar(int $id, int $pedido, array $dados, int $usuario, string $operacao): int
     {
         return $this->executar($id, $usuario, $operacao, ['confirmar', $pedido, $dados], function ($os) use ($id, $pedido, $dados, $usuario, $operacao) {
@@ -211,9 +269,40 @@ class Trifase_cancelamento_model extends CI_Model
             if (($dados['financeiro_conferido'] ?? '') !== '1' || ($dados['confirmar'] ?? '') !== '1') {
                 throw new DomainException('Confirme a conferência financeira e o cancelamento.');
             }
-            $observacoes = $this->texto($dados['conferencia'] ?? '', 2000, false);
+            $devido = $this->centavos($dados['valor_devido'] ?? null);
+            $desconto = $this->centavos($dados['desconto'] ?? null);
+            $acerto = $this->calcularAcerto($c['financeiro'], $devido, $desconto);
+            $exigeAcerto = $c['financeiro'] !== null || $devido > 0 || $desconto > 0;
+            $observacoes = $this->texto($dados['conferencia'] ?? '', 2000, $exigeAcerto);
+            if ($exigeAcerto) {
+                if (($dados['acerto_confirmado'] ?? '') !== '1') {
+                    throw new DomainException('Confirme os valores do acerto financeiro (valor devido, desconto e cálculo de devolução ou saldo) antes de concluir o cancelamento.');
+                }
+                require_once APPPATH . 'models/Trifase_financeiro_model.php';
+                $f = new Trifase_financeiro_model();
+                $f->db = $this->db;
+                $dataDev = '';
+                $formaDev = '';
+                $refDev = '';
+                if ($acerto['a_devolver_c'] > 0) {
+                    $informadoDev = $this->centavos($dados['valor_devolucao'] ?? null, false);
+                    if ($informadoDev !== $acerto['a_devolver_c']) {
+                        throw new DomainException('O valor informado para devolução deve corresponder exatamente ao valor a devolver calculado no acerto.');
+                    }
+                    $dataDev = $this->texto($dados['data_devolucao'] ?? '', 10, true);
+                    $formaDev = $this->texto($dados['forma_devolucao'] ?? '', 64, true);
+                    $refDev = $this->texto($dados['referencia_devolucao'] ?? '', 300, true);
+                    $acerto['devolucao'] = ['valor_c' => $informadoDev, 'data' => $dataDev, 'forma' => $formaDev, 'referencia' => $refDev];
+                } elseif (isset($dados['valor_devolucao']) && trim((string) $dados['valor_devolucao']) !== '' && $this->centavos($dados['valor_devolucao']) !== 0) {
+                    throw new DomainException('Não há valor a devolver neste cancelamento.');
+                }
+                $c['financeiro_apos_acerto'] = $f->acertarCancelamento($os, $devido, $desconto, $acerto['a_devolver_c'], $dataDev, $formaDev, $refDev, $observacoes, $usuario, $operacao);
+            } elseif (isset($dados['valor_devolucao']) && trim((string) $dados['valor_devolucao']) !== '' && $this->centavos($dados['valor_devolucao']) !== 0) {
+                throw new DomainException('Não há valor a devolver neste cancelamento.');
+            }
             $motivo = $observacoes !== '' ? $observacoes : 'Conferência financeira confirmada após a liberação técnica; sem observações adicionais.';
-            $c['conferencia'] = ['tecnica_evento_id' => (int) $tecnica->id, 'tecnico_id' => (int) $tecnica->usuario_id, 'financeiro_conferido' => true, 'observacoes' => $observacoes];
+            $c['acerto'] = $acerto;
+            $c['conferencia'] = ['tecnica_evento_id' => (int) $tecnica->id, 'tecnico_id' => (int) $tecnica->usuario_id, 'financeiro_conferido' => true, 'observacoes' => $observacoes, 'acerto' => $acerto];
             $evento = $this->evento($id, 'confirmar', $pedido, $p->solicitante, $motivo, $c, $usuario, $operacao);
             if (! $this->db->insert('os_historico', ['os_id' => $id, 'status_anterior' => $os->status, 'status_novo' => 'Cancelado', 'usuarios_id' => $usuario, 'data_hora' => date('Y-m-d H:i:s')])
                 || ! $this->db->where('idOs', $id)->update('os', ['status' => 'Cancelado'])) {

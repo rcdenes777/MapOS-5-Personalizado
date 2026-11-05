@@ -279,10 +279,14 @@ class Trifase_financeiro extends MY_Controller
     {
         $gerida = trifaseFinanceiroOsGerida($this->db, (int) $os->idOs);
         $cancelamentoPendente = $this->db->table_exists('trifase_cancelamentos')
-            ? $this->db->select('id, tipo, criado_em')->where('os_id', (int) $os->idOs)->where_in('tipo', ['solicitar', 'retirar', 'confirmar'])->order_by('id', 'desc')->get('trifase_cancelamentos', 1)->row()
+            ? $this->db->select('id, tipo, criado_em, retrato')->where('os_id', (int) $os->idOs)->where_in('tipo', ['solicitar', 'retirar', 'confirmar'])->order_by('id', 'desc')->get('trifase_cancelamentos', 1)->row()
             : null;
+        $retratoCancelamento = ($cancelamentoPendente->tipo ?? '') === 'confirmar' && is_string($cancelamentoPendente->retrato ?? null)
+            ? json_decode($cancelamentoPendente->retrato, true, 32, JSON_THROW_ON_ERROR)
+            : [];
         $this->data['osFinanceira'] = $os;
         $this->data['cancelamentoPendenteFinanceiro'] = ($cancelamentoPendente->tipo ?? '') === 'solicitar' && $os->status !== 'Cancelado';
+        $this->data['acertoCancelamentoReceber'] = ($retratoCancelamento['acerto']['resultado'] ?? '') === 'a_receber';
         $this->data['financeiroResumo'] = $gerida ? $this->financeiro_os->resumo((int) $os->idOs) : null;
         $this->data['financeiroEventos'] = $gerida ? $this->financeiro_os->historico((int) $os->idOs) : [];
         $this->data['financeiroErro'] = $erro;

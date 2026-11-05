@@ -212,24 +212,124 @@ final class TrifaseCancelamentoTest extends MaposTestCase
         $this->assertTrue($fila[0]['tecnica_concluida']);
     }
 
-    public function testObrigacaoComRecebimentoBloqueiaMesmoComTecnicaPronta(): void
+    public function testObrigacaoComRecebimentoExigeAcertoECalculaOsTresCasosAutomaticamente(): void
     {
-        $this->db->query('CREATE TABLE trifase_financeiro_obrigacoes (os_id INTEGER, bruto_c INTEGER, desconto_c INTEGER)');
-        $this->db->query('INSERT INTO trifase_financeiro_obrigacoes VALUES (1, 10000, 0)');
-        $this->db->query('CREATE TABLE trifase_financeiro_eventos (os_id INTEGER, tipo TEXT, valor_c INTEGER, id INTEGER)');
-        $this->db->query("INSERT INTO trifase_financeiro_eventos VALUES (1, 'receber', 5000, 1)");
+        $this->db->query('CREATE TABLE lancamentos (idLancamentos INTEGER PRIMARY KEY AUTOINCREMENT, descricao TEXT, valor TEXT, desconto TEXT, valor_desconto TEXT, tipo_desconto TEXT, data_vencimento TEXT, data_pagamento TEXT, baixado INTEGER, clientes_id INTEGER, cliente_fornecedor TEXT, forma_pgto TEXT, tipo TEXT, usuarios_id INTEGER)');
+        $this->db->query('CREATE TABLE trifase_financeiro_obrigacoes (os_id INTEGER, bruto_c INTEGER, desconto_c INTEGER, vencimento TEXT, principal_id INTEGER, usuario_id INTEGER)');
+        $this->db->query('CREATE TABLE trifase_financeiro_eventos (id INTEGER PRIMARY KEY AUTOINCREMENT, os_id INTEGER, tipo TEXT, referencia_id INTEGER, valor_c INTEGER, desconto_c INTEGER, data_evento TEXT, forma TEXT, lancamento_id INTEGER, usuario_id INTEGER, motivo TEXT, operacao TEXT UNIQUE, payload_hash TEXT)');
+        $this->db->query('CREATE TABLE trifase_financeiro_projecoes (lancamento_id INTEGER PRIMARY KEY, os_id INTEGER, ativo INTEGER)');
+        $this->db->data_cache = [];
+        require_once APPPATH . 'models/Trifase_financeiro_model.php';
+        $f = new Trifase_financeiro_model();
+        $f->db = $this->db;
+        $f->formalizar(1, 20000, 0, '2026-11-10', 7);
+        $f->receber(1, 20000, '2026-11-04', 'Pix', 'recebimento_os1_20000', 7);
+
+        $pedido = $this->pedido();
+        $this->devolverPecas();
+        $this->modelo->conferirTecnica(1, $pedido, $this->dadosTecnicos(), 2, 'tecnica_123456789');
+
+        // Sem confirmar acerto_confirmado, continua bloqueado.
+        try {
+            $this->modelo->confirmar(1, $pedido, $this->dados(), 7, 'confirmacao_12345678');
+            $this->fail('Cancelou cobrança sem acerto confirmado');
+        } catch (DomainException $e) {
+            $this->assertStringContainsString('acerto', $e->getMessage());
+            $this->assertSame(20000, $f->resumo(1)['recebido_c']);
+            $this->assertSame('Aprovado', $this->db->where('idOs', 1)->get('os')->row()->status);
+        }
+
+        // Cálculo dos 3 casos:
+        // 1) Sem pendências (ex.: R$ 50 devido e R$ 50 desconto sobre R$ 0 recebido = 0; ou R$ 200 devido sobre R$ 200 recebido = 0)
+        $semPendencia = $this->modelo->calcularAcerto(['recebido_c' => 0, 'total_c' => 5000], 5000, 5000);
+        $this->assertSame('sem_pendencias', $semPendencia['resultado']);
+        $this->assertSame(0, $semPendencia['total_final_c']);
+        $this->assertSame(0, $semPendencia['a_devolver_c']);
+        $this->assertSame(0, $semPendencia['a_receber_c']);
+
+        // 2) Valor a receber (ex.: R$ 80 devido e R$ 30 desconto sobre R$ 0 recebido = R$ 50 a receber)
+        $aReceber = $this->modelo->calcularAcerto(['recebido_c' => 0, 'total_c' => 8000], 8000, 3000);
+        $this->assertSame('a_receber', $aReceber['resultado']);
+        $this->assertSame(5000, $aReceber['a_receber_c']);
+
+        // 3) Caso misto / Valor a devolver (pagou R$ 200, combinado R$ 50 pelo diagnóstico -> R$ 150 a devolver)
+        $misto = $this->modelo->calcularAcerto($f->resumo(1), 5000, 0);
+        $this->assertSame('a_devolver', $misto['resultado']);
+        $this->assertSame(15000, $misto['a_devolver_c']);
+        $this->assertSame(0, $misto['a_receber_c']);
+
+        // Exige comprovante e valor exato da devolução de R$ 150,00:
+        try {
+            $this->modelo->confirmar(1, $pedido, array_replace($this->dados(), [
+                'valor_devido' => '50,00', 'desconto' => '0,00', 'acerto_confirmado' => '1',
+                'valor_devolucao' => '100,00', 'data_devolucao' => '2026-11-05', 'forma_devolucao' => 'Pix', 'referencia_devolucao' => 'PIX-123',
+            ]), 7, 'confirmacao_erro_123');
+            $this->fail('Aceitou devolução divergente do cálculo');
+        } catch (DomainException $e) {
+            $this->assertStringContainsString('devolução', $e->getMessage());
+        }
+
+        // Confirma o caso misto registrando R$ 150,00 devolvidos e mantendo R$ 50,00 retidos pelo diagnóstico:
+        $this->modelo->confirmar(1, $pedido, array_replace($this->dados(), [
+            'valor_devido' => '50,00', 'desconto' => '0,00', 'acerto_confirmado' => '1',
+            'valor_devolucao' => '150,00', 'data_devolucao' => '2026-11-05', 'forma_devolucao' => 'Pix',
+            'referencia_devolucao' => 'PIX-DEV-150', 'conferencia' => 'Retido R$ 50,00 de diagnóstico e devolvido R$ 150,00.',
+        ]), 7, 'confirmacao_ok_12345');
+
+        $this->assertSame('Cancelado', $this->db->where('idOs', 1)->get('os')->row()->status);
+        $resumoFinal = $f->resumo(1);
+        $this->assertSame(5000, $resumoFinal['total_c']);
+        $this->assertSame(5000, $resumoFinal['recebido_c']);
+        $this->assertSame(15000, $resumoFinal['reembolsado_c']);
+        $this->assertSame(0, $resumoFinal['saldo_c']);
+        $this->assertSame('Quitado', $resumoFinal['situacao']);
+    }
+
+    public function testAcertoComValorAReceberPermiteQuitacaoPosteriorDaTaxaDeDiagnostico(): void
+    {
+        $this->db->query('CREATE TABLE lancamentos (idLancamentos INTEGER PRIMARY KEY AUTOINCREMENT, descricao TEXT, valor TEXT, desconto TEXT, valor_desconto TEXT, tipo_desconto TEXT, data_vencimento TEXT, data_pagamento TEXT, baixado INTEGER, clientes_id INTEGER, cliente_fornecedor TEXT, forma_pgto TEXT, tipo TEXT, usuarios_id INTEGER)');
+        $this->db->query('CREATE TABLE trifase_financeiro_obrigacoes (os_id INTEGER, bruto_c INTEGER, desconto_c INTEGER, vencimento TEXT, principal_id INTEGER, usuario_id INTEGER)');
+        $this->db->query('CREATE TABLE trifase_financeiro_eventos (id INTEGER PRIMARY KEY AUTOINCREMENT, os_id INTEGER, tipo TEXT, referencia_id INTEGER, valor_c INTEGER, desconto_c INTEGER, data_evento TEXT, forma TEXT, lancamento_id INTEGER, usuario_id INTEGER, motivo TEXT, operacao TEXT UNIQUE, payload_hash TEXT)');
+        $this->db->query('CREATE TABLE trifase_financeiro_projecoes (lancamento_id INTEGER PRIMARY KEY, os_id INTEGER, ativo INTEGER)');
+        $this->db->data_cache = [];
+        require_once APPPATH . 'models/Trifase_financeiro_model.php';
+        $f = new Trifase_financeiro_model();
+        $f->db = $this->db;
+
+        $pedido = $this->pedido();
+        $this->devolverPecas();
+        $this->modelo->conferirTecnica(1, $pedido, $this->dadosTecnicos(), 2, 'tecnica_123456789');
+        $this->modelo->confirmar(1, $pedido, array_replace($this->dados(), [
+            'valor_devido' => '80,00', 'desconto' => '30,00', 'acerto_confirmado' => '1',
+            'conferencia' => 'Taxa de diagnóstico acordada com desconto de R$ 30,00.',
+        ]), 7, 'confirmacao_receber_1');
+
+        $this->assertSame('Cancelado', $this->db->where('idOs', 1)->get('os')->row()->status);
+        $resumo = $f->resumo(1);
+        $this->assertSame(5000, $resumo['total_c']);
+        $this->assertSame(5000, $resumo['saldo_c']);
+        $f->receber(1, 5000, '2026-11-05', 'Pix', 'receber_taxa_cancel_1', 7);
+        $this->assertSame(0, $f->resumo(1)['saldo_c']);
+        $this->assertSame('Quitado', $f->resumo(1)['situacao']);
+    }
+
+    public function testDescontoNoCancelamentoNaoAlteraCategoriaDoCliente(): void
+    {
+        $this->db->query('CREATE TABLE trifase_cadastros_eventos (id INTEGER PRIMARY KEY AUTOINCREMENT, tipo TEXT, recurso_id INTEGER, antes TEXT, depois TEXT, motivo TEXT, usuario_id INTEGER, criado_em TEXT, operacao TEXT, payload_hash TEXT)');
+        $this->db->insert('trifase_cadastros_eventos', ['tipo' => 'cliente', 'recurso_id' => 3, 'antes' => '{}', 'depois' => '{"categoria":"ouro","orientacoes":"Bom cliente"}', 'motivo' => 'Inicial', 'usuario_id' => 7, 'criado_em' => '2026-11-01 10:00:00', 'operacao' => 'op_inicial_cliente_3', 'payload_hash' => 'hash']);
         $this->db->data_cache = [];
         $pedido = $this->pedido();
         $this->devolverPecas();
         $this->modelo->conferirTecnica(1, $pedido, $this->dadosTecnicos(), 2, 'tecnica_123456789');
-        try {
-            $this->modelo->confirmar(1, $pedido, $this->dados(), 7, 'confirmacao_12345678');
-            $this->fail('Cancelou cobrança');
-        } catch (DomainException $e) {
-            $this->assertStringContainsString('financeira', $e->getMessage());
-            $this->assertSame(5000, (int) $this->db->get('trifase_financeiro_eventos')->row()->valor_c);
-            $this->assertSame('Aprovado', $this->db->where('idOs', 1)->get('os')->row()->status);
-        }
+        $this->modelo->confirmar(1, $pedido, array_replace($this->dados(), [
+            'valor_devido' => '50,00', 'desconto' => '50,00', 'acerto_confirmado' => '1',
+            'conferencia' => 'Desconto concedido para encerramento do atendimento.',
+        ]), 7, 'confirmacao_desconto_50');
+
+        $this->assertSame('Cancelado', $this->db->where('idOs', 1)->get('os')->row()->status);
+        $this->assertSame(1, $this->db->count_all('trifase_cadastros_eventos'));
+        $eventoCliente = $this->db->where('tipo', 'cliente')->where('recurso_id', 3)->order_by('id', 'desc')->get('trifase_cadastros_eventos', 1)->row();
+        $this->assertSame('ouro', json_decode($eventoCliente->depois, true)['categoria']);
     }
 
     public function testFalhaNoHistoricoPreservaConferenciaTecnicaSemCancelarParcialmente(): void

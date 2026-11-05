@@ -2,8 +2,13 @@
 $pendenteCancelamento = ($pedidoCancelamento->tipo ?? '') === 'solicitar'; ?>
 <div class="mx-auto flex max-w-4xl flex-col gap-5 py-4">
     <h1 class="text-heading-xl"><?= e('Cancelamento da OS #' . $idCancelamento) ?></h1>
+    <?php if ($pendenteCancelamento && $osCancelamento->status !== 'Cancelado') { ?>
+        <div class="flex flex-wrap items-center gap-2">
+            <?= component('pill-status', ['label' => 'Cancelamento solicitado — aguardando análise financeira', 'variant' => 'warning']) ?>
+        </div>
+    <?php } ?>
     <?= component('link', ['label' => 'Voltar à OS', 'href' => site_url('os/visualizar/' . $idCancelamento)]) ?>
-    <p class="text-body-md text-muted">O pedido não cancela o atendimento. Peças utilizadas, serviços executados e pagamentos precisam ser conciliados antes da confirmação. Nenhum dinheiro é devolvido por esta tela.</p>
+    <p class="text-body-md text-muted">O pedido não cancela o atendimento. Peças utilizadas, serviços executados e pagamentos precisam ser conciliados antes da confirmação.</p>
     <?php if ($erroCancelamento !== null) { ?><?= component('alert', ['variant' => 'danger', 'message' => $erroCancelamento]) ?><?php } ?>
     <?php if (! $pendenteCancelamento && $osCancelamento->status !== 'Cancelado' && $podePedirCancelamento) { ?>
         <section class="rounded-card border border-border bg-surface p-4">
@@ -77,16 +82,68 @@ $pendenteCancelamento = ($pedidoCancelamento->tipo ?? '') === 'solicitar'; ?>
             <?php } ?>
         </section>
         <?php if ($podeConfirmarCancelamento) { ?>
-            <?php $financeiroBloqueado = ! $tecnicaLiberada || $bloqueiosCancelamento !== []; ?>
+            <?php
+            $financeiroBloqueado = ! $tecnicaLiberada || $bloqueiosCancelamento !== [];
+            $acerto = $acertoCancelamento ?? [
+                'valor_devido_c' => (int) ($financeiroCancelamento['total_c'] ?? 0),
+                'desconto_c' => 0,
+                'total_final_c' => (int) ($financeiroCancelamento['total_c'] ?? 0),
+                'recebido_bruto_c' => (int) ($financeiroCancelamento['recebido_original_c'] ?? $financeiroCancelamento['recebido_c'] ?? 0),
+                'ja_devolvido_c' => (int) ($financeiroCancelamento['reembolsado_c'] ?? 0),
+                'recebido_liquido_c' => (int) ($financeiroCancelamento['recebido_c'] ?? 0),
+                'a_devolver_c' => 0,
+                'a_receber_c' => (int) ($financeiroCancelamento['saldo_c'] ?? 0),
+                'resultado' => ((int) ($financeiroCancelamento['saldo_c'] ?? 0)) > 0 ? 'a_receber' : 'sem_pendencias',
+            ];
+            $exigeAcerto = $financeiroCancelamento !== null || $acerto['valor_devido_c'] > 0 || $acerto['desconto_c'] > 0;
+            ?>
             <section class="rounded-card border border-border bg-surface p-4">
-                <h2 class="text-heading-sm">Conferência financeira e confirmação</h2>
+                <h2 class="text-heading-sm">Conferência financeira e acerto do cancelamento</h2>
                 <?php if (! $tecnicaLiberada) { ?><p class="mt-3 text-warning-ink">Aguardando a remoção das peças devolvidas e a conferência técnica registrada. Esta etapa só será liberada depois.</p><?php } ?>
+                <div class="mt-4 grid gap-3 rounded-xl border border-border p-4 text-body-md">
+                    <div class="flex flex-wrap items-center justify-between gap-2">
+                        <h3 class="text-label-md">Cálculo do acerto financeiro</h3>
+                        <?= component('pill-status', match ($acerto['resultado']) {
+                            'a_devolver' => ['label' => 'Valor a devolver ao cliente: ' . dinheiro($acerto['a_devolver_c'] / 100), 'variant' => 'warning'],
+                            'a_receber' => ['label' => 'Valor a receber do cliente: ' . dinheiro($acerto['a_receber_c'] / 100), 'variant' => 'warning'],
+                            default => ['label' => 'Sem valores a acertar', 'variant' => 'success'],
+                        }) ?>
+                    </div>
+                    <dl class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+                        <div><dt class="text-caption text-muted">Cobrança original</dt><dd class="font-medium"><?= e($financeiroCancelamento !== null ? dinheiro($financeiroCancelamento['total_c'] / 100) : 'R$ 0,00') ?></dd></div>
+                        <div><dt class="text-caption text-muted">Recebido</dt><dd class="font-medium"><?= e(dinheiro($acerto['recebido_bruto_c'] / 100)) ?></dd></div>
+                        <div><dt class="text-caption text-muted">Já devolvido</dt><dd class="font-medium"><?= e(dinheiro($acerto['ja_devolvido_c'] / 100)) ?></dd></div>
+                        <div><dt class="text-caption text-muted">Total final devido após desconto</dt><dd class="font-medium"><?= e(dinheiro($acerto['total_final_c'] / 100)) ?></dd></div>
+                    </dl>
+                    <p class="text-caption text-muted">O sistema calcula automaticamente o valor líquido a devolver ou a receber a partir do valor devido e do desconto informados abaixo. Conceder desconto não altera a classificação do cliente automaticamente.</p>
+                </div>
                 <form method="post" action="<?= e(site_url('trifase_cancelamentos/confirmar/' . $idCancelamento)) ?>" class="mt-4 grid gap-4" <?= js_module('formulario/padrao') ?>>
                     <input type="hidden" name="<?= e($this->security->get_csrf_token_name()) ?>" value="<?= e($this->security->get_csrf_hash()) ?>">
                     <input type="hidden" name="operacao" value="<?= e(bin2hex(random_bytes(16))) ?>"><input type="hidden" name="pedido_id" value="<?= e((int) $pedidoCancelamento->id) ?>"><input type="hidden" name="hash" value="<?= e($hashCancelamento) ?>">
-                    <?= component('checkbox', ['name' => 'financeiro_conferido', 'value' => '1', 'label' => 'Conferi: não há cobrança, pagamento recebido, reembolso ou valor a acertar neste cancelamento.', 'required' => true, 'disabled' => $financeiroBloqueado]) ?>
-                    <?= component('textarea', ['name' => 'conferencia', 'label' => 'Observações da conferência (opcional)', 'value' => $valoresCancelamento['conferencia'], 'attrs' => ['maxlength' => 2000]]) ?>
-                    <?= component('checkbox', ['name' => 'confirmar', 'value' => '1', 'label' => 'Confirmo o cancelamento da OS após as conferências técnica e financeira. Esta confirmação não movimenta estoque nem dinheiro.', 'required' => true, 'disabled' => $financeiroBloqueado]) ?>
+                    <div class="grid gap-4 sm:grid-cols-2">
+                        <?= component('input', ['name' => 'valor_devido', 'label' => 'Valor devido pelo trabalho ou diagnóstico (R$)', 'value' => $valoresCancelamento['valor_devido'] ?? '0,00', 'disabled' => $financeiroBloqueado, 'attrs' => ['inputmode' => 'decimal']]) ?>
+                        <?= component('input', ['name' => 'desconto', 'label' => 'Desconto negociado (R$)', 'value' => $valoresCancelamento['desconto'] ?? '0,00', 'disabled' => $financeiroBloqueado, 'attrs' => ['inputmode' => 'decimal']]) ?>
+                    </div>
+                    <div>
+                        <?= component('button', ['label' => 'Simular cálculo do acerto', 'variant' => 'outline', 'type' => 'submit', 'disabled' => $financeiroBloqueado, 'attrs' => ['formmethod' => 'get', 'formaction' => site_url('trifase_cancelamentos/visualizar/' . $idCancelamento), 'formnovalidate' => 'formnovalidate']]) ?>
+                    </div>
+                    <?php if ($acerto['a_devolver_c'] > 0) { ?>
+                        <div class="grid gap-4 rounded-xl border border-border p-4">
+                            <h3 class="text-label-md">Registrar devolução ao cliente (<?= e(dinheiro($acerto['a_devolver_c'] / 100)) ?>)</h3>
+                            <div class="grid gap-4 sm:grid-cols-3">
+                                <?= component('input', ['name' => 'valor_devolucao', 'label' => 'Valor devolvido (R$)', 'value' => $valoresCancelamento['valor_devolucao'] ?? number_format($acerto['a_devolver_c'] / 100, 2, ',', '.'), 'required' => true, 'disabled' => $financeiroBloqueado, 'attrs' => ['inputmode' => 'decimal']]) ?>
+                                <?= component('input', ['name' => 'data_devolucao', 'type' => 'date', 'label' => 'Data da devolução', 'value' => $valoresCancelamento['data_devolucao'] ?? date('Y-m-d'), 'required' => true, 'disabled' => $financeiroBloqueado]) ?>
+                                <?= component('select', ['name' => 'forma_devolucao', 'label' => 'Forma da devolução', 'selected' => $valoresCancelamento['forma_devolucao'] ?? 'Pix', 'options' => array_combine(['Pix', 'Dinheiro', 'Transferência', 'Cartão de Crédito', 'Cartão de Débito'], ['Pix', 'Dinheiro', 'Transferência', 'Cartão de Crédito', 'Cartão de Débito']), 'disabled' => $financeiroBloqueado]) ?>
+                            </div>
+                            <?= component('input', ['name' => 'referencia_devolucao', 'label' => 'Comprovante ou referência da devolução', 'value' => $valoresCancelamento['referencia_devolucao'] ?? '', 'required' => true, 'disabled' => $financeiroBloqueado, 'attrs' => ['maxlength' => 300]]) ?>
+                        </div>
+                    <?php } ?>
+                    <?= component('textarea', ['name' => 'conferencia', 'label' => $exigeAcerto ? 'Motivo interno / justificativa do acerto financeiro' : 'Observações da conferência (opcional)', 'value' => $valoresCancelamento['conferencia'] ?? '', 'required' => $exigeAcerto, 'disabled' => $financeiroBloqueado, 'attrs' => ['maxlength' => 2000]]) ?>
+                    <?php if ($exigeAcerto) { ?>
+                        <?= component('checkbox', ['name' => 'acerto_confirmado', 'value' => '1', 'label' => 'Confirmo o valor devido, o desconto negociado e o resultado do acerto financeiro calculado para este cancelamento.', 'required' => true, 'disabled' => $financeiroBloqueado]) ?>
+                    <?php } ?>
+                    <?= component('checkbox', ['name' => 'financeiro_conferido', 'value' => '1', 'label' => 'Conferi os valores, pagamentos recebidos e eventuais devoluções deste cancelamento.', 'required' => true, 'disabled' => $financeiroBloqueado]) ?>
+                    <?= component('checkbox', ['name' => 'confirmar', 'value' => '1', 'label' => 'Confirmo o cancelamento da OS após as conferências técnica e financeira.', 'required' => true, 'disabled' => $financeiroBloqueado]) ?>
                     <?= component('button', ['label' => 'Confirmar cancelamento da OS', 'type' => 'submit', 'disabled' => $financeiroBloqueado]) ?>
                 </form>
             </section>

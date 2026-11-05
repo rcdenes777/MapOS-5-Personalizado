@@ -37,13 +37,13 @@ final class Trifase_financeiro_busca
         }
         // Mesma aritmética inteira de resumos()/trifaseGarantiaResumo():
         // recebimentos menos estornos e reembolsos; obrigação menos créditos ativos.
-        $eventos = "(SELECT os_id, SUM(CASE WHEN tipo = 'receber' THEN valor_c ELSE -valor_c END) AS recebido_c FROM trifase_financeiro_eventos GROUP BY os_id)";
+        $eventos = "(SELECT os_id, SUM(CASE WHEN tipo = 'receber' THEN valor_c WHEN tipo = 'estornar' THEN -valor_c ELSE 0 END) AS recebido_c, SUM(CASE WHEN tipo = 'devolver' THEN valor_c ELSE 0 END) AS devolvido_c FROM trifase_financeiro_eventos GROUP BY os_id)";
         $creditos = $db->table_exists('trifase_garantia_reembolsos')
             ? '(SELECT origem_id, SUM(valor_c) AS reembolsado_c, SUM(credito_c) AS credito_c FROM trifase_garantia_reembolsos WHERE cancelado_id IS NULL GROUP BY origem_id)'
             : '(SELECT NULL AS origem_id, 0 AS reembolsado_c, 0 AS credito_c)';
         $projecao = '(SELECT o.os_id, o.bruto_c - o.desconto_c - COALESCE(c.credito_c, 0) AS total_c,'
-            . ' COALESCE(e.recebido_c, 0) - COALESCE(c.reembolsado_c, 0) AS recebido_c,'
-            . ' COALESCE(c.credito_c, 0) AS credito_c, COALESCE(c.reembolsado_c, 0) AS reembolsado_c'
+            . ' COALESCE(e.recebido_c, 0) - COALESCE(e.devolvido_c, 0) - COALESCE(c.reembolsado_c, 0) AS recebido_c,'
+            . ' COALESCE(c.credito_c, 0) AS credito_c, COALESCE(e.devolvido_c, 0) + COALESCE(c.reembolsado_c, 0) AS reembolsado_c'
             . ' FROM trifase_financeiro_obrigacoes o LEFT JOIN ' . $eventos . ' e ON e.os_id = o.os_id'
             . ' LEFT JOIN ' . $creditos . ' c ON c.origem_id = o.os_id) tf_os_financeiro';
         $db->join($projecao, 'tf_os_financeiro.os_id = os.idOs', 'left', false);

@@ -68,8 +68,17 @@ class Trifase_financeiro_model extends CI_Model
             }
             $o = $this->exigirObrigacao($osId);
             $r = $this->resumo($osId);
-            if ($os->status === 'Cancelado' || $valor > $r['saldo_c']) {
-                throw new DomainException('Recebimento excede saldo ou OS cancelada.');
+            if ($valor > $r['saldo_c']) {
+                throw new DomainException('Recebimento excede saldo.');
+            }
+            if ($os->status === 'Cancelado') {
+                $acerto = $this->db->table_exists('trifase_cancelamentos')
+                    ? $this->db->where('os_id', $osId)->where('tipo', 'confirmar')->order_by('id', 'desc')->get('trifase_cancelamentos', 1)->row()
+                    : null;
+                $retrato = $acerto ? json_decode($acerto->retrato, true, 32, JSON_THROW_ON_ERROR) : [];
+                if (($retrato['acerto']['resultado'] ?? '') !== 'a_receber') {
+                    throw new DomainException('Recebimento excede saldo ou OS cancelada.');
+                }
             }
             // Distribuição incremental: não altera a parcela de desconto de recebimentos anteriores.
             $descontoRestante = (int) $o->desconto_c - $this->descontoRecebido($osId);
@@ -79,6 +88,72 @@ class Trifase_financeiro_model extends CI_Model
             $this->saldoNativo($osId, $usuario);
             return ['evento_id' => $id] + $this->resumo($osId);
         });
+    }
+
+    /** Uso interno, sob a mesma transação da confirmação de cancelamento com acerto financeiro. */
+    public function acertarCancelamento(object $os, int $bruto, int $desconto, int $devolucao, string $data, string $forma, string $referencia, string $motivo, int $usuario, string $operacao): array
+    {
+        $osId = (int) $os->idOs;
+        if ($usuario <= 0 || $bruto < 0 || $bruto > 999999999 || $desconto < 0 || $desconto > $bruto || $devolucao < 0) {
+            throw new DomainException('Valores de acerto financeiro inválidos.');
+        }
+        $o = $this->obrigacao($osId);
+        $r = $o !== null ? $this->resumo($osId) : ['total_c' => 0, 'recebido_c' => 0, 'saldo_c' => 0];
+        $retido = (int) $r['recebido_c'];
+        $liquido = $bruto - $desconto;
+        $aDevolver = max(0, $retido - $liquido);
+        if ($devolucao !== $aDevolver) {
+            throw new DomainException('O valor da devolução deve corresponder ao cálculo do acerto.');
+        }
+        $despesaId = null;
+        if ($devolucao > 0) {
+            $this->dataValida($data);
+            if (! in_array($forma, ['Pix', 'Dinheiro', 'Cartão de Crédito', 'Cartão de Débito', 'Transferência'], true) || trim($referencia) === '') {
+                throw new DomainException('Informe data, forma e comprovante/referência da devolução ao cliente.');
+            }
+            $ultimo = $this->db->select_max('data_evento', 'data')->where('os_id', $osId)->get('trifase_financeiro_eventos')->row();
+            if (! empty($ultimo->data) && $data < $ultimo->data) {
+                throw new DomainException('Data da devolução anterior aos recebimentos desta OS.');
+            }
+            $valorDec = $this->decimal($devolucao);
+            $despesaId = $this->gravar('lancamentos', [
+                'descricao' => 'Devolução por cancelamento · OS #' . $osId,
+                'valor' => $valorDec, 'desconto' => '0.00', 'valor_desconto' => $valorDec, 'tipo_desconto' => 'real',
+                'data_vencimento' => $data, 'data_pagamento' => $data, 'baixado' => 1,
+                'clientes_id' => (int) ($os->clientes_id ?? 0), 'cliente_fornecedor' => 'OS #' . $osId,
+                'forma_pgto' => $forma, 'tipo' => 'despesa', 'usuarios_id' => $usuario,
+            ]);
+            if ($this->db->table_exists('trifase_financeiro_projecoes')) {
+                $this->gravar('trifase_financeiro_projecoes', ['lancamento_id' => $despesaId, 'os_id' => $osId, 'ativo' => 1]);
+            }
+            $hashDev = $this->hashOperacao([$osId, 'devolver', $devolucao, $data, $forma, $referencia, $motivo, $usuario]);
+            $this->gravar('trifase_financeiro_eventos', [
+                'os_id' => $osId, 'tipo' => 'devolver', 'referencia_id' => null, 'valor_c' => $devolucao, 'desconto_c' => 0,
+                'data_evento' => $data, 'forma' => $forma, 'lancamento_id' => $despesaId, 'usuario_id' => $usuario,
+                'motivo' => mb_substr('Comprovante: ' . trim($referencia) . ' · ' . trim($motivo), 0, 500),
+                'operacao' => 'dev_' . mb_substr($operacao, 0, 58), 'payload_hash' => $hashDev,
+            ]);
+        }
+        $descontoRecebido = $o !== null ? $this->descontoRecebido($osId) : 0;
+        $novoDesconto = $desconto + $descontoRecebido;
+        $novoBruto = $liquido + $novoDesconto;
+        if ($o !== null) {
+            if ($this->db->table_exists('trifase_garantia_reembolsos') && $this->db->where('origem_id', $osId)->where('cancelado_id', null)->count_all_results('trifase_garantia_reembolsos') > 0) {
+                throw new DomainException('Há devolução de garantia vinculada a esta OS. Preserve a cobrança de garantia.');
+            }
+            $this->atualizar('trifase_financeiro_obrigacoes', ['bruto_c' => $novoBruto, 'desconto_c' => $novoDesconto, 'usuario_id' => $usuario], ['os_id' => $osId]);
+            $this->saldoNativo($osId, $usuario);
+        } elseif ($bruto > 0 && $this->db->table_exists('trifase_financeiro_obrigacoes') && $this->db->table_exists('lancamentos')) {
+            $vencimento = date('Y-m-d');
+            $principal = $this->lancamento($osId, $novoBruto, $novoDesconto, $vencimento, null, '', $usuario, false);
+            $this->gravar('trifase_financeiro_obrigacoes', ['os_id' => $osId, 'bruto_c' => $novoBruto, 'desconto_c' => $novoDesconto, 'vencimento' => $vencimento, 'principal_id' => $principal, 'usuario_id' => $usuario]);
+            if ($this->db->table_exists('trifase_financeiro_projecoes')) {
+                $this->gravar('trifase_financeiro_projecoes', ['lancamento_id' => $principal, 'os_id' => $osId, 'ativo' => $liquido > 0 ? 1 : 0]);
+            }
+            $this->atualizar('os', ['faturado' => 1, 'lancamento' => $principal], ['idOs' => $osId]);
+            $this->saldoNativo($osId, $usuario);
+        }
+        return $this->obrigacao($osId) !== null ? $this->resumo($osId) : ['total_c' => 0, 'recebido_c' => 0, 'saldo_c' => 0, 'situacao' => 'Encerrado'];
     }
 
     /** Correção de registro: não é reembolso bancário. Evento original permanece imutável. */
@@ -95,8 +170,9 @@ class Trifase_financeiro_model extends CI_Model
                 return ['evento_id' => $id] + $this->resumo($osId);
             }
             $this->exigirObrigacao($osId);
-            if (trifaseGarantiaCreditos($this->db, $osId)['reembolsado_c'] > 0) {
-                throw new DomainException('Há devolução de garantia vinculada. Confira e corrija esse registro antes de estornar o recebimento.');
+            if (trifaseGarantiaCreditos($this->db, $osId)['reembolsado_c'] > 0
+                || $this->db->where(['os_id' => $osId, 'tipo' => 'devolver'])->count_all_results('trifase_financeiro_eventos') > 0) {
+                throw new DomainException('Há devolução registrada nesta OS. Confira o histórico antes de estornar o recebimento.');
             }
             $e = $this->db->where(['id' => $eventoId, 'os_id' => $osId, 'tipo' => 'receber'])->get('trifase_financeiro_eventos')->row();
             if (! $e || $this->db->where('referencia_id', $eventoId)->count_all_results('trifase_financeiro_eventos') > 0 || $data < $e->data_evento) {
@@ -115,11 +191,18 @@ class Trifase_financeiro_model extends CI_Model
     {
         $o = $this->exigirObrigacao($osId);
         $recebido = 0;
+        $devolvidoCancelamento = 0;
         foreach ($this->eventos($osId) as $e) {
-            $recebido += ($e->tipo === 'receber' ? 1 : -1) * (int) $e->valor_c;
+            if ($e->tipo === 'devolver') {
+                $devolvidoCancelamento += (int) $e->valor_c;
+            } else {
+                $recebido += ($e->tipo === 'receber' ? 1 : -1) * (int) $e->valor_c;
+            }
         }
         $total = (int) $o->bruto_c - (int) $o->desconto_c;
-        return trifaseGarantiaResumo($this->db, $osId, $total, $recebido);
+        $creditos = trifaseGarantiaCreditos($this->db, $osId);
+        $creditos['reembolsado_c'] += $devolvidoCancelamento;
+        return trifaseGarantiaResumo($this->db, $osId, $total, $recebido, $creditos);
     }
 
     /** Projeções em lote para uma página de OS; evita uma consulta por recebimento. */
@@ -130,9 +213,11 @@ class Trifase_financeiro_model extends CI_Model
             return [];
         }
         $recebidos = [];
-        foreach ($this->db->select("os_id, SUM(CASE WHEN tipo = 'receber' THEN valor_c ELSE -valor_c END) AS recebido_c", false)
+        $devolvidosCancelamento = [];
+        foreach ($this->db->select("os_id, SUM(CASE WHEN tipo = 'receber' THEN valor_c WHEN tipo = 'estornar' THEN -valor_c ELSE 0 END) AS recebido_c, SUM(CASE WHEN tipo = 'devolver' THEN valor_c ELSE 0 END) AS devolvido_c", false)
             ->where_in('os_id', $ids)->group_by('os_id')->get('trifase_financeiro_eventos')->result() as $linha) {
             $recebidos[(int) $linha->os_id] = (int) $linha->recebido_c;
+            $devolvidosCancelamento[(int) $linha->os_id] = (int) $linha->devolvido_c;
         }
         $creditos = [];
         if ($this->db->table_exists('trifase_garantia_reembolsos')) {
@@ -146,7 +231,9 @@ class Trifase_financeiro_model extends CI_Model
             $id = (int) $o->os_id;
             $total = (int) $o->bruto_c - (int) $o->desconto_c;
             $recebido = $recebidos[$id] ?? 0;
-            $resumos[$id] = trifaseGarantiaResumo($this->db, $id, $total, $recebido, $creditos[$id] ?? ['reembolsado_c' => 0, 'abatimento_garantia_c' => 0]);
+            $cred = $creditos[$id] ?? ['reembolsado_c' => 0, 'abatimento_garantia_c' => 0];
+            $cred['reembolsado_c'] += $devolvidosCancelamento[$id] ?? 0;
+            $resumos[$id] = trifaseGarantiaResumo($this->db, $id, $total, $recebido, $cred);
         }
         return $resumos;
     }
@@ -362,6 +449,9 @@ class Trifase_financeiro_model extends CI_Model
     {
         $valor = 0;
         foreach ($this->eventos($osId) as $e) {
+            if ($e->tipo === 'devolver') {
+                continue;
+            }
             $valor += ($e->tipo === 'receber' ? 1 : -1) * (int) $e->desconto_c;
         }
         return $valor;
@@ -374,6 +464,9 @@ class Trifase_financeiro_model extends CI_Model
 
     private function obrigacao(int $id): ?object
     {
+        if (! $this->db->table_exists('trifase_financeiro_obrigacoes')) {
+            return null;
+        }
         return $this->db->where('os_id', $id)->get('trifase_financeiro_obrigacoes')->row() ?: null;
     }
 

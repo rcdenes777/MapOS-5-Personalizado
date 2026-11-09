@@ -2,7 +2,7 @@
     <h1 class="text-heading-xl text-text">Marcas e modelos de equipamentos</h1>
     <p class="text-body-md text-muted">Cadastros reutilizáveis. Alterar um modelo não substitui a identificação histórica das OS.</p>
     <form method="get" class="flex flex-wrap items-end gap-3">
-        <?= component('input', ['name' => 'pesquisa', 'label' => 'Buscar marca ou modelo', 'value' => $pesquisaCatalogo, 'attrs' => ['maxlength' => 100]]) ?>
+        <?= component('input', ['name' => 'pesquisa', 'type' => 'search', 'label' => 'Buscar marca ou modelo', 'value' => $pesquisaCatalogo, 'attrs' => ['maxlength' => 100]]) ?>
         <?= component('button', ['label' => 'Buscar', 'variant' => 'outline', 'type' => 'submit']) ?>
     </form>
     <ul class="grid gap-3">

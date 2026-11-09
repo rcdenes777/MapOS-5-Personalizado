@@ -1,3 +1,5 @@
+import { iniciarBuscas } from './lib/busca-listagem.js';
+
 // Carregador dos módulos de página da v5.
 //
 // A view marca um elemento com data-module="pasta/nome" (helper js_module() no
@@ -38,6 +40,7 @@ export async function iniciarModulos(raiz = document) {
             console.error(`[app] falha ao iniciar o módulo "${nome}"`, erro);
         }
     }));
+    iniciarBuscas(raiz, { reiniciar: iniciarModulos });
 }
 
 if (typeof document !== 'undefined') {

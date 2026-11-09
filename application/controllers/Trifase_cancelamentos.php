@@ -71,6 +71,10 @@ class Trifase_cancelamentos extends MY_Controller
             show_error('Use o formulário de cancelamento.', 405);
         }
         $os = $this->ordem($id);
+        // A simulação usa o mesmo POST autenticado/CSRF, sem gravar eventos.
+        if ($tipo === 'confirmar' && $this->input->post('simular') === '1') {
+            return $this->pagina($os);
+        }
         try {
             $usuario = (int) $this->session->userdata('id_admin');
             $op = $this->texto('operacao');

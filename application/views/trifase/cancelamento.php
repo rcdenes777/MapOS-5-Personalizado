@@ -125,7 +125,7 @@ $pendenteCancelamento = ($pedidoCancelamento->tipo ?? '') === 'solicitar'; ?>
                         <?= component('input', ['name' => 'desconto', 'label' => 'Desconto negociado (R$)', 'value' => $valoresCancelamento['desconto'] ?? '0,00', 'disabled' => $financeiroBloqueado, 'attrs' => ['inputmode' => 'decimal']]) ?>
                     </div>
                     <div>
-                        <?= component('button', ['label' => 'Simular cálculo do acerto', 'variant' => 'outline', 'type' => 'submit', 'disabled' => $financeiroBloqueado, 'attrs' => ['formmethod' => 'get', 'formaction' => site_url('trifase_cancelamentos/visualizar/' . $idCancelamento), 'formnovalidate' => 'formnovalidate']]) ?>
+                        <?= component('button', ['label' => 'Simular cálculo do acerto', 'variant' => 'outline', 'type' => 'submit', 'disabled' => $financeiroBloqueado, 'attrs' => ['name' => 'simular', 'value' => '1', 'formnovalidate' => 'formnovalidate']]) ?>
                     </div>
                     <?php if ($acerto['a_devolver_c'] > 0) { ?>
                         <div class="grid gap-4 rounded-xl border border-border p-4">

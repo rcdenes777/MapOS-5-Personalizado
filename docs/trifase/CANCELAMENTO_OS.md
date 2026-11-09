@@ -71,3 +71,19 @@ Validação final desta separação: 1.887 testes, 8.978 asserções, sem falhas
 Os três incrementos já estavam nos commits `c092199`, `c1a625c`, `a351189` e `fe1d43a`. A retomada preservou a implementação e acrescentou regressão executável para o acerto com devolução: repetir a mesma confirmação não duplica despesa/evento, `resumo()` e `resumos()` concordam, a OS sai da fila pendente e o estorno do recebimento original é recusado após a devolução, preservando integralmente lançamentos, obrigação, projeções e eventos.
 
 Validação: suíte completa com 1.892 testes e 9.029 asserções, sem falhas (uma depreciação e um teste ignorado anteriores); após ampliar a regressão, 19 testes focados passaram com 127 asserções. PHPStan e formatação passaram. No navegador, login com o perfil Financeiro de teste confirmou acesso à classificação/orientações internas e bloqueio da edição completa de cliente. A listagem financeira oferece o filtro Cancelamentos pendentes; na consulta atual não havia pedidos pendentes e a OS 9058 já constava como Cancelado. Nenhuma OS ou classificação existente foi alterada por essa conferência. O laboratório 8230 foi religado; os demais ambientes não foram modificados.
+
+## Acerto na listagem e ensaio pelos dois perfis — 09/11/2026
+
+A coluna **Acerto financeiro** apresenta `A receber: R$ …`, `A devolver: R$ …` ou `Sem pendência: R$ 0,00`. Um pedido de cancelamento aberto mostra `Aguardando conferência`, pois o valor devido depende da análise do financeiro. Um cancelamento confirmado sem obrigação usa o retrato auditável para reconhecer saldo zero; OS apenas marcada Cancelado, sem confirmação financeira preservada, continua sem apuração. Em obrigações existentes prevalece o saldo atual, incluindo baixas posteriores. Devolução já registrada não volta a aparecer como valor ainda a devolver.
+
+A obrigação zerada por desconto integral passa a Quitado também no detalhe e nos filtros. A simulação do acerto usa POST com CSRF e as mesmas permissões da confirmação, sem gravar eventos, evitando enviar valores, justificativa e token no endereço da página.
+
+Ensaio no navegador, exclusivamente com novas fixtures identificadas `QA Acerto 20261109`:
+
+- **9067:** recebido fictício de R$ 200,00; diagnóstico combinado de R$ 50,00; simulação calculou R$ 150,00 a devolver; confirmação registrou despesa/devolução fictícia com referência e manteve R$ 50,00 líquidos, sem pendência.
+- **9068:** técnico removeu uma peça não utilizada, com devolução pelo controle da OS; financeiro combinou R$ 80,00 com desconto de R$ 30,00; cancelamento confirmado manteve **R$ 50,00 a receber**.
+- **9069:** técnico devolveu a peça e liberou a conferência; financeiro informou R$ 50,00 de diagnóstico e R$ 50,00 de desconto; encerramento sem pendência, sem recebimento ou devolução monetária.
+
+Os pedidos e conferências técnicas ficaram com o usuário 9005; confirmações financeiras, com o 9007. O técnico não recebeu valores nem formulário financeiro. As fixtures foram preparadas com dados fictícios; as duas peças iniciais tiveram baixa de preparação e retorno pela UI. As OS existentes não foram modificadas. Não houve transferência de dinheiro nem envio de links ao cliente. As três fixtures permaneceram no laboratório para consulta; a fila saiu de três pendentes para zero.
+
+Validação final: **1.894 testes / 9.050 asserções**, sem falhas; uma depreciação e um teste ignorado anteriores. PHPStan, formatação, escape, restrição de scripts inline e build passaram. Cobertura adicional: cancelamento sem obrigação exige evento confirmado, saldo atual prevalece sobre o retrato, devolução pendente difere de devolução executada e total zero não aparece como pagamento pendente. Os testes não simulam transferências bancárias externas nem concorrência real de múltiplos operadores.

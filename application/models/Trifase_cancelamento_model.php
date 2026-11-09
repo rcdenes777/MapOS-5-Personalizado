@@ -74,6 +74,31 @@ class Trifase_cancelamento_model extends CI_Model
         return $itens;
     }
 
+    /** Projeta somente cancelamentos confirmados; ausência de faturamento não prova saldo zero. */
+    public function resumosEncerrados(array $ids, array $resumos): array
+    {
+        $ids = array_values(array_unique(array_filter(array_map('intval', $ids), static fn ($id) => $id > 0)));
+        if ($ids === [] || ! $this->db->table_exists('trifase_cancelamentos')) {
+            return $resumos;
+        }
+        $eventos = $this->db->select('c.os_id, c.retrato')->from('trifase_cancelamentos c')
+            ->join('os o', 'o.idOs = c.os_id')->where_in('c.os_id', $ids)
+            ->where('o.status', 'Cancelado')->where('c.tipo', 'confirmar')
+            ->order_by('c.id', 'asc')->get()->result();
+        foreach ($eventos as $e) {
+            $id = (int) $e->os_id;
+            $r = json_decode($e->retrato, true);
+            if (! isset($resumos[$id]) && is_array($r) && array_key_exists('financeiro', $r) && $r['financeiro'] === null
+                && (int) ($r['acerto']['total_final_c'] ?? 0) === 0) {
+                $resumos[$id] = ['total_c' => 0, 'recebido_c' => 0, 'saldo_c' => 0, 'situacao' => 'Sem pendência'];
+            }
+            if (isset($resumos[$id]) && $resumos[$id]['saldo_c'] === 0) {
+                $resumos[$id]['situacao'] = 'Sem pendência';
+            }
+        }
+        return $resumos;
+    }
+
     public function conferencia(object $os): array
     {
         $id = (int) $os->idOs;

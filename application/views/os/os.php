@@ -104,9 +104,16 @@ if ($trifase_ui_piloto ?? false) {
                         }
                         return component('pill-status', ['label' => $f['situacao'], 'variant' => $f['saldo_c'] === 0 ? 'success' : 'warning']);
                     }];
-                    $adaptadas[] = ['label' => 'Saldo a receber', 'align' => 'right', 'nowrap' => true, 'render' => static function ($o) use ($listaFinanceiro) {
+                    $adaptadas[] = ['label' => 'Acerto financeiro', 'align' => 'right', 'render' => static function ($o) use ($listaFinanceiro, $mapaCancelamentosPendentes) {
+                        if (isset($mapaCancelamentosPendentes[(int) $o->idOs])) {
+                            return 'Aguardando conferência';
+                        }
                         $f = $listaFinanceiro[(int) $o->idOs] ?? null;
-                        return $f === null ? 'Não apurado' : dinheiro($f['saldo_c'] / 100);
+                        if ($f === null) {
+                            return 'Não apurado';
+                        }
+                        $saldo = (int) $f['saldo_c'];
+                        return ($saldo > 0 ? 'A receber: ' : ($saldo < 0 ? 'A devolver: ' : 'Sem pendência: ')) . dinheiro(abs($saldo) / 100);
                     }];
                 }
             }

@@ -120,6 +120,7 @@ class Financeiro extends MY_Controller
         if ($this->db->table_exists('trifase_cancelamentos')) {
             $this->load->model('Trifase_cancelamento_model', 'cancelamentos_os');
             $cancelamentosPendentes = $this->cancelamentos_os->pendentes($resumos);
+            $resumos = $this->cancelamentos_os->resumosEncerrados(array_map(static fn ($o) => (int) $o->idOs, $linhas), $resumos);
         }
         $this->data = array_merge($this->data, [
             'contextoFinanceiro' => true, 'listaVerFinanceiro' => true, 'listaFinanceiroHabilitado' => true,

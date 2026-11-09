@@ -85,7 +85,7 @@ final class TrifaseOsFiltrosFinanceirosTest extends MaposTestCase
     public function testAndamentoIndependentePaginacaoEConfiguracaoNaoEscondemCobranças(): void
     {
         $this->assertSame([5], $this->ids(['financeiro' => 'quitada', 'status' => 'Aberto']));
-        $this->assertSame([10], $this->ids(['financeiro' => 'quitada', 'status' => 'Finalizado']));
+        $this->assertSame([11, 10], $this->ids(['financeiro' => 'quitada', 'status' => 'Finalizado']));
         $f = ['saldo' => 'pendente'];
         $this->assertSame([12, 9], $this->ids($f, 2, 0, ['Aberto']));
         $this->assertSame([6, 4], $this->ids($f, 2, 2, ['Aberto']));

@@ -50,8 +50,8 @@ final class Trifase_financeiro_busca
         if (isset(self::OPCOES[$filtros['financeiro'] ?? '']) && $filtros['financeiro'] !== 'cancelamento_pendente') {
             $situacao = "CASE WHEN tf_os_financeiro.os_id IS NULL THEN CASE WHEN COALESCE(os.faturado, 0) = 1 THEN 'anterior' ELSE 'nao_faturada' END"
                 . " WHEN tf_os_financeiro.total_c = 0 AND tf_os_financeiro.credito_c > 0 THEN CASE WHEN tf_os_financeiro.reembolsado_c > 0 THEN 'reembolsada' ELSE 'encerrada_garantia' END"
-                . " WHEN tf_os_financeiro.recebido_c = 0 THEN 'pendente'"
-                . " WHEN tf_os_financeiro.recebido_c = tf_os_financeiro.total_c THEN 'quitada' ELSE 'parcial' END";
+                . " WHEN tf_os_financeiro.recebido_c = tf_os_financeiro.total_c THEN 'quitada'"
+                . " WHEN tf_os_financeiro.recebido_c = 0 THEN 'pendente' ELSE 'parcial' END";
             $db->where('(' . $situacao . ') = ' . $db->escape($filtros['financeiro']), null, false);
         }
         if (($filtros['saldo'] ?? '') === 'pendente') {

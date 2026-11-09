@@ -139,7 +139,7 @@ final class TrifaseOsListagemViewTest extends \PHPUnit\Framework\TestCase
     {
         $resumos = [1 => ['total_c' => 50000, 'saldo_c' => 30000, 'situacao' => 'Parcialmente pago']];
         $html = $this->renderizar($resumos, [], ['filtros' => ['financeiro' => 'parcial', 'saldo' => 'pendente']]);
-        $this->assertSame(['R$ 300,00'], $this->celulas($html, 'Saldo a receber'));
+        $this->assertSame(['A receber: R$ 300,00'], $this->celulas($html, 'Acerto financeiro'));
         $dom = new DOMDocument();
         @$dom->loadHTML($html);
         $xpath = new DOMXPath($dom);
@@ -149,14 +149,14 @@ final class TrifaseOsListagemViewTest extends \PHPUnit\Framework\TestCase
             $restrito = $this->renderizar($resumos, [], [$flag => false]);
             $this->assertStringNotContainsString('name="financeiro"', $restrito);
             $this->assertStringNotContainsString('name="saldo"', $restrito);
-            $this->assertSame([], $this->celulas($restrito, 'Saldo a receber'));
+            $this->assertSame([], $this->celulas($restrito, 'Acerto financeiro'));
         }
     }
 
     public function testSaldoZeroDaObrigacaoENaoApuradoNoLegadoNaoSeConfundem(): void
     {
-        $this->assertSame(['R$ 0,00'], $this->celulas($this->renderizar([1 => ['total_c' => 0, 'saldo_c' => 0, 'situacao' => 'Reembolsado']]), 'Saldo a receber'));
-        $this->assertSame(['Não apurado'], $this->celulas($this->renderizar([], ['faturado' => 1]), 'Saldo a receber'));
+        $this->assertSame(['Sem pendência: R$ 0,00'], $this->celulas($this->renderizar([1 => ['total_c' => 0, 'saldo_c' => 0, 'situacao' => 'Reembolsado']]), 'Acerto financeiro'));
+        $this->assertSame(['Não apurado'], $this->celulas($this->renderizar([], ['faturado' => 1]), 'Acerto financeiro'));
     }
 
     public function testAreaTecnicaNaoMostraCobrancaMesmoAoAdministrador(): void
@@ -166,7 +166,7 @@ final class TrifaseOsListagemViewTest extends \PHPUnit\Framework\TestCase
         $this->assertStringNotContainsString('name="saldo"', $html);
         $this->assertSame([], $this->celulas($html, 'Total'));
         $this->assertSame([], $this->celulas($html, 'Pagamento'));
-        $this->assertSame([], $this->celulas($html, 'Saldo a receber'));
+        $this->assertSame([], $this->celulas($html, 'Acerto financeiro'));
         $this->assertStringNotContainsString('R$', $html);
     }
 
@@ -194,6 +194,15 @@ final class TrifaseOsListagemViewTest extends \PHPUnit\Framework\TestCase
         $this->assertStringContainsString('Concluída', $html);
         $this->assertStringContainsString('R$ 50,00', $html);
         $this->assertStringNotContainsString('<script>x</script>', $html);
+    }
+
+    public function testAcertoDistingueDevolucaoPendenteDeDinheiroJaDevolvido(): void
+    {
+        $html = $this->renderizar([1 => ['total_c' => 5000, 'saldo_c' => -15000, 'situacao' => 'Conferir']], ['status' => 'Cancelado']);
+        $this->assertSame(['A devolver: R$ 150,00'], $this->celulas($html, 'Acerto financeiro'));
+        $html = $this->renderizar([1 => ['total_c' => 5000, 'saldo_c' => 0, 'reembolsado_c' => 15000, 'situacao' => 'Sem pendência']], ['status' => 'Cancelado']);
+        $this->assertSame(['Sem pendência: R$ 0,00'], $this->celulas($html, 'Acerto financeiro'));
+        $this->assertSame(['Sem pendência'], $this->celulas($html, 'Pagamento'));
     }
 
     private function renderizar(array $resumos, array $os = [], array $opcoes = []): string

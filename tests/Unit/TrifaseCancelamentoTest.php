@@ -351,6 +351,27 @@ final class TrifaseCancelamentoTest extends MaposTestCase
         $this->assertSame(1, $this->db->count_all('trifase_cadastros_eventos'));
         $eventoCliente = $this->db->where('tipo', 'cliente')->where('recurso_id', 3)->order_by('id', 'desc')->get('trifase_cadastros_eventos', 1)->row();
         $this->assertSame('ouro', json_decode($eventoCliente->depois, true)['categoria']);
+        $this->assertSame('Quitado', trifaseGarantiaResumo($this->db, 1, 0, 0)['situacao']);
+    }
+
+    public function testResumoEncerradoSemCobrancaExigeConfirmacaoPreservada(): void
+    {
+        $this->assertSame([], $this->modelo->resumosEncerrados([1, 2], []));
+        $pedido = $this->pedido();
+        $this->devolverPecas();
+        $this->modelo->conferirTecnica(1, $pedido, $this->dadosTecnicos(), 2, 'tecnica_123456789');
+        $this->assertSame([], $this->modelo->resumosEncerrados([1], []));
+        $this->modelo->confirmar(1, $pedido, $this->dados(), 7, 'confirmacao_12345678');
+        // Cancelado sem evento auditável não significa conferência financeira feita.
+        $this->db->where('idOs', 2)->update('os', ['status' => 'Cancelado']);
+        $resumos = $this->modelo->resumosEncerrados([1, 2], []);
+        $this->assertSame([1], array_keys($resumos));
+        $this->assertSame(0, $resumos[1]['saldo_c']);
+        $this->assertSame('Sem pendência', $resumos[1]['situacao']);
+        // Mesmo após a confirmação, prevalece o saldo atual de recebimentos posteriores.
+        $atual = [1 => ['total_c' => 5000, 'saldo_c' => 3000, 'situacao' => 'Parcialmente pago']];
+        $this->assertSame($atual, $this->modelo->resumosEncerrados([1], $atual));
+        $this->assertSame([], $this->modelo->resumosEncerrados([2], []));
     }
 
     public function testFalhaNoHistoricoPreservaConferenciaTecnicaSemCancelarParcialmente(): void

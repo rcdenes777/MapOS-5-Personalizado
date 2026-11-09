@@ -29,7 +29,7 @@ function trifaseGarantiaResumo(object $db, int $origem, int $total, int $recebid
     $liquido = $total - $c['abatimento_garantia_c'];
     $retido = $recebido - $c['reembolsado_c'];
     if ($c['reembolsado_c'] === 0 && $c['abatimento_garantia_c'] === 0) {
-        return ['total_c' => $total, 'recebido_c' => $recebido, 'saldo_c' => $total - $recebido, 'situacao' => $recebido === 0 ? 'Pendente' : ($recebido === $total ? 'Quitado' : 'Parcialmente pago')];
+        return ['total_c' => $total, 'recebido_c' => $recebido, 'saldo_c' => $total - $recebido, 'situacao' => $recebido === $total ? 'Quitado' : ($recebido === 0 ? 'Pendente' : 'Parcialmente pago')];
     }
     return ['total_c' => $liquido, 'recebido_c' => $retido, 'saldo_c' => $liquido - $retido,
         'situacao' => $liquido === 0 && $c['abatimento_garantia_c'] > 0 ? ($c['reembolsado_c'] > 0 ? 'Reembolsado' : 'Encerrado por garantia') : ($retido === 0 ? 'Pendente' : ($retido === $liquido ? 'Quitado' : 'Parcialmente pago'))]

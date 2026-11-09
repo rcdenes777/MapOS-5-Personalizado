@@ -4,7 +4,7 @@ Implementado em 03/11/2026 sobre `5b7342d`, na branch `v5-trifase`.
 
 ## Visão inicial
 
-Com a interface piloto ativa, o início apresenta filas de atendimento, orçamento, peças, retirada e retornos em avaliação; previsões mais próximas; retiradas pendentes; contagens por andamento; financeiro e atalhos permitidos. Agenda, gráficos e listas nativas continuam acessíveis por **Agenda e gráficos** (`mapos?visao=classica`). Com a flag piloto desligada, a visão inicial continua nativa.
+Desde 09/11/2026, Técnico, Financeiro e Administrador abrem o mesmo painel (`mapos/painel`), com o padrão ajustado para o Técnico: filas de OS e agenda, ou a lista da fila selecionada no lugar do calendário. O início (`/`, `/index.php`, `/mapos`) e os links antigos `?visao=classica` convergem para esse painel. A escolha da tela não depende mais de ter permissão financeira. Os blocos continuam sujeitos às permissões: financeiro e lançamentos somente com `vLancamento`; balanço somente com `rFinanceiro`; gráfico de OS por status somente com `vOs` + `vLancamento`. O Técnico sem essas permissões continua sem valores ou gráficos financeiros. Com o piloto ativo, mantém-se o conjunto ampliado de indicadores operacionais. O caminho privado que abria o painel alternativo foi removido do controlador.
 
 Referência visual: `outputs/comparacao-penpot-2026-11-02/penpot-painel.png`. O MCP respondeu, mas não havia plugin conectado ao desenho nesta etapa; usou-se a exportação salva, sem alegar leitura da revisão atual ou alterar o Penpot. A implementação reaproveita o tema azul, tokens, kpi-card, botões, links, pills e ocultação de valores existentes.
 
@@ -38,3 +38,7 @@ Nenhuma permissão, rota pública, migração, variável de ambiente ou dado de 
 - Hashes das linhas de 37 tabelas com dados antes/depois idênticos; sessões/logs excluídos por serem efeitos normais da navegação. Nenhuma fixture nova. Credenciais apenas no arquivo privado de acesso.
 
 Evidências e scripts somente de leitura em `outputs/painel-assistencia/` na pasta do projeto. Não houve push, alterações em produção/8200, Penpot ou nos três documentos preexistentes. Mobile físico, volume de banco em escala e regressão integrada de produção permanecem pendentes. Esta etapa não declara todas as telas implementadas ou todo o sistema validado.
+
+## Validação da unificação — 09/11/2026
+
+Conferido no navegador com Técnico de teste, Financeiro de teste e Administrador de teste. Todos abriram o mesmo painel; o Técnico permaneceu sem valores, lançamentos e gráfico de OS por status. A verificação existente do controlador passou a executar `index()` para comprovar que módulos negados não são consultados. Passaram 37 testes de painel / 202 asserções, PHPStan, formatação e verificação do diff. Nenhuma permissão ou dado de negócio foi alterado; somente a escolha da tela inicial. Não houve alteração de views ou CSS nesta unificação. A aba foi deixada no início com o Administrador de teste. As evidências das seções anteriores descrevem as implementações históricas.

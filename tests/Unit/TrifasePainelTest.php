@@ -177,6 +177,10 @@ final class TrifasePainelTest extends MaposTestCase
                 $this->load = new class() {
                     public function model(...$args)
                     {
+                        throw new RuntimeException('Consulta de módulo sem permissão');
+                    }
+                    public function helper(...$args)
+                    {
                     }
                 };
                 $this->painel_trifase = new class() {
@@ -207,10 +211,12 @@ final class TrifasePainelTest extends MaposTestCase
                 return $this->data;
             }
         };
-        $r = $this->invokeMethod($c, 'painelPersonalizado', [['hoje' => '2026-11-03', 'pode' => ['os' => false, 'lancamentos' => false]]]);
-        $this->assertNull($r['operacional']);
-        $this->assertNull($r['financeiro_os']);
-        $this->assertSame([], $r['atalhos']);
-        $this->assertArrayNotHasKey('recebido_mes', $r);
+        $r = $c->index();
+        $this->assertSame('mapos/painel', $r['view']);
+        $this->assertFalse($r['pode']['os']);
+        $this->assertFalse($r['pode']['lancamentos']);
+        $this->assertFalse($r['pode']['balanco']);
+        $this->assertArrayNotHasKey('mes', $r);
+        $this->assertArrayNotHasKey('operacional_classico', $r);
     }
 }

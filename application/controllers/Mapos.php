@@ -413,7 +413,7 @@ class Mapos extends MY_Controller
         $termo = mb_substr(trim((string) $this->input->get('termo')), 0, 100);
         $grupos = [];
 
-        if (mb_strlen($termo) >= 2) {
+        if (is_string($this->input->get('termo'))) {
             $this->load->helper('os');
             $r = $this->mapos_model->buscaRapida($termo);
 
@@ -432,16 +432,16 @@ class Mapos extends MY_Controller
                 ], $r['os'])];
             }
             if ($this->permite('vProduto')) {
-                $grupos[] = ['chave' => 'produtos', 'titulo' => 'Produtos', 'itens' => array_map(static fn ($p) => [
+                $grupos[] = ['chave' => 'produtos', 'titulo' => 'Produtos', 'itens' => array_map(fn ($p) => [
                     'titulo' => (string) $p->descricao,
-                    'detalhe' => dinheiro($p->precoVenda) . ' · estoque ' . (float) $p->estoque,
+                    'detalhe' => ($this->permite('vLancamento') ? dinheiro($p->precoVenda) . ' · ' : '') . 'Estoque: ' . (float) $p->estoque,
                     'url' => site_url('produtos/visualizar/' . (int) $p->idProdutos),
                 ], $r['produtos'])];
             }
             if ($this->permite('vServico')) {
-                $grupos[] = ['chave' => 'servicos', 'titulo' => 'Serviços', 'itens' => array_map(static fn ($s) => [
+                $grupos[] = ['chave' => 'servicos', 'titulo' => 'Serviços', 'itens' => array_map(fn ($s) => [
                     'titulo' => (string) $s->nome,
-                    'detalhe' => dinheiro($s->preco),
+                    'detalhe' => $this->permite('vLancamento') ? dinheiro($s->preco) : '',
                     // Serviço não tem tela de visualização: abre a listagem (vServico) já filtrada.
                     'url' => site_url('servicos') . '?pesquisa=' . rawurlencode((string) $s->nome),
                 ], $r['servicos'])];

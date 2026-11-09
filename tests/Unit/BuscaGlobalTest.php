@@ -48,6 +48,68 @@ final class BuscaGlobalTest extends MaposTestCase
         $this->assertCount(3, $modelo->buscaRapida('maria', 3)['clientes']);
     }
 
+    public function testListaInicialLimitadaEFiltragemComUmaLetra(): void
+    {
+        $m = $this->modelo();
+        $this->assertCount(3, $m->buscaRapida('')['clientes']);
+        $this->assertSame(['Cabo HDMI'], array_column($m->buscaRapida('c')['produtos'], 'descricao'));
+        $this->assertSame([], $m->buscaRapida('z')['produtos']);
+    }
+
+    public function testEndpointListaAoAbrirSemExporGruposOuValoresNegados(): void
+    {
+        require_once APPPATH . 'controllers/Mapos.php';
+        $m = $this->modelo();
+        $c = new class($m) extends Mapos {
+            public object $input;
+            public object $output;
+            public object $load;
+            public object $mapos_model;
+            public array $autorizadas = ['vServico'];
+            public function __construct(object $m)
+            {
+                $this->mapos_model = $m;
+                $this->input = new class() {
+                    public function get($nome)
+                    {
+                        return '';
+                    }
+                };
+                $this->load = new class() {
+                    public function helper(...$args)
+                    {
+                    }
+                };
+                $this->output = new class() {
+                    public function set_content_type(...$args)
+                    {
+                        return $this;
+                    }
+                    public function set_header(...$args)
+                    {
+                        return $this;
+                    }
+                    public function set_output($valor)
+                    {
+                        return $valor;
+                    }
+                };
+            }
+            protected function permite(string $codigo): bool
+            {
+                return in_array($codigo, $this->autorizadas, true);
+            }
+        };
+        $r = json_decode($c->buscaRapida(), true, 32, JSON_THROW_ON_ERROR);
+        $this->assertSame(['servicos'], array_column($r['grupos'], 'chave'));
+        $this->assertSame('Formatação', $r['grupos'][0]['itens'][0]['titulo']);
+        $this->assertSame('', $r['grupos'][0]['itens'][0]['detalhe']);
+        $c->autorizadas[] = 'vLancamento';
+        $this->assertStringContainsString('120,00', $c->buscaRapida());
+        $c->autorizadas = [];
+        $this->assertSame([], json_decode($c->buscaRapida(), true)['grupos']);
+    }
+
     public function testPorcentoELiteralNaBusca(): void
     {
         $modelo = $this->modelo();
@@ -57,13 +119,13 @@ final class BuscaGlobalTest extends MaposTestCase
         $this->assertSame(['100% Real'], array_column($modelo->buscaRapida('%')['clientes'], 'nomeCliente'));
     }
 
-    public function testEndpointRespeitaAsPermissoesEOMinimoDeLetras(): void
+    public function testEndpointRespeitaAsPermissoesEAceitaListaInicial(): void
     {
         $controller = (string) file_get_contents(APPPATH . 'controllers/Mapos.php');
         preg_match('/function buscaRapida\(\).*?\n    }\n/s', $controller, $trecho);
 
         $this->assertNotEmpty($trecho);
-        $this->assertStringContainsString('mb_strlen($termo) >= 2', $trecho[0]);
+        $this->assertStringContainsString("is_string(\$this->input->get('termo'))", $trecho[0]);
         foreach (['vCliente', 'vOs', 'vProduto', 'vServico'] as $permissao) {
             $this->assertStringContainsString("permite('$permissao')", $trecho[0]);
         }

@@ -144,3 +144,18 @@ test('autocomplete-novo-criado sem item válido não escolhe nada', () => {
     assert.equal(campo.value, '');
     assert.equal(oculto.value, '');
 });
+
+
+test('clique sem termo abre a lista e Escape permite reabrir com o mesmo foco', async () => {
+    const { campo } = cenario({ comModal: true });
+    campo.dispatchEvent(new Event('focus'));
+    await new Promise(resolve => setImmediate(resolve));
+    assert.equal(campo.getAttribute('aria-expanded'), 'true');
+    const tecla = new Event('keydown', { cancelable: true });
+    tecla.key = 'Escape';
+    campo.dispatchEvent(tecla);
+    assert.equal(campo.getAttribute('aria-expanded'), 'false');
+    campo.dispatchEvent(new Event('click'));
+    await new Promise(resolve => setImmediate(resolve));
+    assert.equal(campo.getAttribute('aria-expanded'), 'true');
+});

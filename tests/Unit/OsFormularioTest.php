@@ -286,6 +286,8 @@ final class OsFormularioTest extends MaposTestCase
         // Sem resultado é lista vazia (na v4 a resposta vinha sem corpo).
         $this->assertSame([], $model->autoCompleteCliente('ninguém'));
 
+        $this->assertSame(['Técnico Ativo'], array_column($model->autoCompleteUsuario(''), 'valor'));
+        $this->assertSame('Garantia 90 dias', $model->autoCompleteTermoGarantia('')[0]['valor']);
         $tecnicos = $model->autoCompleteUsuario('técnico');
         $this->assertSame(['Técnico Ativo'], array_column($tecnicos, 'valor'), 'Só usuários ativos.');
 

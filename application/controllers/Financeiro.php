@@ -382,14 +382,14 @@ class Financeiro extends MY_Controller
     /**
      * Sugestões do campo Cliente / Fornecedor: clientes do cadastro (com id,
      * que vincula o lançamento ao cliente) e nomes já usados em lançamentos.
-     * Sempre uma lista JSON, vazia sem permissão ou sem termo.
+     * Sempre uma lista JSON limitada; termo vazio abre a lista inicial.
      */
     public function autoCompleteClienteFornecedor()
     {
         $termo = $this->input->get('term');
         $itens = [];
 
-        if ($this->hasAnyPermission(['vLancamento', 'aLancamento', 'eLancamento']) && is_string($termo) && trim($termo) !== '') {
+        if ($this->hasAnyPermission(['vLancamento', 'aLancamento', 'eLancamento']) && is_string($termo)) {
             $termo = trim($termo);
             $clientes = $this->financeiro_model->sugerirClientes($termo);
             $nomes = array_filter(

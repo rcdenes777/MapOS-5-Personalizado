@@ -22,7 +22,7 @@
         <kbd class="pointer-events-none absolute top-1/2 right-4 -translate-y-1/2 rounded-xs border border-border px-1.5 font-sans text-xs leading-5 font-medium text-muted" aria-hidden="true">Esc</kbd>
       </div>
       <div id="v5-busca-lista" tabindex="-1" role="listbox" aria-label="Resultados" data-busca-resultados class="max-h-[50vh] overflow-y-auto"></div>
-      <p data-busca-estado class="px-4 py-6 text-center text-caption text-muted" aria-live="polite">Digite pelo menos 2 letras para buscar.</p>
+      <p data-busca-estado class="px-4 py-6 text-center text-caption text-muted" aria-live="polite">Escolha um resultado ou digite para filtrar.</p>
       <div class="flex items-center justify-between gap-3 border-t border-border bg-surface-subtle px-4 py-2 text-xs text-muted">
         <span class="max-sm:hidden"><kbd class="font-sans font-medium">↑</kbd> <kbd class="font-sans font-medium">↓</kbd> escolhem · <kbd class="font-sans font-medium">Enter</kbd> abre</span>
         <a href="<?= e(site_url('mapos/pesquisar')) ?>" data-busca-todos class="font-medium text-primary-strong hover:underline focus-visible:outline-3 focus-visible:outline-ring">Ver todos os resultados</a>

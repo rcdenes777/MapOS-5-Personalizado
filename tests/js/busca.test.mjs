@@ -24,10 +24,10 @@ test('outras teclas mantêm o item ativo', () => {
     assert.equal(proximoIndice(1, 3, 'a'), 1);
 });
 
-test('a busca só começa com o mínimo de letras, sem contar espaços', () => {
-    assert.equal(MINIMO_LETRAS, 2);
-    assert.equal(termoValido(''), false);
-    assert.equal(termoValido(' a '), false);
+test('a busca lista ao abrir e filtra desde a primeira letra', () => {
+    assert.equal(MINIMO_LETRAS, 0);
+    assert.equal(termoValido(''), true);
+    assert.equal(termoValido(' a '), true);
     assert.equal(termoValido('an'), true);
     assert.equal(termoValido('  ana  '), true);
 });

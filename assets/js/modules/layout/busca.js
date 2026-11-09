@@ -9,7 +9,7 @@
 // resultados completa, e Esc fecha (nativo do <dialog>).
 import { get } from '../../lib/http.js';
 
-export const MINIMO_LETRAS = 2;
+export const MINIMO_LETRAS = 0;
 export const ATRASO_MS = 200;
 
 /** Próximo índice ativo; -1 = nenhum. ↓ no último volta ao primeiro, ↑ no primeiro vai ao último. */
@@ -136,6 +136,8 @@ export default function iniciar(dialogo) {
         }
     };
 
+    campo.addEventListener('focus', () => buscar(campo.value));
+
     campo.addEventListener('input', () => {
         clearTimeout(espera);
         atualizarTodos(campo.value);
@@ -143,7 +145,7 @@ export default function iniciar(dialogo) {
         if (!termoValido(campo.value)) {
             controle?.abort();
             limpar();
-            mostrarEstado(campo.value.trim() === '' ? `Digite pelo menos ${MINIMO_LETRAS} letras para buscar.` : 'Continue digitando…');
+            mostrarEstado(campo.value.trim() === '' ? 'Escolha um resultado ou digite para filtrar.' : 'Continue digitando…');
             return;
         }
 
@@ -175,7 +177,7 @@ export default function iniciar(dialogo) {
         campo.value = '';
         limpar();
         atualizarTodos('');
-        mostrarEstado(`Digite pelo menos ${MINIMO_LETRAS} letras para buscar.`);
+        mostrarEstado('Escolha um resultado ou digite para filtrar.');
     });
 
     // Clique no fundo (fora da caixa) fecha.

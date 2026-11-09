@@ -100,7 +100,7 @@ export function iniciarAutocomplete(wrapper, { buscar = getPadrao, atraso = 250,
     }
 
     const livre = wrapper.dataset.autocompleteLivre !== undefined;
-    const listarAoAbrir = wrapper.dataset.autocompleteListar !== undefined;
+    const listarAoAbrir = wrapper.dataset.autocompleteListar !== 'false';
     const minimo = listarAoAbrir ? 0 : Number(wrapper.dataset.autocompleteMin ?? 2) || 1;
     const idLista = `${campo.id}-opcoes`;
 
@@ -282,12 +282,12 @@ export function iniciarAutocomplete(wrapper, { buscar = getPadrao, atraso = 250,
         }
     }
 
-    // Opt-in para cadastros com lista inicial limitada no servidor. O clique
+    // Cadastros abrem com lista inicial limitada no servidor. O clique
     // também reabre depois de Escape, mesmo se o campo ainda tiver o foco.
     const abrirSugestoes = () => {
         if (listarAoAbrir && !aberto()) {
             clearTimeout(espera);
-            pesquisar(campo.value.trim());
+            pesquisar(escolhido && campo.value.trim() === escolhido.valor.trim() ? '' : campo.value.trim());
         }
     };
     campo.addEventListener('focus', abrirSugestoes);
@@ -302,6 +302,7 @@ export function iniciarAutocomplete(wrapper, { buscar = getPadrao, atraso = 250,
         validar();
 
         clearTimeout(espera);
+        pedido++; // Uma resposta do termo anterior não deve substituir a nova digitação.
         const termo = campo.value.trim();
         if (termo.length < minimo) {
             pedido++;

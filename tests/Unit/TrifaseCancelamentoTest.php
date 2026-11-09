@@ -270,11 +270,12 @@ final class TrifaseCancelamentoTest extends MaposTestCase
         }
 
         // Confirma o caso misto registrando R$ 150,00 devolvidos e mantendo R$ 50,00 retidos pelo diagnóstico:
-        $this->modelo->confirmar(1, $pedido, array_replace($this->dados(), [
+        $dadosAcerto = array_replace($this->dados(), [
             'valor_devido' => '50,00', 'desconto' => '0,00', 'acerto_confirmado' => '1',
             'valor_devolucao' => '150,00', 'data_devolucao' => '2026-11-05', 'forma_devolucao' => 'Pix',
             'referencia_devolucao' => 'PIX-DEV-150', 'conferencia' => 'Retido R$ 50,00 de diagnóstico e devolvido R$ 150,00.',
-        ]), 7, 'confirmacao_ok_12345');
+        ]);
+        $idConfirmacao = $this->modelo->confirmar(1, $pedido, $dadosAcerto, 7, 'confirmacao_ok_12345');
 
         $this->assertSame('Cancelado', $this->db->where('idOs', 1)->get('os')->row()->status);
         $resumoFinal = $f->resumo(1);
@@ -283,6 +284,26 @@ final class TrifaseCancelamentoTest extends MaposTestCase
         $this->assertSame(15000, $resumoFinal['reembolsado_c']);
         $this->assertSame(0, $resumoFinal['saldo_c']);
         $this->assertSame('Quitado', $resumoFinal['situacao']);
+
+        // Reenvio não duplica despesa nem devolução; as projeções em lote concordam.
+        $antes = [];
+        foreach (['lancamentos', 'trifase_financeiro_obrigacoes', 'trifase_financeiro_eventos', 'trifase_financeiro_projecoes', 'trifase_cancelamentos'] as $tabela) {
+            $antes[$tabela] = $this->db->get($tabela)->result_array();
+        }
+        $this->assertSame($idConfirmacao, $this->modelo->confirmar(1, $pedido, $dadosAcerto, 7, 'confirmacao_ok_12345'));
+        $this->assertSame($resumoFinal, $f->resumos([1])[1]);
+        $this->assertCount(0, $this->modelo->pendentes());
+        $recebimento = $this->db->where('tipo', 'receber')->get('trifase_financeiro_eventos', 1)->row();
+        try {
+            $f->estornar(1, (int) $recebimento->id, 'Correção após devolução', '2026-11-06', 'estorno_apos_devolucao', 7);
+            $this->fail('Estornou recebimento com devolução vinculada');
+        } catch (DomainException $e) {
+            $this->assertStringContainsString('devolução', $e->getMessage());
+        }
+        foreach ($antes as $tabela => $registros) {
+            $this->assertSame($registros, $this->db->get($tabela)->result_array(), $tabela);
+        }
+        $this->assertSame($resumoFinal, $f->resumo(1));
     }
 
     public function testAcertoComValorAReceberPermiteQuitacaoPosteriorDaTaxaDeDiagnostico(): void

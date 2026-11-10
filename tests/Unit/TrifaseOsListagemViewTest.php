@@ -143,8 +143,9 @@ final class TrifaseOsListagemViewTest extends \PHPUnit\Framework\TestCase
         $dom = new DOMDocument();
         @$dom->loadHTML($html);
         $xpath = new DOMXPath($dom);
-        $this->assertCount(1, $xpath->query('//select[@name="financeiro"]/option[@value="parcial" and @selected]'));
-        $this->assertCount(1, $xpath->query('//select[@name="pendencia"]/option[@value="receber" and @selected]'));
+        $this->assertCount(1, $xpath->query('//select[@name="situacao"]/option[@value="receber" and @selected]'));
+        $this->assertCount(0, $xpath->query('//select[@name="pendencia"]'));
+        $this->assertCount(0, $xpath->query('//select[@name="financeiro"]'));
         $this->assertStringNotContainsString('name="fila"', $html);
         $this->assertStringContainsString('name="vencimento_de"', $html);
         $this->assertStringContainsString('Mais filtros', $html);
@@ -153,6 +154,7 @@ final class TrifaseOsListagemViewTest extends \PHPUnit\Framework\TestCase
             $this->assertStringNotContainsString('name="financeiro"', $restrito);
             $this->assertStringNotContainsString('name="saldo"', $restrito);
             $this->assertStringNotContainsString('name="pendencia"', $restrito);
+            $this->assertStringNotContainsString('name="situacao"', $restrito);
             $this->assertSame([], $this->celulas($restrito, 'Acerto financeiro'));
         }
     }

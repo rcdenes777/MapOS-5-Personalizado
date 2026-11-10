@@ -145,6 +145,18 @@ class Financeiro extends MY_Controller
             $entrada['pendencia'] = 'cancelamento';
             unset($entrada['financeiro']);
         }
+        // Um único seletor; links antigos priorizam a pendência, sem cruzar dois estados.
+        if (isset($entrada['situacao'])) {
+            unset($entrada['pendencia'], $entrada['financeiro']);
+            if (in_array($entrada['situacao'], ['receber', 'devolver', 'cancelamento', 'nenhuma'], true)) {
+                $entrada['pendencia'] = $entrada['situacao'];
+            } elseif (is_string($entrada['situacao']) && isset(Trifase_financeiro_busca::OPCOES[$entrada['situacao']])) {
+                $entrada['financeiro'] = $entrada['situacao'];
+            }
+        }
+        if (! empty($entrada['pendencia'])) {
+            unset($entrada['financeiro']);
+        }
         $filtros = listagemFiltros([
             'pesquisa' => 'texto', 'status' => array_keys(OS_STATUS_VARIANTES),
             'financeiro' => array_keys(Trifase_financeiro_busca::OPCOES),

@@ -52,8 +52,35 @@ final class FinanceiroOrdensTest extends MaposTestCase
                 };
             }
         };
-        $this->assertSame(['status' => 'Finalizado', 'financeiro' => 'parcial', 'pendencia' => 'receber', 'vencimento_ate' => '2026-12-10'], $this->invokeMethod($c, 'filtrosDasOrdens'));
+        $this->assertSame(['status' => 'Finalizado', 'pendencia' => 'receber', 'vencimento_ate' => '2026-12-10'], $this->invokeMethod($c, 'filtrosDasOrdens'));
     }
+    public function testSeletorUnicoSubstituiCombinacoesAntigas(): void
+    {
+        $c = new class() extends Financeiro {
+            public object $input;
+            public function __construct()
+            {
+                $this->input = new class() {
+                    public array $query = [];
+                    public function get()
+                    {
+                        return $this->query;
+                    }
+                };
+            }
+        };
+        foreach ([
+            [['financeiro' => 'quitada', 'pendencia' => 'receber'], ['pendencia' => 'receber']],
+            [['situacao' => 'parcial', 'pendencia' => 'receber'], ['financeiro' => 'parcial']],
+            [['situacao' => 'devolver', 'financeiro' => 'quitada'], ['pendencia' => 'devolver']],
+            [['situacao' => '', 'financeiro' => 'parcial'], []],
+            [['situacao' => ['parcial']], []],
+        ] as [$entrada, $esperado]) {
+            $c->input->query = $entrada;
+            $this->assertSame($esperado, $this->invokeMethod($c, 'filtrosDasOrdens'));
+        }
+    }
+
     public function testPendenciaEVencimentoUsamCobrancaSemConfundirDataDaOs(): void
     {
         $antes = $_ENV;

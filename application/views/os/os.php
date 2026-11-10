@@ -205,8 +205,11 @@ $resumo = ($total === 1 ? '1 ordem de serviço' : number_format($total, 0, ',', 
             'attrs' => ['maxlength' => 100],
         ]) ?>
         <?php if (($contextoFinanceiro ?? false) && $filtrarFinanceiro) { ?>
-            <?= component('select', ['name' => 'financeiro', 'label' => 'Situação financeira', 'placeholder' => 'Todas', 'options' => array_diff_key(Trifase_financeiro_busca::OPCOES, ['cancelamento_pendente' => true]), 'selected' => $filtros['financeiro'] ?? null]) ?>
-            <?= component('select', ['name' => 'pendencia', 'label' => 'Pendência', 'placeholder' => 'Todas', 'options' => ['receber' => 'A receber', 'devolver' => 'A devolver', 'cancelamento' => 'Cancelamento aguardando análise', 'nenhuma' => 'Sem pendência'], 'selected' => $filtros['pendencia'] ?? null]) ?>
+            <?php
+            $opcoesFinanceiras = ['receber' => 'A receber', 'pendente' => 'Em aberto — sem pagamento', 'parcial' => 'Parcialmente paga', 'devolver' => 'A devolver', 'cancelamento' => 'Cancelamento aguardando análise', 'nenhuma' => 'Sem pendência', 'nao_faturada' => 'Não faturada', 'anterior' => 'Faturamento anterior', 'reembolsada' => 'Reembolsada', 'encerrada_garantia' => 'Encerrada por garantia'];
+            $selecaoFinanceira = $filtros['pendencia'] ?? $filtros['financeiro'] ?? '';
+            ?>
+            <?= component('select', ['name' => 'situacao', 'label' => 'Situação financeira', 'placeholder' => 'Todas', 'options' => $opcoesFinanceiras, 'selected' => $selecaoFinanceira === 'quitada' ? 'nenhuma' : $selecaoFinanceira]) ?>
             <?= component('input', ['name' => 'vencimento_de', 'label' => 'Vencimento a partir de', 'type' => 'date', 'value' => $filtros['vencimento_de'] ?? null]) ?>
             <?= component('input', ['name' => 'vencimento_ate', 'label' => 'Vencimento até', 'type' => 'date', 'value' => $filtros['vencimento_ate'] ?? null]) ?>
             <details class="sm:col-span-2" <?= isset($filtros['status']) ? 'open' : '' ?>>

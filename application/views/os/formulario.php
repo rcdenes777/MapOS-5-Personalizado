@@ -53,6 +53,9 @@ $texto = static fn (string $nome, string $label, ?string $ajuda = null) => [
 ];
 
 $statusOpcoes = array_combine(array_keys(OS_STATUS_VARIANTES), array_keys(OS_STATUS_VARIANTES));
+if (($os->status ?? '') !== 'Orçamento recusado') {
+    unset($statusOpcoes['Orçamento recusado']);
+}
 if (($cancelamentoFluxoDisponivel ?? false) && ($os->status ?? '') !== 'Cancelado') {
     unset($statusOpcoes['Cancelado']);
 }

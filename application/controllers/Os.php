@@ -342,6 +342,10 @@ class Os extends MY_Controller
     /** Quando há unidade, criar a OS e vinculá-la é uma única transação. */
     private function criarOs(array $dados): ?int
     {
+        if ($dados['status'] === 'Orçamento recusado') {
+            $this->erroEquipamentoNovaOs = 'Registre a resposta do cliente na versão do orçamento.';
+            return null;
+        }
         if ($dados['status'] === 'Cancelado' && $this->db->table_exists('trifase_cancelamentos')) {
             $this->erroEquipamentoNovaOs = 'Crie o atendimento antes de registrar o pedido de cancelamento com motivo e conferência.';
             return null;
@@ -421,6 +425,10 @@ class Os extends MY_Controller
      */
     private function salvarOs(object $os, array $dados): ?int
     {
+        if ($dados['status'] === 'Orçamento recusado' && $os->status !== 'Orçamento recusado') {
+            $this->erroEquipamentoNovaOs = 'Registre a resposta do cliente na versão do orçamento.';
+            return null;
+        }
         if ($this->db->table_exists('trifase_cancelamentos') && $dados['status'] !== $os->status
             && ($dados['status'] === 'Cancelado' || $os->status === 'Cancelado')) {
             $this->erroEquipamentoNovaOs = 'Use Cancelamento da OS para registrar pedido e conferir estoque e financeiro. Atendimento cancelado deve permanecer no histórico; abra outra OS.';
@@ -467,22 +475,27 @@ class Os extends MY_Controller
                 $this->erroEquipamentoNovaOs = 'O prazo registrado na conclusão não pode ser substituído pela edição da OS.';
                 return null;
             }
-            if ((trifaseAtendimentoHabilitado() || trifaseAtendimentoDaOs($this->db, (int) $os->idOs) !== null) && $dados['status'] !== $lock->os->status && ! in_array($dados['status'], ['Cancelado', 'Faturado'], true)) {
-                require_once APPPATH . 'models/Trifase_atendimento_model.php';
-                $tecnico = new Trifase_atendimento_model();
-                $tecnico->db = $this->db;
-                $retrato = clone $lock->os;
-                $retrato->garantia = $dados['garantia'];
-                $retrato->dataInicial = $dados['dataInicial'];
-                try {
+            try {
+                if ((trifaseAtendimentoHabilitado() || trifaseAtendimentoDaOs($this->db, (int) $os->idOs) !== null) && $dados['status'] !== $lock->os->status && ! in_array($dados['status'], ['Cancelado', 'Faturado'], true)) {
+                    require_once APPPATH . 'models/Trifase_atendimento_model.php';
+                    $tecnico = new Trifase_atendimento_model();
+                    $tecnico->db = $this->db;
+                    $retrato = clone $lock->os;
+                    $retrato->garantia = $dados['garantia'];
+                    $retrato->dataInicial = $dados['dataInicial'];
                     $tecnico->prepararTransicao($retrato, $dados['status'], (int) $this->usuarioLogado());
-                } catch (DomainException $e) {
-                    $lock->finalizar(false);
-                    $this->erroEquipamentoNovaOs = $e->getMessage();
-                    return null;
+                } else {
+                    trifaseValidarMudancaDeAndamento($this->db, $lock->os, $dados['status']);
                 }
+            } catch (DomainException $e) {
+                $lock->finalizar(false);
+                $this->erroEquipamentoNovaOs = $e->getMessage();
+                return null;
             }
             $resultado = $this->salvarOsSemTrava($lock->os, $dados);
+            if ($resultado !== null && $dados['status'] === 'Orçamento recusado') {
+                $this->reavaliarRecusa($resultado);
+            }
             $lock->finalizar($resultado !== null);
             return $resultado;
         } catch (Throwable $e) {
@@ -627,6 +640,7 @@ class Os extends MY_Controller
             $dados['pilotoEntrega'] = $this->piloto_entregas->ativa((int) $os->idOs);
             $dados['pilotoEntregasHistorico'] = $this->piloto_entregas->historico((int) $os->idOs);
         }
+        $dados['pilotoPodeRegistrarResposta'] = $this->permite('vLancamento') && $this->permite('eOs') && $this->permite('publicarOrcamento');
         $dados['pilotoOrcamento'] = null;
         $dados['pilotoOrcamentoDecisao'] = null;
         $dados['pilotoOrcamentoValido'] = false;
@@ -636,8 +650,7 @@ class Os extends MY_Controller
             $atualOrcamento = $this->orcamentos_os->atual((int) $os->idOs);
             if ($atualOrcamento !== null) {
                 $decisaoOrcamento = $this->orcamentos_os->decisao((int) $atualOrcamento->id);
-                $orcamentoValido = $os->status !== 'Cancelado' && (bool) $atualOrcamento->ativo
-                    && hash_equals($atualOrcamento->conteudo_hash, $this->orcamentos_os->hash($this->orcamentos_os->retrato($os)));
+                $orcamentoValido = $this->orcamentos_os->versaoVigente($os, $atualOrcamento) !== null;
                 if ($decisaoOrcamento !== null) {
                     // O técnico recebe somente a resposta, sem nome, itens ou valores do orçamento.
                     $dados['pilotoRespostaCliente'] = ['tipo' => $decisaoOrcamento->tipo, 'criado_em' => $decisaoOrcamento->criado_em, 'atual' => $orcamentoValido];
@@ -787,6 +800,19 @@ class Os extends MY_Controller
         }
 
         return $html;
+    }
+
+    private function reavaliarRecusa(int $id): bool
+    {
+        if (! trifaseOrcamentoHabilitado() || ! $this->db->table_exists('trifase_orcamento_versoes')) {
+            return false;
+        }
+        $os = $this->os_model->getById($id);
+        if ($os->status !== 'Orçamento recusado') {
+            return false;
+        }
+        $this->load->model('Trifase_orcamento_model', 'orcamentos_os');
+        return $this->orcamentos_os->reavaliarRecusa($os, (int) $this->usuarioLogado());
     }
 
     /** Resposta JSON dos endpoints da tela da OS. */
@@ -1546,6 +1572,19 @@ class Os extends MY_Controller
             'desconto' => ['totais', 'desconto', 'pix'],
             default => throw new InvalidArgumentException("Tipo de trecho desconhecido: {$tipo}"),
         };
+
+        if ($status < 400 && $this->financeiroLock !== null && in_array($tipo, ['produto', 'servico', 'desconto'], true)) {
+            try {
+                if ($this->reavaliarRecusa($idOs)) {
+                    $aba = listagemFiltros(['aba' => OS_ABAS], $this->input->post())['aba'] ?? 'resumo';
+                    $this->responderJson($status, ['result' => true, 'redirecionar' => site_url('os/visualizar/' . $idOs) . '?aba=' . $aba]);
+                    return;
+                }
+            } catch (RuntimeException $e) {
+                $this->responderJson(500, ['result' => false, 'message' => 'Não foi possível atualizar o andamento do orçamento.']);
+                return;
+            }
+        }
 
         $this->responderJson($status, [
             'result' => $status < 400,

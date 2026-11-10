@@ -8,6 +8,8 @@ require_once APPPATH . 'helpers/trifase_orcamento_helper.php';
 
 class Trifase_orcamento_model extends CI_Model
 {
+    private const ETAPAS_DE_ORCAMENTO = ['Aberto', 'Orçamento', 'Negociação', 'Orçamento recusado', 'Aprovado'];
+
     /** Lista fechada: nunca serializar objetos de produtos/clientes para o público. */
     public function retrato(object $os): array
     {
@@ -104,6 +106,9 @@ class Trifase_orcamento_model extends CI_Model
             if (! $ok) {
                 throw new RuntimeException('Não foi possível publicar o orçamento.');
             }
+            if (in_array($os->status, self::ETAPAS_DE_ORCAMENTO, true)) {
+                $this->registrarAndamento($os, 'Negociação', $usuario, date('Y-m-d H:i:s'));
+            }
             require_once APPPATH . 'helpers/trifase_garantia_helper.php';
             if (trifaseGarantiaOperacoesHabilitadas() && $this->db->table_exists('trifase_garantia_retornos') && $this->db->where('os_id', $id)->count_all_results('trifase_garantia_retornos')) {
                 require_once APPPATH . 'models/Trifase_garantia_model.php';
@@ -122,7 +127,7 @@ class Trifase_orcamento_model extends CI_Model
             throw new DomainException('Operador inválido.');
         }
         $hash = $this->hash(['retirar', $id, $versao, $usuario]);
-        $this->transacao($id, function () use ($id, $versao, $usuario, $chave, $hash) {
+        $this->transacao($id, function ($os) use ($id, $versao, $usuario, $chave, $hash) {
             if ($this->reenvio($id, $chave, $hash)) {
                 return;
             }
@@ -134,11 +139,27 @@ class Trifase_orcamento_model extends CI_Model
             if (! $this->db->where('os_id', $id)->update('trifase_orcamento_estado', ['ativo' => 0])) {
                 throw new RuntimeException('Não foi possível retirar a publicação.');
             }
+            if ($os->status === 'Orçamento recusado') {
+                $this->registrarAndamento($os, 'Orçamento', $usuario, date('Y-m-d H:i:s'));
+            }
         });
     }
 
     /** Token é conferido novamente SOB a mesma trava usada na revogação do link. */
     public function responder(int $id, mixed $token, int $versao, mixed $tipo, mixed $nome, mixed $confirmado, string $chave): void
+    {
+        $this->registrarResposta($id, $token, $versao, $tipo, $nome, $confirmado, $chave, null);
+    }
+
+    public function registrarRespostaInterna(int $id, int $versao, mixed $tipo, mixed $nome, mixed $confirmado, string $chave, int $usuario): void
+    {
+        if ($usuario <= 0) {
+            throw new DomainException('Identifique quem está registrando a resposta.');
+        }
+        $this->registrarResposta($id, null, $versao, $tipo, $nome, $confirmado, $chave, $usuario);
+    }
+
+    private function registrarResposta(int $id, mixed $token, int $versao, mixed $tipo, mixed $nome, mixed $confirmado, string $chave, ?int $usuario): void
     {
         $this->validarOperacao($chave);
         if (! in_array($tipo, ['aprovar', 'recusar'], true) || $confirmado !== '1' || ! is_string($nome)
@@ -147,30 +168,65 @@ class Trifase_orcamento_model extends CI_Model
             throw new DomainException('Informe seu nome e confirme a decisão sobre esta versão.');
         }
         $nome = trim($nome);
-        $hash = $this->hash(['responder', $id, $versao, $tipo, $nome]);
-        $this->transacao($id, function ($os) use ($id, $token, $versao, $tipo, $nome, $chave, $hash) {
-            $atual = $this->publicadoSobTrava($os, $token);
+        $hash = $this->hash($usuario === null ? ['responder', $id, $versao, $tipo, $nome] : ['resposta_interna', $id, $versao, $tipo, $nome, $usuario]);
+        $this->transacao($id, function ($os) use ($id, $token, $versao, $tipo, $nome, $chave, $hash, $usuario) {
+            $atual = $usuario === null ? $this->publicadoSobTrava($os, $token) : $this->versaoVigente($os);
             if ($atual === null || (int) $atual->id !== $versao) {
-                throw new DomainException('Orçamento indisponível ou atualizado. Reabra o link e confira a versão.');
+                throw new DomainException('Orçamento indisponível ou atualizado. Reabra e confira a versão.');
             }
             if ($this->reenvio($id, $chave, $hash)) {
                 return;
             }
             if ($this->decisao($versao) !== null) {
-                throw new DomainException('Esta versão já recebeu uma decisão. Fale com a assistência para solicitar uma revisão.');
+                throw new DomainException('Esta versão já recebeu uma decisão. Use uma nova versão para registrar outra resposta.');
             }
-            $this->evento($id, $versao, $tipo, $nome, null, $versao, $chave, $hash);
-            if (in_array($os->status, ['Orçamento', 'Negociação'], true)) {
-                $novoStatus = $tipo === 'aprovar' ? 'Aprovado' : 'Orçamento recusado';
-                $decisao = $this->decisao($versao);
-                if ($decisao === null || ! $this->db->insert('os_historico', [
-                    'os_id' => $id, 'status_anterior' => $os->status, 'status_novo' => $novoStatus,
-                    'usuarios_id' => null, 'data_hora' => $decisao->criado_em,
-                ]) || ! $this->db->where('idOs', $id)->update('os', ['status' => $novoStatus])) {
-                    throw new RuntimeException('Não foi possível registrar a resposta e o andamento.');
-                }
+            $this->evento($id, $versao, $tipo, $nome, $usuario, $versao, $chave, $hash);
+            if (in_array($os->status, self::ETAPAS_DE_ORCAMENTO, true)) {
+                $this->registrarAndamento($os, $tipo === 'aprovar' ? 'Aprovado' : 'Orçamento recusado', $usuario, $this->decisao($versao)->criado_em);
             }
         });
+    }
+
+    private function registrarAndamento(object $os, string $status, ?int $usuario, string $data): void
+    {
+        $id = (int) $os->idOs;
+        if ($status !== $os->status && (! $this->db->insert('os_historico', [
+            'os_id' => $id, 'status_anterior' => $os->status, 'status_novo' => $status,
+            'usuarios_id' => $usuario, 'data_hora' => $data,
+        ]) || ! $this->db->where('idOs', $id)->update('os', ['status' => $status]))) {
+            throw new RuntimeException('Não foi possível registrar o andamento do orçamento.');
+        }
+    }
+
+    /** Chamado sob a trava da OS após alteração dos dados cotados. */
+    public function reavaliarRecusa(object $os, int $usuario): bool
+    {
+        if ($os->status !== 'Orçamento recusado') {
+            return false;
+        }
+        $atual = $this->atual((int) $os->idOs);
+        if ($atual === null || ! $atual->ativo || ($this->decisao((int) $atual->id)->tipo ?? '') !== 'recusar'
+            || $this->versaoVigente($os, $atual) !== null) {
+            return false;
+        }
+        $this->registrarAndamento($os, 'Orçamento', $usuario, date('Y-m-d H:i:s'));
+        return true;
+    }
+
+    public function versaoVigente(object $os, ?object $atual = null): ?object
+    {
+        if ($os->status === 'Cancelado') {
+            return null;
+        }
+        $atual ??= $this->atual((int) $os->idOs);
+        if ($atual === null || ! $atual->ativo) {
+            return null;
+        }
+        try {
+            return hash_equals($atual->conteudo_hash, $this->hash($this->retrato($os))) ? $atual : null;
+        } catch (DomainException) {
+            return null;
+        }
     }
 
     public function publicado(int $id, mixed $token): ?object
@@ -184,11 +240,7 @@ class Trifase_orcamento_model extends CI_Model
             return null;
         }
         $link = $this->db->where('os_id', (int) $os->idOs)->where('token_hash', hash('sha256', $token))->where('expira_em >', time())->get('trifase_publico_links', 1)->row();
-        $atual = $link ? $this->atual((int) $os->idOs) : null;
-        if ($atual === null || ! $atual->ativo || ! hash_equals($atual->conteudo_hash, $this->hash($this->retrato($os)))) {
-            return null;
-        }
-        return $atual;
+        return $link ? $this->versaoVigente($os) : null;
     }
 
     private function evento(int $os, int $versao, string $tipo, string $nome, ?int $usuario, ?int $decisao, string $chave, string $hash): void

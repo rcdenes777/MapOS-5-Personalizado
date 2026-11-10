@@ -183,6 +183,25 @@ final class TrifaseCancelamentoTest extends MaposTestCase
         $this->modelo->conferirTecnica(2, $pedido, $this->dadosTecnicos(), 2, 'outra_os_123456789');
     }
 
+    public function testPedidoBloqueiaFinalizacaoEEncerradaNaoEntraNaFila(): void
+    {
+        require_once APPPATH . 'models/Trifase_atendimento_model.php';
+        $this->db->where('idOs', 1)->update('os', ['status' => 'Finalizado']);
+        try {
+            $this->pedido();
+            $this->fail('Registrou pedido em OS finalizada');
+        } catch (DomainException $e) {
+            $this->assertSame([], $this->modelo->pendentes());
+        }
+        $this->db->where('idOs', 1)->update('os', ['status' => 'Aprovado']);
+        $this->pedido();
+        $andamento = new Trifase_atendimento_model();
+        $andamento->db = $this->db;
+        $this->expectException(DomainException::class);
+        $this->expectExceptionMessage('pedido de cancelamento');
+        $andamento->alterarAndamento(1, 'Finalizado', 7);
+    }
+
     public function testRetiradaEncerraPedidoMesmoAposConferenciaTecnica(): void
     {
         $pedido = $this->pedido();

@@ -109,48 +109,83 @@ final class TrifaseOrcamentoTest extends MaposTestCase
         }
     }
 
-    public function testAprovacaoMudaSomenteOrcamentoOuNegociacaoUmaVez(): void
+    public function testAprovacaoAtualizaEtapasDeOrcamentoSemVoltarOsEmExecucao(): void
     {
         foreach (['Orçamento', 'Negociação', 'Aberto', 'Em Andamento', 'Aguardando Peças', 'Finalizado', 'Aprovado'] as $indice => $status) {
             $this->db->where('idOs', 1)->update('os', ['status' => $status]);
-            $this->db->empty_table('os_historico');
             $id = $this->publicar('publicar-' . $indice);
+            $this->db->empty_table('os_historico');
             $antes = $this->db->where('idOs', 1)->get('os')->row_array();
             $this->modelo->responder(1, $this->token, $id, 'aprovar', 'Cliente QA', '1', $this->chave('aprovar-' . $indice));
             $this->modelo->responder(1, $this->token, $id, 'aprovar', 'Cliente QA', '1', $this->chave('aprovar-' . $indice));
-            $muda = in_array($status, ['Orçamento', 'Negociação'], true);
+            $muda = in_array($antes['status'], ['Aberto', 'Orçamento', 'Negociação'], true);
             $depois = $this->db->where('idOs', 1)->get('os')->row_array();
-            $this->assertSame($muda ? 'Aprovado' : $status, $depois['status']);
+            $this->assertSame($muda ? 'Aprovado' : $antes['status'], $depois['status']);
             unset($antes['status'], $depois['status']);
             $this->assertSame($antes, $depois);
             $this->assertSame($muda ? 1 : 0, $this->db->count_all('os_historico'));
             if ($muda) {
                 $h = $this->db->get('os_historico')->row();
                 $this->assertNull($h->usuarios_id);
-                $this->assertSame($status, $h->status_anterior);
+                $this->assertSame('Negociação', $h->status_anterior);
                 $this->assertSame($this->modelo->decisao($id)->criado_em, $h->data_hora);
             }
         }
     }
 
-    public function testRecusaMudaSomenteOrcamentoOuNegociacaoUmaVez(): void
+    public function testRecusaAtualizaEtapasDeOrcamentoSemVoltarOsEmExecucao(): void
     {
         foreach (['Orçamento', 'Negociação', 'Aberto', 'Em Andamento', 'Finalizado', 'Aprovado'] as $i => $status) {
             $this->db->where('idOs', 1)->update('os', ['status' => $status]);
-            $this->db->empty_table('os_historico');
             $id = $this->publicar('recusa-' . $i);
+            $this->db->empty_table('os_historico');
             $antes = $this->db->where('idOs', 1)->get('os')->row_array();
             $this->modelo->responder(1, $this->token, $id, 'recusar', 'Cliente QA', '1', $this->chave('recusar-' . $i));
             $this->modelo->responder(1, $this->token, $id, 'recusar', 'Cliente QA', '1', $this->chave('recusar-' . $i));
-            $muda = in_array($status, ['Orçamento', 'Negociação'], true);
+            $muda = in_array($antes['status'], ['Aberto', 'Orçamento', 'Negociação'], true);
             $depois = $this->db->where('idOs', 1)->get('os')->row_array();
-            $this->assertSame($muda ? 'Orçamento recusado' : $status, $depois['status']);
+            $this->assertSame($muda ? 'Orçamento recusado' : $antes['status'], $depois['status']);
             unset($antes['status'], $depois['status']);
             $this->assertSame($antes, $depois);
             $this->assertSame($muda ? 1 : 0, $this->db->count_all('os_historico'));
             if ($muda) {
                 $this->assertSame($this->modelo->decisao($id)->criado_em, $this->db->get('os_historico')->row()->data_hora);
             }
+        }
+    }
+
+    public function testRecusaInternaAtribuiOperadorEContaSomenteVersaoVigente(): void
+    {
+        require_once APPPATH . 'libraries/Trifase_os_fila.php';
+        $env = $_ENV;
+        try {
+            $_ENV['TRIFASE_ORCAMENTOS_ENABLED'] = 'true';
+            $_ENV['TRIFASE_UI_PILOTO_ENABLED'] = 'true';
+            $this->db->where('idOs', 1)->update('os', ['status' => 'Aberto']);
+            $versao = $this->publicar();
+            $this->db->empty_table('trifase_publico_links');
+            $this->modelo->registrarRespostaInterna(1, $versao, 'recusar', 'Cliente QA', '1', $this->chave('resposta-interna'), 7);
+            $this->modelo->registrarRespostaInterna(1, $versao, 'recusar', 'Cliente QA', '1', $this->chave('resposta-interna'), 7);
+            $this->assertSame(7, (int) $this->modelo->decisao($versao)->usuario_id);
+            $this->assertSame(2, $this->db->count_all('os_historico'));
+            $this->assertSame('Orçamento recusado', $this->db->where('idOs', 1)->get('os')->row()->status);
+            $this->db->from('os');
+            Trifase_os_fila::aplicar($this->db, 'recusados');
+            $this->assertSame(1, $this->db->count_all_results());
+            $this->db->where('idProdutos_os', 1)->update('produtos_os', ['subTotal' => 55]);
+            $this->db->from('os');
+            Trifase_os_fila::aplicar($this->db, 'recusados');
+            $this->assertSame(0, $this->db->count_all_results());
+            $this->assertTrue($this->modelo->reavaliarRecusa($this->db->where('idOs', 1)->get('os')->row(), 7));
+            $this->assertSame('Orçamento', $this->db->where('idOs', 1)->get('os')->row()->status);
+            $nova = $this->publicar('revisao');
+            $this->assertSame('Negociação', $this->db->where('idOs', 1)->get('os')->row()->status);
+            $this->assertNull($this->modelo->decisao($nova));
+            $this->assertSame('recusar', $this->modelo->decisao($versao)->tipo);
+            $this->expectException(DomainException::class);
+            $this->modelo->registrarRespostaInterna(1, $versao, 'aprovar', 'Cliente QA', '1', $this->chave('resposta-antiga'), 7);
+        } finally {
+            $_ENV = $env;
         }
     }
 
@@ -166,7 +201,7 @@ final class TrifaseOrcamentoTest extends MaposTestCase
             $this->fail('Registrou decisão sem histórico');
         } catch (RuntimeException $e) {
             $this->assertNull($this->modelo->decisao($id));
-            $this->assertSame('Orçamento', $this->db->where('idOs', 1)->get('os')->row()->status);
+            $this->assertSame('Negociação', $this->db->where('idOs', 1)->get('os')->row()->status);
         } finally {
             restore_error_handler();
         }

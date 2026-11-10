@@ -39,7 +39,7 @@ class OsController extends REST_Controller
 
     private function travarFinanceiro(int $id): void
     {
-        if ((! trifaseFinanceiroHabilitado() && ! $this->db->table_exists('trifase_entregas_eventos') && ! $this->db->table_exists('trifase_os_equipamentos') && ! $this->db->table_exists('trifase_orcamento_versoes') && ! $this->db->table_exists('trifase_atendimentos')) || $this->financeiroLock !== null) {
+        if ((! trifaseFinanceiroHabilitado() && ! $this->db->table_exists('trifase_entregas_eventos') && ! $this->db->table_exists('trifase_os_equipamentos') && ! $this->db->table_exists('trifase_orcamento_versoes') && ! $this->db->table_exists('trifase_atendimentos') && ! $this->db->table_exists('trifase_cancelamentos')) || $this->financeiroLock !== null) {
             return;
         }
         try {
@@ -168,6 +168,10 @@ class OsController extends REST_Controller
 
         $_POST = (array) json_decode(file_get_contents('php://input'), true);
 
+        if ($this->post('status', true) === 'Orçamento recusado') {
+            $this->response(['status' => false, 'message' => 'Registre a resposta do cliente na versão do orçamento.'], 409);
+            return;
+        }
         if ($this->db->table_exists('trifase_cancelamentos') && $this->post('status', true) === 'Cancelado') {
             $this->response(['status' => false, 'message' => 'Registre o pedido e a conferência no fluxo de cancelamento do painel.'], 409);
             return;
@@ -303,6 +307,15 @@ class OsController extends REST_Controller
             ], REST_Controller::HTTP_BAD_REQUEST);
         }
 
+        $status = $this->put('status', true);
+        if (is_string($status)) {
+            try {
+                trifaseValidarMudancaDeAndamento($this->db, $os, $status);
+            } catch (DomainException $e) {
+                $this->response(['status' => false, 'message' => $e->getMessage()], 409);
+                return;
+            }
+        }
         if ($this->db->table_exists('trifase_cancelamentos') && $os->status !== $this->put('status', true)
             && ($os->status === 'Cancelado' || $this->put('status', true) === 'Cancelado')) {
             $this->response(['status' => false, 'message' => 'Use o fluxo de cancelamento conferido. Preserve a OS cancelada e abra outro atendimento.'], 409);

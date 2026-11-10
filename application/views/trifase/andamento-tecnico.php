@@ -5,7 +5,7 @@
     <summary>Atualizar andamento</summary>
     <form method="post" action="<?= e(site_url('trifase_atendimentos/andamento/' . (int) $os->idOs)) ?>" class="grid gap-3 p-3" <?= js_module('formulario/padrao') ?>>
         <input type="hidden" name="<?= e($this->security->get_csrf_token_name()) ?>" value="<?= e($this->security->get_csrf_hash()) ?>">
-        <?= component('select', ['name' => 'status', 'id' => 'piloto-andamento-tecnico', 'label' => 'Andamento do serviço', 'selected' => $os->status, 'options' => ['Orçamento' => 'Orçamento', 'Negociação' => 'Negociação', 'Orçamento recusado' => 'Orçamento recusado', 'Aberto' => 'Aberto', 'Aprovado' => 'Aprovado', 'Em Andamento' => 'Em Andamento', 'Aguardando Peças' => 'Aguardando Peças', 'Finalizado' => 'Finalizado']]) ?>
+        <?= component('select', ['name' => 'status', 'id' => 'piloto-andamento-tecnico', 'label' => 'Andamento do serviço', 'selected' => $os->status, 'options' => array_diff_key(osOpcoesAndamento(), array_flip($os->status === 'Orçamento recusado' ? ['Cancelado', 'Faturado'] : ['Cancelado', 'Faturado', 'Orçamento recusado']))]) ?>
         <p class="text-caption text-muted">Ao finalizar pela primeira vez, a conclusão será registrada na data de hoje, com o prazo concedido nesta OS. Uma conclusão já conhecida mantém sua referência. Cobrança e retirada são independentes.</p>
         <?= component('checkbox', ['name' => 'confirmar', 'id' => 'confirmar-andamento-tecnico', 'value' => '1', 'label' => 'Conferi o andamento e confirmo a alteração.', 'required' => true]) ?>
         <?= component('button', ['label' => 'Salvar andamento', 'type' => 'submit']) ?>

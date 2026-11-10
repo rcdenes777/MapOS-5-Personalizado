@@ -53,7 +53,7 @@
                             continue;
                         } ?>
                         <p class="mt-2 break-words text-caption text-muted"><?= e(match ($eventoOrcamento->tipo) {
-                            'publicar' => 'Publicada', 'retirar' => 'Retirada do link', 'aprovar' => 'Aprovada por ' . $eventoOrcamento->nome . ' (nome informado pelo link)', 'recusar' => 'Recusada por ' . $eventoOrcamento->nome . ' (nome informado pelo link)', default => 'Evento'
+                            'publicar' => 'Publicada', 'retirar' => 'Retirada do link', 'aprovar' => 'Aprovada por ' . $eventoOrcamento->nome . (empty($eventoOrcamento->usuario_id) ? ' (pelo link)' : ' (registrada pela equipe)'), 'recusar' => 'Recusada por ' . $eventoOrcamento->nome . (empty($eventoOrcamento->usuario_id) ? ' (pelo link)' : ' (registrada pela equipe)'), default => 'Evento'
                         } . ' · ' . date('d/m/Y H:i', strtotime($eventoOrcamento->criado_em))) ?></p>
                     <?php } ?>
                 </li>

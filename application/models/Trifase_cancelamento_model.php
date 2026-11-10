@@ -164,6 +164,9 @@ class Trifase_cancelamento_model extends CI_Model
             $nome = (string) ($cliente->nomeCliente ?? '');
             $solicitante = $origem === 'cliente' ? mb_substr('Cliente: ' . $nome, 0, 160) : 'Por iniciativa da assistência';
             $retrato = $this->conferencia($os);
+            if ($retrato['bloqueios'] !== []) {
+                throw new DomainException(implode(' ', $retrato['bloqueios']));
+            }
             $retrato['solicitacao'] = ['origem' => $origem, 'cliente_id' => (int) $os->clientes_id, 'nome_cliente' => $nome];
             return $this->evento($id, 'solicitar', null, $solicitante, $motivo, $retrato, $usuario, $operacao);
         });

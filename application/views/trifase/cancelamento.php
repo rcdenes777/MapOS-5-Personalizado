@@ -27,14 +27,19 @@ $etapaCancelamento = $cancelado ? ($entregue ? 4 : 3) : ($pendenteCancelamento ?
     <?php if (! $pendenteCancelamento && $osCancelamento->status !== 'Cancelado' && $podePedirCancelamento) { ?>
         <section class="rounded-card border border-border bg-surface p-4">
             <h2 class="text-heading-sm">Registrar pedido de cancelamento</h2>
-            <form method="post" action="<?= e(site_url('trifase_cancelamentos/solicitar/' . $idCancelamento)) ?>" class="mt-4 grid gap-4" <?= js_module('formulario/padrao') ?>>
-                <input type="hidden" name="<?= e($this->security->get_csrf_token_name()) ?>" value="<?= e($this->security->get_csrf_hash()) ?>">
-                <input type="hidden" name="operacao" value="<?= e(bin2hex(random_bytes(16))) ?>">
-                <?= component('select', ['name' => 'origem', 'label' => 'Origem do pedido', 'selected' => $valoresCancelamento['origem'], 'required' => true, 'options' => ['cliente' => 'Solicitado pelo cliente', 'assistencia' => 'Por iniciativa da assistência']]) ?>
-                <p class="text-body-md text-muted"><?= e('Cliente vinculado à OS: ' . $clienteCancelamento) ?></p>
-                <?= component('textarea', ['name' => 'motivo', 'label' => 'Motivo do pedido', 'value' => $valoresCancelamento['motivo'], 'required' => true, 'attrs' => ['maxlength' => 2000]]) ?>
-                <?= component('button', ['label' => 'Registrar pedido', 'type' => 'submit']) ?>
-            </form>
+            <?php if ($bloqueiosCancelamento === []) { ?>
+                <form method="post" action="<?= e(site_url('trifase_cancelamentos/solicitar/' . $idCancelamento)) ?>" class="mt-4 grid gap-4" <?= js_module('formulario/padrao') ?>>
+                    <input type="hidden" name="<?= e($this->security->get_csrf_token_name()) ?>" value="<?= e($this->security->get_csrf_hash()) ?>">
+                    <input type="hidden" name="operacao" value="<?= e(bin2hex(random_bytes(16))) ?>">
+                    <?= component('select', ['name' => 'origem', 'label' => 'Origem do pedido', 'selected' => $valoresCancelamento['origem'], 'required' => true, 'options' => ['cliente' => 'Solicitado pelo cliente', 'assistencia' => 'Por iniciativa da assistência']]) ?>
+                    <p class="text-body-md text-muted"><?= e('Cliente vinculado à OS: ' . $clienteCancelamento) ?></p>
+                    <?= component('textarea', ['name' => 'motivo', 'label' => 'Motivo do pedido', 'value' => $valoresCancelamento['motivo'], 'required' => true, 'attrs' => ['maxlength' => 2000]]) ?>
+                    <?= component('button', ['label' => 'Registrar pedido', 'type' => 'submit']) ?>
+                </form>
+            <?php } else { ?>
+                <p class="mt-3 text-warning-ink">Resolva estas pendências antes de registrar o pedido.</p>
+                <ul class="mt-2 grid gap-2"><?php foreach ($bloqueiosCancelamento as $bloqueio) { ?><li><?= e($bloqueio) ?></li><?php } ?></ul>
+            <?php } ?>
         </section>
     <?php } ?>
     <?php if ($pendenteCancelamento) { ?>

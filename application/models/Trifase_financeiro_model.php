@@ -272,6 +272,7 @@ class Trifase_financeiro_model extends CI_Model
         }
         $this->transacao($osId, function ($os) use ($osId, $status, $usuario) {
             $this->exigirObrigacao($osId);
+            trifaseValidarMudancaDeAndamento($this->db, $os, $status);
             if ($os->status !== $status) {
                 if (! $this->db->table_exists('os_historico')) {
                     throw new DomainException('Histórico da OS indisponível.');

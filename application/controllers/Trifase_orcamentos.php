@@ -83,6 +83,35 @@ class Trifase_orcamentos extends MY_Controller
         redirect('trifase_orcamentos/visualizar/' . (int) $os->idOs);
     }
 
+    public function registrar_resposta($id = null)
+    {
+        if (! $this->permission->checkPermission($this->session->userdata('permissao'), 'vOs')
+            || ! $this->permission->checkPermission($this->session->userdata('permissao'), 'vLancamento')
+            || ! $this->permission->checkPermission($this->session->userdata('permissao'), 'eOs')
+            || ! $this->permission->checkPermission($this->session->userdata('permissao'), 'publicarOrcamento')) {
+            show_error('Você não tem permissão para registrar a resposta do cliente.', 403);
+        }
+        $this->somentePost();
+        $os = $this->ordem($id);
+        try {
+            $this->orcamentos->registrarRespostaInterna(
+                (int) $os->idOs,
+                (int) $this->textoPost('versao'),
+                $this->input->post('decisao'),
+                $this->input->post('nome'),
+                $this->input->post('confirmar'),
+                $this->textoPost('operacao'),
+                (int) $this->session->userdata('id_admin')
+            );
+            $this->session->set_flashdata('success', 'Resposta registrada na versão do orçamento.');
+        } catch (DomainException $e) {
+            $this->session->set_flashdata('error', $e->getMessage());
+        } catch (RuntimeException $e) {
+            $this->session->set_flashdata('error', 'Não foi possível confirmar a resposta. Confira o histórico antes de tentar novamente.');
+        }
+        redirect('os/visualizar/' . (int) $os->idOs . '?secao=compartilhamento#os-secoes');
+    }
+
     public function retirar($id = null)
     {
         if (! $this->permission->checkPermission($this->session->userdata('permissao'), 'vOs')

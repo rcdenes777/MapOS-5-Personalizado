@@ -31,6 +31,7 @@ class Trifase_atendimento_model extends CI_Model
     public function prepararTransicao(object $os, string $status, int $usuario): void
     {
         $id = (int) $os->idOs;
+        trifaseValidarMudancaDeAndamento($this->db, $os, $status);
         if ($os->status === 'Finalizado' && $status !== 'Finalizado') {
             if (trifaseRetornoTemDerivados($this->db, $id)) {
                 throw new DomainException('Esta OS já originou retorno. Preserve o atendimento encerrado e use a nova OS.');

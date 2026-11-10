@@ -78,18 +78,7 @@ if ($pode['os'] && $filasClassicas === null) {
                             'id' => 'agenda-status',
                             'label' => 'Status',
                             'placeholder' => 'Todos os status',
-                            'options' => [
-                                'Aberto' => 'Aberto',
-                                'Orçamento' => 'Orçamento',
-                                'Negociação' => 'Negociação',
-                                'Aprovado' => 'Aprovado',
-                                'Em Andamento' => 'Em Andamento',
-                                'Aguardando Peças' => 'Aguardando Peças',
-                                'Finalizado' => 'Finalizado',
-                                'Orçamento recusado' => 'Orçamento recusado',
-                                'Cancelado' => 'Cancelado',
-                                'Faturado' => 'Faturado',
-                            ],
+                            'options' => osOpcoesAndamento(),
                             'attrs' => ['data-agenda-status' => true],
                         ]) ?>
                     </div>

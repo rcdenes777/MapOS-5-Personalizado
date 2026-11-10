@@ -22,6 +22,23 @@ if (! defined('OS_STATUS_VARIANTES')) {
     ]);
 }
 
+/** Opções de andamento na ordem do painel e da agenda. */
+function osOpcoesAndamento(): array
+{
+    return [
+        'Aberto' => 'Aberto',
+        'Orçamento' => 'Orçamento',
+        'Negociação' => 'Negociação',
+        'Aprovado' => 'Aprovado',
+        'Em Andamento' => 'Em Andamento',
+        'Aguardando Peças' => 'Aguardando Peças',
+        'Finalizado' => 'Finalizado',
+        'Orçamento recusado' => 'Orçamento recusado',
+        'Cancelado' => 'Cancelado',
+        'Faturado' => 'Faturado',
+    ];
+}
+
 if (! function_exists('osStatusPill')) {
     /**
      * Props do pill-status para o status de uma OS. Status desconhecido

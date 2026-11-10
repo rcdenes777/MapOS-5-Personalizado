@@ -222,7 +222,7 @@ $resumo = ($total === 1 ? '1 ordem de serviço' : number_format($total, 0, ',', 
             'name' => 'status',
             'label' => ($trifase_ui_piloto ?? false) ? 'Andamento do serviço' : 'Status',
             'placeholder' => 'Todos',
-            'options' => array_combine(array_keys(OS_STATUS_VARIANTES), array_keys(OS_STATUS_VARIANTES)),
+            'options' => osOpcoesAndamento(),
             'selected' => $filtros['status'] ?? null,
         ]) ?>
         <?php if ($listaEntregaHabilitada ?? false) { ?>

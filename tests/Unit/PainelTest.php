@@ -262,7 +262,8 @@ final class PainelTest extends MaposTestCase
         $this->assertStringContainsString('1 aguardando peças', $html);
         $this->assertStringContainsString('data-agenda="http://mapos.test/index.php/mapos/calendario"', $html);
         $this->assertStringContainsString('data-grafico="balanco"', $html);
-        $this->assertStringContainsString('data-grafico="os"', $html);
+        $this->assertStringNotContainsString('data-grafico="os"', $html);
+        $this->assertLessThan(strpos($html, 'Saldo do mês'), strpos($html, 'id="titulo-agenda"'), 'Agenda comum vem antes dos cartões financeiros.');
         $this->assertStringNotContainsString('id="titulo-lista-os"', $html, 'A lista de OS em andamento foi retirada do início.');
         $this->assertStringContainsString('Vencido · 01/10/2026', $html);
         $this->assertStringContainsString('Sem estoque', $html);

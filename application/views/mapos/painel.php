@@ -84,13 +84,9 @@ if ($pode['lancamentos']) {
     ];
 }
 
-$verGraficoOs = $pode['os'] && $pode['lancamentos'];
 $dadosDoModulo = [];
 if ($pode['balanco']) {
     $dadosDoModulo['balanco'] = $balanco;
-}
-if ($verGraficoOs) {
-    $dadosDoModulo['os'] = $os_grafico;
 }
 ?>
 <div class="flex flex-col gap-4 pt-2 pb-8" <?= js_module('painel/painel') ?>>
@@ -120,20 +116,12 @@ if ($verGraficoOs) {
         $this->load->view('trifase/painel-filas', ['resumoFilas' => $filasClassicas, 'lista_painel' => $lista_painel ?? null]);
     } ?>
 
-    <?php if ($kpis !== []) { ?>
-        <div class="grid grid-cols-2 gap-4 xl:grid-cols-4">
-            <?php foreach ($kpis as $kpi) { ?>
-                <?= component('kpi-card', $kpi) ?>
-            <?php } ?>
-        </div>
-    <?php } ?>
-
     <?php if ($pode['os']) { ?>
-        <div class="grid gap-4 <?= $verGraficoOs ? 'xl:grid-cols-3' : '' ?>">
+        <div class="grid gap-4">
             <?php if (isset($lista_painel)) {
                 $this->load->view('trifase/painel-lista', ['lista' => $lista_painel]);
             } else { ?>
-            <section class="<?= e($caixa) ?> min-w-0 xl:col-span-2" aria-labelledby="titulo-agenda">
+            <section class="<?= e($caixa) ?> min-w-0" aria-labelledby="titulo-agenda">
                 <div class="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
                     <div>
                         <h2 id="titulo-agenda" class="text-heading-sm text-text">Agenda de entregas</h2>
@@ -157,29 +145,13 @@ if ($verGraficoOs) {
 
             <?php } ?>
 
-            <?php if ($verGraficoOs) { ?>
-            <section class="<?= e($caixa) ?> min-w-0" aria-labelledby="titulo-os-status">
-                <div class="flex flex-wrap items-center justify-between gap-2">
-                    <h2 id="titulo-os-status" class="text-heading-sm text-text">OS por status</h2>
-                    <?= component('button', ['label' => 'Ver OS', 'variant' => 'ghost', 'size' => 'sm', 'href' => site_url('os')]) ?>
-                </div>
-                <?php if ($os_grafico === []) { ?>
-                    <?= component('empty-state', ['title' => 'Nenhuma OS cadastrada', 'message' => 'As OS aparecem aqui por status.', 'icon' => 'chart-pie', 'class' => 'border-0']) ?>
-                <?php } else { ?>
-                    <div class="relative mx-auto mt-4 aspect-square max-w-72">
-                        <canvas data-grafico="os" role="img" aria-label="Gráfico de OS por status"></canvas>
-                    </div>
-                    <div class="sr-only"><table>
-                        <caption>OS por status</caption>
-                        <thead><tr><th scope="col">Status</th><th scope="col">OS</th></tr></thead>
-                        <tbody>
-                            <?php foreach ($os_grafico as $fatia) { ?>
-                                <tr><td><?= e($fatia['status']) ?></td><td><?= e($fatia['total']) ?></td></tr>
-                            <?php } ?>
-                        </tbody>
-                    </table></div>
-                <?php } ?>
-            </section>
+        </div>
+    <?php } ?>
+
+    <?php if ($kpis !== []) { ?>
+        <div class="grid grid-cols-2 gap-4 xl:grid-cols-4">
+            <?php foreach ($kpis as $kpi) { ?>
+                <?= component('kpi-card', $kpi) ?>
             <?php } ?>
         </div>
     <?php } ?>

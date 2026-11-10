@@ -27,8 +27,8 @@ if (($pilotoEquipamento ?? null) !== null
             <a class="trifase-os-voltar" href="<?= e(site_url('os')) ?>"><?= icon('chevron-left', ['class' => 'size-4']) ?>Ordens de serviço</a>
             <h1><?= e('Ordem de serviço #' . str_pad((string) $idOs, 3, '0', STR_PAD_LEFT)) ?></h1>
             <div class="trifase-os-identificacao text-muted">
-                <p><?= e('Cliente: ' . $os->nomeCliente) ?></p>
-                <p><?= e('Entrada em ' . dataBr($os->dataInicial)) ?></p>
+                <p><strong class="text-black dark:text-text">Cliente:</strong> <?= e($os->nomeCliente) ?></p>
+                <p><strong class="text-black dark:text-text">Entrada em:</strong> <?= e(dataBr($os->dataInicial)) ?></p>
             </div>
         </div>
         <div class="trifase-os-acoes">

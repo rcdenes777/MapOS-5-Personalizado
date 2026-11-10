@@ -11,19 +11,12 @@ class Mapos extends MY_Controller
         $this->load->model('mapos_model');
     }
 
-    /**
-     * Painel inicial (#2847), com os componentes da v5: cards de resumo,
-     * agenda das entregas de OS (FullCalendar 6), balanço do ano e OS por
-     * status (Chart.js 4) e as listas do que pede atenção. Cada bloco só
-     * aparece com a permissão de ver o módulo dele (na v4 as listas de OS e
-     * de lançamentos apareciam para todos).
-     */
+    /** Início comum: indicadores operacionais, agenda e avisos de ação por permissão. */
     public function index()
     {
         $this->load->helper(['os', 'painel']);
 
         $hoje = date('Y-m-d');
-        $anoAtual = (int) date('Y');
         $pode = [
             'os' => $this->permite('vOs'),
             'vendas' => $this->permite('vVenda'),
@@ -51,7 +44,7 @@ class Mapos extends MY_Controller
                 $painel['operacional_classico'] = $this->painel_trifase->resumoOperacional();
                 $filtrosPainel = listagemFiltros([
                     'fila' => array_keys(Trifase_os_fila::opcoes($this->db)),
-                    'status' => ['Orçamento', 'Aprovado', 'Em Andamento', 'Aguardando Peças', 'Cancelado'],
+                    'status' => ['Aberto', 'Negociação', 'Orçamento', 'Aprovado', 'Em Andamento', 'Aguardando Peças', 'Cancelado'],
                 ], $this->input->get());
                 if ($filtrosPainel !== []) {
                     // Uma única fila por vez, como nos indicadores.
@@ -74,32 +67,28 @@ class Mapos extends MY_Controller
             }
         }
 
-        if ($pode['vendas']) {
-            $painel['vendas_por_status'] = $this->mapos_model->contarPorStatus('vendas');
-            $painel['vendas_lista'] = $this->mapos_model->vendasParaPainel(PAINEL_VENDAS_ABERTAS, 8);
-        }
-
-        if ($pode['lancamentos'] || $pode['balanco']) {
-            $this->load->model('financeiro_model');
-        }
-
+        $painel['avisos_pendencias'] = [];
         if ($pode['lancamentos']) {
-            $mesAtual = painelBalanco($this->financeiro_model->balancoAnual($anoAtual), $anoAtual);
-            $indice = (int) date('n') - 1;
-            $painel['mes'] = ['receitas' => $mesAtual['receitas'][$indice], 'despesas' => $mesAtual['despesas'][$indice], 'saldo' => $mesAtual['saldo'][$indice]];
-            $painel['visao_geral'] = $this->financeiro_model->visaoGeral();
-            $painel['lancamentos_lista'] = $this->financeiro_model->proximosPendentes(8);
+            $this->load->helper('financeiro');
+            $this->load->model('financeiro_model');
+            $filtrosAviso = ['status' => 'pendente', 'de' => '1900-01-01', 'ate' => $hoje];
+            $quantidade = $this->financeiro_model->contar($filtrosAviso, $hoje);
+            if ($quantidade > 0) {
+                $painel['avisos_pendencias']['lancamentos'] = [
+                    'label' => $quantidade . ($quantidade === 1 ? ' lançamento vencido ou vencendo hoje' : ' lançamentos vencidos ou vencendo hoje'),
+                    'href' => site_url('financeiro/lancamentos') . listagemQuery(['periodo' => 'personalizado'] + $filtrosAviso),
+                ];
+            }
         }
-
-        if ($pode['balanco']) {
-            $ano = painelAno($this->input->get('ano'), $anoAtual);
-            $painel['ano'] = $ano;
-            $painel['anos'] = range($anoAtual + 1, max(2000, $anoAtual - 5));
-            $painel['balanco'] = painelBalanco($this->financeiro_model->balancoAnual($ano), $ano);
-        }
-
         if ($pode['produtos']) {
-            $painel['estoque_lista'] = $this->mapos_model->produtosEstoqueBaixo(8);
+            $this->load->model('produtos_model');
+            $quantidade = $this->produtos_model->contar(['estoque' => 'baixo']);
+            if ($quantidade > 0) {
+                $painel['avisos_pendencias']['produtos'] = [
+                    'label' => $quantidade . ($quantidade === 1 ? ' produto abaixo ou no estoque mínimo' : ' produtos abaixo ou no estoque mínimo'),
+                    'href' => site_url('produtos') . listagemQuery(['estoque' => 'baixo']),
+                ];
+            }
         }
 
         $this->data = array_merge($this->data, $painel);

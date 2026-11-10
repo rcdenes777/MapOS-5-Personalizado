@@ -1,8 +1,18 @@
 <?php
 /** Filas operacionais: mesmas contagens e destinos do painel da assistência. */
-$cardsFilas = [];
+$cardsFilas = [[
+    'label' => 'Abertos', 'value' => (int) ($resumoFilas['status']['Aberto'] ?? 0), 'accent' => 'info',
+    'href' => site_url('mapos') . listagemQuery(['visao' => 'classica', 'status' => 'Aberto']),
+]];
 foreach ($resumoFilas['filas'] as $fila => $resumoFila) {
-    $cardsFilas[] = ['label' => ['andamento' => 'Abertos', 'orcamentos' => 'Aguardando aprovação do cliente'][$fila] ?? $resumoFila['label'], 'value' => $resumoFila['total'], 'accent' => $fila === 'retirada' ? 'success' : (in_array($fila, ['retornos', 'recusados', 'cancelamentos'], true) ? 'warning' : 'info'), 'href' => site_url('mapos') . listagemQuery(['visao' => 'classica', 'fila' => $fila])];
+    if ($fila === 'andamento') {
+        continue;
+    }
+    if ($fila === 'orcamentos') {
+        $cardsFilas[] = ['label' => 'Aguardando aprovação do cliente', 'value' => (int) ($resumoFilas['status']['Negociação'] ?? 0), 'accent' => 'info', 'href' => site_url('mapos') . listagemQuery(['visao' => 'classica', 'status' => 'Negociação'])];
+        continue;
+    }
+    $cardsFilas[] = ['label' => $resumoFila['label'], 'value' => $resumoFila['total'], 'accent' => $fila === 'retirada' ? 'success' : 'warning', 'href' => site_url('mapos') . listagemQuery(['visao' => 'classica', 'fila' => $fila])];
 }
 array_splice($cardsFilas, min(2, count($cardsFilas)), 0, [[
     'label' => 'Aguardando peças', 'value' => (int) ($resumoFilas['status']['Aguardando Peças'] ?? 0), 'accent' => 'warning',
@@ -20,10 +30,6 @@ array_splice($cardsFilas, 4, 0, [[
     'label' => 'Em andamento', 'value' => (int) ($resumoFilas['status']['Em Andamento'] ?? 0), 'accent' => 'progress',
     'href' => site_url('mapos') . listagemQuery(['visao' => 'classica', 'status' => 'Em Andamento']),
 ]]);
-$cardsFilas[] = [
-    'label' => 'Cancelados', 'value' => (int) ($resumoFilas['status']['Cancelado'] ?? 0), 'accent' => 'neutral',
-    'href' => site_url('mapos') . listagemQuery(['visao' => 'classica', 'status' => 'Cancelado']),
-];
 ?>
 <section aria-labelledby="painel-filas-titulo">
     <div class="mb-3 flex flex-wrap items-center justify-between gap-2">
@@ -42,5 +48,5 @@ $cardsFilas[] = [
             <?= component('kpi-card', $cardFila) ?>
         <?php } ?>
     </div>
-    <p class="mt-2 text-caption text-muted">As filas podem incluir a mesma OS. Orçamentos incluem negociação; retirada considera serviço finalizado sem entrega registrada. Recusados considera a versão ativa, até nova publicação, retirada do orçamento ou cancelamento da OS. Cancelamentos em processo acompanha o pedido até a entrega do equipamento.</p>
+    <p class="mt-2 text-caption text-muted">Clique em um indicador para ver a lista no lugar da agenda. Retornos e cancelamentos podem incluir OS dos demais indicadores.</p>
 </section>

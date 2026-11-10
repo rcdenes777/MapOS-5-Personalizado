@@ -1,42 +1,7 @@
 <?php
-/**
- * Painel inicial (#2847), com os componentes da v5.
- *
- * - Botão de olho no cabeçalho (#3022): oculta os valores em dinheiro
- *   (saldo, balanço, lançamentos), só neste navegador.
- * - Cards de resumo (kpi-card): OS em andamento, orçamentos, vendas em aberto
- *   e saldo do mês. Cada um só com a permissão de ver o módulo.
- * - Agenda das entregas de OS (FullCalendar 6), com filtro de status; o
- *   evento abre um modal com os dados da OS.
- * - Balanço do ano (receitas, despesas e saldo por mês) e OS por status,
- *   em Chart.js 4. Os números vão para o módulo em page_data e também numa
- *   tabela para leitores de tela.
- * - Listas do que pede atenção: vendas em aberto,
- *   lançamentos a vencer e estoque baixo.
- *
- * O módulo painel/painel carrega o Chart.js e o FullCalendar de
- * assets/vendor só quando a tela tem gráfico ou agenda.
- *
- * @var string              $hoje
- * @var array<string, bool> $pode
- * @var bool                 $instalador_no_servidor Pasta install/ ainda existe (aviso a quem tem cSistema)
- * @var list<string>         $avisos_sistema Migrations pendentes e .env com valores antigos (só para quem tem cSistema)
- */
+/** Início operacional: filas de OS, agenda e avisos curtos conforme as permissões. */
 $caixa = 'rounded-xl border border-border bg-surface p-4 sm:p-6';
-
-// Tendência e sparkline do "Saldo do mês": só quando a série do ano (balanço)
-// está disponível e é o ano atual.
-$saldoTrend = null;
-$saldoSpark = null;
-if ($pode['lancamentos'] && $pode['balanco'] && isset($balanco['saldo'], $ano) && (int) $ano === (int) date('Y')) {
-    $idxMes = (int) date('n') - 1;
-    $inicioMes = max(0, $idxMes - 5);
-    $trechoSaldo = array_slice($balanco['saldo'], $inicioMes, $idxMes - $inicioMes + 1);
-    $saldoSpark = count($trechoSaldo) >= 2 ? $trechoSaldo : null;
-    if ($idxMes > 0) {
-        $saldoTrend = tendenciaKpi($mes['saldo'], $balanco['saldo'][$idxMes - 1], true, 'vs. mês anterior');
-    }
-}
+$avisosPendencias = array_filter($avisos_pendencias ?? [], static fn ($permissao) => $pode[$permissao] ?? false, ARRAY_FILTER_USE_KEY);
 
 // Cards clicáveis com acento de status (kpi-card, prop accent).
 $kpis = [];
@@ -60,34 +25,6 @@ if ($pode['os'] && $filasClassicas === null) {
         'caption' => 'Em orçamento ou negociação',
     ];
 }
-if ($pode['vendas']) {
-    $kpis[] = [
-        'label' => 'Vendas em aberto',
-        'value' => painelSomar($vendas_por_status, PAINEL_VENDAS_ABERTAS),
-        'icon' => 'shopping-cart',
-        'accent' => 'success',
-        'href' => site_url('vendas'),
-        'caption' => 'Ainda não faturadas',
-    ];
-}
-if ($pode['lancamentos']) {
-    $kpis[] = [
-        'label' => 'Saldo do mês',
-        'value' => dinheiro($mes['saldo']),
-        'icon' => 'circle-dollar-sign',
-        'accent' => 'info',
-        'href' => site_url('financeiro/lancamentos'),
-        'caption' => 'A receber: ' . dinheiro($visao_geral['a_receber']),
-        'sensitive' => true,
-        'trend' => $saldoTrend,
-        'spark' => $saldoSpark,
-    ];
-}
-
-$dadosDoModulo = [];
-if ($pode['balanco']) {
-    $dadosDoModulo['balanco'] = $balanco;
-}
 ?>
 <div class="flex flex-col gap-4 pt-2 pb-8" <?= js_module('painel/painel') ?>>
     <header class="flex flex-wrap items-start justify-between gap-3">
@@ -95,21 +32,29 @@ if ($pode['balanco']) {
             <h1 class="font-display text-heading-xl text-text">Painel</h1>
             <p class="text-caption text-muted"><?= e(ucfirst(painelDataPorExtenso($hoje))) ?></p>
         </div>
-        <?php if ($pode['lancamentos'] || $pode['balanco']) { ?>
-            <?php // Os dois botões se alternam por CSS (html[data-valores]); o módulo só troca o atributo e guarda a escolha no navegador.?>
-            <div>
-                <?= component('button', ['label' => 'Ocultar valores', 'icon' => 'eye-off', 'variant' => 'ghost', 'class' => 'painel-valores-ocultar', 'attrs' => ['data-valores-alternar' => true]]) ?>
-                <?= component('button', ['label' => 'Mostrar valores', 'icon' => 'eye', 'variant' => 'ghost', 'class' => 'painel-valores-mostrar', 'attrs' => ['data-valores-alternar' => true]]) ?>
-            </div>
-        <?php } ?>
     </header>
 
-    <?php foreach ($avisos_sistema ?? [] as $aviso) { ?>
-        <?= component('alert', ['variant' => 'warning', 'message' => $aviso]) ?>
+    <?php if (! empty($avisos_sistema) || ! empty($instalador_no_servidor)) { ?>
+        <details class="rounded-xl border border-border bg-surface px-4 py-3">
+            <summary class="text-label-md">Avisos do sistema (<?= e(count($avisos_sistema ?? []) + (int) ! empty($instalador_no_servidor)) ?>)</summary>
+            <div class="mt-3 grid gap-3">
+                <?php foreach ($avisos_sistema ?? [] as $aviso) { ?>
+                    <?= component('alert', ['variant' => 'warning', 'message' => $aviso]) ?>
+                <?php } ?>
+                <?php if (! empty($instalador_no_servidor)) { ?>
+                    <?= component('alert', ['variant' => 'warning', 'message' => 'A pasta install ainda está no servidor. Ela já não funciona, mas apague-a do servidor para não deixar arquivos desnecessários expostos.']) ?>
+                <?php } ?>
+            </div>
+        </details>
     <?php } ?>
 
-    <?php if (! empty($instalador_no_servidor)) { ?>
-        <?= component('alert', ['variant' => 'warning', 'message' => 'A pasta install ainda está no servidor. Ela já não funciona, mas apague-a do servidor para não deixar arquivos desnecessários expostos.']) ?>
+    <?php if ($avisosPendencias !== []) { ?>
+        <section aria-label="Precisa de atenção" class="rounded-xl border border-border bg-surface px-4 py-3">
+            <h2 class="text-label-md">Precisa de atenção</h2>
+            <ul class="mt-2 flex flex-wrap gap-x-6 gap-y-2">
+                <?php foreach ($avisosPendencias as $aviso) { ?><li><?= component('link', $aviso) ?></li><?php } ?>
+            </ul>
+        </section>
     <?php } ?>
 
     <?php if ($filasClassicas !== null) {
@@ -156,127 +101,10 @@ if ($pode['balanco']) {
         </div>
     <?php } ?>
 
-    <?php if ($pode['balanco']) { ?>
-        <section class="<?= e($caixa) ?> min-w-0" aria-labelledby="titulo-balanco">
-            <div class="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-                <div>
-                    <h2 id="titulo-balanco" class="text-heading-sm text-text"><?= e('Balanço de ' . $ano) ?></h2>
-                    <p class="text-caption text-muted">Receitas e despesas pagas, pelo mês do pagamento.</p>
-                </div>
-                <form method="get" action="<?= e(site_url('mapos')) ?>" class="flex items-end gap-2">
-                    <div class="w-32">
-                        <?= component('select', [
-                            'name' => 'ano',
-                            'id' => 'balanco-ano',
-                            'label' => 'Ano',
-                            'options' => array_combine(array_map('strval', $anos), array_map('strval', $anos)),
-                            'selected' => (string) $ano,
-                        ]) ?>
-                    </div>
-                    <?= component('button', ['label' => 'Ver', 'variant' => 'outline', 'type' => 'submit']) ?>
-                </form>
-            </div>
-            <?php if (array_sum($balanco['receitas']) + array_sum($balanco['despesas']) == 0) { ?>
-                <?= component('empty-state', ['title' => 'Nada pago em ' . $ano, 'message' => 'Os lançamentos pagos do ano aparecem aqui, mês a mês.', 'icon' => 'chart-column', 'class' => 'border-0']) ?>
-            <?php } else { ?>
-                <div class="relative mt-4 h-72" data-valor-grafico>
-                    <canvas data-grafico="balanco" role="img" aria-label="<?= e('Gráfico do balanço de ' . $ano) ?>"></canvas>
-                </div>
-                <p class="painel-valores-aviso mt-4 h-72 items-center justify-center text-caption text-muted">Valores ocultos.</p>
-                <div class="sr-only"><table>
-                    <caption><?= e('Balanço de ' . $ano) ?></caption>
-                    <thead><tr><th scope="col">Mês</th><th scope="col">Receitas</th><th scope="col">Despesas</th><th scope="col">Saldo</th></tr></thead>
-                    <tbody>
-                        <?php foreach ($balanco['meses'] as $i => $mesNome) { ?>
-                            <tr><td><?= e($mesNome) ?></td><td><?= e(dinheiro($balanco['receitas'][$i])) ?></td><td><?= e(dinheiro($balanco['despesas'][$i])) ?></td><td><?= e(dinheiro($balanco['saldo'][$i])) ?></td></tr>
-                        <?php } ?>
-                    </tbody>
-                </table></div>
-            <?php } ?>
-        </section>
-    <?php } ?>
-
-    <div class="grid gap-4 2xl:grid-cols-2">
-        <?php if ($pode['vendas']) { ?>
-            <section class="<?= e($caixa) ?> min-w-0" aria-labelledby="titulo-lista-vendas">
-                <div class="flex flex-wrap items-center justify-between gap-2">
-                    <h2 id="titulo-lista-vendas" class="text-heading-sm text-text">Vendas em aberto</h2>
-                    <?= component('button', ['label' => 'Ver todas', 'variant' => 'ghost', 'size' => 'sm', 'href' => site_url('vendas')]) ?>
-                </div>
-                <div class="mt-3">
-                    <?= component('data-table', [
-                        'caption' => 'Vendas em aberto, da mais recente',
-                        'dense' => true,
-                        'rows' => $vendas_lista,
-                        'columns' => [
-                            ['label' => 'Nº', 'align' => 'right', 'nowrap' => true, 'render' => fn ($v) => component('link', ['label' => (string) $v->idVendas, 'href' => site_url('vendas/visualizar/' . (int) $v->idVendas)])],
-                            ['label' => 'Cliente', 'class' => 'min-w-32 [overflow-wrap:anywhere]', 'render' => fn ($v) => (string) ($v->nomeCliente ?? 'Cliente removido')],
-                            ['label' => 'Data', 'align' => 'right', 'nowrap' => true, 'render' => fn ($v) => dataBr($v->dataVenda)],
-                            ['label' => 'Status', 'nowrap' => true, 'render' => fn ($v) => component('pill-status', osStatusPill($v->status))],
-                        ],
-                        'empty' => component('empty-state', ['title' => 'Nenhuma venda em aberto', 'message' => 'Vendas ainda não faturadas aparecem aqui.', 'icon' => 'shopping-cart', 'class' => 'border-0']),
-                    ]) ?>
-                </div>
-            </section>
-        <?php } ?>
-
-        <?php if ($pode['lancamentos']) { ?>
-            <section class="<?= e($caixa) ?> min-w-0" aria-labelledby="titulo-lista-lancamentos">
-                <div class="flex flex-wrap items-center justify-between gap-2">
-                    <h2 id="titulo-lista-lancamentos" class="text-heading-sm text-text">Lançamentos a vencer</h2>
-                    <?= component('button', ['label' => 'Ver todos', 'variant' => 'ghost', 'size' => 'sm', 'href' => site_url('financeiro/lancamentos') . listagemQuery(['periodo' => 'ano', 'status' => 'pendente'])]) ?>
-                </div>
-                <div class="mt-3">
-                    <?= component('data-table', [
-                        'caption' => 'Lançamentos em aberto, do vencimento mais antigo',
-                        'dense' => true,
-                        'rows' => $lancamentos_lista,
-                        'columns' => [
-                            ['label' => 'Vencimento', 'align' => 'right', 'nowrap' => true, 'render' => fn ($l) => substr((string) $l->data_vencimento, 0, 10) < $hoje
-                                ? component('pill-status', ['label' => 'Vencido · ' . dataBr($l->data_vencimento), 'variant' => 'warning'])
-                                : dataBr($l->data_vencimento)],
-                            ['label' => 'Descrição', 'class' => 'min-w-40 [overflow-wrap:anywhere]', 'render' => fn ($l) => trim((string) $l->descricao . ((string) $l->cliente_fornecedor !== '' ? ' · ' . $l->cliente_fornecedor : ''))],
-                            ['label' => 'Tipo', 'nowrap' => true, 'render' => fn ($l) => component('pill-status', $l->tipo === 'receita' ? ['label' => 'Receita', 'variant' => 'info'] : ['label' => 'Despesa', 'variant' => 'neutral'])],
-                            ['label' => 'Valor', 'align' => 'right', 'nowrap' => true, 'render' => fn ($l) => component('valor-sensivel', ['value' => dinheiro($l->liquido)])],
-                        ],
-                        'empty' => component('empty-state', ['title' => 'Nenhum lançamento em aberto', 'message' => 'Receitas a receber e despesas a pagar aparecem aqui.', 'icon' => 'circle-dollar-sign', 'class' => 'border-0']),
-                    ]) ?>
-                </div>
-            </section>
-        <?php } ?>
-
-        <?php if ($pode['produtos']) { ?>
-            <section class="<?= e($caixa) ?> min-w-0" aria-labelledby="titulo-lista-estoque">
-                <div class="flex flex-wrap items-center justify-between gap-2">
-                    <h2 id="titulo-lista-estoque" class="text-heading-sm text-text">Estoque baixo</h2>
-                    <?= component('button', ['label' => 'Ver todos', 'variant' => 'ghost', 'size' => 'sm', 'href' => site_url('produtos') . listagemQuery(['estoque' => 'baixo'])]) ?>
-                </div>
-                <div class="mt-3">
-                    <?= component('data-table', [
-                        'caption' => 'Produtos no estoque mínimo ou abaixo',
-                        'dense' => true,
-                        'rows' => $estoque_lista,
-                        'columns' => [
-                            ['label' => 'Produto', 'class' => 'min-w-40 [overflow-wrap:anywhere]', 'render' => fn ($p) => component('link', ['label' => (string) $p->descricao, 'href' => site_url('produtos/visualizar/' . (int) $p->idProdutos)])],
-                            ['label' => 'Estoque', 'align' => 'right', 'nowrap' => true, 'render' => fn ($p) => (string) (int) $p->estoque],
-                            ['label' => 'Mínimo', 'align' => 'right', 'nowrap' => true, 'render' => fn ($p) => (string) (int) $p->estoqueMinimo],
-                            ['label' => 'Situação', 'nowrap' => true, 'render' => fn ($p) => component('pill-status', (int) $p->estoque <= 0 ? ['label' => 'Sem estoque', 'variant' => 'warning'] : ['label' => 'Baixo', 'variant' => 'warning'])],
-                        ],
-                        'empty' => component('empty-state', ['title' => 'Nenhum produto com estoque baixo', 'message' => 'Produtos no estoque mínimo ou abaixo aparecem aqui.', 'icon' => 'package', 'class' => 'border-0']),
-                    ]) ?>
-                </div>
-            </section>
-        <?php } ?>
-    </div>
-
     <?php if ($pode === array_fill_keys(array_keys($pode), false)) { ?>
         <?= component('empty-state', ['title' => 'Bem-vindo ao Map-OS', 'message' => 'Seu usuário ainda não tem permissão para ver os módulos do painel. Fale com o administrador.', 'icon' => 'house']) ?>
     <?php } ?>
 </div>
-
-<?php if ($dadosDoModulo !== []) { ?>
-    <?= page_data('painel-dados', $dadosDoModulo) ?>
-<?php } ?>
 
 <?php if ($pode['os']) { ?>
     <?= component('modal', [

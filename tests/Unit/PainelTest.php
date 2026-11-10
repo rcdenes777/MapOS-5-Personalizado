@@ -146,6 +146,47 @@ final class PainelTest extends MaposTestCase
         return $model;
     }
 
+    public function testAvisoContaSomentePendentesVencidosOuDeHojeSemLimitarALista(): void
+    {
+        $this->banco();
+        $filtros = ['status' => 'pendente', 'de' => '1900-01-01', 'ate' => '2026-10-09'];
+        $this->assertSame(1, $this->financeiro()->contar($filtros, '2026-10-09'));
+        for ($i = 0; $i < 10; $i++) {
+            $this->db->insert('lancamentos', ['tipo' => 'despesa', 'data_vencimento' => '2026-10-09', 'baixado' => 0, 'valor' => 10]);
+        }
+        $this->assertSame(11, $this->financeiro()->contar($filtros, '2026-10-09'));
+    }
+
+    public function testIndicadoresNaoSomamOutrosStatusEmAbertosNemExibemCancelados(): void
+    {
+        $resumoFilas = ['status' => ['Aberto' => 2, 'Aprovado' => 3, 'Em Andamento' => 4, 'Orçamento' => 5, 'Negociação' => 6, 'Cancelado' => 7],
+            'filas' => ['andamento' => ['label' => 'Em atendimento', 'total' => 9], 'orcamentos' => ['label' => 'Aguardando orçamento', 'total' => 11]]];
+        ob_start();
+        try {
+            include APPPATH . 'views/trifase/painel-filas.php';
+            $html = ob_get_contents();
+        } finally {
+            ob_end_clean();
+        }
+        $dom = new DOMDocument();
+        @$dom->loadHTML($html);
+        $xp = new DOMXPath($dom);
+        $abertos = $xp->query('//a[contains(@href, "status=Aberto")]');
+        $this->assertSame(1, $abertos->length);
+        $this->assertMatchesRegularExpression('/Abertos\s*2/u', $abertos->item(0)->textContent);
+        $aprovacao = $xp->query('//a[contains(@href, "status=Negocia")]');
+        $this->assertSame(1, $aprovacao->length);
+        $this->assertMatchesRegularExpression('/cliente\s*6/u', $aprovacao->item(0)->textContent);
+        $this->assertStringNotContainsString('status=Cancelado', $html);
+    }
+
+    public function testSemPendenciasNaoMostraBlocoVazioDeAvisos(): void
+    {
+        $dados = $this->dadosCompletos();
+        $dados['avisos_pendencias'] = [];
+        $this->assertStringNotContainsString('Precisa de atenção', $this->renderizar($dados));
+    }
+
     public function testContagemPorStatus(): void
     {
         $this->banco();
@@ -245,6 +286,7 @@ final class PainelTest extends MaposTestCase
             'ano' => 2026,
             'anos' => [2027, 2026, 2025],
             'balanco' => painelBalanco([['mes' => '2026-10', 'tipo' => 'receita', 'total' => 100]], 2026),
+            'avisos_pendencias' => ['lancamentos' => ['label' => '2 lançamentos vencidos ou vencendo hoje', 'href' => site_url('financeiro/lancamentos')], 'produtos' => ['label' => '1 produto abaixo ou no estoque mínimo', 'href' => site_url('produtos') . '?estoque=baixo']],
             'estoque_lista' => [(object) ['idProdutos' => 4, 'descricao' => 'Cabo ' . $xss, 'estoque' => 0, 'estoqueMinimo' => 5]],
         ];
     }
@@ -254,19 +296,18 @@ final class PainelTest extends MaposTestCase
         $html = $this->renderizar($this->dadosCompletos());
 
         $this->assertStringNotContainsString('<script>alert(1)</script>', $html);
-        $this->assertSame(1, substr_count($html, '<script'), 'Só o bloco de dados (page_data), nenhum script inline.');
-        $this->assertStringContainsString('<script type="application/json" id="painel-dados">', $html);
+        $this->assertSame(0, substr_count($html, '<script'), 'O início não precisa serializar dados de balanço.');
+        $this->assertStringNotContainsString('id="painel-dados"', $html);
         $this->assertStringContainsString('data-module="painel/painel"', $html);
         $this->assertStringContainsString('Sexta-feira, 9 de outubro de 2026', $html);
-        $this->assertStringContainsString('R$ 60,00', $html, 'Saldo do mês.');
+        $this->assertStringNotContainsString('Saldo do mês', $html);
         $this->assertStringContainsString('1 aguardando peças', $html);
         $this->assertStringContainsString('data-agenda="http://mapos.test/index.php/mapos/calendario"', $html);
-        $this->assertStringContainsString('data-grafico="balanco"', $html);
+        $this->assertStringNotContainsString('data-grafico="balanco"', $html);
         $this->assertStringNotContainsString('data-grafico="os"', $html);
-        $this->assertLessThan(strpos($html, 'Saldo do mês'), strpos($html, 'id="titulo-agenda"'), 'Agenda comum vem antes dos cartões financeiros.');
         $this->assertStringNotContainsString('id="titulo-lista-os"', $html, 'A lista de OS em andamento foi retirada do início.');
-        $this->assertStringContainsString('Vencido · 01/10/2026', $html);
-        $this->assertStringContainsString('Sem estoque', $html);
+        $this->assertStringContainsString('2 lançamentos vencidos ou vencendo hoje', $html);
+        $this->assertStringContainsString('1 produto abaixo ou no estoque mínimo', $html);
         $this->assertStringContainsString('id="agenda-os"', $html);
         $this->assertSame(count(OS_STATUS_VARIANTES), substr_count($html, 'data-agenda-pill='));
         $this->assertStringContainsString('produtos?estoque=baixo', $html);
@@ -290,12 +331,14 @@ final class PainelTest extends MaposTestCase
         $dados['pode'] = ['os' => false, 'vendas' => true, 'lancamentos' => false, 'balanco' => false, 'produtos' => false];
 
         $html = $this->renderizar($dados);
-        $this->assertStringContainsString('Vendas em aberto', $html);
+        $this->assertStringNotContainsString('Vendas em aberto', $html);
         $this->assertStringNotContainsString('Agenda de entregas', $html);
         $this->assertStringNotContainsString('Lançamentos a vencer', $html);
         $this->assertStringNotContainsString('Saldo do mês', $html);
         $this->assertStringNotContainsString('Estoque baixo', $html);
         $this->assertStringNotContainsString('Balanço de', $html);
+        $this->assertStringNotContainsString('lançamentos vencidos', $html);
+        $this->assertStringNotContainsString('produto abaixo', $html);
     }
 
     public function testAgendaSemFinanceiroNaoSerializaTotalNemFaturamento(): void

@@ -42,7 +42,7 @@ if (($pilotoEquipamento ?? null) !== null
             <div class="flex flex-wrap items-center gap-2">
                 <?= component('pill-status', osStatusPill($os->status)) ?>
                 <?php if (($pilotoCancelamento->tipo ?? '') === 'solicitar' && $os->status !== 'Cancelado') { ?>
-                    <?= component('pill-status', ['label' => 'Cancelamento solicitado — aguardando análise financeira', 'variant' => 'warning', 'class' => 'max-w-full whitespace-normal']) ?>
+                    <?= component('pill-status', ['label' => 'Cancelamento solicitado — conferir etapas', 'variant' => 'warning', 'class' => 'max-w-full whitespace-normal']) ?>
                 <?php } ?>
             </div>
             <?php if (($pilotoRespostaCliente ?? null) !== null) { ?>
@@ -219,9 +219,9 @@ if (($pilotoEquipamento ?? null) !== null
                 <section class="trifase-os-painel" aria-labelledby="piloto-cancelamento">
                     <h2 id="piloto-cancelamento">Cancelamento da OS</h2>
                     <p class="text-body-md"><?= e(match ($pilotoCancelamento->tipo ?? '') {
-                        'solicitar' => 'Cancelamento solicitado — aguardando análise financeira', 'confirmar' => 'Cancelamento confirmado', 'retirar' => 'Pedido retirado; atendimento preservado', default => 'Nenhum pedido registrado'
+                        'solicitar' => 'Cancelamento solicitado — conferir etapas', 'confirmar' => 'Cancelamento confirmado', 'retirar' => 'Pedido retirado; atendimento preservado', default => 'Nenhum pedido registrado'
                     }) ?></p>
-                    <?= component('button', ['label' => ($pilotoCancelamento->tipo ?? '') === 'solicitar' ? 'Conferir pedido de cancelamento' : 'Pedido e histórico de cancelamento', 'variant' => 'outline', 'href' => site_url('trifase_cancelamentos/visualizar/' . $idOs)]) ?>
+                    <?= component('button', ['label' => ($pilotoCancelamento->tipo ?? '') === 'solicitar' ? 'Continuar cancelamento' : 'Pedido e histórico de cancelamento', 'variant' => 'outline', 'href' => site_url('trifase_cancelamentos/visualizar/' . $idOs)]) ?>
                 </section>
             <?php } ?>
             <section class="trifase-os-painel" aria-labelledby="piloto-atendimento">

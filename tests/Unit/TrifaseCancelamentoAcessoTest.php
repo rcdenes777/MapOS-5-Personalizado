@@ -54,14 +54,17 @@ final class TrifaseCancelamentoAcessoTest extends \PHPUnit\Framework\TestCase
         $this->assertStringContainsString('name="servicos_nao_executados"', $html);
         $this->assertStringNotContainsString('name="financeiro_conferido"', $html);
         $this->assertStringNotContainsString('trifase_cadastros/cliente/', $html);
-        $htmlFinanceiro = $v->renderizar(array_replace($dados, ['osCancelamento' => (object) ['idOs' => 1, 'status' => 'Aprovado', 'clientes_id' => 9], 'podeConfirmarCancelamento' => true, 'podeClassificarClienteCancelamento' => true]));
+        $htmlFinanceiro = $v->renderizar(array_replace($dados, ['osCancelamento' => (object) ['idOs' => 1, 'status' => 'Aprovado', 'clientes_id' => 9], 'podeConfirmarCancelamento' => true, 'podeClassificarClienteCancelamento' => true, 'pecasCancelamento' => [], 'tecnicaCancelamento' => ['usuario_id' => 2, 'criado_em' => '2026-11-04 12:01:00']]));
         $this->assertStringContainsString('trifase_cadastros/cliente/9', $htmlFinanceiro);
         foreach ([[false, false], [true, false], [false, true], [true, true]] as [$semPecas, $tecnica]) {
             $d = array_replace($dados, ['podeConfirmarCancelamento' => true, 'pecasCancelamento' => $semPecas ? [] : $dados['pecasCancelamento'], 'tecnicaCancelamento' => $tecnica ? ['usuario_id' => 2, 'criado_em' => '2026-11-04 12:01:00'] : null]);
             $dom = new DOMDocument();
             @$dom->loadHTML($v->renderizar($d));
             $xpath = new DOMXPath($dom);
-            $this->assertSame(($semPecas && $tecnica) ? 0 : 1, $xpath->query('//input[@name="financeiro_conferido" and @disabled]')->length);
+            $this->assertSame(($semPecas && $tecnica) ? 1 : 0, $xpath->query('//input[@name="financeiro_conferido"]')->length);
+            if (! ($semPecas && $tecnica)) {
+                $this->assertStringNotContainsString('Sem valores a acertar', $v->renderizar($d));
+            }
         }
 
     }

@@ -2,6 +2,7 @@
 
 defined('BASEPATH') or exit('No direct script access allowed');
 require_once APPPATH . 'helpers/trifase_cadastro_helper.php';
+require_once APPPATH . 'helpers/trifase_entrega_helper.php';
 
 class Trifase_cancelamentos extends MY_Controller
 {
@@ -110,7 +111,7 @@ class Trifase_cancelamentos extends MY_Controller
                 'tecnica' => 'Conferência técnica registrada. Financeiro e pagamentos foram preservados.',
                 default => 'Cancelamento confirmado após as conferências técnica e financeira e o acerto registrado.',
             });
-            redirect('os/visualizar/' . (int) $os->idOs);
+            redirect('trifase_cancelamentos/visualizar/' . (int) $os->idOs);
         } catch (DomainException $e) {
             $this->output->set_status_header(422);
             return $this->pagina($this->ordem($id), $e->getMessage());
@@ -124,8 +125,8 @@ class Trifase_cancelamentos extends MY_Controller
     {
         $c = $this->cancelamentos->conferencia($os);
         $cliente = $this->db->select('nomeCliente')->where('idClientes', (int) $os->clientes_id)->get('clientes', 1)->row();
-        $pecas = array_map(static fn ($i) => ['nome' => $i['nome'], 'quantidade' => $i['quantidade']], $c['pecas']);
-        $servicos = array_map(static fn ($i) => ['nome' => $i['nome'], 'quantidade' => $i['quantidade']], $c['servicos']);
+        $pecas = array_map(static fn ($i) => ['id' => (int) $i['id'], 'nome' => $i['nome'], 'quantidade' => $i['quantidade']], $c['pecas']);
+        $servicos = array_map(static fn ($i) => ['id' => (int) $i['idServicos_os'], 'nome' => $i['nome'], 'quantidade' => $i['quantidade']], $c['servicos']);
         if ($pecas !== [] && ! ($this->data['configuration']['control_estoque'] ?? false)) {
             $c['bloqueios'][] = 'Confira a configuração de controle de estoque antes da devolução de peças.';
         }
@@ -146,8 +147,14 @@ class Trifase_cancelamentos extends MY_Controller
                 }
             }
         }
+        $entrega = null;
+        if (trifaseEntregaHabilitada() && $this->db->table_exists('trifase_entregas_eventos')) {
+            $this->load->model('Trifase_entrega_model', 'entregas_cancelamento');
+            $entrega = $this->entregas_cancelamento->ativa((int) $os->idOs);
+        }
         $this->data += ['erroCancelamento' => $erro, 'osCancelamento' => $os,
-            'pedidoCancelamento' => $pedido,
+            'pedidoCancelamento' => $pedido, 'entregaCancelamento' => $entrega,
+            'devolverPecasCancelamento' => (bool) ($this->data['configuration']['control_estoque'] ?? false),
             'hashTecnicoCancelamento' => $this->cancelamentos->hashTecnico($c),
             'tecnicaCancelamento' => $tecnica !== null ? ['usuario_id' => (int) $tecnica->usuario_id, 'criado_em' => $tecnica->criado_em] : null,
             'historicoCancelamento' => $this->cancelamentos->historico((int) $os->idOs),

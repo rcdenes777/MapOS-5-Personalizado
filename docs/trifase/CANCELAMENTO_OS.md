@@ -2,7 +2,7 @@
 
 ## Acesso
 
-Na própria OS, coluna de informações e ações, bloco **Cancelamento da OS** → **Pedido e histórico de cancelamento**. O módulo usa a presença da tabela `trifase_cancelamentos`; a migração é aditiva, sem variável de ambiente nova.
+No início, **Cancelamentos em processo** abre a lista com a próxima ação e acesso direto ao fluxo. Na própria OS, bloco **Cancelamento da OS** → **Continuar cancelamento** quando há pedido ativo. O módulo usa a presença da tabela `trifase_cancelamentos`; a migração é aditiva, sem variável de ambiente nova.
 
 Registrar pedido exige `vOs` + `eOs`. O registro contém solicitante, motivo, operador, horário e retrato privado dos itens e do financeiro. O pedido não muda status, estoque, pagamentos ou link público. Há somente um pedido pendente por OS, protegido pela mesma trava usada nos demais módulos.
 
@@ -10,10 +10,10 @@ O técnico pode registrar/retirar o pedido e devolver peças não utilizadas pel
 
 ## Conferência técnica e financeira em etapas
 
-1. O técnico remove as peças devolvidas pelo controle nativo de peças da OS, que registra a devolução no estoque. Não remover peça utilizada como se fosse uma devolução: esse caso exige conciliação.
-2. Com nenhuma peça vinculada, o técnico marca as duas confirmações de peças e serviços e usa **Registrar conferência técnica**. Essa etapa exige `vOs` + `eOs`, aceita observações opcionais e grava responsável, horário e um retrato dos itens. Não registra conferência financeira nem movimenta dinheiro. Um campo financeiro enviado nessa operação é recusado.
-3. Somente quem tem `vOs`, `eOs`, `vLancamento` e `eLancamento` vê a conferência financeira e a confirmação final. A caixa financeira fica desabilitada até existirem zero peças vinculadas e uma conferência técnica válida para o pedido e os itens atuais. Depois disso ainda valem os bloqueios financeiros e de encerramento.
-4. A confirmação final registra Cancelado e o histórico, sem movimentar estoque ou dinheiro. As devoluções já aconteceram na remoção das peças; não há segunda devolução automática. Observações da conferência financeira são opcionais; sua declaração continua obrigatória.
+1. O técnico remove as peças devolvidas na própria tela de cancelamento, reutilizando o controle nativo de peças, que registra a devolução no estoque. Não remover peça utilizada como se fosse uma devolução: esse caso exige conciliação.
+2. Com nenhuma peça vinculada, o técnico marca as duas confirmações de peças e serviços e usa **Concluir conferência técnica**. Essa etapa exige `vOs` + `eOs`, aceita observações opcionais e grava responsável, horário e um retrato dos itens. Não registra conferência financeira nem movimenta dinheiro. Um campo financeiro enviado nessa operação é recusado.
+3. Somente quem tem `vOs`, `eOs`, `vLancamento` e `eLancamento` vê a conferência financeira e a confirmação final. O formulário financeiro só aparece depois de existirem zero peças vinculadas e uma conferência técnica válida para o pedido e os itens atuais. Antes disso aparece apenas a orientação de aguardar, sem concluir que o acerto seja zero. Depois disso ainda valem os bloqueios financeiros e de encerramento.
+4. A confirmação final executa o acerto autorizado e registra Cancelado e o histórico, sem segunda movimentação de estoque. As devoluções já aconteceram na remoção das peças; não há segunda devolução automática. Observações da conferência financeira são opcionais; sua declaração continua obrigatória.
 
 A validação é executada novamente no servidor sob a trava da OS. Novas peças, alterações nos IDs/quantidades dos itens ou no status invalidam a liberação técnica e exigem nova conferência. Mudanças apenas em preços não transformam a etapa técnica em controle financeiro. A confirmação final guarda o ID da conferência técnica e o responsável, separado de quem confirmou o financeiro. Eventos técnicos não encerram o pedido; retirada e nova solicitação não reaproveitam a liberação de um pedido anterior. Não há alteração dos registros históricos já confirmados pelo fluxo anterior.
 
@@ -87,3 +87,13 @@ Ensaio no navegador, exclusivamente com novas fixtures identificadas `QA Acerto 
 Os pedidos e conferências técnicas ficaram com o usuário 9005; confirmações financeiras, com o 9007. O técnico não recebeu valores nem formulário financeiro. As fixtures foram preparadas com dados fictícios; as duas peças iniciais tiveram baixa de preparação e retorno pela UI. As OS existentes não foram modificadas. Não houve transferência de dinheiro nem envio de links ao cliente. As três fixtures permaneceram no laboratório para consulta; a fila saiu de três pendentes para zero.
 
 Validação final: **1.894 testes / 9.050 asserções**, sem falhas; uma depreciação e um teste ignorado anteriores. PHPStan, formatação, escape, restrição de scripts inline e build passaram. Cobertura adicional: cancelamento sem obrigação exige evento confirmado, saldo atual prevalece sobre o retrato, devolução pendente difere de devolução executada e total zero não aparece como pagamento pendente. Os testes não simulam transferências bancárias externas nem concorrência real de múltiplos operadores.
+
+## Fluxo guiado e entrega — 10/11/2026
+
+A tela indica três etapas: Técnico (peças e serviços), Financeiro (acerto e confirmação) e Atendimento (entrega). Mostra a próxima ação e o formulário da etapa atual. Pedido, retirada do pedido, consultas secundárias e histórico ficam recolhidos. Técnico não recebe formulário nem valores financeiros; os controles de servidor existentes continuam obrigatórios.
+
+Cada peça não utilizada pode ser devolvida na própria tela, com confirmação explícita; serviço não executado pode ser retirado por seu controle nativo. Os endpoints existentes validam usuário, OS, item e bloqueios financeiros; a resposta usa o cliente HTTP padrão com CSRF. Uma falha mantém a etapa e exibe a mensagem; sucesso recarrega o retrato. Regras anteriores de uso, conciliação e desconto geral são preservadas.
+
+Depois de pedido ou conferência técnica o usuário permanece no fluxo. Após confirmar, a próxima ação é Registrar entrega, que abre o controle existente na OS. Concluída a retirada, o fluxo mostra data, recebedor e comprovante. A fila do início inclui pedidos ativos e cancelamentos confirmados sem entrega ativa; pedido retirado ou entrega ativa remove a pendência. Correção da entrega faz a OS reaparecer.
+
+Validação no laboratório 8230: OS fictícia 9070; estoque Fusível cerâmico 5A 18 → 17 na inclusão → 18 na devolução pela tela. Conferência técnica, acerto sem cobrança, cancelamento e entrega com comprovante 8 executados no navegador. A OS 9070 saiu da fila depois da entrega; seus registros foram preservados como evidência. OS 9065 permaneceu com uma peça e um serviço, sem alterações neste teste. Desktop e largura de celular conferidos. Testes PHP 1905/9155 sem falhas (1 depreciação e 1 ignorado preexistentes), 28 testes JS e PHPStan aprovados.

@@ -137,12 +137,21 @@ class Financeiro extends MY_Controller
 
     private function filtrosDasOrdens(): array
     {
+        $entrada = $this->input->get() ?: [];
+        if (($entrada['saldo'] ?? '') === 'pendente' && empty($entrada['pendencia'])) {
+            $entrada['pendencia'] = 'receber';
+        }
+        if (($entrada['financeiro'] ?? '') === 'cancelamento_pendente') {
+            $entrada['pendencia'] = 'cancelamento';
+            unset($entrada['financeiro']);
+        }
         $filtros = listagemFiltros([
             'pesquisa' => 'texto', 'status' => array_keys(OS_STATUS_VARIANTES),
-            'financeiro' => array_keys(Trifase_financeiro_busca::OPCOES), 'saldo' => ['pendente'],
-            'fila' => array_keys(Trifase_os_fila::OPCOES), 'de' => 'texto', 'ate' => 'texto',
-        ], $this->input->get());
-        foreach (['de', 'ate'] as $data) {
+            'financeiro' => array_keys(Trifase_financeiro_busca::OPCOES),
+            'pendencia' => ['receber', 'devolver', 'cancelamento', 'nenhuma'],
+            'vencimento_de' => 'texto', 'vencimento_ate' => 'texto',
+        ], $entrada);
+        foreach (['vencimento_de', 'vencimento_ate'] as $data) {
             if (isset($filtros[$data])) {
                 $valida = dataIsoParaYmd($filtros[$data]);
                 if ($valida === null) {
@@ -151,9 +160,6 @@ class Financeiro extends MY_Controller
                     $filtros[$data] = $valida;
                 }
             }
-        }
-        if (isset($filtros['fila']) && ! isset(Trifase_os_fila::opcoes($this->db)[$filtros['fila']])) {
-            unset($filtros['fila']);
         }
         return $filtros;
     }

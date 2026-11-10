@@ -204,6 +204,18 @@ $resumo = ($total === 1 ? '1 ordem de serviço' : number_format($total, 0, ',', 
             'placeholder' => 'Nº, cliente, documento ou equipamento',
             'attrs' => ['maxlength' => 100],
         ]) ?>
+        <?php if (($contextoFinanceiro ?? false) && $filtrarFinanceiro) { ?>
+            <?= component('select', ['name' => 'financeiro', 'label' => 'Situação financeira', 'placeholder' => 'Todas', 'options' => array_diff_key(Trifase_financeiro_busca::OPCOES, ['cancelamento_pendente' => true]), 'selected' => $filtros['financeiro'] ?? null]) ?>
+            <?= component('select', ['name' => 'pendencia', 'label' => 'Pendência', 'placeholder' => 'Todas', 'options' => ['receber' => 'A receber', 'devolver' => 'A devolver', 'cancelamento' => 'Cancelamento aguardando análise', 'nenhuma' => 'Sem pendência'], 'selected' => $filtros['pendencia'] ?? null]) ?>
+            <?= component('input', ['name' => 'vencimento_de', 'label' => 'Vencimento a partir de', 'type' => 'date', 'value' => $filtros['vencimento_de'] ?? null]) ?>
+            <?= component('input', ['name' => 'vencimento_ate', 'label' => 'Vencimento até', 'type' => 'date', 'value' => $filtros['vencimento_ate'] ?? null]) ?>
+            <details class="sm:col-span-2" <?= isset($filtros['status']) ? 'open' : '' ?>>
+                <summary>Mais filtros</summary>
+                <div class="mt-3">
+                    <?= component('select', ['name' => 'status', 'label' => 'Andamento do serviço', 'placeholder' => 'Todos', 'options' => array_combine(array_keys(OS_STATUS_VARIANTES), array_keys(OS_STATUS_VARIANTES)), 'selected' => $filtros['status'] ?? null]) ?>
+                </div>
+            </details>
+        <?php } else { ?>
         <?= component('select', [
             'name' => 'status',
             'label' => ($trifase_ui_piloto ?? false) ? 'Andamento do serviço' : 'Status',
@@ -230,6 +242,7 @@ $resumo = ($total === 1 ? '1 ordem de serviço' : number_format($total, 0, ',', 
             'type' => 'date',
             'value' => $filtros['ate'] ?? null,
         ]) ?>
+        <?php } ?>
         <div class="flex gap-2">
             <?= component('button', ['label' => 'Filtrar', 'icon' => 'search', 'variant' => 'outline', 'type' => 'submit']) ?>
             <?php if ($temFiltro) { ?>

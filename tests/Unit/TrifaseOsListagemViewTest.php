@@ -138,17 +138,21 @@ final class TrifaseOsListagemViewTest extends \PHPUnit\Framework\TestCase
     public function testFiltrosESaldoAparecemSomenteComPermissaoEModulosAtivos(): void
     {
         $resumos = [1 => ['total_c' => 50000, 'saldo_c' => 30000, 'situacao' => 'Parcialmente pago']];
-        $html = $this->renderizar($resumos, [], ['filtros' => ['financeiro' => 'parcial', 'saldo' => 'pendente']]);
+        $html = $this->renderizar($resumos, [], ['filtros' => ['financeiro' => 'parcial', 'pendencia' => 'receber']]);
         $this->assertSame(['A receber: R$ 300,00'], $this->celulas($html, 'Acerto financeiro'));
         $dom = new DOMDocument();
         @$dom->loadHTML($html);
         $xpath = new DOMXPath($dom);
         $this->assertCount(1, $xpath->query('//select[@name="financeiro"]/option[@value="parcial" and @selected]'));
-        $this->assertCount(1, $xpath->query('//select[@name="saldo"]/option[@value="pendente" and @selected]'));
+        $this->assertCount(1, $xpath->query('//select[@name="pendencia"]/option[@value="receber" and @selected]'));
+        $this->assertStringNotContainsString('name="fila"', $html);
+        $this->assertStringContainsString('name="vencimento_de"', $html);
+        $this->assertStringContainsString('Mais filtros', $html);
         foreach (['listaVerFinanceiro', 'listaFinanceiroHabilitado', 'trifase_ui_piloto'] as $flag) {
             $restrito = $this->renderizar($resumos, [], [$flag => false]);
             $this->assertStringNotContainsString('name="financeiro"', $restrito);
             $this->assertStringNotContainsString('name="saldo"', $restrito);
+            $this->assertStringNotContainsString('name="pendencia"', $restrito);
             $this->assertSame([], $this->celulas($restrito, 'Acerto financeiro'));
         }
     }

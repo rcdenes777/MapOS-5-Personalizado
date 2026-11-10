@@ -16,22 +16,32 @@ final class Trifase_financeiro_busca
 
     public static function ativo(array $filtros): bool
     {
-        return isset(self::OPCOES[$filtros['financeiro'] ?? '']) || ($filtros['saldo'] ?? '') === 'pendente';
+        return isset(self::OPCOES[$filtros['financeiro'] ?? '']) || ($filtros['saldo'] ?? '') === 'pendente'
+            || isset($filtros['pendencia']) || isset($filtros['vencimento_de']) || isset($filtros['vencimento_ate']);
     }
 
     public static function aplicar(object $db, array $filtros): void
     {
+        if (! self::ativo($filtros)) {
+            return;
+        }
+        $cancelamento = $db->table_exists('trifase_cancelamentos')
+            ? "(os.status != 'Cancelado' AND COALESCE((SELECT tfc.tipo FROM trifase_cancelamentos tfc WHERE tfc.os_id = os.idOs AND tfc.tipo IN ('solicitar', 'retirar', 'confirmar') ORDER BY tfc.id DESC LIMIT 1), '') = 'solicitar')"
+            : '1 = 0';
+        if (($filtros['pendencia'] ?? '') === 'cancelamento') {
+            $db->where('(' . $cancelamento . ')', null, false);
+        }
         if (($filtros['financeiro'] ?? '') === 'cancelamento_pendente') {
             if (! $db->table_exists('trifase_cancelamentos')) {
                 $db->where('1 = 0', null, false);
             } else {
                 $db->where("os.status != 'Cancelado' AND COALESCE((SELECT tfc.tipo FROM trifase_cancelamentos tfc WHERE tfc.os_id = os.idOs AND tfc.tipo IN ('solicitar', 'retirar', 'confirmar') ORDER BY tfc.id DESC LIMIT 1), '') = 'solicitar'", null, false);
             }
-            if (($filtros['saldo'] ?? '') !== 'pendente') {
+            if (($filtros['saldo'] ?? '') !== 'pendente' && ! isset($filtros['pendencia']) && ! isset($filtros['vencimento_de']) && ! isset($filtros['vencimento_ate'])) {
                 return;
             }
         }
-        if (! self::ativo($filtros) || ! trifaseFinanceiroHabilitado()
+        if (! trifaseFinanceiroHabilitado()
             || ! $db->table_exists('trifase_financeiro_obrigacoes') || ! $db->table_exists('trifase_financeiro_eventos')) {
             return;
         }
@@ -41,7 +51,8 @@ final class Trifase_financeiro_busca
         $creditos = $db->table_exists('trifase_garantia_reembolsos')
             ? '(SELECT origem_id, SUM(valor_c) AS reembolsado_c, SUM(credito_c) AS credito_c FROM trifase_garantia_reembolsos WHERE cancelado_id IS NULL GROUP BY origem_id)'
             : '(SELECT NULL AS origem_id, 0 AS reembolsado_c, 0 AS credito_c)';
-        $projecao = '(SELECT o.os_id, o.bruto_c - o.desconto_c - COALESCE(c.credito_c, 0) AS total_c,'
+        $vencimento = isset($filtros['vencimento_de']) || isset($filtros['vencimento_ate']) ? ', o.vencimento' : '';
+        $projecao = '(SELECT o.os_id' . $vencimento . ', o.bruto_c - o.desconto_c - COALESCE(c.credito_c, 0) AS total_c,'
             . ' COALESCE(e.recebido_c, 0) - COALESCE(e.devolvido_c, 0) - COALESCE(c.reembolsado_c, 0) AS recebido_c,'
             . ' COALESCE(c.credito_c, 0) AS credito_c, COALESCE(e.devolvido_c, 0) + COALESCE(c.reembolsado_c, 0) AS reembolsado_c'
             . ' FROM trifase_financeiro_obrigacoes o LEFT JOIN ' . $eventos . ' e ON e.os_id = o.os_id'
@@ -53,6 +64,23 @@ final class Trifase_financeiro_busca
                 . " WHEN tf_os_financeiro.recebido_c = tf_os_financeiro.total_c THEN 'quitada'"
                 . " WHEN tf_os_financeiro.recebido_c = 0 THEN 'pendente' ELSE 'parcial' END";
             $db->where('(' . $situacao . ') = ' . $db->escape($filtros['financeiro']), null, false);
+        }
+        foreach (['vencimento_de' => '>=', 'vencimento_ate' => '<='] as $campo => $operador) {
+            if (isset($filtros[$campo])) {
+                $db->where('tf_os_financeiro.vencimento ' . $operador, $filtros[$campo]);
+            }
+        }
+        $pendencia = $filtros['pendencia'] ?? '';
+        if (in_array($pendencia, ['receber', 'devolver', 'nenhuma'], true)) {
+            $db->where('NOT (' . $cancelamento . ')', null, false);
+            if ($pendencia === 'nenhuma') {
+                $semCobranca = $db->table_exists('trifase_cancelamentos')
+                    ? " OR (tf_os_financeiro.os_id IS NULL AND COALESCE(os.faturado, 0) = 0 AND os.status = 'Cancelado' AND EXISTS (SELECT 1 FROM trifase_cancelamentos tfc WHERE tfc.os_id = os.idOs AND tfc.tipo = 'confirmar'))"
+                    : '';
+                $db->where('(tf_os_financeiro.total_c = tf_os_financeiro.recebido_c' . $semCobranca . ')', null, false);
+            } else {
+                $db->where('tf_os_financeiro.total_c ' . ($pendencia === 'receber' ? '>' : '<') . ' tf_os_financeiro.recebido_c', null, false);
+            }
         }
         if (($filtros['saldo'] ?? '') === 'pendente') {
             $db->where('tf_os_financeiro.total_c > tf_os_financeiro.recebido_c', null, false);

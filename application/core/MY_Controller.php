@@ -460,7 +460,11 @@ class MY_Controller extends CI_Controller
             }
         }
 
-        $menu = layoutMenuVisivel(layoutMenu(), $permite, (string) $this->router->class, (string) $this->router->method);
+        $metodoMenu = (string) $this->router->method;
+        if (strcasecmp((string) $this->router->class, 'Financeiro') === 0 && in_array($this->input->get('area'), ['receber', 'pagar', 'movimentacoes'], true) && in_array($metodoMenu, ['lancamentos', 'adicionar', 'editar'], true)) {
+            $metodoMenu = $this->input->get('area');
+        }
+        $menu = layoutMenuVisivel(layoutMenu(), $permite, (string) $this->router->class, $metodoMenu);
         $usuario = (string) $this->session->userdata('nome_admin');
         $avatar = layoutAvatarUrl($this->session->userdata('url_image_user_admin'), FCPATH . 'assets/userImage', base_url());
         $acao = $this->data['topbar_acao'] ?? null;

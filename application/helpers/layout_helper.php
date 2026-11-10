@@ -79,8 +79,11 @@ if (! function_exists('layoutMenu')) {
             ['grupo' => 'Operação', 'label' => 'Vendas', 'icon' => 'shopping-cart', 'url' => 'vendas', 'rota' => ['Vendas', 'index'], 'ativo' => ['Vendas']],
             ['grupo' => 'Operação', 'label' => 'Ordens de Serviço', 'icon' => 'file-text', 'url' => 'os', 'rota' => ['Os', 'index'], 'ativo' => ['Os']],
             ['grupo' => 'Operação', 'label' => 'Termos de Garantias', 'icon' => 'receipt', 'url' => 'garantias', 'rota' => ['Garantias', 'index'], 'ativo' => ['Garantias']],
-            ['grupo' => 'Financeiro', 'label' => 'Lançamentos', 'icon' => 'chart-column', 'url' => 'financeiro/lancamentos', 'rota' => ['Financeiro', 'lancamentos'], 'ativo' => ['Financeiro', 'Trifase_financeiro/visualizar', 'Trifase_financeiro/recibo', 'Trifase_financeiro/conciliar']],
-            ['grupo' => 'Financeiro', 'label' => 'Cobranças', 'icon' => 'circle-dollar-sign', 'url' => 'cobrancas/cobrancas', 'rota' => ['Cobrancas', 'cobrancas'], 'ativo' => ['Cobrancas']],
+            ['grupo' => 'Financeiro', 'label' => 'Financeiro das OS', 'icon' => 'file-text', 'url' => 'financeiro/ordens', 'rota' => ['Financeiro', 'ordens'], 'ativo' => ['Financeiro/ordens', 'Trifase_financeiro/visualizar', 'Trifase_financeiro/recibo', 'Trifase_financeiro/conciliar']],
+            ['grupo' => 'Financeiro', 'label' => 'Contas a receber', 'icon' => 'circle-dollar-sign', 'url' => 'financeiro/receber', 'rota' => ['Financeiro', 'receber'], 'ativo' => ['Financeiro/receber']],
+            ['grupo' => 'Financeiro', 'label' => 'Contas a pagar', 'icon' => 'banknote', 'url' => 'financeiro/pagar', 'rota' => ['Financeiro', 'pagar'], 'ativo' => ['Financeiro/pagar']],
+            ['grupo' => 'Financeiro', 'label' => 'Movimentações', 'icon' => 'chart-column', 'url' => 'financeiro/movimentacoes', 'rota' => ['Financeiro', 'movimentacoes'], 'ativo' => ['Financeiro/movimentacoes', 'Financeiro/lancamentos', 'Financeiro/adicionar', 'Financeiro/editar']],
+            ['grupo' => 'Financeiro', 'label' => 'Cobranças online', 'icon' => 'circle-dollar-sign', 'url' => 'cobrancas/cobrancas', 'rota' => ['Cobrancas', 'cobrancas'], 'ativo' => ['Cobrancas']],
             [
                 'grupo' => 'Financeiro',
                 'label' => 'Relatórios',

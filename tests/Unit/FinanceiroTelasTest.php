@@ -70,6 +70,19 @@ final class FinanceiroTelasTest extends MaposTestCase
         return new DateTimeImmutable('today');
     }
 
+    public function testAreasFixamTipoESituacaoSemLimitarPendenciasAoMes(): void
+    {
+        foreach (['receber' => 'receita', 'pagar' => 'despesa'] as $area => $tipo) {
+            $f = $this->filtros(['area' => $area, 'tipo' => 'invalido', 'status' => 'pago']);
+            $this->assertSame('todos', $f['periodo']);
+            $this->assertSame($tipo, $f['tipo']);
+            $this->assertSame('pendente', $f['status']);
+            $this->assertArrayNotHasKey('de', $f);
+            $this->assertSame('mes', $this->filtros(['area' => $area, 'periodo' => 'mes'])['periodo']);
+        }
+        $this->assertSame('pago', $this->filtros(['area' => 'movimentacoes', 'status' => 'pendente'])['status']);
+    }
+
     public function testSemFiltrosMostraOMesAtual(): void
     {
         [$de, $ate] = financeiroPeriodo('mes', $this->hoje());
@@ -259,6 +272,19 @@ final class FinanceiroTelasTest extends MaposTestCase
             'paginacao' => ['total_pages' => 1, 'current' => 1, 'url' => 'http://mapos.test/index.php/financeiro/lancamentos/{offset}', 'per_page' => 10],
             'pode' => ['adicionar' => $comPermissao, 'editar' => $comPermissao, 'excluir' => $comPermissao, 'ver_cliente' => $comPermissao],
         ];
+    }
+
+    public function testContasAPagarEReceberNaoOferecemFiltroPagoOuTrocaDeTipo(): void
+    {
+        foreach (['receber' => 'Contas a receber', 'pagar' => 'Contas a pagar'] as $area => $titulo) {
+            $dados = $this->dadosDaListagem(true, ['areaFinanceira' => $area, 'filtros' => ['area' => $area, 'periodo' => 'todos', 'status' => 'pendente']]);
+            $html = $this->renderizar('financeiro/lancamentos', $dados);
+            $this->assertStringContainsString($titulo, $html);
+            $this->assertStringContainsString('em todo o período', $html);
+            $this->assertStringNotContainsString('name="tipo"', $html);
+            $this->assertStringNotContainsString('value="pago"', $html);
+            $this->assertStringNotContainsString('Saldo previsto', $html);
+        }
     }
 
     public function testListagemRenderizaEscapandoTudo(): void

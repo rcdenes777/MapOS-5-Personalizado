@@ -148,6 +148,9 @@ $config['permissions_map'] = [
     ],
 
     'Financeiro' => [
+        'receber' => 'vLancamento',
+        'pagar' => 'vLancamento',
+        'movimentacoes' => 'vLancamento',
         'ordens' => ['todas' => ['vLancamento', 'vOs']],
         'index' => 'vLancamento',
         'lancamentos' => 'vLancamento',

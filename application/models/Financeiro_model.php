@@ -42,7 +42,7 @@ class Financeiro_model extends CI_Model
 
         return $this->db
             ->join('usuarios', 'usuarios.idUsuarios = lancamentos.usuarios_id', 'left')
-            ->order_by('lancamentos.data_vencimento', 'asc')
+            ->order_by(($filtros['area'] ?? '') === 'movimentacoes' ? 'lancamentos.data_pagamento' : 'lancamentos.data_vencimento', 'asc')
             ->order_by('lancamentos.idLancamentos', 'asc')
             ->limit($limite, max(0, $offset))
             ->get()
@@ -97,11 +97,12 @@ class Financeiro_model extends CI_Model
                 break;
         }
 
+        $campoData = ($filtros['area'] ?? '') === 'movimentacoes' ? 'lancamentos.data_pagamento' : 'lancamentos.data_vencimento';
         if (($filtros['de'] ?? '') !== '') {
-            $this->db->where('lancamentos.data_vencimento >=', $filtros['de']);
+            $this->db->where($campoData . ' >=', $filtros['de']);
         }
         if (($filtros['ate'] ?? '') !== '') {
-            $this->db->where('lancamentos.data_vencimento <=', $filtros['ate']);
+            $this->db->where($campoData . ' <=', $filtros['ate']);
         }
     }
 

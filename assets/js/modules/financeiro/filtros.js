@@ -53,7 +53,10 @@ export default function iniciar(formulario) {
 
     periodo.addEventListener('change', () => {
         const intervalo = intervaloDoPeriodo(periodo.value);
-        if (intervalo) {
+        if (periodo.value === 'todos') {
+            de.value = '';
+            ate.value = '';
+        } else if (intervalo) {
             [de.value, ate.value] = intervalo;
         }
     });

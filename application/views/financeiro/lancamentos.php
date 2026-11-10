@@ -23,14 +23,19 @@
  * @var string                $hoje        AAAA-MM-DD
  * @var array{adicionar: bool, editar: bool, excluir: bool, ver_cliente: bool} $pode
  */
+$areaFinanceira = $areaFinanceira ?? $filtros['area'] ?? null;
+$tituloFinanceiro = match ($areaFinanceira) {
+    'receber' => 'Contas a receber', 'pagar' => 'Contas a pagar', 'movimentacoes' => 'Movimentações', default => 'Contas e movimentações'
+};
+$movimentacoes = $areaFinanceira === 'movimentacoes';
 $temFiltro = isset($filtros['pesquisa']) || isset($filtros['tipo']) || isset($filtros['status']);
-$queryDoPeriodo = listagemQuery(array_intersect_key($filtros, ['periodo' => true, 'de' => true, 'ate' => true]));
+$queryDoPeriodo = listagemQuery(array_intersect_key($filtros, ['area' => true, 'periodo' => true, 'de' => true, 'ate' => true]));
 $saldo = round($totais['receitas'] - $totais['despesas'], 2);
 $caixa = 'rounded-xl border border-border bg-surface p-4 sm:p-6';
 
 $colunas = [
     ['key' => 'idLancamentos', 'label' => 'Nº', 'align' => 'right', 'nowrap' => true],
-    ['label' => 'Vencimento', 'align' => 'right', 'nowrap' => true, 'render' => fn ($l) => dataBr($l->data_vencimento)],
+    ['label' => $movimentacoes ? 'Pagamento' : 'Vencimento', 'align' => 'right', 'nowrap' => true, 'render' => fn ($l) => dataBr($movimentacoes ? $l->data_pagamento : $l->data_vencimento)],
     ['label' => 'Tipo', 'nowrap' => true, 'render' => fn ($l) => component('pill-status', $l->tipo === 'receita' ? ['label' => 'Receita', 'variant' => 'info'] : ['label' => 'Despesa', 'variant' => 'neutral'])],
     ['label' => 'Descrição', 'class' => 'min-w-40 [overflow-wrap:anywhere]', 'render' => fn ($l) => (string) $l->descricao],
     ['label' => 'Cliente / fornecedor', 'class' => 'min-w-36 [overflow-wrap:anywhere]', 'hide_until' => '2xl', 'render' => fn ($l) => $l->clientes_id && $pode['ver_cliente']
@@ -69,27 +74,30 @@ $vazio = $temFiltro
     ])
     : component('empty-state', [
         'title' => 'Nenhum lançamento neste período',
-        'message' => 'As receitas e despesas com vencimento de ' . dataBr($filtros['de']) . ' a ' . dataBr($filtros['ate']) . ' aparecem aqui.',
+        'message' => 'As receitas e despesas com vencimento de ' . dataBr($filtros['de'] ?? '') . ' a ' . dataBr($filtros['ate'] ?? '') . ' aparecem aqui.',
         'icon' => 'banknote',
         'action' => $pode['adicionar'] ? component('button', ['label' => 'Cadastrar lançamento', 'icon' => 'plus', 'variant' => 'outline', 'href' => site_url('financeiro/adicionar') . listagemQuery($filtros)]) : null,
         'class' => 'border-0',
     ]);
 
 $resumo = ($total === 1 ? '1 lançamento' : number_format($total, 0, ',', '.') . ' lançamentos')
-    . ' com vencimento de ' . dataBr($filtros['de']) . ' a ' . dataBr($filtros['ate'])
+    . (isset($filtros['de'], $filtros['ate']) ? ($movimentacoes ? ' com pagamento de ' : ' com vencimento de ') . dataBr($filtros['de'] ?? '') . ' a ' . dataBr($filtros['ate'] ?? '') : ' em todo o período')
     . ($temFiltro ? ', filtrados' : '');
 ?>
 <div class="flex flex-col gap-4 pt-2 pb-8">
     <header>
-        <h1 class="font-display text-heading-xl text-text">Lançamentos</h1>
+        <h1 class="font-display text-heading-xl text-text"><?= e($tituloFinanceiro) ?></h1>
         <p class="text-caption text-muted" aria-live="polite"><?= e($resumo) ?></p>
     </header>
 
-    <?php if ($podeFinanceiroOs ?? false) { ?>
-        <?= component('tabs', ['label' => 'Áreas do financeiro', 'items' => [['label' => 'Lançamentos', 'url' => site_url('financeiro/lancamentos'), 'active' => true], ['label' => 'OS e recebimentos', 'url' => site_url('financeiro/ordens')]]]) ?>
-    <?php } ?>
-
     <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 2xl:grid-cols-4">
+        <?php if (in_array($areaFinanceira, ['receber', 'pagar'], true)) { ?>
+            <?= component('kpi-card', ['label' => $areaFinanceira === 'receber' ? 'Total a receber' : 'Total a pagar', 'value' => dinheiro($areaFinanceira === 'receber' ? $totais['receitas_pendentes'] : $totais['despesas_pendentes']), 'accent' => 'warning']) ?>
+        <?php } elseif ($movimentacoes) { ?>
+            <?php foreach (['Entradas' => $totais['receitas_pagas'], 'Saídas' => $totais['despesas_pagas'], 'Saldo do período' => $totais['receitas_pagas'] - $totais['despesas_pagas']] as $rotuloMovimento => $valorMovimento) { ?>
+                <?= component('kpi-card', ['label' => $rotuloMovimento, 'value' => dinheiro($valorMovimento), 'accent' => 'info']) ?>
+            <?php } ?>
+        <?php } else { ?>
         <?= component('kpi-card', [
             'label' => 'Receitas',
             'value' => dinheiro($totais['receitas']),
@@ -124,6 +132,7 @@ $resumo = ($total === 1 ? '1 lançamento' : number_format($total, 0, ',', '.') .
             'accent' => 'warning',
             'caption' => dinheiro($totais['receitas_vencidas']) . ' a receber · ' . dinheiro($totais['despesas_vencidas']) . ' a pagar',
         ]) ?>
+        <?php } ?>
     </div>
 
     <form method="get" action="<?= e(site_url('financeiro/lancamentos')) ?>" role="search" aria-label="Filtrar lançamentos" <?= js_module('financeiro/filtros') ?>
@@ -138,17 +147,19 @@ $resumo = ($total === 1 ? '1 lançamento' : number_format($total, 0, ',', '.') .
         <?= component('input', [
             'name' => 'de',
             'id' => 'filtro-de',
-            'label' => 'Vencimento de',
+            'label' => $movimentacoes ? 'Pagamento de' : 'Vencimento de',
             'type' => 'date',
-            'value' => $filtros['de'],
+            'value' => $filtros['de'] ?? '',
         ]) ?>
         <?= component('input', [
             'name' => 'ate',
             'id' => 'filtro-ate',
-            'label' => 'Vencimento até',
+            'label' => $movimentacoes ? 'Pagamento até' : 'Vencimento até',
             'type' => 'date',
-            'value' => $filtros['ate'],
+            'value' => $filtros['ate'] ?? '',
         ]) ?>
+        <?php if ($areaFinanceira !== null) { ?><input type="hidden" name="area" value="<?= e($areaFinanceira) ?>"><?php } ?>
+        <?php if (! in_array($areaFinanceira, ['receber', 'pagar'], true)) { ?>
         <?= component('select', [
             'name' => 'tipo',
             'label' => 'Tipo',
@@ -156,13 +167,16 @@ $resumo = ($total === 1 ? '1 lançamento' : number_format($total, 0, ',', '.') .
             'options' => FINANCEIRO_TIPOS,
             'selected' => $filtros['tipo'] ?? null,
         ]) ?>
+        <?php } ?>
+        <?php if (! $movimentacoes) { ?>
         <?= component('select', [
             'name' => 'status',
             'label' => 'Situação',
             'placeholder' => 'Todas',
-            'options' => FINANCEIRO_STATUS,
+            'options' => in_array($areaFinanceira, ['receber', 'pagar'], true) ? ['pendente' => 'Todas as pendentes', 'vencido' => 'Somente vencidas'] : FINANCEIRO_STATUS,
             'selected' => $filtros['status'] ?? null,
         ]) ?>
+        <?php } ?>
         <div class="sm:col-span-2 lg:col-span-3">
             <?= component('input', [
                 'name' => 'pesquisa',

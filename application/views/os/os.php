@@ -161,7 +161,6 @@ $resumo = ($total === 1 ? '1 ordem de serviço' : number_format($total, 0, ',', 
     </header>
 
     <?php if ($contextoFinanceiro) { ?>
-        <?= component('tabs', ['label' => 'Áreas do financeiro', 'items' => [['label' => 'Lançamentos', 'url' => site_url('financeiro/lancamentos')], ['label' => 'OS e recebimentos', 'url' => site_url('financeiro/ordens'), 'active' => true]]]) ?>
         <?php if ($cancelamentosPendentes !== []) { ?>
             <section class="rounded-xl border border-border bg-surface p-4" aria-labelledby="fila-cancelamentos-pendentes">
                 <div class="mb-3 flex flex-wrap items-center justify-between gap-2">

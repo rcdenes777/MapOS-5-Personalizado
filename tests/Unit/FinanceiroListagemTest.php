@@ -92,6 +92,15 @@ final class FinanceiroListagemTest extends MaposTestCase
         $this->assertCount(5, $this->listar($model, ['tipo' => 'qualquer', 'status' => 'qualquer']), 'Valor fora da lista é ignorado.');
     }
 
+    public function testMovimentacoesFiltramPeloPagamentoEmVezDoVencimento(): void
+    {
+        $model = $this->model();
+        $this->db->query("UPDATE lancamentos SET data_pagamento = '2026-12-10' WHERE idLancamentos = 1");
+        $filtros = financeiroFiltrosDaArea(['area' => 'movimentacoes', 'de' => '2026-12-01', 'ate' => '2026-12-31']);
+        $this->assertSame([1], $this->ids($this->listar($model, $filtros)));
+        $this->assertSame(1, $model->contar($filtros, '2026-12-10'));
+    }
+
     public function testBaixadoNuloContaComoPendente(): void
     {
         $model = $this->model();

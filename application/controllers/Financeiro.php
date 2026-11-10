@@ -12,13 +12,32 @@ class Financeiro extends MY_Controller
 {
     /** Filtros da listagem, na query string (listagemFiltros()). */
     public const FILTROS = [
+        'area' => ['receber', 'pagar', 'movimentacoes'],
         'pesquisa' => 'texto',
         'tipo' => ['receita', 'despesa'],
         'status' => ['pendente', 'pago', 'vencido'],
-        'periodo' => ['dia', 'semana', 'mes_anterior', 'mes', 'mes_posterior', 'ano', 'personalizado'],
+        'periodo' => ['todos', 'dia', 'semana', 'mes_anterior', 'mes', 'mes_posterior', 'ano', 'personalizado'],
         'de' => 'texto',
         'ate' => 'texto',
     ];
+
+    private ?string $areaListagem = null;
+
+    public function receber()
+    {
+        $this->areaListagem = 'receber';
+        return $this->lancamentos();
+    }
+    public function pagar()
+    {
+        $this->areaListagem = 'pagar';
+        return $this->lancamentos();
+    }
+    public function movimentacoes()
+    {
+        $this->areaListagem = 'movimentacoes';
+        return $this->lancamentos();
+    }
 
     public function __construct()
     {
@@ -48,6 +67,7 @@ class Financeiro extends MY_Controller
 
         $hoje = date('Y-m-d');
         $filtros = $this->filtrosDaListagem();
+        $this->data['areaFinanceira'] = $filtros['area'] ?? null;
         $offset = (int) $this->uri->segment(3);
         $total = $this->financeiro_model->contar($filtros, $hoje);
 
@@ -87,7 +107,9 @@ class Financeiro extends MY_Controller
         ];
 
         if ($this->data['pode']['adicionar']) {
-            $this->data['topbar_acao'] = ['label' => 'Novo lançamento', 'icon' => 'plus', 'href' => site_url('financeiro/adicionar') . listagemQuery($filtros)];
+            $this->data['topbar_acao'] = ['label' => match ($filtros['area'] ?? '') {
+                'receber' => 'Nova conta a receber', 'pagar' => 'Nova conta a pagar', default => 'Novo lançamento'
+            }, 'icon' => 'plus', 'href' => site_url('financeiro/adicionar') . listagemQuery($filtros)];
         }
 
         $this->data['view'] = 'financeiro/lancamentos';
@@ -178,6 +200,13 @@ class Financeiro extends MY_Controller
     private function filtrosDaListagem(?array $entrada = null): array
     {
         $filtros = listagemFiltros(self::FILTROS, $entrada ?? $this->input->get());
+        if ($this->areaListagem !== null) {
+            $filtros['area'] = $this->areaListagem;
+        }
+        $filtros = financeiroFiltrosDaArea($filtros);
+        if (($filtros['periodo'] ?? '') === 'todos' || (! isset($filtros['periodo']) && ! isset($filtros['de']) && ! isset($filtros['ate']) && in_array($filtros['area'] ?? '', ['receber', 'pagar'], true))) {
+            return ['periodo' => 'todos'] + array_diff_key($filtros, ['periodo' => true, 'de' => true, 'ate' => true]);
+        }
         $hoje = new DateTimeImmutable('today');
 
         $de = dataIsoParaYmd($filtros['de'] ?? null);
@@ -333,11 +362,11 @@ class Financeiro extends MY_Controller
     private function urlDaListagemApos(array $retorno, string $vencimento, string $tipo): string
     {
         if (isset($retorno['tipo']) && $retorno['tipo'] !== $tipo) {
-            unset($retorno['tipo']);
+            unset($retorno['tipo'], $retorno['area']);
         }
 
         $periodo = $this->filtrosDaListagem($retorno);
-        if ($vencimento < $periodo['de'] || $vencimento > $periodo['ate']) {
+        if (isset($periodo['de'], $periodo['ate']) && ($vencimento < $periodo['de'] || $vencimento > $periodo['ate'])) {
             $mes = financeiroPeriodo('mes', new DateTimeImmutable($vencimento));
             [$retorno['de'], $retorno['ate']] = $mes;
             $retorno['periodo'] = 'personalizado';

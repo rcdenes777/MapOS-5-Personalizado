@@ -94,7 +94,9 @@ final class LayoutTest extends MaposTestCase
             'os' => ['os', 'vOs'],
             'garantias' => ['garantias', 'vGarantia'],
             'arquivos' => ['arquivos', 'vArquivo'],
-            'lancamentos' => ['financeiro/lancamentos', 'vLancamento'],
+            'receber' => ['financeiro/receber', 'vLancamento'],
+            'pagar' => ['financeiro/pagar', 'vLancamento'],
+            'movimentacoes' => ['financeiro/movimentacoes', 'vLancamento'],
             'cobrancas' => ['cobrancas/cobrancas', 'vCobranca'],
         ];
     }
@@ -167,6 +169,9 @@ final class LayoutTest extends MaposTestCase
                 }
             }
 
+            if (in_array('vLancamento', $conjunto, true) && in_array('vOs', $conjunto, true)) {
+                $esperado[] = 'Financeiro das OS';
+            }
             $menu = layoutMenuVisivel(layoutMenu(), $this->permite($conjunto), 'Mapos', 'index');
             $principais = array_values(array_filter(self::rotulos($menu), fn ($r) => ! str_contains($r, ' > ')));
 
@@ -219,7 +224,7 @@ final class LayoutTest extends MaposTestCase
 
         $menu = layoutMenuVisivel(layoutMenu(), $this->permite($todas), 'Mapos', 'index');
 
-        $this->assertCount(10 + 8 + 7, self::rotulos($menu));
+        $this->assertCount(13 + 8 + 7, self::rotulos($menu));
     }
 
     /**

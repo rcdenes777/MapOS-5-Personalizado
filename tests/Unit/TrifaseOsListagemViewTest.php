@@ -182,7 +182,7 @@ final class TrifaseOsListagemViewTest extends \PHPUnit\Framework\TestCase
         $html = $this->renderizar([]);
         $this->assertStringContainsString('Financeiro das OS', $html);
         $this->assertStringContainsString('action="' . site_url('financeiro/ordens') . '"', $html);
-        $this->assertStringContainsString('OS e recebimentos', $html);
+        $this->assertStringNotContainsString('OS e recebimentos', $html);
         $this->assertStringContainsString('trifase_financeiro/visualizar/1', $html);
     }
 

@@ -23,6 +23,7 @@ if (! defined('FINANCEIRO_STATUS')) {
 
 if (! defined('FINANCEIRO_PERIODOS')) {
     define('FINANCEIRO_PERIODOS', [
+        'todos' => 'Todo o período',
         'dia' => 'Dia',
         'semana' => 'Semana',
         'mes_anterior' => 'Mês anterior',
@@ -536,4 +537,19 @@ if (! function_exists('cobrancaGatewayValido')) {
 
         return false;
     }
+}
+
+/** Uma área é uma visão dos mesmos lançamentos, com tipo/situação coerentes. */
+function financeiroFiltrosDaArea(array $filtros): array
+{
+    $area = $filtros['area'] ?? '';
+    if (in_array($area, ['receber', 'pagar'], true)) {
+        $filtros['tipo'] = $area === 'receber' ? 'receita' : 'despesa';
+        if (($filtros['status'] ?? '') !== 'vencido') {
+            $filtros['status'] = 'pendente';
+        }
+    } elseif ($area === 'movimentacoes') {
+        $filtros['status'] = 'pago';
+    }
+    return $filtros;
 }

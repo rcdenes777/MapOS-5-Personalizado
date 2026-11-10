@@ -129,6 +129,9 @@ class Os_model extends CI_Model
         $this->db->select($totalProdutos . ' AS totalProdutos', false);
         $this->db->select($totalServicos . ' AS totalServicos', false);
 
+        if (trifaseEntregaConsultaDisponivel($this->db)) {
+            $this->db->select('(SELECT e.entregue_em FROM trifase_entregas_estado s JOIN trifase_entregas_eventos e ON e.id = s.evento_id AND e.os_id = s.os_id WHERE s.os_id = os.idOs) AS entregue_em', false);
+        }
         $this->aplicarFiltros($filtros, $statusVisiveis);
 
         $linhas = $this->db
@@ -183,7 +186,7 @@ class Os_model extends CI_Model
 
         if (($filtros['status'] ?? '') !== '') {
             $this->db->where('os.status', $filtros['status']);
-        } elseif ($pesquisa === '' && $statusVisiveis !== null && ! (trifaseFinanceiroHabilitado() && Trifase_financeiro_busca::ativo($filtros)) && ! isset($filtros['fila'])) {
+        } elseif ($pesquisa === '' && $statusVisiveis !== null && ! (trifaseFinanceiroHabilitado() && Trifase_financeiro_busca::ativo($filtros)) && ! isset($filtros['fila']) && ! isset($filtros['entrega'])) {
             $this->db->where_in('os.status', $statusVisiveis);
         }
 
@@ -191,6 +194,7 @@ class Os_model extends CI_Model
             Trifase_os_fila::aplicar($this->db, $filtros['fila']);
         }
         Trifase_financeiro_busca::aplicar($this->db, $filtros);
+        trifaseEntregaFiltrar($this->db, $filtros['entrega'] ?? '');
 
         if (($filtros['de'] ?? '') !== '') {
             $this->db->where('os.dataInicial >=', $filtros['de']);

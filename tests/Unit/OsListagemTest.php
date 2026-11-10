@@ -169,7 +169,45 @@ final class OsListagemTest extends MaposTestCase
     public function testFiltrosDaListagemSaoOsStatusDeOs(): void
     {
         $this->assertSame(array_keys(OS_STATUS_VARIANTES), Os::FILTROS['status']);
-        $this->assertSame(['pesquisa', 'status', 'de', 'ate', 'financeiro', 'saldo', 'fila'], array_keys(Os::FILTROS));
+        $this->assertSame(['pesquisa', 'status', 'de', 'ate', 'financeiro', 'saldo', 'entrega', 'fila'], array_keys(Os::FILTROS));
+    }
+
+    public function testEntregaFiltraAntesDePaginarEPreservaCorrecoes(): void
+    {
+        $env = $_ENV;
+        try {
+            $_ENV['TRIFASE_UI_PILOTO_ENABLED'] = 'true';
+            $_ENV['TRIFASE_ENTREGAS_ENABLED'] = 'true';
+            $model = $this->model();
+            $this->db->query('CREATE TABLE trifase_entregas_estado (os_id INTEGER PRIMARY KEY, evento_id INTEGER)');
+            $this->db->query('CREATE TABLE trifase_entregas_eventos (id INTEGER PRIMARY KEY, os_id INTEGER, entregue_em TEXT)');
+            $this->db->data_cache = [];
+            $this->db->where_in('idOs', [1, 2])->update('os', ['status' => 'Finalizado']);
+            $this->db->where('idOs', 3)->update('os', ['status' => 'Cancelado']);
+            $this->db->where('idOs', 4)->update('os', ['status' => 'Aberto']);
+            $this->db->insert('trifase_entregas_eventos', ['id' => 10, 'os_id' => 1, 'entregue_em' => '2026-11-10 14:30:00']);
+            $this->db->insert('trifase_entregas_estado', ['os_id' => 1, 'evento_id' => 10]);
+            $this->db->insert('trifase_entregas_estado', ['os_id' => 3, 'evento_id' => null]);
+            $antes = $this->db->get('os')->result_array();
+            $this->assertSame(2, $model->contar(['entrega' => 'pendente'], ['Aberto']));
+            $this->assertSame([3], array_map(static fn ($o) => (int) $o->idOs, $model->listar(['entrega' => 'pendente'], 1, 0, ['Aberto'])));
+            $this->assertSame([2], array_map(static fn ($o) => (int) $o->idOs, $model->listar(['entrega' => 'pendente'], 1, 1)));
+            $this->assertSame(3, $model->contar(['entrega' => 'todas']));
+            $entregue = $model->listar(['entrega' => 'entregue'], 10, 0);
+            $this->assertCount(1, $entregue);
+            $this->assertSame('Entregue em 10/11/2026 às 14:30', trifaseEntregaRotulo($entregue[0]));
+            $this->assertSame('Aguardando retirada', trifaseEntregaRotulo((object) ['status' => 'Cancelado']));
+            $this->assertSame('—', trifaseEntregaRotulo((object) ['status' => 'Aberto']));
+            $this->db->where('os_id', 1)->delete('trifase_entregas_estado');
+            $this->assertSame(0, $model->contar(['entrega' => 'entregue']));
+            $this->assertSame(3, $model->contar(['entrega' => 'pendente']));
+            $this->assertSame(1, $this->db->count_all('trifase_entregas_eventos'));
+            $this->assertSame($antes, $this->db->get('os')->result_array());
+            $_ENV['TRIFASE_ENTREGAS_ENABLED'] = 'false';
+            $this->assertFalse(trifaseEntregaConsultaDisponivel($this->db));
+        } finally {
+            $_ENV = $env;
+        }
     }
 
     public function testTextoCurtoTiraHtmlECorta(): void

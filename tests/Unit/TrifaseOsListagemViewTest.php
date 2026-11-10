@@ -212,6 +212,21 @@ final class TrifaseOsListagemViewTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(['Sem pendência'], $this->celulas($html, 'Pagamento'));
     }
 
+    public function testListaOperacionalDistinguePrevisaoDeEntregaSemExporRecebedor(): void
+    {
+        require_once APPPATH . 'helpers/trifase_entrega_helper.php';
+        $opcoes = ['contextoFinanceiro' => false, 'listaVerFinanceiro' => false, 'listaEntregaHabilitada' => true];
+        $html = $this->renderizar([], ['status' => 'Cancelado', 'entregue_em' => '2026-11-10 14:30:00', 'recebedor' => 'PRIVADO'], $opcoes);
+        $this->assertSame(['Entregue em 10/11/2026 às 14:30'], $this->celulas($html, 'Entrega'));
+        $this->assertStringContainsString('Entrega do equipamento', $html);
+        $this->assertStringContainsString('Previsão', $html);
+        $this->assertStringNotContainsString('PRIVADO', $html);
+        $pendente = $this->renderizar([], ['status' => 'Finalizado'], $opcoes);
+        $this->assertSame(['Aguardando retirada'], $this->celulas($pendente, 'Entrega'));
+        $financeiro = $this->renderizar([], [], ['listaEntregaHabilitada' => true]);
+        $this->assertStringNotContainsString('Entrega do equipamento', $financeiro);
+    }
+
     private function renderizar(array $resumos, array $os = [], array $opcoes = []): string
     {
         $dados = array_replace([

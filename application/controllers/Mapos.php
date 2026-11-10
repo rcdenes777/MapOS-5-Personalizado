@@ -44,6 +44,7 @@ class Mapos extends MY_Controller
                 $painel['operacional_classico'] = $this->painel_trifase->resumoOperacional();
                 $filtrosPainel = listagemFiltros([
                     'fila' => array_keys(Trifase_os_fila::opcoes($this->db)),
+                    'entrega' => trifaseEntregaConsultaDisponivel($this->db) ? ['todas', 'pendente', 'entregue'] : [],
                     'status' => ['Aberto', 'Negociação', 'Orçamento', 'Aprovado', 'Em Andamento', 'Aguardando Peças', 'Cancelado'],
                 ], $this->input->get());
                 if ($filtrosPainel !== []) {

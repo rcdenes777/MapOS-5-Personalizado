@@ -76,7 +76,7 @@ if ($operacional !== null) {
 
             <?php if (isset($filas['retirada'])) { ?>
                 <section class="<?= e($caixa) ?> min-w-0" aria-labelledby="painel-retirada-titulo">
-                    <h2 id="painel-retirada-titulo" class="text-heading-md text-text">Prontas para retirada</h2>
+                    <h2 id="painel-retirada-titulo" class="text-heading-md text-text">Aguardando retirada</h2>
                     <p class="mt-1 text-caption text-muted">Serviço finalizado; entrega física ainda não registrada.</p>
                     <?php if ($operacional['retirada'] === []) { ?>
                         <?= component('empty-state', ['title' => 'Nenhuma retirada pendente', 'message' => 'As OS finalizadas sem entrega registrada aparecem aqui.', 'icon' => 'circle-check', 'class' => 'border-0']) ?>

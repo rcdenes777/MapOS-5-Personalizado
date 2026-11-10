@@ -48,7 +48,7 @@ final class TrifasePainelTest extends MaposTestCase
 
     public function testFilasDoPainelConferemComMesmaConsultaDaListagem(): void
     {
-        $esperados = ['andamento' => [1, 2, 9, 10, 11, 13], 'orcamentos' => [3, 4], 'retirada' => [5, 7, 12], 'retornos' => [9, 11]];
+        $esperados = ['andamento' => [1, 2, 9, 10, 11, 13], 'orcamentos' => [3, 4], 'retirada' => [5, 7, 8, 12], 'retornos' => [9, 11]];
         $painel = $this->model->operacional();
         foreach ($esperados as $fila => $ids) {
             $this->assertSame(count($ids), $painel['filas'][$fila]['total'], $fila);
@@ -59,7 +59,7 @@ final class TrifasePainelTest extends MaposTestCase
             Trifase_os_fila::aplicar($this->db, $fila);
             $this->assertSame($ids, array_map('intval', array_column($this->db->order_by('idOs')->get()->result_array(), 'idOs')));
         }
-        $this->assertSame([5, 7, 12], array_map(static fn ($o) => (int) $o->idOs, $painel['retirada']));
+        $this->assertSame([5, 7, 8, 12], array_map(static fn ($o) => (int) $o->idOs, $painel['retirada']));
         $this->assertCount(6, $painel['atencao']);
         $this->assertSame(1, (int) $painel['atencao'][0]->idOs);
     }
@@ -108,7 +108,7 @@ final class TrifasePainelTest extends MaposTestCase
     {
         $antes = $this->db->get('os')->result_array();
         $this->db->where('os_id', 6)->delete('trifase_entregas_estado');
-        $this->assertSame(4, $this->model->operacional()['filas']['retirada']['total']);
+        $this->assertSame(5, $this->model->operacional()['filas']['retirada']['total']);
         $this->assertSame($antes, $this->db->get('os')->result_array());
         $this->assertSame(0, $this->db->count_all('trifase_financeiro_eventos'));
     }

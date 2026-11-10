@@ -35,7 +35,7 @@ $colunas = [
     ['label' => 'Equipamento', 'hide_until' => 'lg', 'class' => 'max-w-64', 'render' => fn ($o) => osTextoCurto($o->descricaoProduto, 60)],
     ['key' => 'responsavel', 'label' => 'Responsável', 'nowrap' => true, 'hide_until' => '2xl'],
     ['label' => 'Entrada', 'align' => 'right', 'nowrap' => true, 'hide_until' => 'xl', 'render' => fn ($o) => dataBr($o->dataInicial)],
-    ['label' => 'Entrega', 'align' => 'right', 'nowrap' => true, 'hide_until' => 'xl', 'render' => fn ($o) => dataBr($o->dataFinal)],
+    ['label' => 'Previsão', 'align' => 'right', 'nowrap' => true, 'hide_until' => 'xl', 'render' => fn ($o) => dataBr($o->dataFinal)],
     ['label' => ($trifase_ui_piloto ?? false) ? 'Andamento do serviço' : 'Status', 'nowrap' => true, 'render' => function ($o) use ($contextoFinanceiro, $mapaCancelamentosPendentes) {
         $pill = component('pill-status', osStatusPill($o->status));
         if ($contextoFinanceiro && isset($mapaCancelamentosPendentes[(int) $o->idOs]) && $o->status !== 'Cancelado') {
@@ -43,6 +43,7 @@ $colunas = [
         }
         return $pill;
     }],
+    ...(! $contextoFinanceiro && ($listaEntregaHabilitada ?? false) ? [['label' => 'Entrega', 'render' => fn ($o) => trifaseEntregaRotulo($o)]] : []),
     ['label' => 'Total', 'align' => 'right', 'nowrap' => true, 'render' => fn ($o) => dinheiro($o->total)],
     ['label' => 'Ações', 'align' => 'right', 'nowrap' => true, 'render' => function ($o) use ($pode, $controle_editos, $contextoFinanceiro, $mapaCancelamentosPendentes) {
         $numero = 'OS ' . $o->idOs;
@@ -119,11 +120,11 @@ if ($trifase_ui_piloto ?? false) {
             }
             continue;
         }
-        if ($filtrarFinanceiro && in_array($coluna['label'], ['Entrada', 'Entrega', 'Equipamento'], true)) {
+        if ($filtrarFinanceiro && in_array($coluna['label'], ['Entrada', 'Previsão', 'Equipamento'], true)) {
             $coluna['hide_until'] = '2xl';
         }
         $coluna['label'] = match ($coluna['label']) {
-            'Entrega' => 'Previsão', 'Status' => 'Andamento',
+            'Status' => 'Andamento',
             'Andamento do serviço' => $filtrarFinanceiro ? 'Andamento' : 'Andamento do serviço',
             default => $coluna['label']
         };
@@ -224,6 +225,9 @@ $resumo = ($total === 1 ? '1 ordem de serviço' : number_format($total, 0, ',', 
             'options' => array_combine(array_keys(OS_STATUS_VARIANTES), array_keys(OS_STATUS_VARIANTES)),
             'selected' => $filtros['status'] ?? null,
         ]) ?>
+        <?php if ($listaEntregaHabilitada ?? false) { ?>
+            <?= component('select', ['name' => 'entrega', 'label' => 'Entrega do equipamento', 'placeholder' => 'Todas', 'options' => ['pendente' => 'Aguardando retirada', 'entregue' => 'Entregues'], 'selected' => $filtros['entrega'] ?? null]) ?>
+        <?php } ?>
         <?php if ($filtrarFilas) { ?>
             <?= component('select', ['name' => 'fila', 'label' => 'Fila de trabalho', 'placeholder' => 'Todas', 'options' => $listaFilas, 'selected' => $filtros['fila'] ?? null]) ?>
         <?php } ?>

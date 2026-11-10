@@ -10,7 +10,7 @@ final class Trifase_os_fila
 {
     public const ANDAMENTO = ['Aberto', 'Aprovado', 'Em Andamento', 'Aguardando Peças'];
     public const ORCAMENTOS = ['Orçamento', 'Negociação'];
-    public const OPCOES = ['andamento' => 'Em atendimento', 'orcamentos' => 'Aguardando orçamento', 'retirada' => 'Prontas para retirada', 'retornos' => 'Retornos em avaliação', 'recusados' => 'Orçamentos recusados', 'cancelamentos' => 'Cancelamentos em processo'];
+    public const OPCOES = ['andamento' => 'Em atendimento', 'orcamentos' => 'Aguardando orçamento', 'retirada' => 'Aguardando retirada', 'retornos' => 'Retornos em avaliação', 'recusados' => 'Orçamentos recusados', 'cancelamentos' => 'Cancelamentos em processo'];
 
     public static function opcoes(object $db): array
     {
@@ -55,7 +55,7 @@ final class Trifase_os_fila
                     ->where("EXISTS (SELECT 1 FROM trifase_orcamento_estado toe JOIN trifase_orcamento_eventos tor ON tor.os_id = toe.os_id AND tor.decisao_versao = toe.versao_id WHERE toe.os_id = os.idOs AND toe.ativo = 1 AND tor.tipo = 'recusar')", null, false);
                 break;
             case 'retirada':
-                $db->where('os.status', 'Finalizado')->where('NOT EXISTS (SELECT 1 FROM trifase_entregas_estado tfe WHERE tfe.os_id = os.idOs)', null, false);
+                $db->where_in('os.status', ['Finalizado', 'Cancelado'])->where('NOT EXISTS (SELECT 1 FROM trifase_entregas_estado tfe WHERE tfe.os_id = os.idOs AND tfe.evento_id IS NOT NULL)', null, false);
                 break;
             case 'retornos':
                 $db->where_not_in('os.status', ['Finalizado', 'Cancelado', 'Faturado'])

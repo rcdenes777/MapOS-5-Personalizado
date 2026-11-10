@@ -14,3 +14,9 @@ Implementado no laboratório 8230 em 10/11/2026, na tela de orçamento da OS.
 Testes PHP de composição, limites, entradas inválidas, preservação de condições antigas, reabertura e publicação pelo modelo. Teste JavaScript da prévia. Suíte completa sem falhas (1 depreciação e 1 teste ignorado já existentes); PHPStan, verificação de escape, scripts inline e build aprovados.
 
 Conferência no navegador da OS 9065: padrões, seleção de dias, importação/espera e garantia de 120 dias refletidos na prévia. Nenhuma nova versão publicada nessa OS durante a conferência. A seleção com termos cadastrados foi coberta por testes automatizados; o laboratório não possuía termos para seleção visual.
+
+## Recusas no painel
+
+O indicador **Orçamentos recusados** abre a lista no próprio painel, substituindo o calendário, com acesso à OS. Usa a mesma fila na contagem e na listagem. Considera somente recusa da versão atual e ativa; uma nova publicação, retirada do orçamento ou cancelamento da OS remove a pendência dessa fila. A consulta não altera o status técnico nem cancela a OS. Respeita a permissão existente de visualizar OS e a habilitação do módulo.
+
+Validado no navegador com a recusa da OS 9065; testes cobrem aprovação, versão antiga, orçamento retirado, OS cancelada e módulo desativado.

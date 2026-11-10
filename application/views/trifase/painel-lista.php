@@ -1,5 +1,5 @@
 <?php
-$rotulos = ['andamento' => 'Abertos', 'orcamentos' => 'Aguardando aprovação do cliente', 'retirada' => 'Prontas para retirada', 'retornos' => 'Retornos em avaliação', 'Orçamento' => 'Em orçamento', 'Aprovado' => 'Aprovado', 'Em Andamento' => 'Em andamento', 'Aguardando Peças' => 'Aguardando peças', 'Cancelado' => 'Cancelados'];
+$rotulos = ['recusados' => 'Orçamentos recusados', 'andamento' => 'Abertos', 'orcamentos' => 'Aguardando aprovação do cliente', 'retirada' => 'Prontas para retirada', 'retornos' => 'Retornos em avaliação', 'Orçamento' => 'Em orçamento', 'Aprovado' => 'Aprovado', 'Em Andamento' => 'Em andamento', 'Aguardando Peças' => 'Aguardando peças', 'Cancelado' => 'Cancelados'];
 $titulo = $rotulos[$lista['filtros']['fila'] ?? $lista['filtros']['status']] ?? 'Ordens de serviço';
 ?>
 <section id="lista-painel" class="rounded-xl border border-border bg-surface p-4 sm:p-6 min-w-0 xl:col-span-2" aria-labelledby="titulo-lista-painel">

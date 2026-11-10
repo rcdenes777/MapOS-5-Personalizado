@@ -64,6 +64,29 @@ final class TrifasePainelTest extends MaposTestCase
         $this->assertSame(1, (int) $painel['atencao'][0]->idOs);
     }
 
+    public function testRecusasContamSomenteVersaoAtivaSemCancelarOS(): void
+    {
+        $_ENV['TRIFASE_ORCAMENTOS_ENABLED'] = 'true';
+        $this->db->query('CREATE TABLE trifase_orcamento_estado (os_id INTEGER PRIMARY KEY, versao_id INTEGER, ativo INTEGER)');
+        $this->db->query('CREATE TABLE trifase_orcamento_eventos (os_id INTEGER, decisao_versao INTEGER, tipo TEXT)');
+        foreach ([[1, 10, 1], [2, 20, 1], [3, 30, 0], [4, 40, 1], [8, 80, 1]] as $e) {
+            $this->db->insert('trifase_orcamento_estado', array_combine(['os_id', 'versao_id', 'ativo'], $e));
+        }
+        foreach ([[1, 10, 'recusar'], [2, 19, 'recusar'], [3, 30, 'recusar'], [4, 40, 'aprovar'], [8, 80, 'recusar']] as $e) {
+            $this->db->insert('trifase_orcamento_eventos', array_combine(['os_id', 'decisao_versao', 'tipo'], $e));
+        }
+        $antes = $this->db->get('os')->result_array();
+        $this->assertSame(1, $this->model->resumoOperacional()['filas']['recusados']['total']);
+        $lista = $this->makeInstance(Os_model::class);
+        $lista->db = $this->db;
+        $this->assertSame(1, $lista->contar(['fila' => 'recusados'], []));
+        $this->assertSame($antes, $this->db->get('os')->result_array());
+        $this->db->where('os_id', 1)->update('trifase_orcamento_estado', ['versao_id' => 11]);
+        $this->assertSame(0, $this->model->resumoOperacional()['filas']['recusados']['total']);
+        $_ENV['TRIFASE_ORCAMENTOS_ENABLED'] = 'false';
+        $this->assertArrayNotHasKey('recusados', Trifase_os_fila::opcoes($this->db));
+    }
+
     public function testEntregaCorrigidaVoltaParaFilaSemAlterarStatusOuFinanceiro(): void
     {
         $antes = $this->db->get('os')->result_array();

@@ -30,7 +30,7 @@ class Os extends MY_Controller
         'ate' => 'texto',
         'financeiro' => ['nao_faturada', 'pendente', 'parcial', 'quitada', 'anterior', 'reembolsada', 'encerrada_garantia'],
         'saldo' => ['pendente'],
-        'fila' => ['andamento', 'orcamentos', 'retirada', 'retornos'],
+        'fila' => ['andamento', 'orcamentos', 'retirada', 'retornos', 'recusados'],
     ];
 
     public function __construct()

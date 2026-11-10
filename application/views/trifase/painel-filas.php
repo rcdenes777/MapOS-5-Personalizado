@@ -2,7 +2,7 @@
 /** Filas operacionais: mesmas contagens e destinos do painel da assistência. */
 $cardsFilas = [];
 foreach ($resumoFilas['filas'] as $fila => $resumoFila) {
-    $cardsFilas[] = ['label' => ['andamento' => 'Abertos', 'orcamentos' => 'Aguardando aprovação do cliente'][$fila] ?? $resumoFila['label'], 'value' => $resumoFila['total'], 'accent' => $fila === 'retirada' ? 'success' : ($fila === 'retornos' ? 'warning' : 'info'), 'href' => site_url('mapos') . listagemQuery(['visao' => 'classica', 'fila' => $fila])];
+    $cardsFilas[] = ['label' => ['andamento' => 'Abertos', 'orcamentos' => 'Aguardando aprovação do cliente'][$fila] ?? $resumoFila['label'], 'value' => $resumoFila['total'], 'accent' => $fila === 'retirada' ? 'success' : (in_array($fila, ['retornos', 'recusados'], true) ? 'warning' : 'info'), 'href' => site_url('mapos') . listagemQuery(['visao' => 'classica', 'fila' => $fila])];
 }
 array_splice($cardsFilas, min(2, count($cardsFilas)), 0, [[
     'label' => 'Aguardando peças', 'value' => (int) ($resumoFilas['status']['Aguardando Peças'] ?? 0), 'accent' => 'warning',
@@ -30,7 +30,7 @@ $cardsFilas[] = [
         <h2 id="painel-filas-titulo" class="text-heading-md text-text">Ordens de serviço</h2>
         <?= component('button', ['label' => 'Ver OS', 'variant' => 'ghost', 'href' => site_url('os')]) ?>
     </div>
-    <div class="grid grid-cols-2 gap-3 lg:grid-cols-3 xl:grid-cols-9">
+    <div class="grid grid-cols-2 gap-3 lg:grid-cols-3 xl:grid-cols-5">
         <?php foreach ($cardsFilas as $cardFila) { ?>
             <?php
             $selecionado = isset($lista_painel) && $cardFila['href'] === site_url('mapos') . listagemQuery(['visao' => 'classica'] + $lista_painel['filtros']);
@@ -42,5 +42,5 @@ $cardsFilas[] = [
             <?= component('kpi-card', $cardFila) ?>
         <?php } ?>
     </div>
-    <p class="mt-2 text-caption text-muted">As filas podem incluir a mesma OS. Orçamentos incluem negociação; retirada considera serviço finalizado sem entrega registrada.</p>
+    <p class="mt-2 text-caption text-muted">As filas podem incluir a mesma OS. Orçamentos incluem negociação; retirada considera serviço finalizado sem entrega registrada. Recusados considera a versão ativa, até nova publicação, retirada do orçamento ou cancelamento da OS.</p>
 </section>

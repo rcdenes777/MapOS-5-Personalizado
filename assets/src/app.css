@@ -315,6 +315,8 @@ html[data-valores="ocultos"] .kpi-oculto-valores {
 .trifase-os :where(a.inline-flex, button) { min-height: calc(var(--spacing) * 11); height: auto; white-space: normal; text-align: center; }
 .trifase-os :where(a.inline-flex) { padding-block: calc(var(--spacing) * 2); }
 .trifase-os-cabecalho, .trifase-os-secao-titulo { display: flex; flex-wrap: wrap; align-items: start; justify-content: space-between; gap: calc(var(--spacing) * 3); }
+.trifase-os-cabecalho h1 { font-size: calc(var(--trifase-title) + .25rem); }
+.trifase-os-identificacao { display: grid; gap: var(--spacing); font-size: var(--text-heading-sm); line-height: 1.5; }
 .trifase-os-acoes { display: flex; flex-wrap: wrap; gap: calc(var(--spacing) * 2); }
 .trifase-os-voltar { display: inline-flex; align-items: center; gap: calc(var(--spacing) * 2); min-height: calc(var(--spacing) * 11); color: var(--color-primary-strong); text-decoration: underline; text-underline-offset: .2em; font-size: var(--text-body-md); }
 .trifase-os-andamento, .trifase-os-painel { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--trifase-radius); padding: var(--trifase-padding); min-width: 0; }

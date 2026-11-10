@@ -26,7 +26,10 @@ if (($pilotoEquipamento ?? null) !== null
         <div>
             <a class="trifase-os-voltar" href="<?= e(site_url('os')) ?>"><?= icon('chevron-left', ['class' => 'size-4']) ?>Ordens de serviço</a>
             <h1><?= e('Ordem de serviço #' . str_pad((string) $idOs, 3, '0', STR_PAD_LEFT)) ?></h1>
-            <p class="text-muted"><?= e($os->nomeCliente . ' · Entrada em ' . dataBr($os->dataInicial)) ?></p>
+            <div class="trifase-os-identificacao text-muted">
+                <p><?= e('Cliente: ' . $os->nomeCliente) ?></p>
+                <p><?= e('Entrada em ' . dataBr($os->dataInicial)) ?></p>
+            </div>
         </div>
         <div class="trifase-os-acoes">
             <?= component('button', ['label' => 'Imprimir OS', 'icon' => 'printer', 'variant' => 'outline', 'href' => site_url('os/imprimir/' . $idOs), 'attrs' => ['target' => '_blank', 'rel' => 'noopener']]) ?>

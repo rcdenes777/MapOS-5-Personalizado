@@ -18,3 +18,7 @@ Nenhuma entrega, status, estoque ou valor financeiro é alterado por essas consu
 - Navegador: indicador e lista pendente (17), entregues (4), todas (21); conferidas finalizadas e canceladas, data/hora e filtro da lista operacional. Leitura em tela de 390 px conferida.
 - Teste automatizado da correção de comprovante, contagem e paginação antes do recorte; consultas não alteraram status ou histórico.
 - Nenhuma mutação de dados no laboratório foi necessária nesta etapa. Produção e permissões preservadas.
+
+## Filas sem sobreposição de cancelamento
+
+Cancelamentos pendentes inclui somente pedidos ativos ainda não confirmados. Após confirmar, a OS cancelada fica em Aguardando retirada até registrar sua entrega. Corrigir o comprovante devolve a OS à fila de retirada, sem reabrir o cancelamento.

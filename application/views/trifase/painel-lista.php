@@ -1,6 +1,6 @@
 <?php
 $cancelamentosNaLista = ($lista['filtros']['fila'] ?? '') === 'cancelamentos';
-$rotulos = ['cancelamentos' => 'Cancelamentos em processo', 'recusados' => 'Orçamentos recusados', 'Aberto' => 'Abertos', 'Negociação' => 'Aguardando aprovação do cliente', 'andamento' => 'Em atendimento', 'orcamentos' => 'Aguardando aprovação do cliente', 'retirada' => 'Aguardando retirada', 'retornos' => 'Retornos em avaliação', 'Orçamento' => 'Em orçamento', 'Aprovado' => 'Aprovado', 'Em Andamento' => 'Em andamento', 'Aguardando Peças' => 'Aguardando peças', 'Cancelado' => 'Cancelados'];
+$rotulos = ['cancelamentos' => 'Cancelamentos pendentes', 'recusados' => 'Orçamentos recusados', 'Aberto' => 'Abertos', 'Negociação' => 'Aguardando aprovação do cliente', 'andamento' => 'Em atendimento', 'orcamentos' => 'Aguardando aprovação do cliente', 'retirada' => 'Aguardando retirada', 'retornos' => 'Retornos em avaliação', 'Orçamento' => 'Em orçamento', 'Aprovado' => 'Aprovado', 'Em Andamento' => 'Em andamento', 'Aguardando Peças' => 'Aguardando peças', 'Cancelado' => 'Cancelados'];
 $titulo = $rotulos[$lista['filtros']['fila'] ?? $lista['filtros']['status'] ?? ''] ?? 'Ordens de serviço';
 $listaEntregas = isset($lista['filtros']['entrega']) || ($lista['filtros']['fila'] ?? '') === 'retirada';
 if ($listaEntregas) {
@@ -32,7 +32,7 @@ if ($listaEntregas) {
             ['label' => 'Previsão', 'nowrap' => true, 'render' => fn ($o) => $o->dataFinal ? dataBr($o->dataFinal) : '—'],
             ['label' => 'Status', 'nowrap' => true, 'render' => fn ($o) => component('pill-status', osStatusPill($o->status))],
             ...(trifaseEntregaHabilitada() ? [['label' => 'Entrega', 'render' => fn ($o) => trifaseEntregaRotulo($o)]] : []),
-            ...($cancelamentosNaLista ? [['label' => 'Próxima ação', 'render' => fn ($o) => component('link', ['label' => $o->status === 'Cancelado' ? 'Registrar entrega' : 'Continuar conferência', 'href' => site_url('trifase_cancelamentos/visualizar/' . (int) $o->idOs)])]] : []),
+            ...($cancelamentosNaLista ? [['label' => 'Próxima ação', 'render' => fn ($o) => component('link', ['label' => 'Continuar conferência', 'href' => site_url('trifase_cancelamentos/visualizar/' . (int) $o->idOs)])]] : []),
         ],
         'empty' => component('empty-state', ['title' => 'Nenhuma OS nesta lista', 'message' => 'Selecione outro indicador ou volte ao calendário.', 'icon' => 'wrench', 'class' => 'border-0']),
     ]) ?>

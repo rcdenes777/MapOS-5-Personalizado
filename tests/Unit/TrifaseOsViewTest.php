@@ -27,24 +27,34 @@ final class TrifaseOsViewTest extends \PHPUnit\Framework\TestCase
         $this->assertStringContainsString('Defeito relatado', $html);
     }
 
-    public function testResumoUsaRecebidoESaldoSemInferirQuitacaoPeloStatus(): void
+    public function testResumoMostraSubtotalSemCobrancasOuRecebimentos(): void
     {
         $html = $this->renderizar(true);
+        $this->assertStringContainsString('Subtotal das peças', $html);
         $this->assertStringContainsString('R$ 500,00', $html);
-        $this->assertStringContainsString('R$ 200,00', $html);
-        $this->assertStringContainsString('R$ 300,00', $html);
-        $this->assertStringContainsString('Parcialmente pago', $html);
+        $this->assertStringNotContainsString('R$ 200,00', $html);
+        $this->assertStringNotContainsString('R$ 300,00', $html);
+        $this->assertStringNotContainsString('Parcialmente pago', $html);
+        $this->assertStringNotContainsString('Registrar recebimento', $html);
+        $this->assertStringNotContainsString('Registrar cobrança', $html);
         $this->assertStringContainsString('Finalizado', $html);
     }
 
-    public function testSemObrigacaoNaoInventaSaldoETextoDoClienteEEscapado(): void
+    public function testAbasPreservamItensEExibemSomenteASecaoSelecionada(): void
     {
-        $html = $this->renderizar(true, false);
-        $this->assertStringContainsString('Cobrança ainda não formalizada', $html);
-        $this->assertStringNotContainsString('Saldo a receber', $html);
-        $this->assertStringContainsString('&lt;script&gt;', $html);
-        $this->assertStringNotContainsString('<script>', $html);
-        $this->assertStringContainsString('Não informado', $html);
+        $resumo = $this->renderizar(true, false);
+        $this->assertStringContainsString('id="piloto-anexos"', $resumo);
+        $this->assertStringNotContainsString('id="piloto-historico-atendimento"', $resumo);
+        $this->assertStringContainsString('?secao=historico#os-secoes', $resumo);
+        $historico = $this->renderizar(true, false, secao: 'historico');
+        $this->assertStringContainsString('id="piloto-historico-atendimento"', $historico);
+        $this->assertStringContainsString('id="piloto-anotacoes"', $historico);
+        $this->assertStringContainsString('Fusível', $historico);
+        $this->assertStringNotContainsString('id="piloto-anexos"', $historico);
+        $atendimento = $this->renderizar(true, false, secao: 'atendimento');
+        $this->assertStringContainsString('&lt;script&gt;', $atendimento);
+        $this->assertStringNotContainsString('<script>', $atendimento);
+        $this->assertStringContainsString('Não informado', $atendimento);
     }
 
     public function testFormulariosCompartilhadosTemIdsUnicosEEnviamAMesmaOs(): void
@@ -76,7 +86,7 @@ final class TrifaseOsViewTest extends \PHPUnit\Framework\TestCase
         $this->assertStringNotContainsString('data-modal-abrir="excluir-produto"', $html);
     }
 
-    private function renderizar(bool $financeiro, bool $formalizada = true, bool $editavel = false, ?array $resposta = null): string
+    private function renderizar(bool $financeiro, bool $formalizada = true, bool $editavel = false, ?array $resposta = null, string $secao = 'anexos'): string
     {
         $env = $_ENV;
         $_ENV['TRIFASE_FINANCEIRO_ENABLED'] = 'false';
@@ -125,7 +135,7 @@ final class TrifaseOsViewTest extends \PHPUnit\Framework\TestCase
                 'anotacoes' => [], 'historico' => [], 'historico_disponivel' => true,
                 'totais' => ['produtos' => 500, 'servicos' => 0, 'desconto' => 0, 'total' => 500],
                 'pilotoFinanceiro' => $formalizada ? ['total_c' => 50000, 'recebido_c' => 20000, 'saldo_c' => 30000, 'situacao' => 'Parcialmente pago'] : null,
-                'pilotoLink' => null, 'pilotoRespostaCliente' => $resposta,
+                'pilotoLink' => null, 'pilotoRespostaCliente' => $resposta, 'pilotoSecao' => $secao,
                 'controle_estoque' => true,
             ]);
             return (string) ob_get_clean();

@@ -7,8 +7,29 @@ $verFinanceiro = $permite('vLancamento');
 $editarTecnico = $pode['editar_tecnico'] ?? false;
 $editarUrl = $pode['editar'] ? site_url('os/editar/' . $idOs)
     : ($editarTecnico && trifaseFinanceiroHabilitado() ? site_url('trifase_financeiro/tecnico/' . $idOs) : null);
-$financeiroUrl = site_url('trifase_financeiro/visualizar/' . $idOs);
 $linkHabilitado = trifasePublicoHabilitado() && $permite('eOs');
+$verOrcamento = function_exists('trifaseOrcamentoHabilitado') && trifaseOrcamentoHabilitado() && $verFinanceiro;
+$verEntrega = function_exists('trifaseEntregaHabilitada') && trifaseEntregaHabilitada();
+$secoes = ['anexos' => 'Anexos'];
+if ($verOrcamento || $linkHabilitado) {
+    $secoes['compartilhamento'] = $verOrcamento && $linkHabilitado ? 'Orçamento e link' : ($verOrcamento ? 'Orçamento' : 'Link do cliente');
+}
+if ($verEntrega) {
+    $secoes['entrega'] = 'Entrega';
+}
+$secoes += ['historico' => 'Histórico', 'atendimento' => 'Atendimento'];
+$secao = $pilotoSecao ?? 'anexos';
+if (! isset($secoes[$secao])) {
+    $secao = 'anexos';
+}
+$abasComplementares = [];
+foreach ($secoes as $chave => $rotulo) {
+    $abasComplementares[] = [
+        'label' => $rotulo,
+        'url' => site_url('os/visualizar/' . $idOs) . '?secao=' . $chave . '#os-secoes',
+        'active' => $secao === $chave,
+    ];
+}
 $texto = static fn ($valor) => trim(strip_tags((string) $valor)) !== '' ? osTextoExibicao($valor) : null;
 $campos = [
     'Equipamento' => $texto($os->descricaoProduto),
@@ -73,70 +94,66 @@ if (($pilotoEquipamento ?? null) !== null
         </div>
     </section>
 
-    <div class="trifase-os-colunas">
-        <div class="trifase-os-principal">
-            <section class="trifase-os-painel" aria-labelledby="piloto-equipamento">
-                <div class="trifase-os-secao-titulo">
-                    <h2 id="piloto-equipamento">Equipamento e atendimento</h2>
-                    <?php if ($editarUrl !== null && ($pilotoTecnico ?? null) === null) { ?>
-                        <?= component('button', ['label' => 'Editar OS', 'icon' => 'pencil', 'variant' => 'outline', 'href' => $editarUrl]) ?>
-                    <?php } ?>
-                </div>
-                <dl class="trifase-os-relato">
-                    <?php foreach ($campos as $rotulo => $valor) { ?>
-                        <div><dt><?= e($rotulo) ?></dt><dd class="<?= $valor === null ? 'text-muted' : 'text-text' ?>"><?= $valor === null ? 'Não informado' : componenteConteudo($valor) ?></dd></div>
-                    <?php } ?>
-                </dl>
-                <?php if ($editarTecnico && ($pilotoTecnico ?? null) !== null) { ?>
-                    <details class="trifase-os-adicionar mt-4">
-                        <summary>Editar OS</summary>
-                        <p class="text-muted">Produtos, serviços, pagamentos e conclusão são preservados.</p>
-                        <?php $this->load->view('trifase/formulario-tecnico', ['osTecnica' => $os, 'metaTecnica' => $pilotoTecnico, 'tecnicoIntegrado' => true]); ?>
-                    </details>
-                <?php } ?>
+
+    <section class="trifase-os-painel" aria-labelledby="piloto-equipamento">
+        <div class="trifase-os-secao-titulo">
+            <h2 id="piloto-equipamento">Equipamento e atendimento</h2>
+            <?php if ($editarUrl !== null && ($pilotoTecnico ?? null) === null) { ?>
+                <?= component('button', ['label' => 'Editar OS', 'icon' => 'pencil', 'variant' => 'outline', 'href' => $editarUrl]) ?>
+            <?php } ?>
+        </div>
+        <dl class="trifase-os-relato">
+            <?php foreach ($campos as $rotulo => $valor) { ?>
+                <div><dt><?= e($rotulo) ?></dt><dd class="<?= $valor === null ? 'text-muted' : 'text-text' ?>"><?= $valor === null ? 'Não informado' : componenteConteudo($valor) ?></dd></div>
+            <?php } ?>
+        </dl>
+        <?php if ($editarTecnico && ($pilotoTecnico ?? null) !== null) { ?>
+            <details class="trifase-os-adicionar mt-4">
+                <summary>Editar OS</summary>
+                <p class="text-muted">Produtos, serviços, pagamentos e conclusão são preservados.</p>
+                <?php $this->load->view('trifase/formulario-tecnico', ['osTecnica' => $os, 'metaTecnica' => $pilotoTecnico, 'tecnicoIntegrado' => true]); ?>
+            </details>
+        <?php } ?>
+    </section>
+
+    <?php if (function_exists('trifaseEquipamentosHabilitados') && trifaseEquipamentosHabilitados()) {
+        $this->load->view('trifase/equipamento');
+    } ?>
+
+    <?php if (function_exists('trifaseRetornoHabilitado') && trifaseRetornoHabilitado()) { ?>
+        <?php if (($pilotoRetorno ?? null) !== null) { ?>
+            <section class="trifase-os-painel" aria-labelledby="piloto-retorno">
+                <h2 id="piloto-retorno">Retorno em garantia</h2>
+                <p class="text-label-md"><?= e(trifaseRetornoCobertura($pilotoRetornoAvaliacao)) ?></p>
+                <p class="text-muted"><?= e('OS de origem #' . (int) $pilotoRetorno->origem_id . ($pilotoRetorno->vencimento_origem ? ' · prazo original até ' . dataBr($pilotoRetorno->vencimento_origem) : ' · sem prazo informado')) ?></p>
+                <?= component('button', ['label' => 'Avaliação e histórico do retorno', 'variant' => 'outline', 'href' => site_url('trifase_retornos/visualizar/' . $idOs)]) ?>
             </section>
-
-            <?php if (function_exists('trifaseEquipamentosHabilitados') && trifaseEquipamentosHabilitados()) {
-                $this->load->view('trifase/equipamento');
-            } ?>
-
-            <?php if (function_exists('trifaseRetornoHabilitado') && trifaseRetornoHabilitado()) { ?>
-                <?php if (($pilotoRetorno ?? null) !== null) { ?>
-                    <section class="trifase-os-painel" aria-labelledby="piloto-retorno">
-                        <h2 id="piloto-retorno">Retorno em garantia</h2>
-                        <p class="text-label-md"><?= e(trifaseRetornoCobertura($pilotoRetornoAvaliacao)) ?></p>
-                        <p class="text-muted"><?= e('OS de origem #' . (int) $pilotoRetorno->origem_id . ($pilotoRetorno->vencimento_origem ? ' · prazo original até ' . dataBr($pilotoRetorno->vencimento_origem) : ' · sem prazo informado')) ?></p>
-                        <?= component('button', ['label' => 'Avaliação e histórico do retorno', 'variant' => 'outline', 'href' => site_url('trifase_retornos/visualizar/' . $idOs)]) ?>
-                    </section>
-                <?php } elseif (($pilotoEquipamento ?? null) !== null && $os->status === 'Finalizado' && ! empty($os->trifase_garantia_inicio) && $permite('aOs') && $permite('eOs')) { ?>
-                    <section class="trifase-os-painel" aria-labelledby="piloto-retorno-novo">
-                        <h2 id="piloto-retorno-novo">Equipamento voltou?</h2>
-                        <p class="text-muted">Registre outro atendimento e preserve esta OS e seu prazo de garantia.</p>
-                        <?= component('button', ['label' => 'Registrar retorno em garantia', 'variant' => 'outline', 'href' => site_url('trifase_retornos/novo/' . $idOs)]) ?>
-                    </section>
-                <?php } ?>
+        <?php } elseif (($pilotoEquipamento ?? null) !== null && $os->status === 'Finalizado' && ! empty($os->trifase_garantia_inicio) && $permite('aOs') && $permite('eOs')) { ?>
+            <section class="trifase-os-painel" aria-labelledby="piloto-retorno-novo">
+                <h2 id="piloto-retorno-novo">Equipamento voltou?</h2>
+                <p class="text-muted">Registre outro atendimento e preserve esta OS e seu prazo de garantia.</p>
+                <?= component('button', ['label' => 'Registrar retorno em garantia', 'variant' => 'outline', 'href' => site_url('trifase_retornos/novo/' . $idOs)]) ?>
+            </section>
+        <?php } ?>
+    <?php } ?>
+    <?php foreach (['produto' => 'Peças da OS', 'servico' => 'Serviços da OS'] as $tipoItem => $tituloItem) { ?>
+        <section class="trifase-os-painel" aria-labelledby="<?= e('piloto-' . $tipoItem . '-titulo') ?>">
+            <h2 id="<?= e('piloto-' . $tipoItem . '-titulo') ?>"><?= e($tituloItem) ?></h2>
+            <div data-os-parte="<?= e($tipoItem === 'produto' ? 'pilotopecas' : 'pilotoservicos') ?>"><?php $this->load->view('trifase/itens', ['tipoLista' => $tipoItem]); ?></div>
+            <?php if ($pode['editar']) { ?>
+                <div class="trifase-os-formularios">
+                    <details class="trifase-os-adicionar">
+                        <summary><?= e($tipoItem === 'produto' ? 'Adicionar peça' : 'Adicionar serviço') ?></summary>
+                        <?php $this->load->view('os/partes/formulario-item', ['tipoItem' => $tipoItem, 'prefixoItem' => 'piloto-' . $tipoItem]); ?>
+                    </details>
+                </div>
             <?php } ?>
-            <?php foreach (['produto' => 'Peças da OS', 'servico' => 'Serviços da OS'] as $tipoItem => $tituloItem) { ?>
-                <section class="trifase-os-painel" aria-labelledby="<?= e('piloto-' . $tipoItem . '-titulo') ?>">
-                    <h2 id="<?= e('piloto-' . $tipoItem . '-titulo') ?>"><?= e($tituloItem) ?></h2>
-                    <div data-os-parte="<?= e($tipoItem === 'produto' ? 'pilotopecas' : 'pilotoservicos') ?>"><?php $this->load->view('trifase/itens', ['tipoLista' => $tipoItem]); ?></div>
-                    <?php if ($pode['editar']) { ?>
-                        <div class="trifase-os-formularios">
-                            <details class="trifase-os-adicionar">
-                                <summary><?= e($tipoItem === 'produto' ? 'Adicionar peça' : 'Adicionar serviço') ?></summary>
-                                <?php $this->load->view('os/partes/formulario-item', ['tipoItem' => $tipoItem, 'prefixoItem' => 'piloto-' . $tipoItem]); ?>
-                            </details>
-                        </div>
-                    <?php } ?>
-                </section>
-            <?php } ?>
+        </section>
+    <?php } ?>
 
-            <?php if (function_exists('trifaseOrcamentoHabilitado') && trifaseOrcamentoHabilitado() && $verFinanceiro) { ?>
-                <section class="trifase-os-painel" aria-labelledby="piloto-orcamento">
-                    <h2 id="piloto-orcamento">Orçamento e resposta do cliente</h2>
-                    <div data-os-parte="pilotoorcamento"><?php $this->load->view('trifase/orcamento-resumo'); ?></div>
-                </section>
-            <?php } ?>
+    <div id="os-secoes" class="grid min-w-0 scroll-mt-20 gap-4">
+        <?= component('tabs', ['label' => 'Informações da ordem de serviço', 'items' => $abasComplementares]) ?>
+        <?php if ($secao === 'anexos') { ?>
             <section class="trifase-os-painel" aria-labelledby="piloto-anexos" <?= js_module('trifase/anexos') ?>>
                 <div class="trifase-os-secao-titulo"><h2 id="piloto-anexos">Fotos, vídeos e documentos</h2></div>
                 <?php if ($editarTecnico) { ?>
@@ -148,30 +165,13 @@ if (($pilotoEquipamento ?? null) !== null
                 <div data-os-parte="pilotoanexos"><?php $this->load->view('os/partes/anexos', ['anexosSomenteConsulta' => ! $editarTecnico, 'publicacaoIntegrada' => true, 'anexosPublicosIds' => $pilotoPublicados ?? []]); ?></div>
                 <p class="trifase-os-ajuda">Novos anexos são privados. Marque Público para permitir sua visualização pelo link desta OS.</p>
             </section>
-        </div>
-
-        <aside class="trifase-os-lateral" aria-label="Informações e ações da OS">
-            <?php if ($verFinanceiro) { ?>
-                <section class="trifase-os-painel" aria-labelledby="piloto-financeiro">
-                    <div data-os-parte="pilotofinanceiro"><?php $this->load->view('trifase/resumo-financeiro'); ?></div>
-                    <?php if ($pilotoFinanceiro !== null && $permite('aLancamento') && $pilotoFinanceiro['saldo_c'] > 0 && $os->status !== 'Cancelado') { ?>
-                        <details id="piloto-registrar-recebimento" class="trifase-os-adicionar mt-4">
-                            <summary>Registrar recebimento</summary>
-                            <?php $this->load->view('trifase/formulario-recebimento', ['osFinanceira' => $os, 'financeiroChave' => $pilotoOperacao, 'financeiroValores' => ['valor' => '', 'data' => date('Y-m-d'), 'forma' => 'Pix'], 'recebimentoIntegrado' => true]); ?>
-                        </details>
-                    <?php } elseif ($pilotoFinanceiro === null && (int) $os->faturado !== 1 && $permite('aLancamento') && $permite('eOs') && trifaseFinanceiroHabilitado() && $totais['total'] > 0 && $os->status !== 'Cancelado') { ?>
-                        <details class="trifase-os-adicionar mt-4">
-                            <summary>Registrar cobrança</summary>
-                            <form method="post" action="<?= e(site_url('trifase_financeiro/formalizar/' . $idOs)) ?>" class="grid gap-3 p-3" data-os-acao="financeiro">
-                                <p class="text-muted">Confirme os itens antes de registrar. Após a cobrança, os valores ficam protegidos.</p>
-                                <?= component('input', ['name' => 'vencimento', 'id' => 'piloto-vencimento', 'label' => 'Vencimento', 'type' => 'date', 'value' => date('Y-m-d'), 'required' => true]) ?>
-                                <?= component('button', ['label' => 'Confirmar cobrança', 'type' => 'submit']) ?>
-                            </form>
-                        </details>
-                    <?php } ?>
+        <?php } elseif ($secao === 'compartilhamento') { ?>
+            <?php if ($verOrcamento) { ?>
+                <section class="trifase-os-painel" aria-labelledby="piloto-orcamento">
+                    <h2 id="piloto-orcamento">Orçamento e resposta do cliente</h2>
+                    <div data-os-parte="pilotoorcamento"><?php $this->load->view('trifase/orcamento-resumo'); ?></div>
                 </section>
             <?php } ?>
-
             <?php if ($linkHabilitado) { ?>
                 <section class="trifase-os-painel" aria-labelledby="piloto-publico">
                     <h2 id="piloto-publico">Link público desta OS</h2>
@@ -210,11 +210,11 @@ if (($pilotoEquipamento ?? null) !== null
                     <?php } ?>
                 </section>
             <?php } ?>
-
-            <?php if (function_exists('trifaseEntregaHabilitada') && trifaseEntregaHabilitada()) {
-                $this->load->view('trifase/entrega');
-            } ?>
-
+        <?php } elseif ($secao === 'entrega') {
+            $this->load->view('trifase/entrega');
+        } elseif ($secao === 'historico') {
+            $this->load->view('trifase/os-anotacoes-historico');
+        } else { ?>
             <?php if ($pilotoCancelamentoDisponivel ?? false) { ?>
                 <section class="trifase-os-painel" aria-labelledby="piloto-cancelamento">
                     <h2 id="piloto-cancelamento">Cancelamento da OS</h2>
@@ -236,12 +236,13 @@ if (($pilotoEquipamento ?? null) !== null
                     <?php } ?>
                 </dl>
             </section>
-
-            <?php $this->load->view('trifase/os-anotacoes-historico'); ?>
-        </aside>
+            <?php if (trifaseEstoqueHabilitado() && $verFinanceiro) { ?>
+                <div><?= component('link', ['label' => 'Consultar custos internos do reparo', 'href' => site_url('trifase_estoque/os/' . $idOs)]) ?></div>
+            <?php } ?>
+        <?php } ?>
     </div>
 </div>
-<?php if ($linkHabilitado) {
+<?php if ($secao === 'anexos' && $linkHabilitado) {
     $this->load->view('trifase/video');
     $this->load->view('trifase/galeria');
 } ?>
@@ -267,11 +268,4 @@ if (($pilotoEquipamento ?? null) !== null
         <input type="hidden" name="idItem" value="" data-modal-de="excluir-anexo" data-modal-valor="id">
     </form>
     <?= component('modal-confirm', ['id' => 'excluir-anexo', 'title' => 'Excluir anexo?', 'message' => [new HtmlSeguro('<strong data-modal-valor="nome"></strong>'), ' será apagado do servidor. Essa ação não pode ser desfeita.'], 'confirm_label' => 'Excluir', 'confirm_attrs' => ['form' => 'form-excluir-anexo']]) ?>
-<?php } ?>
-
-<?php if (trifaseEstoqueHabilitado() && $this->permission->checkPermission($this->session->userdata('permissao'), 'vLancamento')) { ?>
-    <section class="mt-4 rounded-card border border-border bg-surface p-4">
-        <h2 class="mb-2 text-heading-sm text-text">Custos internos do reparo</h2>
-        <?= component('link', ['label' => 'Consultar peças, serviços e custos registrados', 'href' => site_url('trifase_estoque/os/' . (int) $os->idOs)]) ?>
-    </section>
 <?php } ?>

@@ -160,7 +160,7 @@ class Trifase extends MY_Controller
     {
         $this->load->helper('trifase_interface');
         return $this->input->post('voltar') === 'resumo' && trifaseInterfacePiloto()
-            ? 'os/visualizar/' . $id : 'trifase/gerenciar/' . $id;
+            ? 'os/visualizar/' . $id . '?secao=compartilhamento#os-secoes' : 'trifase/gerenciar/' . $id;
     }
 
     private function ordem($id): object

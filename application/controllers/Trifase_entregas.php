@@ -101,7 +101,7 @@ class Trifase_entregas extends MY_Controller
             $acao();
             log_info('Operação de entrega registrada para OS #' . (int) $os->idOs);
             $this->session->set_flashdata('success', $mensagem);
-            $corpo = ['result' => true, 'redirecionar' => site_url('os/visualizar/' . (int) $os->idOs)];
+            $corpo = ['result' => true, 'redirecionar' => site_url('os/visualizar/' . (int) $os->idOs) . '?secao=entrega#os-secoes'];
         } catch (DomainException $e) {
             $status = 422;
             $corpo = ['result' => false, 'message' => $e->getMessage()];

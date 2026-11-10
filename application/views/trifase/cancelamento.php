@@ -190,7 +190,7 @@ $etapaCancelamento = $cancelado ? ($entregue ? 4 : 3) : ($pendenteCancelamento ?
                 <?= component('link', ['label' => 'Abrir comprovante', 'href' => site_url('trifase_entregas/comprovante/' . $idCancelamento . '/' . (int) $entregaCancelamento->id)]) ?>
             <?php } else { ?>
                 <p class="my-3 text-muted">O cancelamento não registra a retirada física. Registre quem recebeu o equipamento e quando.</p>
-                <?= component('button', ['label' => 'Registrar entrega do equipamento', 'href' => site_url('os/visualizar/' . $idCancelamento) . '#piloto-entrega']) ?>
+                <?= component('button', ['label' => 'Registrar entrega do equipamento', 'href' => site_url('os/visualizar/' . $idCancelamento) . '?secao=entrega#piloto-entrega']) ?>
             <?php } ?>
         </section>
     <?php } ?>

@@ -49,6 +49,8 @@ class Trifase_orcamentos extends MY_Controller
                 }
             }
         }
+        $this->data['termosCondicoes'] = $this->termosCondicoes();
+        $this->data['escolhasCondicoes'] = trifaseOrcamentoEscolhas($this->data['apresentacaoOrcamento'], $this->data['termosCondicoes']);
         $this->data['versoesOrcamento'] = $this->orcamentos->historico((int) $os->idOs);
         $this->data['eventosOrcamento'] = $this->orcamentos->eventos((int) $os->idOs);
         $this->data['podePublicarOrcamento'] = $this->permite('eOs') && $this->permite('publicarOrcamento');
@@ -111,7 +113,24 @@ class Trifase_orcamentos extends MY_Controller
         foreach (['equipamento', 'defeito', 'diagnostico', 'pagamento', 'prazo', 'garantia'] as $campo) {
             $dados[$campo] = $this->input->post('publico_' . $campo);
         }
+        if ($this->input->post('condicoes_opcoes') === '1') {
+            $campos = ['pagamento_vista', 'pagamento_cartao', 'pagamento_parcelas', 'pagamento_outro', 'prazo_dias', 'prazo_outro', 'prazo_importar', 'prazo_aguardar', 'garantia_dias', 'garantia_outro', 'termo_garantia_id'];
+            $opcoes = [];
+            foreach ($campos as $campo) {
+                $opcoes[$campo] = $this->input->post($campo) ?? '';
+            }
+            $dados = array_replace($dados, trifaseOrcamentoCondicoes($opcoes, $this->termosCondicoes()));
+        }
         return trifaseOrcamentoApresentacao($dados);
+    }
+
+    private function termosCondicoes(): array
+    {
+        $termos = [];
+        foreach ($this->db->select('idGarantias, refGarantia, textoGarantia')->order_by('refGarantia')->get('garantias')->result_array() as $termo) {
+            $termos[(int) $termo['idGarantias']] = $termo;
+        }
+        return $termos;
     }
 
     private function ordem($id): object

@@ -81,6 +81,22 @@ final class TrifaseOrcamentoTest extends MaposTestCase
         $this->assertSame('aprovar', $this->modelo->decisao($id)->tipo);
     }
 
+    public function testCondicoesSelecionadasFicamGravadasNaVersaoPublicada(): void
+    {
+        $termos = [7 => ['textoGarantia' => '<p>Cobre o reparo executado.</p>']];
+        $dados = trifaseOrcamentoCondicoes(['pagamento_vista' => '1', 'pagamento_cartao' => '1', 'pagamento_parcelas' => '3',
+            'prazo_dias' => '5', 'prazo_aguardar' => '1', 'garantia_dias' => '120', 'termo_garantia_id' => '7'], $termos);
+        $this->modelo->publicar(1, $this->modelo->hash($this->retrato()), 7, $this->chave('condicoes'), $dados);
+        $publicado = $this->modelo->publicado(1, $this->token);
+        $conteudo = json_decode($publicado->conteudo, true);
+        foreach ($dados as $campo => $texto) {
+            $this->assertSame($texto, $conteudo['apresentacao'][$campo]);
+        }
+        $termos[7]['textoGarantia'] = 'Condição alterada depois';
+        $this->assertSame($publicado->conteudo, $this->modelo->publicado(1, $this->token)->conteudo);
+        $this->assertStringNotContainsString($termos[7]['textoGarantia'], $publicado->conteudo);
+    }
+
     public function testTextosInvalidosNaoPublicam(): void
     {
         foreach ([['diagnostico' => []], ['defeito' => str_repeat('a', 4001)], ['garantia' => "teste\0"]] as $dados) {

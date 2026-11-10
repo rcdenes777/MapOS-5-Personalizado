@@ -27,9 +27,10 @@
                     <input type="hidden" name="retrato_hash" value="<?= e($hashOrcamento) ?>"><input type="hidden" name="operacao" value="<?= e(bin2hex(random_bytes(16))) ?>">
                     <h3 class="text-heading-sm">Informações para o cliente</h3>
                     <p class="text-body-md text-muted">Revise o diagnóstico e os demais textos antes de publicar. Eles ficarão gravados nesta versão; anotações internas e alterações futuras da OS não serão compartilhadas automaticamente.</p>
-                    <?php foreach (['equipamento' => ['Equipamento', 500], 'defeito' => ['Defeito relatado', 4000], 'diagnostico' => ['Diagnóstico para o cliente', 4000], 'pagamento' => ['Condições de pagamento', 1000], 'prazo' => ['Prazo estimado de execução', 500], 'garantia' => ['Garantia do serviço', 1000]] as $campoPublico => [$rotuloPublico, $limitePublico]) { ?>
+                    <?php foreach (['equipamento' => ['Equipamento', 500], 'defeito' => ['Defeito relatado', 4000], 'diagnostico' => ['Diagnóstico para o cliente', 4000]] as $campoPublico => [$rotuloPublico, $limitePublico]) { ?>
                         <?= component('textarea', ['name' => 'publico_' . $campoPublico, 'id' => 'publico-' . $campoPublico, 'label' => $rotuloPublico, 'value' => $apresentacaoOrcamento[$campoPublico], 'attrs' => ['maxlength' => $limitePublico], 'help' => 'Texto que será exibido ao cliente.']) ?>
                     <?php } ?>
+                    <?php $this->load->view('trifase/orcamento-condicoes'); ?>
                     <?= component('checkbox', ['name' => 'confirmar', 'id' => 'publicar-orcamento', 'value' => '1', 'label' => 'Conferi os textos, itens e valores e autorizo mostrar este orçamento a quem tiver o link desta OS.', 'required' => true]) ?>
                     <?= component('button', ['label' => 'Publicar nova versão', 'type' => 'submit']) ?>
                 </form>

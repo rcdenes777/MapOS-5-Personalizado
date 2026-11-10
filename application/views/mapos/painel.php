@@ -78,7 +78,18 @@ if ($pode['os'] && $filasClassicas === null) {
                             'id' => 'agenda-status',
                             'label' => 'Status',
                             'placeholder' => 'Todos os status',
-                            'options' => array_combine(array_keys(OS_STATUS_VARIANTES), array_keys(OS_STATUS_VARIANTES)),
+                            'options' => [
+                                'Aberto' => 'Aberto',
+                                'Orçamento' => 'Orçamento',
+                                'Negociação' => 'Negociação',
+                                'Aprovado' => 'Aprovado',
+                                'Em Andamento' => 'Em Andamento',
+                                'Aguardando Peças' => 'Aguardando Peças',
+                                'Finalizado' => 'Finalizado',
+                                'Orçamento recusado' => 'Orçamento recusado',
+                                'Cancelado' => 'Cancelado',
+                                'Faturado' => 'Faturado',
+                            ],
                             'attrs' => ['data-agenda-status' => true],
                         ]) ?>
                     </div>

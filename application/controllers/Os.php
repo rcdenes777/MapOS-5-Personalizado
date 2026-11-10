@@ -25,7 +25,7 @@ class Os extends MY_Controller
     /** Filtros da listagem, na query string (listagemFiltros()). */
     public const FILTROS = [
         'pesquisa' => 'texto',
-        'status' => ['Orçamento', 'Negociação', 'Aberto', 'Aprovado', 'Em Andamento', 'Aguardando Peças', 'Finalizado', 'Faturado', 'Cancelado'],
+        'status' => ['Orçamento', 'Negociação', 'Orçamento recusado', 'Aberto', 'Aprovado', 'Em Andamento', 'Aguardando Peças', 'Finalizado', 'Faturado', 'Cancelado'],
         'de' => 'texto',
         'ate' => 'texto',
         'financeiro' => ['nao_faturada', 'pendente', 'parcial', 'quitada', 'anterior', 'reembolsada', 'encerrada_garantia'],

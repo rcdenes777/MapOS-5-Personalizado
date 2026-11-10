@@ -137,9 +137,9 @@ final class VendasListagemTest extends MaposTestCase
         $this->assertSame(1, (int) $this->db->query('SELECT COUNT(*) AS n FROM lancamentos')->row()->n);
     }
 
-    public function testFiltrosDaListagemSaoOsStatusDeOs(): void
+    public function testFiltrosDaListagemNaoIncluemRecusaExclusivaDeOs(): void
     {
-        $this->assertSame(array_keys(OS_STATUS_VARIANTES), Vendas::FILTROS['status']);
+        $this->assertSame(array_values(array_diff(array_keys(OS_STATUS_VARIANTES), ['Orçamento recusado'])), Vendas::FILTROS['status']);
         $this->assertSame(['pesquisa', 'status', 'de', 'ate'], array_keys(Vendas::FILTROS));
     }
 

@@ -9,7 +9,7 @@ class Trifase_atendimento_model extends CI_Model
 {
     public function alterarAndamento(int $id, string $status, int $usuario): void
     {
-        if ($usuario <= 0 || ! in_array($status, ['Orçamento', 'Negociação', 'Aberto', 'Aprovado', 'Em Andamento', 'Aguardando Peças', 'Finalizado'], true)) {
+        if ($usuario <= 0 || ! in_array($status, ['Orçamento', 'Negociação', 'Orçamento recusado', 'Aberto', 'Aprovado', 'Em Andamento', 'Aguardando Peças', 'Finalizado'], true)) {
             throw new DomainException('Andamento inválido. Cancelamento usa o fluxo de conciliação existente.');
         }
         $this->transacao($id, function ($os) use ($id, $status, $usuario) {

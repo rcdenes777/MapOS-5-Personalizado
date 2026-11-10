@@ -709,12 +709,16 @@ class Os_model extends CI_Model
             ->get()
             ->result();
         if ($historico !== [] && $this->db->table_exists('trifase_orcamento_eventos')) {
-            $aprovacoes = array_column($this->db->select('criado_em')->where('os_id', $idOs)->where('tipo', 'aprovar')->get('trifase_orcamento_eventos')->result_array(), 'criado_em');
+            $respostas = $this->db->select('tipo, criado_em')->where('os_id', $idOs)->where_in('tipo', ['aprovar', 'recusar'])->get('trifase_orcamento_eventos')->result();
             foreach ($historico as $mudanca) {
-                if ($mudanca->usuarios_id === null && $mudanca->status_novo === 'Aprovado'
+                if ($mudanca->usuarios_id === null && in_array($mudanca->status_novo, ['Aprovado', 'Orçamento recusado'], true)
                     && in_array($mudanca->status_anterior, ['Orçamento', 'Negociação'], true)
-                    && in_array($mudanca->data_hora, $aprovacoes, true)) {
-                    $mudanca->autor = 'Cliente, pelo link público';
+                ) {
+                    foreach ($respostas as $resposta) {
+                        if ($resposta->criado_em === $mudanca->data_hora && $mudanca->status_novo === ($resposta->tipo === 'aprovar' ? 'Aprovado' : 'Orçamento recusado')) {
+                            $mudanca->autor = 'Cliente, pelo link público';
+                        }
+                    }
                 }
             }
         }

@@ -267,7 +267,7 @@ class Trifase_financeiro_model extends CI_Model
             return;
         }
 
-        if ($usuario <= 0 || ! in_array($status, ['Orçamento', 'Negociação', 'Aberto', 'Aprovado', 'Em Andamento', 'Aguardando Peças', 'Finalizado'], true)) {
+        if ($usuario <= 0 || ! in_array($status, ['Orçamento', 'Negociação', 'Orçamento recusado', 'Aberto', 'Aprovado', 'Em Andamento', 'Aguardando Peças', 'Finalizado'], true)) {
             throw new DomainException('Andamento inválido. Cancelamento exige conciliação financeira.');
         }
         $this->transacao($osId, function ($os) use ($osId, $status, $usuario) {
@@ -396,7 +396,7 @@ class Trifase_financeiro_model extends CI_Model
 
     public function conciliarLegado(int $osId, string $status, int $usuario): array
     {
-        if ($usuario <= 0 || ! in_array($status, ['Orçamento', 'Negociação', 'Aberto', 'Aprovado', 'Em Andamento', 'Aguardando Peças', 'Finalizado'], true)) {
+        if ($usuario <= 0 || ! in_array($status, ['Orçamento', 'Negociação', 'Orçamento recusado', 'Aberto', 'Aprovado', 'Em Andamento', 'Aguardando Peças', 'Finalizado'], true)) {
             throw new DomainException('Informe o andamento real; Faturado não determina conclusão.');
         }
         return $this->transacao($osId, function ($os) use ($osId, $status, $usuario) {

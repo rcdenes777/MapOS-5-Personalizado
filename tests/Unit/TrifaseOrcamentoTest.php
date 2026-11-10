@@ -133,13 +133,25 @@ final class TrifaseOrcamentoTest extends MaposTestCase
         }
     }
 
-    public function testRecusaMantemNegociacaoESemMudancaNoHistorico(): void
+    public function testRecusaMudaSomenteOrcamentoOuNegociacaoUmaVez(): void
     {
-        $this->db->where('idOs', 1)->update('os', ['status' => 'Negociação']);
-        $id = $this->publicar();
-        $this->modelo->responder(1, $this->token, $id, 'recusar', 'Cliente QA', '1', $this->chave('recusar'));
-        $this->assertSame('Negociação', $this->db->where('idOs', 1)->get('os')->row()->status);
-        $this->assertSame(0, $this->db->count_all('os_historico'));
+        foreach (['Orçamento', 'Negociação', 'Aberto', 'Em Andamento', 'Finalizado', 'Aprovado'] as $i => $status) {
+            $this->db->where('idOs', 1)->update('os', ['status' => $status]);
+            $this->db->empty_table('os_historico');
+            $id = $this->publicar('recusa-' . $i);
+            $antes = $this->db->where('idOs', 1)->get('os')->row_array();
+            $this->modelo->responder(1, $this->token, $id, 'recusar', 'Cliente QA', '1', $this->chave('recusar-' . $i));
+            $this->modelo->responder(1, $this->token, $id, 'recusar', 'Cliente QA', '1', $this->chave('recusar-' . $i));
+            $muda = in_array($status, ['Orçamento', 'Negociação'], true);
+            $depois = $this->db->where('idOs', 1)->get('os')->row_array();
+            $this->assertSame($muda ? 'Orçamento recusado' : $status, $depois['status']);
+            unset($antes['status'], $depois['status']);
+            $this->assertSame($antes, $depois);
+            $this->assertSame($muda ? 1 : 0, $this->db->count_all('os_historico'));
+            if ($muda) {
+                $this->assertSame($this->modelo->decisao($id)->criado_em, $this->db->get('os_historico')->row()->data_hora);
+            }
+        }
     }
 
     public function testFalhaNoHistoricoReverteTambemAResposta(): void

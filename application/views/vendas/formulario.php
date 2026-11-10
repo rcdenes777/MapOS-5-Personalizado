@@ -53,7 +53,7 @@ $texto = static fn (string $nome, string $label, ?string $ajuda = null) => [
         : $ajuda,
 ];
 
-$statusOpcoes = array_combine(array_keys(OS_STATUS_VARIANTES), array_keys(OS_STATUS_VARIANTES));
+$statusOpcoes = array_combine(Vendas::FILTROS['status'], Vendas::FILTROS['status']);
 ?>
 <div class="flex max-w-4xl flex-col gap-4 pt-2 pb-8" <?= js_module('vendas/formulario') ?>>
     <header class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">

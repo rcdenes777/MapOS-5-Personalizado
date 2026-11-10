@@ -11,6 +11,7 @@ if (! defined('OS_STATUS_VARIANTES')) {
     define('OS_STATUS_VARIANTES', [
         'Orçamento' => 'neutral',
         'Negociação' => 'warning',
+        'Orçamento recusado' => 'danger',
         'Aberto' => 'info',
         'Aprovado' => 'info',
         'Em Andamento' => 'progress',

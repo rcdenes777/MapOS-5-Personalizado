@@ -20,3 +20,7 @@ Conferência no navegador da OS 9065: padrões, seleção de dias, importação/
 O indicador **Orçamentos recusados** abre a lista no próprio painel, substituindo o calendário, com acesso à OS. Usa a mesma fila na contagem e na listagem. Considera somente recusa da versão atual e ativa; uma nova publicação, retirada do orçamento ou cancelamento da OS remove a pendência dessa fila. A consulta não altera o status técnico nem cancela a OS. Respeita a permissão existente de visualizar OS e a habilitação do módulo.
 
 Validado no navegador com a recusa da OS 9065; testes cobrem aprovação, versão antiga, orçamento retirado, OS cancelada e módulo desativado.
+
+## Andamento após resposta
+
+A resposta pública atualiza automaticamente somente OS em Orçamento ou Negociação: aprovação leva a Aprovado; recusa leva a Orçamento recusado. Resposta, andamento e histórico ficam na mesma transação, com data/hora da decisão e autoria do cliente pelo link público. Reenvio da resposta não duplica o histórico. Outros andamentos são preservados; recusa não executa cancelamento nem altera financeiro ou estoque. Respostas anteriores à implantação não são reaplicadas automaticamente.

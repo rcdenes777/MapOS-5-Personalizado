@@ -52,7 +52,7 @@ final class FinanceiroOrdensTest extends MaposTestCase
                 };
             }
         };
-        $this->assertSame(['pendencia' => 'receber', 'vencimento_ate' => '2026-12-10'], $this->invokeMethod($c, 'filtrosDasOrdens'));
+        $this->assertSame(['vencimento_ate' => '2026-12-10', 'pendencia' => 'receber'], $this->invokeMethod($c, 'filtrosDasOrdens'));
     }
     public function testSeletorUnicoSubstituiCombinacoesAntigas(): void
     {
@@ -71,10 +71,12 @@ final class FinanceiroOrdensTest extends MaposTestCase
         };
         foreach ([
             [['financeiro' => 'quitada', 'pendencia' => 'receber'], ['pendencia' => 'receber']],
-            [['situacao' => 'parcial', 'pendencia' => 'receber'], ['financeiro' => 'parcial']],
+            [['situacao' => 'parcial', 'pendencia' => 'receber'], ['pendencia' => 'receber']],
             [['situacao' => 'devolver', 'financeiro' => 'quitada'], ['pendencia' => 'devolver']],
-            [['situacao' => '', 'financeiro' => 'parcial'], []],
-            [['situacao' => ['parcial']], []],
+            [['situacao' => '', 'financeiro' => 'parcial'], ['pendencia' => 'todas']],
+            [['situacao' => ['parcial']], ['pendencia' => 'todas']],
+            [['historico' => '1'], ['pendencia' => 'nenhuma']],
+            [['situacao' => 'reembolsada'], ['pendencia' => 'nenhuma']],
         ] as [$entrada, $esperado]) {
             $c->input->query = $entrada;
             $this->assertSame($esperado, $this->invokeMethod($c, 'filtrosDasOrdens'));
@@ -99,7 +101,7 @@ final class FinanceiroOrdensTest extends MaposTestCase
             }
             $this->db->insert('trifase_cancelamentos', ['id' => 1, 'os_id' => 4, 'tipo' => 'solicitar']);
             $this->db->insert('trifase_cancelamentos', ['id' => 2, 'os_id' => 6, 'tipo' => 'confirmar']);
-            foreach (['receber' => [1], 'devolver' => [2], 'nenhuma' => [3, 6], 'cancelamento' => [4]] as $pendencia => $ids) {
+            foreach (['receber' => [1], 'devolver' => [2], 'nenhuma' => [3, 6], 'cancelamento' => [4], 'todas' => [1, 2, 4, 5], 'nao_apurado' => [5]] as $pendencia => $ids) {
                 $this->db->select('os.idOs')->from('os');
                 Trifase_financeiro_busca::aplicar($this->db, ['pendencia' => $pendencia]);
                 $this->assertSame($ids, array_map('intval', array_column($this->db->order_by('os.idOs')->get()->result_array(), 'idOs')));

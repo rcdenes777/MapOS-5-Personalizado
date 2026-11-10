@@ -206,10 +206,15 @@ $resumo = ($total === 1 ? '1 ordem de serviço' : number_format($total, 0, ',', 
         ]) ?>
         <?php if (($contextoFinanceiro ?? false) && $filtrarFinanceiro) { ?>
             <?php
-            $opcoesFinanceiras = ['receber' => 'A receber', 'pendente' => 'Em aberto — sem pagamento', 'parcial' => 'Parcialmente paga', 'devolver' => 'A devolver', 'cancelamento' => 'Cancelamento aguardando análise', 'nenhuma' => 'Sem pendência', 'nao_faturada' => 'Não faturada', 'anterior' => 'Faturamento anterior', 'reembolsada' => 'Reembolsada', 'encerrada_garantia' => 'Encerrada por garantia'];
-            $selecaoFinanceira = $filtros['pendencia'] ?? $filtros['financeiro'] ?? '';
+            $historicoFinanceiro = ($filtros['pendencia'] ?? '') === 'nenhuma';
+            $opcoesFinanceiras = ['receber' => 'A receber', 'devolver' => 'A devolver', 'cancelamento' => 'Aguardando análise', 'nao_apurado' => 'Não apurado'];
             ?>
-            <?= component('select', ['name' => 'situacao', 'label' => 'Situação financeira', 'placeholder' => 'Todas', 'options' => $opcoesFinanceiras, 'selected' => $selecaoFinanceira === 'quitada' ? 'nenhuma' : $selecaoFinanceira]) ?>
+            <?php if ($historicoFinanceiro) { ?>
+                <input type="hidden" name="historico" value="1">
+                <p class="text-label-md">Histórico — casos sem pendência</p>
+            <?php } else { ?>
+                <?= component('select', ['name' => 'situacao', 'label' => 'Situação financeira', 'placeholder' => 'Todas as pendências', 'options' => $opcoesFinanceiras, 'selected' => $filtros['pendencia'] ?? '']) ?>
+            <?php } ?>
             <?= component('input', ['name' => 'vencimento_de', 'label' => 'Vencimento a partir de', 'type' => 'date', 'value' => $filtros['vencimento_de'] ?? null]) ?>
             <?= component('input', ['name' => 'vencimento_ate', 'label' => 'Vencimento até', 'type' => 'date', 'value' => $filtros['vencimento_ate'] ?? null]) ?>
         <?php } else { ?>
@@ -247,6 +252,10 @@ $resumo = ($total === 1 ? '1 ordem de serviço' : number_format($total, 0, ',', 
             <?php } ?>
         </div>
     </form>
+
+    <?php if (($contextoFinanceiro ?? false) && $filtrarFinanceiro) { ?>
+        <?= component('button', ['label' => ($filtros['pendencia'] ?? '') === 'nenhuma' ? 'Voltar às pendências' : 'Ver histórico', 'variant' => 'outline', 'href' => $urlLista . (($filtros['pendencia'] ?? '') === 'nenhuma' ? '' : '?historico=1')]) ?>
+    <?php } ?>
 
     <?php if ($filtrarFinanceiro) { ?>
         <p class="text-caption text-muted">Saldo considera cobranças registradas, estornos e reembolsos. Faturamento anterior tem saldo não apurado. Os filtros financeiros pesquisam todos os andamentos, salvo quando você escolhe um.</p>

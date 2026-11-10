@@ -1,11 +1,17 @@
-# Filtros de OS e recebimentos
+# OS e recebimentos: pendências de trabalho
 
-Na área financeira, os filtros principais são busca, um único seletor Situação financeira e intervalo de vencimento da cobrança. Andamento técnico não é filtro nesta tela; permanece visível na lista e no detalhe da OS. Fila operacional e datas de entrada/previsão permanecem somente na listagem operacional de OS.
+A lista padrão mostra apenas casos que exigem ação, usando um único seletor:
 
-Pendência distingue A receber, A devolver, Cancelamento aguardando análise e Sem pendência. Cancelamentos com pedido ativo ficam na fila de análise, antes de classificar o resultado financeiro. Os valores usam a projeção existente: cobrança menos créditos, recebimentos menos estornos e reembolsos. Sem cobrança e sem confirmação de cancelamento não se presume ausência de pendências; faturamento anterior também permanece não apurado. Cancelamento confirmado sem cobrança e sem faturamento anterior entra como Sem pendência.
+- Todas as pendências.
+- A receber: saldo positivo, sem pagamento, parcial ou vencido.
+- A devolver: recebido líquido maior que a cobrança atual.
+- Aguardando análise: pedido ativo de cancelamento, antes da classificação do acerto.
+- Não apurado: sem cobrança registrada ou faturamento antigo que requer conferência.
 
-Datas filtram o vencimento de cobranças registradas antes de contar e paginar. OS sem cobrança registrada não entram em intervalos de vencimento. Parâmetros antigos de entrada/previsão não são reinterpretados como vencimento. Links antigos com saldo pendente ou cancelamento pendente são convertidos para Pendência.
+Casos quitados, reembolsados ou encerrados sem saldo ficam em **Ver histórico**, com retorno às pendências. Sem cobrança não se presume quitação; cancelamento confirmado sem cobrança e sem faturamento anterior é resolvido. O histórico só reúne saldo zero ou esse encerramento confirmado.
 
-Validação: testes de filtros permitidos, datas inválidas, projeção para receber/devolver/sem pendência/cancelamento, intervalo de vencimento, renderização e permissões. Suíte completa sem falhas (uma depreciação e um teste ignorado preexistentes). Navegador conferido no laboratório 8230.
+A busca e o intervalo de vencimento continuam disponíveis. As datas usam a cobrança registrada, antes de contar/paginar; não usam entrada ou previsão da OS. Andamento permanece na linha e no detalhe, sem filtro operacional nesta tela. Permissões financeiras permanecem obrigatórias.
 
-Situação e pendência foram unificadas no seletor `situacao`, que escolhe uma única condição por vez. Links antigos com ambas priorizam pendência; uma escolha nova substitui os dois filtros anteriores. Isso impede cruzamentos como quitada e a receber.
+Links antigos de em aberto/parcial vão a A receber; quitadas/reembolsadas/encerradas vão ao histórico. Seleções inválidas voltam a Todas as pendências. Datas antigas de entrada/previsão não são reinterpretadas como vencimento.
+
+Validação: projeção de recebimentos, estornos e créditos reutilizada; testes de contagem por pendência, exclusão de resolvidos, histórico, vencimento, parâmetros antigos/inválidos e permissões. Fluxo de histórico e retorno conferido no navegador do laboratório 8230.

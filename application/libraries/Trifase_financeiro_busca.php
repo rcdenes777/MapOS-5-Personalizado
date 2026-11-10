@@ -71,6 +71,16 @@ final class Trifase_financeiro_busca
             }
         }
         $pendencia = $filtros['pendencia'] ?? '';
+        if (in_array($pendencia, ['todas', 'nao_apurado'], true)) {
+            $encerradaSemCobranca = $db->table_exists('trifase_cancelamentos')
+                ? "(COALESCE(os.faturado, 0) = 0 AND os.status = 'Cancelado' AND EXISTS (SELECT 1 FROM trifase_cancelamentos tfc WHERE tfc.os_id = os.idOs AND tfc.tipo = 'confirmar'))"
+                : '1 = 0';
+            $naoApurado = '(tf_os_financeiro.os_id IS NULL AND NOT (' . $encerradaSemCobranca . '))';
+            $db->where($pendencia === 'todas'
+                ? '(' . $cancelamento . ' OR tf_os_financeiro.total_c != tf_os_financeiro.recebido_c OR ' . $naoApurado . ')'
+                : '(NOT (' . $cancelamento . ') AND ' . $naoApurado . ')', null, false);
+        }
+
         if (in_array($pendencia, ['receber', 'devolver', 'nenhuma'], true)) {
             $db->where('NOT (' . $cancelamento . ')', null, false);
             if ($pendencia === 'nenhuma') {

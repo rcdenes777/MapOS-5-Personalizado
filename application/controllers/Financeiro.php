@@ -138,31 +138,20 @@ class Financeiro extends MY_Controller
     private function filtrosDasOrdens(): array
     {
         $entrada = $this->input->get() ?: [];
-        if (($entrada['saldo'] ?? '') === 'pendente' && empty($entrada['pendencia'])) {
-            $entrada['pendencia'] = 'receber';
+        $situacao = $entrada['situacao'] ?? $entrada['pendencia'] ?? $entrada['financeiro'] ?? '';
+        $mapaAntigo = ['pendente' => 'receber', 'parcial' => 'receber', 'nao_faturada' => 'nao_apurado', 'anterior' => 'nao_apurado', 'cancelamento_pendente' => 'cancelamento'];
+        if (is_string($situacao)) {
+            $situacao = $mapaAntigo[$situacao] ?? $situacao;
         }
-        if (($entrada['financeiro'] ?? '') === 'cancelamento_pendente') {
-            $entrada['pendencia'] = 'cancelamento';
-            unset($entrada['financeiro']);
-        }
-        // Um único seletor; links antigos priorizam a pendência, sem cruzar dois estados.
-        if (isset($entrada['situacao'])) {
-            unset($entrada['pendencia'], $entrada['financeiro']);
-            if (in_array($entrada['situacao'], ['receber', 'devolver', 'cancelamento', 'nenhuma'], true)) {
-                $entrada['pendencia'] = $entrada['situacao'];
-            } elseif (is_string($entrada['situacao']) && isset(Trifase_financeiro_busca::OPCOES[$entrada['situacao']])) {
-                $entrada['financeiro'] = $entrada['situacao'];
-            }
-        }
-        if (! empty($entrada['pendencia'])) {
-            unset($entrada['financeiro']);
+        $historico = ($entrada['historico'] ?? '') === '1' || in_array($situacao, ['nenhuma', 'quitada', 'reembolsada', 'encerrada_garantia'], true);
+        $pendencia = $historico ? 'nenhuma' : (in_array($situacao, ['receber', 'devolver', 'cancelamento', 'nao_apurado'], true) ? $situacao : 'todas');
+        if (! $historico && $situacao === '' && ($entrada['saldo'] ?? '') === 'pendente') {
+            $pendencia = 'receber';
         }
         $filtros = listagemFiltros([
-            'pesquisa' => 'texto',
-            'financeiro' => array_keys(Trifase_financeiro_busca::OPCOES),
-            'pendencia' => ['receber', 'devolver', 'cancelamento', 'nenhuma'],
-            'vencimento_de' => 'texto', 'vencimento_ate' => 'texto',
+            'pesquisa' => 'texto', 'vencimento_de' => 'texto', 'vencimento_ate' => 'texto',
         ], $entrada);
+        $filtros['pendencia'] = $pendencia;
         foreach (['vencimento_de', 'vencimento_ate'] as $data) {
             if (isset($filtros[$data])) {
                 $valida = dataIsoParaYmd($filtros[$data]);

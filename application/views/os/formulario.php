@@ -52,7 +52,7 @@ $texto = static fn (string $nome, string $label, ?string $ajuda = null) => [
         : $ajuda,
 ];
 
-$statusOpcoes = array_combine(array_keys(OS_STATUS_VARIANTES), array_keys(OS_STATUS_VARIANTES));
+$statusOpcoes = osOpcoesAndamento();
 if (($os->status ?? '') !== 'Orçamento recusado') {
     unset($statusOpcoes['Orçamento recusado']);
 }

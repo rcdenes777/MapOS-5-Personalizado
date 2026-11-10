@@ -158,7 +158,7 @@ class Financeiro extends MY_Controller
             unset($entrada['financeiro']);
         }
         $filtros = listagemFiltros([
-            'pesquisa' => 'texto', 'status' => array_keys(OS_STATUS_VARIANTES),
+            'pesquisa' => 'texto',
             'financeiro' => array_keys(Trifase_financeiro_busca::OPCOES),
             'pendencia' => ['receber', 'devolver', 'cancelamento', 'nenhuma'],
             'vencimento_de' => 'texto', 'vencimento_ate' => 'texto',

@@ -212,12 +212,6 @@ $resumo = ($total === 1 ? '1 ordem de serviço' : number_format($total, 0, ',', 
             <?= component('select', ['name' => 'situacao', 'label' => 'Situação financeira', 'placeholder' => 'Todas', 'options' => $opcoesFinanceiras, 'selected' => $selecaoFinanceira === 'quitada' ? 'nenhuma' : $selecaoFinanceira]) ?>
             <?= component('input', ['name' => 'vencimento_de', 'label' => 'Vencimento a partir de', 'type' => 'date', 'value' => $filtros['vencimento_de'] ?? null]) ?>
             <?= component('input', ['name' => 'vencimento_ate', 'label' => 'Vencimento até', 'type' => 'date', 'value' => $filtros['vencimento_ate'] ?? null]) ?>
-            <details class="sm:col-span-2" <?= isset($filtros['status']) ? 'open' : '' ?>>
-                <summary>Mais filtros</summary>
-                <div class="mt-3">
-                    <?= component('select', ['name' => 'status', 'label' => 'Andamento do serviço', 'placeholder' => 'Todos', 'options' => array_combine(array_keys(OS_STATUS_VARIANTES), array_keys(OS_STATUS_VARIANTES)), 'selected' => $filtros['status'] ?? null]) ?>
-                </div>
-            </details>
         <?php } else { ?>
         <?= component('select', [
             'name' => 'status',

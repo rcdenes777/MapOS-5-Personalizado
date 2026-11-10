@@ -1,6 +1,6 @@
 # Filtros de OS e recebimentos
 
-Na área financeira, os filtros principais são busca, um único seletor Situação financeira e intervalo de vencimento da cobrança. Andamento técnico fica em Mais filtros. Fila operacional e datas de entrada/previsão permanecem somente na listagem operacional de OS.
+Na área financeira, os filtros principais são busca, um único seletor Situação financeira e intervalo de vencimento da cobrança. Andamento técnico não é filtro nesta tela; permanece visível na lista e no detalhe da OS. Fila operacional e datas de entrada/previsão permanecem somente na listagem operacional de OS.
 
 Pendência distingue A receber, A devolver, Cancelamento aguardando análise e Sem pendência. Cancelamentos com pedido ativo ficam na fila de análise, antes de classificar o resultado financeiro. Os valores usam a projeção existente: cobrança menos créditos, recebimentos menos estornos e reembolsos. Sem cobrança e sem confirmação de cancelamento não se presume ausência de pendências; faturamento anterior também permanece não apurado. Cancelamento confirmado sem cobrança e sem faturamento anterior entra como Sem pendência.
 

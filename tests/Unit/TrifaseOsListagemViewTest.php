@@ -148,7 +148,8 @@ final class TrifaseOsListagemViewTest extends \PHPUnit\Framework\TestCase
         $this->assertCount(0, $xpath->query('//select[@name="financeiro"]'));
         $this->assertStringNotContainsString('name="fila"', $html);
         $this->assertStringContainsString('name="vencimento_de"', $html);
-        $this->assertStringContainsString('Mais filtros', $html);
+        $this->assertStringNotContainsString('Mais filtros', $html);
+        $this->assertStringNotContainsString('name="status"', $html);
         foreach (['listaVerFinanceiro', 'listaFinanceiroHabilitado', 'trifase_ui_piloto'] as $flag) {
             $restrito = $this->renderizar($resumos, [], [$flag => false]);
             $this->assertStringNotContainsString('name="financeiro"', $restrito);

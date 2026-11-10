@@ -52,7 +52,7 @@ final class FinanceiroOrdensTest extends MaposTestCase
                 };
             }
         };
-        $this->assertSame(['status' => 'Finalizado', 'pendencia' => 'receber', 'vencimento_ate' => '2026-12-10'], $this->invokeMethod($c, 'filtrosDasOrdens'));
+        $this->assertSame(['pendencia' => 'receber', 'vencimento_ate' => '2026-12-10'], $this->invokeMethod($c, 'filtrosDasOrdens'));
     }
     public function testSeletorUnicoSubstituiCombinacoesAntigas(): void
     {

@@ -10,7 +10,7 @@ final class Trifase_os_fila
 {
     public const ANDAMENTO = ['Aberto', 'Aprovado', 'Em Andamento', 'Aguardando Peças'];
     public const ORCAMENTOS = ['Orçamento', 'Negociação'];
-    public const OPCOES = ['andamento' => 'Em atendimento', 'orcamentos' => 'Aguardando orçamento', 'retirada' => 'Prontas para retirada', 'retornos' => 'Retornos em avaliação', 'recusados' => 'Orçamentos recusados'];
+    public const OPCOES = ['andamento' => 'Em atendimento', 'orcamentos' => 'Aguardando orçamento', 'retirada' => 'Prontas para retirada', 'retornos' => 'Retornos em avaliação', 'recusados' => 'Orçamentos recusados', 'cancelamentos' => 'Cancelamentos em processo'];
 
     public static function opcoes(object $db): array
     {
@@ -27,6 +27,9 @@ final class Trifase_os_fila
         if (! trifaseOrcamentoHabilitado() || ! $db->table_exists('trifase_orcamento_estado') || ! $db->table_exists('trifase_orcamento_eventos')) {
             unset($opcoes['recusados']);
         }
+        if (! $db->table_exists('trifase_cancelamentos')) {
+            unset($opcoes['cancelamentos']);
+        }
         return $opcoes;
     }
 
@@ -41,6 +44,11 @@ final class Trifase_os_fila
                 break;
             case 'orcamentos':
                 $db->where_in('os.status', self::ORCAMENTOS);
+                break;
+            case 'cancelamentos':
+                $semEntrega = trifaseEntregaHabilitada() && $db->table_exists('trifase_entregas_estado')
+                    ? 'NOT EXISTS (SELECT 1 FROM trifase_entregas_estado tfe WHERE tfe.os_id = os.idOs AND tfe.evento_id IS NOT NULL)' : '1 = 1';
+                $db->where("((os.status != 'Cancelado' AND COALESCE((SELECT c.tipo FROM trifase_cancelamentos c WHERE c.os_id = os.idOs AND c.tipo IN ('solicitar', 'retirar', 'confirmar') ORDER BY c.id DESC LIMIT 1), '') = 'solicitar') OR (os.status = 'Cancelado' AND EXISTS (SELECT 1 FROM trifase_cancelamentos c WHERE c.os_id = os.idOs AND c.tipo = 'confirmar') AND " . $semEntrega . '))', null, false);
                 break;
             case 'recusados':
                 $db->where('os.status !=', 'Cancelado')

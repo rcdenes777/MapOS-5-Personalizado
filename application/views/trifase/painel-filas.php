@@ -2,7 +2,7 @@
 /** Filas operacionais: mesmas contagens e destinos do painel da assistência. */
 $cardsFilas = [];
 foreach ($resumoFilas['filas'] as $fila => $resumoFila) {
-    $cardsFilas[] = ['label' => ['andamento' => 'Abertos', 'orcamentos' => 'Aguardando aprovação do cliente'][$fila] ?? $resumoFila['label'], 'value' => $resumoFila['total'], 'accent' => $fila === 'retirada' ? 'success' : (in_array($fila, ['retornos', 'recusados'], true) ? 'warning' : 'info'), 'href' => site_url('mapos') . listagemQuery(['visao' => 'classica', 'fila' => $fila])];
+    $cardsFilas[] = ['label' => ['andamento' => 'Abertos', 'orcamentos' => 'Aguardando aprovação do cliente'][$fila] ?? $resumoFila['label'], 'value' => $resumoFila['total'], 'accent' => $fila === 'retirada' ? 'success' : (in_array($fila, ['retornos', 'recusados', 'cancelamentos'], true) ? 'warning' : 'info'), 'href' => site_url('mapos') . listagemQuery(['visao' => 'classica', 'fila' => $fila])];
 }
 array_splice($cardsFilas, min(2, count($cardsFilas)), 0, [[
     'label' => 'Aguardando peças', 'value' => (int) ($resumoFilas['status']['Aguardando Peças'] ?? 0), 'accent' => 'warning',
@@ -42,5 +42,5 @@ $cardsFilas[] = [
             <?= component('kpi-card', $cardFila) ?>
         <?php } ?>
     </div>
-    <p class="mt-2 text-caption text-muted">As filas podem incluir a mesma OS. Orçamentos incluem negociação; retirada considera serviço finalizado sem entrega registrada. Recusados considera a versão ativa, até nova publicação, retirada do orçamento ou cancelamento da OS.</p>
+    <p class="mt-2 text-caption text-muted">As filas podem incluir a mesma OS. Orçamentos incluem negociação; retirada considera serviço finalizado sem entrega registrada. Recusados considera a versão ativa, até nova publicação, retirada do orçamento ou cancelamento da OS. Cancelamentos em processo acompanha o pedido até a entrega do equipamento.</p>
 </section>

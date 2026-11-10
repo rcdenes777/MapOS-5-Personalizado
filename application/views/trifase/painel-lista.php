@@ -1,5 +1,6 @@
 <?php
-$rotulos = ['recusados' => 'Orçamentos recusados', 'andamento' => 'Abertos', 'orcamentos' => 'Aguardando aprovação do cliente', 'retirada' => 'Prontas para retirada', 'retornos' => 'Retornos em avaliação', 'Orçamento' => 'Em orçamento', 'Aprovado' => 'Aprovado', 'Em Andamento' => 'Em andamento', 'Aguardando Peças' => 'Aguardando peças', 'Cancelado' => 'Cancelados'];
+$cancelamentosNaLista = ($lista['filtros']['fila'] ?? '') === 'cancelamentos';
+$rotulos = ['cancelamentos' => 'Cancelamentos em processo', 'recusados' => 'Orçamentos recusados', 'andamento' => 'Abertos', 'orcamentos' => 'Aguardando aprovação do cliente', 'retirada' => 'Prontas para retirada', 'retornos' => 'Retornos em avaliação', 'Orçamento' => 'Em orçamento', 'Aprovado' => 'Aprovado', 'Em Andamento' => 'Em andamento', 'Aguardando Peças' => 'Aguardando peças', 'Cancelado' => 'Cancelados'];
 $titulo = $rotulos[$lista['filtros']['fila'] ?? $lista['filtros']['status']] ?? 'Ordens de serviço';
 ?>
 <section id="lista-painel" class="rounded-xl border border-border bg-surface p-4 sm:p-6 min-w-0 xl:col-span-2" aria-labelledby="titulo-lista-painel">
@@ -15,10 +16,11 @@ $titulo = $rotulos[$lista['filtros']['fila'] ?? $lista['filtros']['status']] ?? 
         'dense' => true,
         'rows' => $lista['rows'],
         'columns' => [
-            ['label' => 'Nº', 'nowrap' => true, 'render' => fn ($o) => component('link', ['label' => (string) $o->idOs, 'href' => site_url('os/visualizar/' . (int) $o->idOs)])],
+            ['label' => 'Nº', 'nowrap' => true, 'render' => fn ($o) => component('link', ['label' => (string) $o->idOs, 'href' => site_url(($cancelamentosNaLista ? 'trifase_cancelamentos/visualizar/' : 'os/visualizar/') . (int) $o->idOs)])],
             ['label' => 'Cliente', 'class' => 'min-w-32 [overflow-wrap:anywhere]', 'render' => fn ($o) => (string) ($o->nomeCliente ?? 'Cliente removido')],
             ['label' => 'Entrega', 'nowrap' => true, 'render' => fn ($o) => $o->dataFinal ? dataBr($o->dataFinal) : '—'],
             ['label' => 'Status', 'nowrap' => true, 'render' => fn ($o) => component('pill-status', osStatusPill($o->status))],
+            ...($cancelamentosNaLista ? [['label' => 'Próxima ação', 'render' => fn ($o) => component('link', ['label' => $o->status === 'Cancelado' ? 'Registrar entrega' : 'Continuar conferência', 'href' => site_url('trifase_cancelamentos/visualizar/' . (int) $o->idOs)])]] : []),
         ],
         'empty' => component('empty-state', ['title' => 'Nenhuma OS nesta lista', 'message' => 'Selecione outro indicador ou volte ao calendário.', 'icon' => 'wrench', 'class' => 'border-0']),
     ]) ?>

@@ -87,6 +87,23 @@ final class TrifasePainelTest extends MaposTestCase
         $this->assertArrayNotHasKey('recusados', Trifase_os_fila::opcoes($this->db));
     }
 
+    public function testCancelamentosPermanecemNaFilaAteEntregaEExcluemPedidoRetirado(): void
+    {
+        $this->db->query('CREATE TABLE trifase_cancelamentos (id INTEGER PRIMARY KEY, os_id INTEGER, tipo TEXT)');
+        $this->db->data_cache = [];
+        foreach ([[1, 1, 'solicitar'], [2, 2, 'solicitar'], [3, 2, 'retirar'], [4, 8, 'confirmar']] as $c) {
+            $this->db->insert('trifase_cancelamentos', array_combine(['id', 'os_id', 'tipo'], $c));
+        }
+        $this->assertSame(2, $this->model->resumoOperacional()['filas']['cancelamentos']['total']);
+        $this->db->insert('trifase_entregas_estado', ['os_id' => 8, 'evento_id' => 99]);
+        $this->assertSame(1, $this->model->resumoOperacional()['filas']['cancelamentos']['total']);
+        $this->db->where('os_id', 8)->update('trifase_entregas_estado', ['evento_id' => null]);
+        $this->assertSame(2, $this->model->resumoOperacional()['filas']['cancelamentos']['total']);
+        $lista = $this->makeInstance(Os_model::class);
+        $lista->db = $this->db;
+        $this->assertSame(2, $lista->contar(['fila' => 'cancelamentos'], []));
+    }
+
     public function testEntregaCorrigidaVoltaParaFilaSemAlterarStatusOuFinanceiro(): void
     {
         $antes = $this->db->get('os')->result_array();
@@ -122,6 +139,7 @@ final class TrifasePainelTest extends MaposTestCase
         $this->assertNull($this->model->financeiroOs());
         $_ENV['TRIFASE_FINANCEIRO_ENABLED'] = 'true';
         $this->db->query('DROP TABLE trifase_financeiro_obrigacoes');
+        $this->db->data_cache = []; // DDL de teste invalida o cache de tabelas do CodeIgniter.
         $this->assertNull($this->model->financeiroOs());
     }
 

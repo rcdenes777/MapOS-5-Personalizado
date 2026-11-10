@@ -95,6 +95,10 @@ if (($pilotoEquipamento ?? null) !== null
     </section>
 
 
+    <?php if (function_exists('trifaseEquipamentosHabilitados') && trifaseEquipamentosHabilitados()) {
+        $this->load->view('trifase/equipamento');
+    } ?>
+
     <section class="trifase-os-painel" aria-labelledby="piloto-equipamento">
         <div class="trifase-os-secao-titulo">
             <h2 id="piloto-equipamento">Equipamento e atendimento</h2>
@@ -115,10 +119,6 @@ if (($pilotoEquipamento ?? null) !== null
             </details>
         <?php } ?>
     </section>
-
-    <?php if (function_exists('trifaseEquipamentosHabilitados') && trifaseEquipamentosHabilitados()) {
-        $this->load->view('trifase/equipamento');
-    } ?>
 
     <?php if (function_exists('trifaseRetornoHabilitado') && trifaseRetornoHabilitado()) { ?>
         <?php if (($pilotoRetorno ?? null) !== null) { ?>

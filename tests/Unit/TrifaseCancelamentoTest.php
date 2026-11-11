@@ -245,7 +245,15 @@ final class TrifaseCancelamentoTest extends MaposTestCase
         $f->receber(1, 20000, '2026-11-04', 'Pix', 'recebimento_os1_20000', 7);
 
         $pedido = $this->pedido();
-        $this->devolverPecas();
+        $resumoOriginal = $f->resumo(1);
+        $evento = $this->modelo->retirarItem(1, $pedido, 'produto', 1, 2, 'devolucao_123456789');
+        $this->assertSame($evento, $this->modelo->retirarItem(1, $pedido, 'produto', 1, 2, 'devolucao_123456789'));
+        $this->assertSame(10, (int) $this->db->get('produtos')->row()->estoque);
+        $this->assertSame(1, $this->db->count_all_results('trifase_estoque_eventos'));
+        $this->assertSame(0, $this->db->where('os_id', 1)->count_all_results('produtos_os'));
+        $this->assertSame($resumoOriginal, $f->resumo(1));
+        $this->assertSame($pedido, (int) $this->modelo->atual(1)->id);
+        $this->assertSame('retirar_item', $this->modelo->historico(1)[0]->tipo);
         $this->modelo->conferirTecnica(1, $pedido, $this->dadosTecnicos(), 2, 'tecnica_123456789');
 
         // Sem confirmar acerto_confirmado, continua bloqueado.

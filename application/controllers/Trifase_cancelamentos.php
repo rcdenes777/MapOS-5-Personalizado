@@ -46,6 +46,40 @@ class Trifase_cancelamentos extends MY_Controller
         return $this->mutacao($id, 'retirar');
     }
 
+    public function retirar_item($id = null)
+    {
+        if (! $this->permission->checkPermission($this->session->userdata('permissao'), 'vOs')
+            || ! $this->permission->checkPermission($this->session->userdata('permissao'), 'eOs')) {
+            show_error('Você não tem permissão para retirar itens.', 403);
+        }
+        if ($this->input->method(true) !== 'POST') {
+            show_error('Use o formulário de cancelamento.', 405);
+        }
+        $os = $this->ordem($id);
+        try {
+            $opcoes = ['options' => ['min_range' => 1]];
+            $pedido = filter_var($this->input->post('pedido_id'), FILTER_VALIDATE_INT, $opcoes);
+            $item = filter_var($this->input->post('idItem'), FILTER_VALIDATE_INT, $opcoes);
+            $tipo = $this->texto('tipo_item');
+            if ($pedido === false || $item === false || $this->texto('conferido') !== '1') {
+                throw new DomainException('Confirme o item e sua condição antes de prosseguir.');
+            }
+            if ($tipo === 'produto' && ! ($this->data['configuration']['control_estoque'] ?? false)) {
+                throw new DomainException('Ative o controle de estoque antes da devolução.');
+            }
+            $this->cancelamentos->retirarItem((int) $os->idOs, $pedido, $tipo, $item, (int) $this->session->userdata('id_admin'), $this->texto('operacao'));
+            $resposta = ['result' => true];
+        } catch (DomainException $e) {
+            $this->output->set_status_header(422);
+            $resposta = ['result' => false, 'message' => $e->getMessage()];
+        } catch (RuntimeException $e) {
+            log_message('error', 'Falha ao retirar item no cancelamento: ' . $e->getMessage());
+            $this->output->set_status_header(500);
+            $resposta = ['result' => false, 'message' => 'Não foi possível retirar o item. Confira o histórico antes de tentar novamente.'];
+        }
+        return $this->output->set_content_type('application/json')->set_output(json_encode($resposta, JSON_THROW_ON_ERROR));
+    }
+
     public function tecnica($id = null)
     {
         if (! $this->permission->checkPermission($this->session->userdata('permissao'), 'vOs')

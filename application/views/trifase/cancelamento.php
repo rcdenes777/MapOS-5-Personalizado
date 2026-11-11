@@ -71,11 +71,13 @@ $etapaCancelamento = $cancelado ? ($entregue ? 4 : 3) : ($pendenteCancelamento ?
                             <p><?= e($itemCancelamento['nome'] . ' · Qtd. ' . $itemCancelamento['quantidade']) ?></p>
                             <?php if ($podePedirCancelamento && isset($itemCancelamento['id']) && ($tituloCancelamento !== 'Peças' || ($devolverPecasCancelamento ?? false))) { ?>
                                 <details class="mt-2"><summary><?= e($tituloCancelamento === 'Peças' ? 'Devolver peça não utilizada' : 'Retirar serviço não executado') ?></summary>
-                                    <form method="post" action="<?= e(site_url($tituloCancelamento === 'Peças' ? 'os/excluirProduto' : 'os/excluirServico')) ?>" class="mt-3 grid gap-3" data-cancelamento-item>
-                                        <input type="hidden" name="idOs" value="<?= e($idCancelamento) ?>">
+                                    <form method="post" action="<?= e(site_url('trifase_cancelamentos/retirar_item/' . $idCancelamento)) ?>" class="mt-3 grid gap-3" data-cancelamento-item>
+                                        <input type="hidden" name="pedido_id" value="<?= e((int) $pedidoCancelamento->id) ?>">
+                                        <input type="hidden" name="tipo_item" value="<?= e($tituloCancelamento === 'Peças' ? 'produto' : 'servico') ?>">
+                                        <input type="hidden" name="operacao" value="<?= e(bin2hex(random_bytes(16))) ?>">
                                         <input type="hidden" name="idItem" value="<?= e((int) $itemCancelamento['id']) ?>">
                                         <?= component('checkbox', ['name' => 'conferido', 'value' => '1', 'label' => $tituloCancelamento === 'Peças' ? 'Esta peça não foi utilizada e está apta a voltar ao estoque.' : 'Este serviço não foi executado.', 'required' => true]) ?>
-                                        <p class="text-caption text-muted">A remoção altera os itens da OS e retira o desconto geral, se houver. Trabalho realizado exige conciliação, não remoção como serviço não executado.</p>
+                                        <p class="text-caption text-muted">A retirada fica registrada no histórico. O acerto da cobrança é feito na etapa financeira.</p>
                                         <?= component('button', ['label' => $tituloCancelamento === 'Peças' ? 'Confirmar devolução ao estoque' : 'Confirmar retirada do serviço', 'type' => 'submit', 'variant' => 'outline']) ?>
                                     </form>
                                 </details>
@@ -204,7 +206,7 @@ $etapaCancelamento = $cancelado ? ($entregue ? 4 : 3) : ($pendenteCancelamento ?
         <ol class="mt-4 grid gap-4">
             <?php foreach ($historicoCancelamento as $eventoCancelamento) { ?>
                 <li><p class="text-label-md"><?= e(match ($eventoCancelamento->tipo) {
-                    'solicitar' => 'Pedido registrado', 'tecnica' => 'Conferência técnica registrada', 'retirar' => 'Pedido retirado', default => 'Cancelamento confirmado'
+                    'solicitar' => 'Pedido registrado', 'tecnica' => 'Conferência técnica registrada', 'retirar' => 'Pedido retirado', 'retirar_item' => 'Item retirado da OS', default => 'Cancelamento confirmado'
                 }) ?></p>
                     <p class="text-caption text-muted"><?= e(date('d/m/Y H:i', strtotime($eventoCancelamento->criado_em)) . ' · Usuário #' . (int) $eventoCancelamento->usuario_id . ' · Solicitante: ' . $eventoCancelamento->solicitante) ?></p>
                     <p class="mt-1 whitespace-pre-wrap break-words"><?= e($eventoCancelamento->motivo) ?></p>

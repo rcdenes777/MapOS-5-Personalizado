@@ -181,6 +181,47 @@ class Trifase_cancelamento_model extends CI_Model
         });
     }
 
+    public function retirarItem(int $id, int $pedido, string $tipo, int $item, int $usuario, string $operacao): int
+    {
+        if (! in_array($tipo, ['produto', 'servico'], true)) {
+            throw new DomainException('Tipo de item inválido.');
+        }
+        return $this->executar($id, $usuario, $operacao, ['retirar_item', $pedido, $tipo, $item], function ($os) use ($id, $pedido, $tipo, $item, $usuario, $operacao) {
+            $solicitacao = $this->pedido($id, $pedido);
+            $conferencia = $this->conferencia($os);
+            if ($conferencia['bloqueios'] !== []) {
+                throw new DomainException(implode(' ', $conferencia['bloqueios']));
+            }
+            $produto = $tipo === 'produto';
+            $tabela = $produto ? 'produtos_os' : 'servicos_os';
+            $chave = $produto ? 'idProdutos_os' : 'idServicos_os';
+            $campoId = $produto ? 'id' : $chave;
+            $itens = $conferencia[$produto ? 'pecas' : 'servicos'];
+            $registro = array_column($itens, null, $campoId)[$item] ?? null;
+            if ($registro === null) {
+                throw new DomainException('O item já foi retirado ou não pertence a esta OS.');
+            }
+
+            $movimento = null;
+            $motivo = $produto ? 'Peça não utilizada devolvida ao estoque' : 'Serviço não executado retirado';
+            if ($produto) {
+                require_once APPPATH . 'models/Trifase_estoque_model.php';
+                $estoque = new Trifase_estoque_model();
+                $estoque->db = $this->db;
+                $movimento = $estoque->movimentar((int) $registro['produtos_id'], 'os_devolucao', (int) $registro['quantidade'], null, date('Y-m-d'), $motivo, 'OS #' . $id . ' · pedido #' . $pedido, $usuario, hash('sha256', 'cancelamento:' . $operacao));
+            }
+
+            if (! $this->db->where(['os_id' => $id, $chave => $item])->delete($tabela) || $this->db->affected_rows() !== 1) {
+                throw new RuntimeException('Não foi possível retirar o item.');
+            }
+            if ($conferencia['financeiro'] === null && ! $this->db->where('idOs', $id)->update('os', ['desconto' => 0, 'valor_desconto' => 0, 'tipo_desconto' => null])) {
+                throw new RuntimeException('Não foi possível atualizar o desconto da OS.');
+            }
+            $descricao = $motivo . ': ' . $registro['nome'] . ' · Qtd. ' . $registro['quantidade'];
+            return $this->evento($id, 'retirar_item', $pedido, $solicitacao->solicitante, $descricao, ['tipo' => $tipo, 'item' => $registro, 'movimento_estoque_id' => $movimento], $usuario, $operacao);
+        });
+    }
+
     public function hashTecnico(array $c): string
     {
         $pecas = array_map(static fn ($i) => [$i['id'], $i['produtos_id'], $i['quantidade']], $c['pecas']);

@@ -866,7 +866,7 @@ final class OsTelaTest extends MaposTestCase
     public function testTecnicoNaoAplicaDescontosNemFaturaPorPostDireto(): void
     {
         $env = $_ENV;
-        $_ENV['TRIFASE_UI_PILOTO_ENABLED'] = 'true';
+        $_ENV['TRIFASE_UI_PILOTO_ENABLED'] = 'false';
         try {
             $this->criarBanco();
             foreach (['descontoProduto', 'descontoServico', 'adicionarDesconto', 'faturar'] as $metodo) {

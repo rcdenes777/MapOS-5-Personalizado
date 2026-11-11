@@ -49,6 +49,27 @@ class OsController extends REST_Controller
         }
     }
 
+    private function verValoresDaOs(): bool
+    {
+        return $this->permission->checkPermission($this->logged_user()->level, 'vLancamento');
+    }
+
+    private function dadosDaOs(object $os, bool $verValores): object
+    {
+        $os = apiSemSenha($os);
+        if ($verValores) {
+            return $os;
+        }
+
+        return (object) array_intersect_key(get_object_vars($os), array_flip([
+            'idOs', 'dataInicial', 'dataFinal', 'garantia', 'garantias_id', 'refGarantia', 'textoGarantia',
+            'descricaoProduto', 'defeito', 'status', 'observacoes', 'laudoTecnico',
+            'clientes_id', 'idClientes', 'nomeCliente', 'celular_cliente', 'telefone_cliente', 'contato_cliente',
+            'usuarios_id', 'nome', 'telefone_usuario', 'email_usuario', 'faturado',
+            'produtos', 'servicos', 'anexos', 'anotacoes',
+        ]));
+    }
+
     public function index_get($id = '')
     {
         $this->logged_user();
@@ -59,6 +80,7 @@ class OsController extends REST_Controller
             ], REST_Controller::HTTP_UNAUTHORIZED);
         }
 
+        $verValores = $this->verValoresDaOs();
         $where_array = [];
 
         $pesquisa = trim((string) $this->get('search', true));
@@ -88,21 +110,22 @@ class OsController extends REST_Controller
         if (! $id) {
             $perPage = $this->get('perPage', true) ?: 20;
             $page = $this->get('page', true) ? ($this->get('page', true) * $perPage) : 0;
-            $start = $page ? ($perPage * $page) : 0;
 
-            // Com o desconto individual dos itens (#2880), o valor do item é o subTotal gravado.
-            $valorProduto = 'produtos_os.preco * produtos_os.quantidade';
-            $valorServico = 'servicos_os.preco * servicos_os.quantidade';
-            if ($this->os_model->descontoPorItemDisponivel()) {
-                $valorProduto = "CASE WHEN produtos_os.desconto > 0 THEN produtos_os.subTotal ELSE {$valorProduto} END";
-                $valorServico = "CASE WHEN servicos_os.desconto > 0 THEN servicos_os.subTotal ELSE {$valorServico} END";
+            $campos = 'os.*';
+            if ($verValores) {
+                $valorProduto = 'produtos_os.preco * produtos_os.quantidade';
+                $valorServico = 'servicos_os.preco * servicos_os.quantidade';
+                if ($this->os_model->descontoPorItemDisponivel()) {
+                    $valorProduto = "CASE WHEN produtos_os.desconto > 0 THEN produtos_os.subTotal ELSE {$valorProduto} END";
+                    $valorServico = "CASE WHEN servicos_os.desconto > 0 THEN servicos_os.subTotal ELSE {$valorServico} END";
+                }
+                $campos .= ", COALESCE((SELECT SUM({$valorProduto}) FROM produtos_os WHERE produtos_os.os_id = os.idOs), 0) totalProdutos,
+                    COALESCE((SELECT SUM({$valorServico}) FROM servicos_os WHERE servicos_os.os_id = os.idOs), 0) totalServicos";
             }
 
             $oss = $this->os_model->getOs(
                 'os',
-                "os.*,
-                COALESCE((SELECT SUM({$valorProduto}) FROM produtos_os WHERE produtos_os.os_id = os.idOs), 0) totalProdutos,
-                COALESCE((SELECT SUM({$valorServico}) FROM servicos_os WHERE servicos_os.os_id = os.idOs), 0) totalServicos",
+                $campos,
                 $where_array,
                 $perPage,
                 $page
@@ -111,7 +134,7 @@ class OsController extends REST_Controller
             $this->response([
                 'status' => true,
                 'message' => 'Listando OSs',
-                'result' => $oss,
+                'result' => array_map(fn ($os) => $this->dadosDaOs($os, $verValores), $oss),
             ], REST_Controller::HTTP_OK);
         }
 
@@ -127,23 +150,21 @@ class OsController extends REST_Controller
         $os->servicos = $this->os_model->getServicos($id);
         $os->anexos = osAnexosParaApi($this->os_model->getAnexos($id), site_url('api/v1/os/' . (int) $id . '/anexos'));
         $os->anotacoes = $this->os_model->getAnotacoes($id);
-        $os->calcTotal = $this->calcTotal($id);
-        unset($os->senha);
-        $os->totalProdutos = array_sum(array_map(fn ($p) => ((float) ($p->desconto ?? 0) > 0 ? $p->subTotal : $p->preco * $p->quantidade), $os->produtos));
-        $os->totalServicos = array_sum(array_map(fn ($s) => ((float) ($s->desconto ?? 0) > 0 ? $s->subTotal : $s->preco * $s->quantidade), $os->servicos));
-
-        // Montando texto para whatsapp
-        if ($return = $this->os_model->valorTotalOS($id)) {
-            $totalProdutos = $return['totalProdutos'];
-            $totalServico = $return['totalServico'];
+        if ($verValores) {
+            $os->calcTotal = $this->calcTotal($id);
+            $os->totalProdutos = array_sum(array_map(fn ($p) => ((float) ($p->desconto ?? 0) > 0 ? $p->subTotal : $p->preco * $p->quantidade), $os->produtos));
+            $os->totalServicos = array_sum(array_map(fn ($s) => ((float) ($s->desconto ?? 0) > 0 ? $s->subTotal : $s->preco * $s->quantidade), $os->servicos));
+            $totais = $this->os_model->valorTotalOS($id);
+            $os->textoWhatsApp = $this->criarTextoWhats($os, $totais['totalProdutos'] ?? 0, $totais['totalServico'] ?? 0);
+        } else {
+            $os->produtos = array_map(static fn ($p) => (object) array_intersect_key(get_object_vars($p), array_flip(['idProdutos_os', 'os_id', 'produtos_id', 'idProdutos', 'descricao', 'quantidade'])), $os->produtos);
+            $os->servicos = array_map(static fn ($s) => (object) array_intersect_key(get_object_vars($s), array_flip(['idServicos_os', 'os_id', 'servicos_id', 'nome', 'quantidade'])), $os->servicos);
         }
-
-        $os->textoWhatsApp = $this->criarTextoWhats($os, $totalProdutos, $totalServico);
 
         $this->response([
             'status' => true,
             'message' => 'Detalhes da OS',
-            'result' => $os,
+            'result' => $this->dadosDaOs($os, $verValores),
         ], REST_Controller::HTTP_OK);
     }
 
@@ -264,7 +285,7 @@ class OsController extends REST_Controller
             $this->response([
                 'status' => true,
                 'message' => 'OS adicionada com sucesso!',
-                'result' => apiSemSenha($os),
+                'result' => $this->dadosDaOs($os, $this->verValoresDaOs()),
             ], REST_Controller::HTTP_CREATED);
         }
 
@@ -425,7 +446,7 @@ class OsController extends REST_Controller
             $this->response([
                 'status' => true,
                 'message' => 'OS editada com sucesso!',
-                'result' => apiSemSenha($os),
+                'result' => $this->dadosDaOs($os, $this->verValoresDaOs()),
             ], REST_Controller::HTTP_OK);
         }
 
@@ -550,6 +571,10 @@ class OsController extends REST_Controller
                 'message' => 'Você não está autorizado a Editar OS!',
             ], REST_Controller::HTTP_UNAUTHORIZED);
         }
+        if (! $this->verValoresDaOs()) {
+            $this->response(['status' => false, 'message' => 'Use o painel para incluir itens pelo preço do cadastro. Preços e descontos exigem permissão financeira.'], REST_Controller::HTTP_FORBIDDEN);
+            return;
+        }
 
         $os = $this->osParaEditar($id, 'Desconto não pode ser adicionado. OS Faturada/Cancelada');
 
@@ -602,6 +627,10 @@ class OsController extends REST_Controller
                 'status' => false,
                 'message' => 'Você não está autorizado a Editar OS!',
             ], REST_Controller::HTTP_UNAUTHORIZED);
+        }
+        if (! $this->verValoresDaOs()) {
+            $this->response(['status' => false, 'message' => 'Use o painel para incluir itens pelo preço do cadastro. Preços e descontos exigem permissão financeira.'], REST_Controller::HTTP_FORBIDDEN);
+            return;
         }
 
         $_POST = (array) json_decode(trim(file_get_contents('php://input')));
@@ -679,6 +708,10 @@ class OsController extends REST_Controller
                 'status' => false,
                 'message' => 'Você não está autorizado a Editar OS!',
             ], REST_Controller::HTTP_UNAUTHORIZED);
+        }
+        if (! $this->verValoresDaOs()) {
+            $this->response(['status' => false, 'message' => 'Use o painel para incluir itens pelo preço do cadastro. Preços e descontos exigem permissão financeira.'], REST_Controller::HTTP_FORBIDDEN);
+            return;
         }
 
         if (! $id || ! $idProdutos_os) {
@@ -801,6 +834,10 @@ class OsController extends REST_Controller
                 'message' => 'Você não está autorizado a Editar OS!',
             ], REST_Controller::HTTP_UNAUTHORIZED);
         }
+        if (! $this->verValoresDaOs()) {
+            $this->response(['status' => false, 'message' => 'Use o painel para incluir itens pelo preço do cadastro. Preços e descontos exigem permissão financeira.'], REST_Controller::HTTP_FORBIDDEN);
+            return;
+        }
 
         $_POST = (array) json_decode(trim(file_get_contents('php://input')));
         $_POST['idOsServico'] = $id;
@@ -875,6 +912,10 @@ class OsController extends REST_Controller
                 'status' => false,
                 'message' => 'Você não está autorizado a Editar OS!',
             ], REST_Controller::HTTP_UNAUTHORIZED);
+        }
+        if (! $this->verValoresDaOs()) {
+            $this->response(['status' => false, 'message' => 'Use o painel para incluir itens pelo preço do cadastro. Preços e descontos exigem permissão financeira.'], REST_Controller::HTTP_FORBIDDEN);
+            return;
         }
 
         if (! $id || ! $idServicos_os) {
@@ -1334,7 +1375,15 @@ class OsController extends REST_Controller
             return false;
         }
 
+        $this->load->model('usuarios_model');
+        $tecnico = $this->usuarios_model->getById($dados['result']->usuarios_id);
+        $emailTecnico = mb_strtolower(trim((string) ($tecnico->email ?? '')));
+        $tecnicoVeValores = isset($tecnico->permissoes_id)
+            && $this->permission->checkPermission($tecnico->permissoes_id, 'vLancamento');
         $html = $this->load->view('os/emails/os', $dados, true);
+        $htmlTecnico = $emailTecnico !== '' && ! $tecnicoVeValores
+            ? $this->load->view('os/emails/os', ['verValoresEmailOs' => false] + $dados, true)
+            : $html;
 
         $this->load->model('email_model');
 
@@ -1344,7 +1393,7 @@ class OsController extends REST_Controller
                 $headers = ['From' => $emitente->email, 'Subject' => $assunto, 'Return-Path' => ''];
                 $email = [
                     'to' => $remetente,
-                    'message' => $html,
+                    'message' => mb_strtolower(trim($remetente)) === $emailTecnico ? $htmlTecnico : $html,
                     'status' => 'pending',
                     'date' => date('Y-m-d H:i:s'),
                     'headers' => json_encode($headers),

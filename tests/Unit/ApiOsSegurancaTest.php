@@ -28,10 +28,11 @@ final class ApiOsSegurancaTest extends MaposTestCase
             'CREATE TABLE usuarios (idUsuarios INTEGER PRIMARY KEY AUTOINCREMENT, nome TEXT, telefone TEXT, email TEXT)',
             'CREATE TABLE garantias (idGarantias INTEGER PRIMARY KEY AUTOINCREMENT, refGarantia TEXT, textoGarantia TEXT)',
             'CREATE TABLE os (idOs INTEGER PRIMARY KEY AUTOINCREMENT, clientes_id INTEGER, usuarios_id INTEGER, garantias_id INTEGER, status TEXT, faturado INTEGER DEFAULT 0, desconto REAL DEFAULT 0, valor_desconto REAL DEFAULT 0, tipo_desconto TEXT)',
-            'CREATE TABLE produtos (idProdutos INTEGER PRIMARY KEY AUTOINCREMENT, descricao TEXT, precoVenda REAL, estoque REAL)',
+            'CREATE TABLE produtos (idProdutos INTEGER PRIMARY KEY AUTOINCREMENT, descricao TEXT, precoVenda REAL, estoque REAL, precoCompra REAL DEFAULT 45)',
             'CREATE TABLE servicos (idServicos INTEGER PRIMARY KEY AUTOINCREMENT, nome TEXT, preco REAL)',
             'CREATE TABLE produtos_os (idProdutos_os INTEGER PRIMARY KEY AUTOINCREMENT, os_id INTEGER, produtos_id INTEGER, quantidade REAL, preco REAL, subTotal REAL, desconto REAL DEFAULT 0, tipo_desconto TEXT)',
             'CREATE TABLE servicos_os (idServicos_os INTEGER PRIMARY KEY AUTOINCREMENT, os_id INTEGER, servicos_id INTEGER, quantidade REAL, preco REAL, subTotal REAL, desconto REAL DEFAULT 0, tipo_desconto TEXT)',
+            'CREATE TABLE anexos (idAnexos INTEGER PRIMARY KEY, os_id INTEGER)',
             'CREATE TABLE anotacoes_os (idAnotacoes INTEGER PRIMARY KEY AUTOINCREMENT, anotacao TEXT, data_hora TEXT, os_id INTEGER)',
             "INSERT INTO clientes (nomeCliente, senha) VALUES ('Ana', 'x')",
             "INSERT INTO usuarios (nome) VALUES ('Técnico')",
@@ -51,9 +52,11 @@ final class ApiOsSegurancaTest extends MaposTestCase
         $permission = new class() {
             public bool $pode = true;
 
+            public bool $financeiro = true;
+
             public function checkPermission($permissao, $acao): bool
             {
-                return $this->pode;
+                return $this->pode && ($acao !== 'vLancamento' || $this->financeiro);
             }
         };
 
@@ -114,6 +117,11 @@ final class ApiOsSegurancaTest extends MaposTestCase
 
             public function log_app($task, $nome_usuario = '')
             {
+            }
+
+            public function get($key = null, $xss_clean = null)
+            {
+                return $this->entrada[$key] ?? null;
             }
 
             public function put($key = null, $xss_clean = null)
@@ -242,6 +250,36 @@ final class ApiOsSegurancaTest extends MaposTestCase
         $this->assertEquals(0, $this->db->get_where('os', ['idOs' => 1])->row()->valor_desconto);
 
         $this->assertSame(400, $this->chamar('desconto_post', [1], ['tipoDesconto' => 'real'])['code'], 'Sem o campo desconto.');
+    }
+
+    public function testTecnicoConsultaOsSemValoresEMantemItensTecnicos(): void
+    {
+        $this->controller->permission->financeiro = false;
+        $lista = $this->chamar('index_get', []);
+        $detalhe = $this->chamar('index_get', [1]);
+        $this->assertSame(200, $lista['code']);
+        $this->assertSame(200, $detalhe['code']);
+        $this->assertSame('Tela', $detalhe['data']['result']['produtos'][0]['descricao']);
+        $this->assertSame('Troca', $detalhe['data']['result']['servicos'][0]['nome']);
+        foreach ([$lista, $detalhe] as $resposta) {
+            $json = json_encode($resposta['data']['result'], JSON_THROW_ON_ERROR);
+            foreach (['precoCompra', 'precoVenda', 'preco', 'subTotal', 'totalProdutos', 'totalServicos', 'valor_desconto', 'calcTotal', 'textoWhatsApp'] as $campo) {
+                $this->assertStringNotContainsString('"' . $campo . '"', $json);
+            }
+        }
+        $this->controller->permission->financeiro = true;
+        $lista = $this->chamar('index_get', []);
+        $this->assertEquals(100, $lista['data']['result'][0]['totalProdutos']);
+    }
+
+    public function testTecnicoNaoAlteraValoresPelaApi(): void
+    {
+        $this->controller->permission->financeiro = false;
+        foreach (['desconto_post', 'produtos_post', 'servicos_post', 'produtos_put', 'servicos_put'] as $metodo) {
+            $args = str_ends_with($metodo, '_put') ? [1, 1] : [1];
+            $this->assertSame(403, $this->chamar($metodo, $args)['code']);
+        }
+        $this->assertEquals(100, $this->db->get_where('produtos_os', ['idProdutos_os' => 1])->row()->preco);
     }
 
     public function testValoresDoItemSaoValidados(): void

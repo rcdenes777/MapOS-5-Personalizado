@@ -1,5 +1,6 @@
 <?php $totalServico = 0;
-$totalProdutos = 0; ?>
+$totalProdutos = 0;
+$verValoresEmailOs = $verValoresEmailOs ?? true; ?>
 
 <!doctype html>
 <html>
@@ -226,24 +227,30 @@ $totalProdutos = 0; ?>
                 <tr class="heading">
                     <td>Produto</td>
                     <td>Quantidade</td>
-                    <td>Preço unit.</td>
-                    <td style="text-align: center">Sub-total</td>
+                    <?php if ($verValoresEmailOs) { ?><td>Preço unit.</td>
+                    <td style="text-align: center">Sub-total</td><?php } ?>
                 </tr>
 
                 <?php foreach ($produtos as $p) {
                     $totalProdutos = $totalProdutos + $p->subTotal;
                     echo '<tr class="item">';
-                    echo '<td>' . e($p->descricao) . osDescontoItemNota($p) . '</td>';
+                    if ($verValoresEmailOs) {
+                        echo '<td>' . e($p->descricao) . osDescontoItemNota($p) . '</td>';
+                    } else {
+                        echo '<td>' . e($p->descricao) . '</td>';
+                    }
                     echo '<td>' . e($p->quantidade) . '</td>';
-                    echo '<td>' . e($p->preco ?: $p->precoVenda) . '</td>';
-                    echo '<td style="text-align: center">R$ ' . number_format($p->subTotal, 2, ',', '.') . '</td>';
+                    if ($verValoresEmailOs) {
+                        echo '<td>' . e($p->preco ?: $p->precoVenda) . '</td>';
+                        echo '<td style="text-align: center">R$ ' . number_format($p->subTotal, 2, ',', '.') . '</td>';
+                    }
                     echo '</tr>';
                 } ?>
 
-                <tr class="item">
+                <?php if ($verValoresEmailOs) { ?><tr class="item">
                     <td colspan="3"></td>
                     <td style="text-align: center"><strong>Total em Produtos: R$ <?= number_format($totalProdutos, 2, ',', '.'); ?></strong></td>
-                </tr>
+                </tr><?php } ?>
             <?php } ?>
 
             <?php if ($servicos) { ?>
@@ -251,8 +258,8 @@ $totalProdutos = 0; ?>
                 <tr class="heading">
                     <td>Serviço</td>
                     <td>Quantidade</td>
-                    <td>Preço unit.</td>
-                    <td style="text-align: center">Sub-total</td>
+                    <?php if ($verValoresEmailOs) { ?><td>Preço unit.</td>
+                    <td style="text-align: center">Sub-total</td><?php } ?>
                 </tr>
 
                 <?php foreach ($servicos as $s) {
@@ -260,17 +267,23 @@ $totalProdutos = 0; ?>
                     $subtotal = osValorDoItem($s);
                     $totalServico = $totalServico + $subtotal;
                     echo '<tr class="item">';
-                    echo '<td>' . e($s->nome) . osDescontoItemNota($s) . '</td>';
+                    if ($verValoresEmailOs) {
+                        echo '<td>' . e($s->nome) . osDescontoItemNota($s) . '</td>';
+                    } else {
+                        echo '<td>' . e($s->nome) . '</td>';
+                    }
                     echo '<td>' . e(($s->quantidade ?: 1)) . '</td>';
-                    echo '<td>' . e($preco) . '</td>';
-                    echo '<td>R$ ' . number_format($subtotal, 2, ',', '.') . '</td>';
+                    if ($verValoresEmailOs) {
+                        echo '<td>' . e($preco) . '</td>';
+                        echo '<td>R$ ' . number_format($subtotal, 2, ',', '.') . '</td>';
+                    }
                     echo '</tr>';
                 } ?>
 
-                <tr class="item">
+                <?php if ($verValoresEmailOs) { ?><tr class="item">
                     <td colspan="3"></td>
                     <td style="text-align: center"><strong>Total em Serviços: R$ <?= number_format($totalServico, 2, ',', '.'); ?></strong></td>
-                </tr>
+                </tr><?php } ?>
             <?php } ?>
             <tr class="heading">
                 <td colspan="4">
@@ -278,7 +291,7 @@ $totalProdutos = 0; ?>
                 </td>
             </tr>
 
-            <tr class="heading">
+            <?php if ($verValoresEmailOs) { ?><tr class="heading">
                 <td colspan="3"></td>
                 <td style="text-align: center">
                     <strong>Total: R$ <?= number_format($totalProdutos + $totalServico, 2, ',', '.') ?></strong>
@@ -297,7 +310,7 @@ $totalProdutos = 0; ?>
                         <strong>Total com Desconto: R$ <?= number_format($result->valor_desconto, 2, ',', '.') ?></strong>
                     </td>
                 </tr>
-            <?php } ?>
+            <?php } } ?>
         </table>
     </div>
 </body>

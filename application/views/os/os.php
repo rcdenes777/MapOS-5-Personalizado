@@ -44,7 +44,9 @@ $colunas = [
         return $pill;
     }],
     ...(! $contextoFinanceiro && ($listaEntregaHabilitada ?? false) ? [['label' => 'Entrega', 'render' => fn ($o) => trifaseEntregaRotulo($o)]] : []),
-    ['label' => 'Total', 'align' => 'right', 'nowrap' => true, 'render' => fn ($o) => dinheiro($o->total)],
+    ...(($contextoFinanceiro ? ($listaVerFinanceiro ?? false) : ($listaVerTotal ?? false)) ? [
+        ['label' => 'Total', 'align' => 'right', 'nowrap' => true, 'render' => fn ($o) => dinheiro($o->total)],
+    ] : []),
     ['label' => 'Ações', 'align' => 'right', 'nowrap' => true, 'render' => function ($o) use ($pode, $controle_editos, $contextoFinanceiro, $mapaCancelamentosPendentes) {
         $numero = 'OS ' . $o->idOs;
         $editavel = osEditavel($o, $pode['editar'], $controle_editos);

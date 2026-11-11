@@ -90,6 +90,7 @@ class Os extends MY_Controller
         $this->load->helper('trifase_interface');
         // A listagem operacional não consulta nem exibe informações de cobrança.
         $this->data['listaVerFinanceiro'] = false;
+        $this->data['listaVerTotal'] = $this->verValoresDaOs();
         $this->data['listaFinanceiro'] = [];
         $this->data['listaFinanceiroHabilitado'] = trifaseFinanceiroHabilitado();
 
@@ -606,10 +607,10 @@ class Os extends MY_Controller
         return $this->layout();
     }
 
-    /** No piloto, valores comerciais seguem a permissão financeira. */
+    /** Valores comerciais seguem a permissão financeira em qualquer apresentação. */
     private function verValoresDaOs(): bool
     {
-        return ! trifaseInterfacePiloto() || $this->permite('vLancamento');
+        return $this->permite('vLancamento');
     }
 
     /** Dados de consulta exclusivos da apresentação opt-in. */
@@ -1273,7 +1274,8 @@ class Os extends MY_Controller
     private function responderAutocomplete(bool $permitido, string $metodo): void
     {
         $termo = $this->input->get('term');
-        $itensCatalogo = in_array($metodo, ['autoCompleteProduto', 'autoCompleteServico'], true);
+        $itensCatalogo = in_array($metodo, ['autoCompleteProduto', 'autoCompleteServico'], true)
+            || ($metodo === 'autoCompleteProdutoSaida' && ! $this->hasAnyPermission(['aVenda', 'eVenda']));
         $itens = $permitido && is_string($termo)
             ? $this->os_model->{$metodo}(mb_strtolower(trim($termo)))
             : [];
@@ -1933,7 +1935,15 @@ class Os extends MY_Controller
             return false;
         }
 
+        $this->load->model('usuarios_model');
+        $tecnico = $this->usuarios_model->getById($dados['result']->usuarios_id);
+        $emailTecnico = mb_strtolower(trim((string) ($tecnico->email ?? '')));
+        $tecnicoVeValores = isset($tecnico->permissoes_id)
+            && $this->permission->checkPermission($tecnico->permissoes_id, 'vLancamento');
         $html = $this->load->view('os/emails/os', $dados, true);
+        $htmlTecnico = $emailTecnico !== '' && ! $tecnicoVeValores
+            ? $this->load->view('os/emails/os', ['verValoresEmailOs' => false] + $dados, true)
+            : $html;
 
         $this->load->model('email_model');
 
@@ -1943,7 +1953,7 @@ class Os extends MY_Controller
                 $headers = ['From' => $emitente->email, 'Subject' => $assunto, 'Return-Path' => ''];
                 $email = [
                     'to' => $remetente,
-                    'message' => $html,
+                    'message' => mb_strtolower(trim($remetente)) === $emailTecnico ? $htmlTecnico : $html,
                     'status' => 'pending',
                     'date' => date('Y-m-d H:i:s'),
                     'headers' => json_encode($headers),

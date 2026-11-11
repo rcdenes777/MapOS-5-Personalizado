@@ -383,7 +383,8 @@ class Relatorios extends MY_Controller
 
     public function os()
     {
-        if (! $this->permission->checkPermission($this->session->userdata('permissao'), 'rOs')) {
+        if (! $this->permission->checkPermission($this->session->userdata('permissao'), 'rOs')
+            || ! $this->permission->checkPermission($this->session->userdata('permissao'), 'vLancamento')) {
             $this->session->set_flashdata('error', 'Você não tem permissão para gerar relatórios de OS.');
             redirect(base_url());
         }
@@ -395,7 +396,8 @@ class Relatorios extends MY_Controller
 
     public function osRapid()
     {
-        if (! $this->permission->checkPermission($this->session->userdata('permissao'), 'rOs')) {
+        if (! $this->permission->checkPermission($this->session->userdata('permissao'), 'rOs')
+            || ! $this->permission->checkPermission($this->session->userdata('permissao'), 'vLancamento')) {
             $this->session->set_flashdata('error', 'Você não tem permissão para gerar relatórios de OS.');
             redirect(base_url());
         }
@@ -506,7 +508,8 @@ class Relatorios extends MY_Controller
 
     public function osCustom()
     {
-        if (! $this->permission->checkPermission($this->session->userdata('permissao'), 'rOs')) {
+        if (! $this->permission->checkPermission($this->session->userdata('permissao'), 'rOs')
+            || ! $this->permission->checkPermission($this->session->userdata('permissao'), 'vLancamento')) {
             $this->session->set_flashdata('error', 'Você não tem permissão para gerar relatórios de OS.');
             redirect(base_url());
         }

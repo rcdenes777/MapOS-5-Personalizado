@@ -1016,7 +1016,15 @@ class Mine extends CI_Controller
             return false;
         }
 
+        $this->load->model('usuarios_model');
+        $tecnico = $this->usuarios_model->getById($dados['result']->usuarios_id);
+        $emailTecnico = mb_strtolower(trim((string) ($tecnico->email ?? '')));
+        $tecnicoVeValores = isset($tecnico->permissoes_id)
+            && $this->permission->checkPermission($tecnico->permissoes_id, 'vLancamento');
         $html = $this->load->view('os/emails/os', $dados, true);
+        $htmlTecnico = $emailTecnico !== '' && ! $tecnicoVeValores
+            ? $this->load->view('os/emails/os', ['verValoresEmailOs' => false] + $dados, true)
+            : $html;
 
         $this->load->model('email_model');
 
@@ -1029,7 +1037,7 @@ class Mine extends CI_Controller
             ];
             $email = [
                 'to' => $remetente,
-                'message' => $html,
+                'message' => mb_strtolower(trim($remetente)) === $emailTecnico ? $htmlTecnico : $html,
                 'status' => 'pending',
                 'date' => date('Y-m-d H:i:s'),
                 'headers' => json_encode($headers),

@@ -22,7 +22,7 @@ final class PermissionTest extends MaposTestCase
     private function permissionCom(array $permissoes): Permission
     {
         $permission = $this->makeInstance(Permission::class);
-        $this->setPrivateProperty($permission, 'permissions', [$permissoes]);
+        $this->setPrivateProperty($permission, 'permissions', [1 => $permissoes]);
 
         return $permission;
     }
@@ -175,6 +175,20 @@ final class PermissionTest extends MaposTestCase
         // continua vindo porque o resultado ficou em memória.
         $this->setPrivateProperty($permission, 'CI', $this->fakeCiInstance(null));
         $this->assertTrue($permission->checkPermission(1, 'vOs'));
+    }
+
+    public function testConsultaDoDestinatarioNaoHerdaPermissaoDoOperador(): void
+    {
+        $this->db->query('CREATE TABLE permissoes (idPermissao INTEGER PRIMARY KEY, permissoes TEXT, situacao INTEGER DEFAULT 1)');
+        $this->db->insert('permissoes', ['idPermissao' => 1, 'permissoes' => '{"vLancamento":1}']);
+        $this->db->insert('permissoes', ['idPermissao' => 2, 'permissoes' => '{"vLancamento":0}']);
+        $permission = $this->makeInstance(Permission::class);
+        $this->setPrivateProperty($permission, 'CI', $this->fakeCiInstance($this->db));
+
+        $this->assertTrue($permission->checkPermission(1, 'vLancamento'));
+        $this->assertFalse($permission->checkPermission(2, 'vLancamento'));
+        $this->assertFalse($permission->checkPermission(3, 'vLancamento'));
+        $this->assertTrue($permission->checkPermission(1, 'vLancamento'));
     }
 
     #[DataProvider('atividadesConhecidas')]

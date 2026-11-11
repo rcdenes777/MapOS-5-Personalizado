@@ -249,7 +249,7 @@ final class LayoutTest extends MaposTestCase
 
     public function testMarcaAPaginaAtualEAbreOGrupo(): void
     {
-        $todas = ['vCliente', 'rCliente', 'rOs', 'cSistema'];
+        $todas = ['vCliente', 'rCliente', 'rOs', 'vLancamento', 'cSistema'];
 
         $clientes = layoutMenuVisivel(layoutMenu(), $this->permite($todas), 'clientes', 'editar');
         $atual = array_values(array_filter($clientes, fn ($i) => $i['atual']));

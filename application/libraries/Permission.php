@@ -43,24 +43,11 @@ class Permission
         if ($idPermissao == null || $atividade == null) {
             return false;
         }
-        // Se as permissões não estiverem carregadas, requisita o carregamento
-        if ($this->permissions == null) {
-            // Se não carregar retorna falso
-            if (! $this->loadPermission($idPermissao)) {
-                return false;
-            }
+        if (! isset($this->permissions[$idPermissao]) && ! $this->loadPermission($idPermissao)) {
+            return false;
         }
 
-        if (is_array($this->permissions[0])) {
-            if (array_key_exists($atividade, $this->permissions[0])) {
-                // compara a atividade requisitada com a permissão.
-                if ($this->permissions[0][$atividade] == 1) {
-                    return true;
-                }
-            }
-        }
-
-        return false;
+        return ($this->permissions[$idPermissao][$atividade] ?? 0) == 1;
     }
 
     private function loadPermission($id = null)
@@ -81,7 +68,7 @@ class Permission
             if (! empty($array)) {
                 $raw = $array[$this->select];
                 $array = json_decode_legacy($raw);
-                $this->permissions = [$array];
+                $this->permissions[$id] = $array;
 
                 return true;
             }

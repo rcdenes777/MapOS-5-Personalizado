@@ -310,7 +310,8 @@ $verValoresEmailOs = $verValoresEmailOs ?? true; ?>
                         <strong>Total com Desconto: R$ <?= number_format($result->valor_desconto, 2, ',', '.') ?></strong>
                     </td>
                 </tr>
-            <?php } } ?>
+            <?php }
+            } ?>
         </table>
     </div>
 </body>

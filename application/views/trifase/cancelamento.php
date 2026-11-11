@@ -96,7 +96,7 @@ $etapaCancelamento = $cancelado ? ($entregue ? 4 : 3) : ($pendenteCancelamento ?
                                         </form>
                                     </details>
                                 <?php }
-                            } ?>
+                                } ?>
                         </li>
                     <?php } ?></ul>
                 </div>

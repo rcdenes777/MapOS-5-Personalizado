@@ -52,7 +52,7 @@ Em vez de sobrescrever a pasta da 4.x, prefira colocar a v5 numa pasta nova e tr
   composer install --no-dev
   ```
 
-> **Não use o botão "Atualizar Mapos" da 4.x para esta migração.** Até a 4.55.4 o botão baixava o código do branch `master`, que agora é a v5 e não traz o `application/vendor`; ele só roda `composer install` se o Composer existir no servidor. A partir da 4.55.5 ele segue o branch `4.x` e não instala a v5, então atualize a 4.x para a 4.55.5 antes de migrar. Além disso, o PHP 8.5, o `.env` novo e o `STORAGE_PATH` exigem passos manuais. A atualização pelo painel da v5 é outra (veja [atualizacao.md](atualizacao.md)) e só vale a partir da v5.
+> **Não use o botão "Atualizar Mapos" da 4.x para esta migração.** Até a 4.55.4 o botão baixava o código do branch `master`, que agora é a v5 e não traz o `application/vendor`; ele só roda `composer install` se o Composer existir no servidor. A partir da 4.55.5 ele segue o branch `4.x` e não instala a v5, então atualize a 4.x para a 4.55.5 antes de migrar. Além disso, o PHP 8.5, o `.env` novo e o `STORAGE_PATH` exigem passos manuais. No MapOS 5 Personalizado, a aplicação de releases oficiais pelo painel é bloqueada (veja [atualizacao.md](atualizacao.md)).
 
 ### 3.2. Traga o que é seu
 
@@ -218,7 +218,7 @@ Os cron jobs de e-mail continuam os mesmos:
 - Rotas do painel passam pelo mapa de permissões (`application/config/permissions_map.php`): **o que não estiver mapeado é negado**. Um controller que você criou precisa de entrada nele.
 - Os cabeçalhos de segurança são enviados em toda resposta, e a CSP está em `enforce`: scripts e estilos inline são bloqueados.
 - Anexos e arquivos vêm do `STORAGE_PATH` e só abrem com login e permissão. O backup do painel é só do banco: inclua o `STORAGE_PATH` no seu backup de arquivos.
-- O atualizador do painel usa releases com tag, verifica o SHA256 e guarda backup dos arquivos trocados ([atualizacao.md](atualizacao.md)).
+- O painel do MapOS 5 Personalizado permite consultar releases oficiais. A aplicação dessas releases é bloqueada ([atualizacao.md](atualizacao.md)).
 - A logo do emitente e as fotos de perfil continuam em `assets/uploads` e `assets/userImage`.
 
 ### Quem personalizou views, CSS ou JavaScript

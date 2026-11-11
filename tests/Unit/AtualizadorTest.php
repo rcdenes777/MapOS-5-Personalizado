@@ -403,7 +403,42 @@ final class AtualizadorTest extends MaposTestCase
         (new Github_updater(['raiz' => $this->raiz, 'usuario' => 'dono', 'repositorio' => 'mapos', 'versao_atual' => '1.0.0', 'prereleases' => false, 'ignorados' => []]))->requisitar('http://github.com/x');
     }
 
-    public function testTelaEControllerUsamAReleaseNaoOBranch(): void
+    public function testAdministradorNaoPodeAplicarReleasePelaRota(): void
+    {
+        require_once APPPATH . 'core/MY_Controller.php';
+        require_once APPPATH . 'controllers/Mapos.php';
+
+        $controller = new class() extends Mapos {
+            public function __construct()
+            {
+            }
+
+            public function __get($nome)
+            {
+                return match ($nome) {
+                    'session' => new class() {
+                        public function userdata($campo)
+                        {
+                            return 1;
+                        }
+                    },
+                    'permission' => new class() {
+                        public function checkPermission($perfil, $permissao)
+                        {
+                            return $perfil === 1 && $permissao === 'cSistema';
+                        }
+                    },
+                    default => throw new LogicException('A rota bloqueada acessou ' . $nome),
+                };
+            }
+        };
+
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('A aplicação de releases oficiais está bloqueada');
+        $controller->atualizarMapos();
+    }
+
+    public function testBibliotecaUsaReleaseETelaApenasConsulta(): void
     {
         $biblioteca = (string) file_get_contents(APPPATH . 'libraries/Github_updater.php');
         $this->assertStringNotContainsString('zipball', $biblioteca);
@@ -411,13 +446,11 @@ final class AtualizadorTest extends MaposTestCase
         $this->assertStringNotContainsString('shell_exec', $biblioteca);
         $this->assertStringNotContainsString('current_commit', (string) file_get_contents(APPPATH . 'config/github_updater.php'));
 
-        $controller = (string) file_get_contents(APPPATH . 'controllers/Mapos.php');
-        $this->assertStringContainsString("github_updater->atualizar((string) \$this->input->post('versao'))", $controller);
-
         $tela = (string) file_get_contents(APPPATH . 'views/mapos/atualizacao.php');
         $this->assertStringContainsString("e(mb_strimwidth(\$notas", $tela, 'O changelog sai escapado.');
         $this->assertStringContainsString('<pre class=', $tela, 'O pre guarda as quebras de linha do changelog (o hook de compressão do HTML preserva só pre, textarea e script).');
         $this->assertStringContainsString('O que mudou', $tela);
+        $this->assertStringNotContainsString('mapos/atualizarMapos', $tela);
 
         $configurar = (string) file_get_contents(APPPATH . 'views/mapos/configurar.php');
         $this->assertStringNotContainsString('são apagadas', $configurar);

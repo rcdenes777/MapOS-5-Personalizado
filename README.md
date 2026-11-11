@@ -135,7 +135,7 @@ A v5 troca a interface, o armazenamento de arquivos e a autenticação, e exige 
 
 ### Atualização via sistema
 
-Configurações > Atualizar > **Verificar atualização** baixa a última release com tag do repositório, confere o SHA256 do zip e guarda um backup dos arquivos trocados. Depois clique em `Atualizar banco de dados`. Por padrão só entram releases estáveis (`UPDATER_PRERELEASES=true` inclui pré-releases). O `application/.env`, os uploads, o `application/storage` e a pasta `install/` nunca são alterados. Detalhes em [docs/atualizacao.md](docs/atualizacao.md).
+Em Configurações, **Consultar versão oficial** exibe a versão e as notas do MapOS oficial. O MapOS 5 Personalizado bloqueia a instalação dessas releases pelo painel. Para aplicar as migrações do código instalado, use **Atualizar banco de dados**. Detalhes em [docs/atualizacao.md](docs/atualizacao.md).
 
 Esse recurso vale a partir da v5. Quem está na 4.x deve usar o guia de migração acima.
 
@@ -168,7 +168,7 @@ Para listar todos os comandos de terminal disponíveis, basta executar o comando
 ### Documentação
 * [Migração da 4.x para a v5](docs/migracao-4x-para-5.md)
 * [Servidor web: o que não pode ser público](docs/servidor-web.md)
-* [Atualização pelo painel](docs/atualizacao.md)
+* [Consulta de releases e atualização do banco](docs/atualizacao.md)
 * [Armazenamento de arquivos (`STORAGE_PATH`)](docs/armazenamento-de-arquivos.md)
 * [Autenticação da API](docs/api-autenticacao.md)
 * [Autenticação em dois fatores](docs/dois-fatores.md)

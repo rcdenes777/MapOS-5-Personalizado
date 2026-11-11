@@ -1,6 +1,12 @@
 # Atualização do Map-OS
 
-Configurações → Atualizar → **Verificar atualização** (precisa da permissão de configurar o sistema).
+No **MapOS 5 Personalizado**, acesse **Consultar versão oficial** em Configurações com a permissão de configurar o sistema. A tela exibe a versão oficial e suas notas para referência. O servidor bloqueia a aplicação de releases oficiais.
+
+A ação **Atualizar banco de dados** continua disponível para aplicar as migrações do código instalado.
+
+## Referência do atualizador no MapOS oficial
+
+A descrição abaixo documenta o mecanismo do projeto oficial.
 
 ## Como funciona
 

@@ -9,7 +9,7 @@
  * - Segredos do .env (senhas, tokens) nunca voltam para a tela: o campo vem
  *   vazio e, em branco, mantém o valor atual.
  * - A aba Atualizações atualiza o banco por POST confirmado em modal-confirm
- *   e leva à tela mapos/atualizacao para atualizar o Map-OS (#2871).
+ *   e leva à tela mapos/atualizacao para consultar a versão oficial do Map-OS.
  *
  * @var string                $aba
  * @var array<string, array>  $campos
@@ -93,9 +93,9 @@ foreach ($campos as $nome => $def) {
         </section>
         <section class="<?= e($caixa) ?>" aria-labelledby="secao-mapos">
             <h2 id="secao-mapos" class="text-heading-sm text-text">Map-OS</h2>
-            <p class="mt-1 text-caption text-muted">Consulta a última release do GitHub, mostra o que mudou e, se você confirmar, substitui os arquivos depois de conferir o SHA256 do zip. O <code>.env</code> e os uploads não são alterados.</p>
+            <p class="mt-1 text-caption text-muted">Consulte a última versão oficial e suas notas. A aplicação de releases oficiais está bloqueada no MapOS 5 Personalizado.</p>
             <div class="mt-4">
-                <?= component('button', ['label' => 'Verificar atualização', 'icon' => 'download', 'variant' => 'outline', 'href' => site_url('mapos/atualizacao')]) ?>
+                <?= component('button', ['label' => 'Consultar versão oficial', 'icon' => 'download', 'variant' => 'outline', 'href' => site_url('mapos/atualizacao')]) ?>
             </div>
         </section>
 

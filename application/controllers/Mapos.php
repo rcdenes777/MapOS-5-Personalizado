@@ -788,9 +788,7 @@ class Mapos extends MY_Controller
     }
 
     /**
-     * Tela da atualização do Map-OS (#2871): consulta a última release do
-     * GitHub e mostra a versão, o changelog e o botão de aplicar. Nada é
-     * baixado aqui.
+     * Consulta a versão e as notas da release oficial para referência.
      */
     public function atualizacao()
     {
@@ -813,19 +811,12 @@ class Mapos extends MY_Controller
 
         $this->data['versao_atual'] = $this->github_updater->versaoAtual();
         $this->data['release'] = $release;
-        $this->data['tem_atualizacao'] = $this->github_updater->temAtualizacao($release);
-        $this->data['problemas'] = $this->github_updater->problemasDoAmbiente();
         $this->data['erro'] = $erro;
         $this->data['view'] = 'mapos/atualizacao';
 
         return $this->layout();
     }
 
-    /**
-     * Aplica a atualização escolhida na tela (POST com CSRF e a tag). O
-     * download só vem da release com tag e é conferido pelo SHA256; ver
-     * Github_updater::atualizar().
-     */
     public function atualizarMapos()
     {
         if (! $this->permission->checkPermission($this->session->userdata('permissao'), 'cSistema')) {
@@ -834,24 +825,7 @@ class Mapos extends MY_Controller
             return redirect(base_url());
         }
 
-        if ($this->input->method() !== 'post') {
-            return redirect(site_url('mapos/atualizacao'));
-        }
-
-        $this->load->library('github_updater');
-
-        try {
-            $resultado = $this->github_updater->atualizar((string) $this->input->post('versao'));
-            log_info('Atualizou o Map-OS para a versão ' . $resultado['versao'] . '.');
-            $this->session->set_flashdata('success', 'Map-OS atualizado para a versão ' . $resultado['versao'] . '. Agora clique em "Atualizar banco de dados" para aplicar as mudanças das tabelas.');
-
-            return redirect(site_url('mapos/configurar?aba=sistema'));
-        } catch (Throwable $e) {
-            log_message('error', 'Atualização do Map-OS: ' . $e->getMessage());
-            $this->session->set_flashdata('error', $e instanceof RuntimeException ? $e->getMessage() : 'Erro ao atualizar o Map-OS. Veja o log da aplicação.');
-
-            return redirect(site_url('mapos/atualizacao'));
-        }
+        show_error('A aplicação de releases oficiais está bloqueada no MapOS 5 Personalizado.', 403);
     }
 
     public function calendario()

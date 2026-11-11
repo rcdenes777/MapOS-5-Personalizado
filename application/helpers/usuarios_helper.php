@@ -58,7 +58,7 @@ if (! defined('PERMISSOES_SISTEMA')) {
         'cUsuario' => ['Usuários', 'Cadastrar, editar e excluir usuários do painel.'],
         'cPermissao' => ['Permissões', 'Criar e alterar grupos de permissão (inclusive o próprio).'],
         'cEmitente' => ['Emitente', 'Dados da empresa nas impressões e no PIX.'],
-        'cSistema' => ['Configurações do sistema', 'Preferências, atualização do banco e do Map-OS.'],
+        'cSistema' => ['Configurações do sistema', 'Preferências, atualização do banco e consulta da versão oficial.'],
         'cEmail' => ['Fila de e-mails', 'Ver e limpar a fila de envio.'],
         'cAuditoria' => ['Auditoria', 'Ver o registro das ações dos usuários.'],
         'publicarOrcamento' => ['Publicar orçamento no link da OS', 'Compartilhar peças, serviços e valores conferidos e retirar a publicação, preservando decisões.'],

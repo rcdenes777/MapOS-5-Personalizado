@@ -241,9 +241,8 @@ final class ConfiguracoesTest extends MaposTestCase
         $auditoria = (string) file_get_contents(APPPATH . 'controllers/Auditoria.php');
 
         preg_match('/public function atualizarBanco\(\).*?\n    }\n/s', $mapos, $banco);
-        preg_match('/public function atualizarMapos\(\).*?\n    }\n/s', $mapos, $atualizar);
         preg_match('/public function clean\(\).*?\n    }\n/s', $auditoria, $limpar);
-        foreach ([$banco, $atualizar, $limpar] as $trecho) {
+        foreach ([$banco, $limpar] as $trecho) {
             $this->assertNotEmpty($trecho);
             $this->assertStringContainsString("\$this->input->method() !== 'post'", $trecho[0]);
         }

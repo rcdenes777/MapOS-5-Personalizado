@@ -103,3 +103,11 @@ Push depende de aprovação específica do destino e commits revisáveis. Deploy
 qualquer operação em dados reais ou mudança de infraestrutura exige nova
 confirmação de escopo e plano de recuperação. Não executar comandos de rollback
 contra instalações existentes como parte desta preparação.
+
+
+## Planejamento adicional — 01/11/2026
+
+- [Entrega e retirada de equipamentos em todas as OS](entrega-equipamento-planejada.md): requisito planejado após inspeção do código; previsão e assinatura impressa não equivalem a confirmação persistida.
+- [Retorno em garantia por equipamento](retorno-garantia-planejado.md): nova OS vinculada à original e histórico por unidade.
+
+Estas extensões estão planejadas, sem implementação funcional nesta etapa.

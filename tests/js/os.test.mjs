@@ -7,6 +7,7 @@ import {
     errosDaResposta,
     formatarPreco,
     mensagemDeErro,
+    navegarAposSalvar,
     separarCobranca,
     textoSemHtml,
     urlDaCobranca,
@@ -79,4 +80,17 @@ test('separarCobranca e urlDaCobranca', () => {
     assert.equal(separarCobranca(''), null);
 
     assert.equal(urlDaCobranca('http://mapos.test/index.php/cobrancas/adicionar', 12), 'http://mapos.test/index.php/cobrancas/visualizar/12');
+});
+
+test('salvar entrega recarrega a OS mesmo quando muda só a âncora', () => {
+    const chamadas = [];
+    const local = {
+        href: 'http://teste.local/os/visualizar/1?secao=entrega#piloto-entrega',
+        reload: () => chamadas.push('recarregar'),
+        assign: (url) => chamadas.push(url),
+    };
+    navegarAposSalvar('/os/visualizar/1?secao=entrega#os-secoes', local);
+    navegarAposSalvar('/os/visualizar/1?secao=entrega#piloto-entrega', local);
+    navegarAposSalvar('/os/visualizar/1?secao=atendimento', local);
+    assert.deepEqual(chamadas, ['recarregar', 'recarregar', 'http://teste.local/os/visualizar/1?secao=atendimento']);
 });

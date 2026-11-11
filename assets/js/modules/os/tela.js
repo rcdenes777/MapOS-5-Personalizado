@@ -154,7 +154,17 @@ function botaoDeEnvio(form, evento, doc) {
         ?? (form.id ? doc.querySelector(`[type=submit][form="${form.id}"]`) : null);
 }
 
-export default function iniciar(raiz, { post = postPadrao, doc = document, navegar = (url) => window.location.assign(url) } = {}) {
+export function navegarAposSalvar(url, local = window.location) {
+    const atual = new URL(local.href);
+    const destino = new URL(url, atual);
+    if (atual.origin === destino.origin && atual.pathname === destino.pathname && atual.search === destino.search) {
+        local.reload();
+        return;
+    }
+    local.assign(destino.href);
+}
+
+export default function iniciar(raiz, { post = postPadrao, doc = document, navegar = navegarAposSalvar } = {}) {
     iniciarAutocompletes(raiz);
 
     // Preço com a máscara de dinheiro dos formulários (1.234,56).

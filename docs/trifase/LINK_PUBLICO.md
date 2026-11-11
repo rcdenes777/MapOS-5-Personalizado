@@ -24,7 +24,8 @@ usam POST com o CSRF padrão da v5. Não cria uma permissão administrativa para
   do equipamento em texto. Não mostra cliente, endereço, técnico, anotações,
   laudo interno ou valores financeiros. Imagens embutidas no editor não são
   transportadas para a área pública.
-- Anexos começam privados. Marque explicitamente os que deseja disponibilizar.
+- Anexos começam privados. Marque explicitamente os que deseja disponibilizar. A seleção também limita a listagem e o download no portal autenticado e na API do cliente. Anexos antigos sem marca de publicação ficam disponíveis para a equipe.
+- Para retirar um anexo de todos os canais do cliente, desmarque a publicação. Revogar o link encerra o acesso pelo endereço público. O titular autenticado ainda pode consultar anexos que continuam marcados como publicados. Com o módulo de link público desativado, a seleção existente continua valendo no portal; reative o módulo para alterar a seleção no painel.
   Desmarcar e salvar remove o acesso sem precisar trocar o link. Todo download
   verifica novamente token, OS e publicação do anexo.
 - Fotos aparecem em cartões com miniaturas tanto na seleção administrativa
@@ -84,7 +85,7 @@ Respostas públicas, inclusive erros e downloads, usam `no-store`, `no-referrer`
 autorizado de salvar um arquivo que já tenha baixado.
 
 Não há migração dos tokens antigos da v4: novos links têm de ser gerados.
-O armazenamento continua sendo o privado da v5 (`STORAGE_PATH`); arquivos em
+As configurações Apache e Nginx do projeto bloqueiam o acesso HTTP direto a `assets/anexos/`. Em hospedagem com configuração própria, aplique o mesmo bloqueio. O armazenamento continua sendo o privado da v5 (`STORAGE_PATH`); arquivos em
 pastas públicas legadas, caminhos externos e symlinks que saem da raiz não passam.
 Também é conferido o MIME real. Não existem URLs estáticas para anexos públicos.
 

@@ -219,6 +219,16 @@ final class ArmazenamentoTest extends MaposTestCase
         $this->assertFileExists(FCPATH . 'assets/userImage/.htaccess');
     }
 
+    public function testArquivosLegadosNaoPodemContornarAutorizacaoPorUrlEstatica(): void
+    {
+        $apache = (string) file_get_contents(FCPATH . '.htaccess');
+        $this->assertStringContainsString('RewriteRule ^assets/anexos(/|$) - [F,L,NC]', $apache);
+        foreach (['default.conf', 'default.template.conf'] as $config) {
+            $nginx = (string) file_get_contents(FCPATH . 'docker/etc/nginx/' . $config);
+            $this->assertMatchesRegularExpression('~location \~\* \^/assets/anexos\(/\|\$\) \{\s+deny all;~', $nginx);
+        }
+    }
+
     public function testCabecalhosDeDownload(): void
     {
         $imagem = armazenamentoCabecalhos('anexo-1.png', 'png', 10);
@@ -259,7 +269,11 @@ final class ArmazenamentoTest extends MaposTestCase
         $this->assertStringContainsString('armazenamentoPasta(', $os);
 
         $mine = (string) file_get_contents(APPPATH . 'controllers/Mine.php');
-        $this->assertStringContainsString('$os->idClientes == $idCliente', $mine, 'Anexo só da OS do cliente logado.');
+        $this->assertStringContainsString('(int) $os->idClientes === $idCliente', $mine, 'Anexo só da OS do cliente logado.');
+        $this->assertStringContainsString('->anexoPublicado(', $mine);
+        $api = (string) file_get_contents(APPPATH . 'controllers/api/v1/client/ClientOsController.php');
+        $this->assertStringContainsString('->anexoPublicado($id, $idAnexo)', $api);
+        $this->assertSame('private, no-store, max-age=0', armazenamentoCabecalhos('foto.png', 'png', 10, false, false)['Cache-Control']);
 
         $arquivos = (string) file_get_contents(APPPATH . 'controllers/Arquivos.php');
         $this->assertStringNotContainsString("'./assets/arquivos/", $arquivos);

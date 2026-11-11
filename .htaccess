@@ -17,6 +17,8 @@ RewriteRule (^|/)\.(?!well-known(/|$)) - [F,L]
 # Código-fonte, scripts de atualização e arquivos de projeto não são públicos
 # (docs/servidor-web.md). application/ tem o próprio .htaccess.
 RewriteRule ^(updates|scripts|tests|docker|docs)(/|$) - [F,L]
+# Anexos legados só podem ser lidos pela aplicação.
+RewriteRule ^assets/anexos(/|$) - [F,L,NC]
 RewriteRule ^[^/]+\.(sql|json|lock|md|xml|neon|bat|sh|dist)$ - [F,L,NC]
 
 RewriteCond %{HTTP:Authorization} ^(.+)$

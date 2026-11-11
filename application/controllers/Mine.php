@@ -371,6 +371,7 @@ class Mine extends CI_Controller
     public function visualizarOs($id = null)
     {
         $idCliente = $this->clienteLogado();
+        $this->load->model('Trifase_publico_model', 'anexos_cliente');
         $this->load->model('os_model');
         $this->load->model('mapos_model');
 
@@ -386,7 +387,7 @@ class Mine extends CI_Controller
             'totais' => $totais,
             'produtos' => $this->os_model->getProdutos($idOs),
             'servicos' => $this->os_model->getServicos($idOs),
-            'anexos' => $this->os_model->getAnexos($idOs),
+            'anexos' => $this->anexos_cliente->anexos($idOs, true),
             // Os trechos do painel (os/partes/*) sem as ações de edição.
             'pode' => ['editar' => false],
             'garantia_ate' => osGarantiaDoRegistro($os),
@@ -593,7 +594,7 @@ class Mine extends CI_Controller
     }
 
     /**
-     * O anexo precisa pertencer a uma OS do cliente autenticado; o arquivo vem
+     * O anexo precisa estar publicado em uma OS do cliente autenticado; o arquivo vem
      * de STORAGE_PATH (#2872), nunca de uma URL pública.
      */
     private function enviarAnexo($id, bool $miniatura, bool $baixar): void
@@ -608,7 +609,12 @@ class Mine extends CI_Controller
             $os = $this->os_model->getById($file->os_id);
         }
 
-        $arquivo = ($os && $os->idClientes == $idCliente) ? armazenamentoArquivoDoAnexo($file, $miniatura) : null;
+        $anexo = null;
+        if ($os && (int) $os->idClientes === $idCliente) {
+            $this->load->model('Trifase_publico_model', 'anexos_cliente');
+            $anexo = $this->anexos_cliente->anexoPublicado((int) $file->os_id, (int) $file->idAnexos);
+        }
+        $arquivo = $anexo ? armazenamentoArquivoDoAnexo($anexo, $miniatura) : null;
 
         if ($arquivo === null) {
             if ($miniatura) {
@@ -618,7 +624,7 @@ class Mine extends CI_Controller
             redirect('mine/painel');
         }
 
-        armazenamentoEnviar($arquivo, 'anexo-' . (int) $file->idAnexos . '.' . strtolower(pathinfo($arquivo, PATHINFO_EXTENSION)), $baixar);
+        armazenamentoEnviar($arquivo, 'anexo-' . (int) $file->idAnexos . '.' . strtolower(pathinfo($arquivo, PATHINFO_EXTENSION)), $baixar, false);
     }
 
     // --- Cadastro -------------------------------------------------------------

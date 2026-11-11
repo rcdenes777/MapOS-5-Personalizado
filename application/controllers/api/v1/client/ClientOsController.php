@@ -22,6 +22,7 @@ class ClientOsController extends REST_Controller
         $this->load->library('format');
         $this->load->model('mapos_model');
         $this->load->model('os_model');
+        $this->load->model('Trifase_publico_model', 'anexos_cliente');
     }
 
     public function Index_get()
@@ -87,7 +88,7 @@ class ClientOsController extends REST_Controller
         $os = $data['result'];
         $produtos = $this->os_model->getProdutos($osId);
         $servicos = $this->os_model->getServicos($osId);
-        $anexos = $this->os_model->getAnexos($osId);
+        $anexos = $this->anexos_cliente->anexos($osId, true);
         $emitente = $this->mapos_model->getEmitente();
         $qrCode = $this->os_model->getQrCode(
             $id,
@@ -204,7 +205,7 @@ class ClientOsController extends REST_Controller
         }
     }
 
-    /** Arquivo (ou miniatura com ?miniatura=1) de um anexo de uma OS do cliente autenticado. */
+    /** Arquivo (ou miniatura com ?miniatura=1) de um anexo publicado em uma OS do cliente autenticado. */
     public function anexo_get(int $id, int $idAnexo)
     {
         $clientLogged = $this->logged_client();
@@ -217,7 +218,7 @@ class ClientOsController extends REST_Controller
             ], REST_Controller::HTTP_NOT_FOUND);
         }
 
-        $anexo = $this->os_model->getAnexoDaOs($id, $idAnexo);
+        $anexo = $this->anexos_cliente->anexoPublicado($id, $idAnexo);
         $arquivo = $anexo ? armazenamentoArquivoDoAnexo($anexo, $this->get('miniatura') !== null) : null;
 
         if ($arquivo === null) {
@@ -227,6 +228,6 @@ class ClientOsController extends REST_Controller
             ], REST_Controller::HTTP_NOT_FOUND);
         }
 
-        armazenamentoEnviar($arquivo, 'anexo-' . (int) $anexo->idAnexos . '.' . strtolower(pathinfo($arquivo, PATHINFO_EXTENSION)));
+        armazenamentoEnviar($arquivo, 'anexo-' . (int) $anexo->idAnexos . '.' . strtolower(pathinfo($arquivo, PATHINFO_EXTENSION)), false, false);
     }
 }

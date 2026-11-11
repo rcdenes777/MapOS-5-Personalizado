@@ -355,7 +355,7 @@ if (! function_exists('armazenamentoCabecalhos')) {
      *
      * @return array<string, string>
      */
-    function armazenamentoCabecalhos(string $nomeDeDownload, string $extensao, int $tamanho, bool $forcarDownload = false): array
+    function armazenamentoCabecalhos(string $nomeDeDownload, string $extensao, int $tamanho, bool $forcarDownload = false, bool $cacheavel = true): array
     {
         $tipos = armazenamentoTipos();
         $extensao = strtolower(ltrim($extensao, '.'));
@@ -370,16 +370,16 @@ if (! function_exists('armazenamentoCabecalhos')) {
             'Content-Disposition' => $disposicao . '; filename="' . $nome . '"; filename*=UTF-8\'\'' . rawurlencode($nome),
             'X-Content-Type-Options' => 'nosniff',
             'Content-Security-Policy' => "default-src 'none'; style-src 'unsafe-inline'",
-            'Cache-Control' => 'private, max-age=3600',
+            'Cache-Control' => $cacheavel ? 'private, max-age=3600' : 'private, no-store, max-age=0',
         ];
     }
 }
 
 if (! function_exists('armazenamentoEnviar')) {
     /** Envia o arquivo ao navegador e encerra a requisição. */
-    function armazenamentoEnviar(string $arquivo, string $nomeDeDownload, bool $forcarDownload = false): void
+    function armazenamentoEnviar(string $arquivo, string $nomeDeDownload, bool $forcarDownload = false, bool $cacheavel = true): void
     {
-        $cabecalhos = armazenamentoCabecalhos($nomeDeDownload, pathinfo($arquivo, PATHINFO_EXTENSION), (int) filesize($arquivo), $forcarDownload);
+        $cabecalhos = armazenamentoCabecalhos($nomeDeDownload, pathinfo($arquivo, PATHINFO_EXTENSION), (int) filesize($arquivo), $forcarDownload, $cacheavel);
 
         while (ob_get_level() > 0) {
             ob_end_clean();

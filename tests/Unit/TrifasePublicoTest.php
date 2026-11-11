@@ -165,6 +165,14 @@ final class TrifasePublicoTest extends MaposTestCase
         $this->assertNull($this->modelo->anexoPublicado(1, 11));
     }
 
+    public function testAcessoDoClienteFalhaFechadoSemTabelaDePublicacao(): void
+    {
+        $this->db->query('DROP TABLE trifase_publico_anexos');
+        $this->db->data_cache = [];
+        $this->assertSame([], $this->modelo->anexos(1, true));
+        $this->assertNull($this->modelo->anexoPublicado(1, 11));
+    }
+
     public function testPublicacaoIndividualPreservaOutrosAnexosEReenvioEIdempotente(): void
     {
         $this->modelo->alterarAnexo(1, 11, true, false);

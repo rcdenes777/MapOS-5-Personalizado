@@ -123,6 +123,9 @@ class Trifase_publico_model extends CI_Model
     /** @return list<object> */
     public function anexos(int $id, bool $somentePublicos = false): array
     {
+        if ($somentePublicos && ! $this->db->table_exists('trifase_publico_anexos')) {
+            return [];
+        }
         $this->db->select('anexos.*, publicado.anexo_id AS publicado')->from('anexos')
             ->join('trifase_publico_anexos AS publicado', 'publicado.anexo_id = anexos.idAnexos AND publicado.os_id = anexos.os_id', 'left')
             ->where('anexos.os_id', $id);
@@ -135,6 +138,9 @@ class Trifase_publico_model extends CI_Model
 
     public function anexoPublicado(int $osId, int $anexoId): ?object
     {
+        if (! $this->db->table_exists('trifase_publico_anexos')) {
+            return null;
+        }
         return $this->db->select('anexos.*')->from('anexos')
             ->join('trifase_publico_anexos AS publicado', 'publicado.anexo_id = anexos.idAnexos AND publicado.os_id = anexos.os_id')
             ->where('anexos.os_id', $osId)->where('anexos.idAnexos', $anexoId)->get()->row() ?: null;

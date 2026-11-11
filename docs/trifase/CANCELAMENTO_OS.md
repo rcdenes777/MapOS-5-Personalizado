@@ -6,14 +6,14 @@ No início, **Cancelamentos em processo** abre a lista com a próxima ação e a
 
 Registrar pedido exige `vOs` + `eOs`. O registro contém solicitante, motivo, operador, horário e retrato privado dos itens e do financeiro. O pedido não muda status, estoque, pagamentos ou link público. Há somente um pedido pendente por OS, protegido pela mesma trava usada nos demais módulos.
 
-O técnico pode registrar/retirar o pedido e devolver peças não utilizadas pelo controle nativo de peças da OS. Não recebe valores financeiros nem o formulário de confirmação. Confirmação exige `vOs`, `eOs`, `vLancamento` e `eLancamento`, no mapa de rotas e no controlador; o nome do cargo não concede acesso. As permissões existentes do administrador do laboratório já atendem a essas condições; nenhum perfil foi ampliado nesta etapa.
+O técnico pode registrar/retirar o pedido e registrar o destino das peças no cancelamento. Não recebe valores financeiros nem o formulário de confirmação. Confirmação exige `vOs`, `eOs`, `vLancamento` e `eLancamento`, no mapa de rotas e no controlador; o nome do cargo não concede acesso. As permissões existentes do administrador do laboratório já atendem a essas condições; nenhum perfil foi ampliado nesta etapa.
 
 ## Conferência técnica e financeira em etapas
 
-1. O técnico remove as peças devolvidas na própria tela de cancelamento, reutilizando o controle nativo de peças, que registra a devolução no estoque. Não remover peça utilizada como se fosse uma devolução: esse caso exige conciliação.
-2. Com nenhuma peça vinculada, o técnico marca as duas confirmações de peças e serviços e usa **Concluir conferência técnica**. Essa etapa exige `vOs` + `eOs`, aceita observações opcionais e grava responsável, horário e um retrato dos itens. Não registra conferência financeira nem movimenta dinheiro. Um campo financeiro enviado nessa operação é recusado.
+1. O técnico registra a devolução de peças intactas ou o consumo/perda, com motivo obrigatório. O consumo retira a linha da lista de pendências sem aumentar o estoque. A perda e seu custo histórico, quando conhecido, ficam registrados no histórico e na consulta de custos da OS. A operação trata toda a quantidade da linha.
+2. Com nenhuma peça vinculada, o técnico confirma o destino das peças e os serviços executados que permanecem na OS e usa **Concluir conferência técnica**. Essa etapa exige `vOs` + `eOs`, aceita observações opcionais e grava responsável, horário e um retrato dos itens. Não registra conferência financeira nem movimenta dinheiro. Um campo financeiro enviado nessa operação é recusado.
 3. Somente quem tem `vOs`, `eOs`, `vLancamento` e `eLancamento` vê a conferência financeira e a confirmação final. O formulário financeiro só aparece depois de existirem zero peças vinculadas e uma conferência técnica válida para o pedido e os itens atuais. Antes disso aparece apenas a orientação de aguardar, sem concluir que o acerto seja zero. Depois disso ainda valem os bloqueios financeiros e de encerramento.
-4. A confirmação final executa o acerto autorizado e registra Cancelado e o histórico, sem segunda movimentação de estoque. As devoluções já aconteceram na remoção das peças; não há segunda devolução automática. Observações da conferência financeira são opcionais; sua declaração continua obrigatória.
+4. A confirmação final executa o acerto autorizado e registra Cancelado e o histórico, sem segunda movimentação de estoque. As devoluções físicas já aconteceram na etapa técnica; não há segunda devolução automática. Observações da conferência financeira são opcionais; sua declaração continua obrigatória.
 
 A validação é executada novamente no servidor sob a trava da OS. Novas peças, alterações nos IDs/quantidades dos itens ou no status invalidam a liberação técnica e exigem nova conferência. Mudanças apenas em preços não transformam a etapa técnica em controle financeiro. A confirmação final guarda o ID da conferência técnica e o responsável, separado de quem confirmou o financeiro. Eventos técnicos não encerram o pedido; retirada e nova solicitação não reaproveitam a liberação de um pedido anterior. Não há alteração dos registros históricos já confirmados pelo fluxo anterior.
 
@@ -21,7 +21,7 @@ Bloqueios efetivos: obrigação financeira formalizada, faturamento/lançamento 
 
 **Limite deliberado:** esta tela não executa a conciliação de uma obrigação formalizada nem libera uma obrigação apenas por estar paga. Esses casos continuam pendentes e exigem tratamento pelo financeiro; não foi criado um atalho para apagar cobranças ou histórico. Também não há pedido anônimo pelo link público.
 
-O pedido pode ser retirado com motivo antes da confirmação, preservando os eventos. Uma OS com histórico de cancelamento não pode ser excluída. Com o módulo instalado, o editor comum deixa de oferecer Cancelado para OS ativa; o servidor bloqueia cancelamento/reabertura diretos, inclusive POST e os caminhos de alteração/exclusão da API. Atendimento cancelado permanece como histórico; outro atendimento usa nova OS.
+O pedido pode ser retirado com motivo antes da confirmação, preservando os eventos e os destinos físicos já registrados. Uma OS com histórico de cancelamento não pode ser excluída. Com o módulo instalado, o editor comum deixa de oferecer Cancelado para OS ativa; o servidor bloqueia cancelamento/reabertura diretos, inclusive POST e os caminhos de alteração/exclusão da API. Atendimento cancelado permanece como histórico; outro atendimento usa nova OS.
 
 ## Laboratório e evidências
 

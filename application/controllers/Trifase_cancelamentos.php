@@ -64,10 +64,15 @@ class Trifase_cancelamentos extends MY_Controller
             if ($pedido === false || $item === false || $this->texto('conferido') !== '1') {
                 throw new DomainException('Confirme o item e sua condição antes de prosseguir.');
             }
-            if ($tipo === 'produto' && ! ($this->data['configuration']['control_estoque'] ?? false)) {
+            $consumida = $this->input->post('consumida');
+            if ($consumida !== null && $consumida !== '1') {
+                throw new DomainException('Destino da peça inválido.');
+            }
+            $perda = $consumida === '1' ? $this->texto('motivo_perda') : null;
+            if ($tipo === 'produto' && $perda === null && ! ($this->data['configuration']['control_estoque'] ?? false)) {
                 throw new DomainException('Ative o controle de estoque antes da devolução.');
             }
-            $this->cancelamentos->retirarItem((int) $os->idOs, $pedido, $tipo, $item, (int) $this->session->userdata('id_admin'), $this->texto('operacao'));
+            $this->cancelamentos->retirarItem((int) $os->idOs, $pedido, $tipo, $item, (int) $this->session->userdata('id_admin'), $this->texto('operacao'), $perda);
             $resposta = ['result' => true];
         } catch (DomainException $e) {
             $this->output->set_status_header(422);
@@ -124,7 +129,7 @@ class Trifase_cancelamentos extends MY_Controller
                     $this->cancelamentos->retirar((int) $os->idOs, $pedido, $this->texto('motivo'), $usuario, $op);
                 } elseif ($tipo === 'tecnica') {
                     $dados = [];
-                    foreach (['hash_tecnico', 'pecas_nao_utilizadas', 'servicos_nao_executados', 'observacoes_tecnicas', 'financeiro_conferido'] as $campo) {
+                    foreach (['hash_tecnico', 'pecas_nao_utilizadas', 'servicos_nao_executados', 'servicos_executados', 'observacoes_tecnicas', 'financeiro_conferido'] as $campo) {
                         if ($this->input->post($campo) !== null) {
                             $dados[$campo] = $this->input->post($campo);
                         }
@@ -161,9 +166,6 @@ class Trifase_cancelamentos extends MY_Controller
         $cliente = $this->db->select('nomeCliente')->where('idClientes', (int) $os->clientes_id)->get('clientes', 1)->row();
         $pecas = array_map(static fn ($i) => ['id' => (int) $i['id'], 'nome' => $i['nome'], 'quantidade' => $i['quantidade']], $c['pecas']);
         $servicos = array_map(static fn ($i) => ['id' => (int) $i['idServicos_os'], 'nome' => $i['nome'], 'quantidade' => $i['quantidade']], $c['servicos']);
-        if ($pecas !== [] && ! ($this->data['configuration']['control_estoque'] ?? false)) {
-            $c['bloqueios'][] = 'Confira a configuração de controle de estoque antes da devolução de peças.';
-        }
         $pedido = $this->cancelamentos->atual((int) $os->idOs);
         $tecnica = ($pedido->tipo ?? '') === 'solicitar' ? $this->cancelamentos->tecnicaValida((int) $os->idOs, (int) $pedido->id, $c) : null;
         $podeConfirmar = $this->permite('eOs') && $this->permite('vLancamento') && $this->permite('eLancamento');

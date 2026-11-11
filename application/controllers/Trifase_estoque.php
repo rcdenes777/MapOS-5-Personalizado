@@ -169,6 +169,17 @@ class Trifase_estoque extends MY_Controller
         }
         $this->data['osCusto'] = $os;
         $this->data['resumoCustosOs'] = $this->estoque->resumoOs($id);
+        $perdas = [];
+        if ($this->db->table_exists('trifase_cancelamentos')) {
+            $eventos = $this->db->where(['os_id' => $id, 'tipo' => 'consumir_peca'])
+                ->order_by('id', 'desc')->get('trifase_cancelamentos')->result();
+            foreach ($eventos as $evento) {
+                $registro = json_decode($evento->retrato, true, 32, JSON_THROW_ON_ERROR);
+                $custo = $registro['custo_unitario_c'];
+                $perdas[] = ['descricao' => $evento->motivo, 'custo_c' => $custo !== null ? $custo * (int) $registro['item']['quantidade'] : null];
+            }
+        }
+        $this->data['perdasCancelamentoOs'] = $perdas;
         $this->data['historicoCustosOs'] = $this->db->where('os_id', $id)->order_by('id', 'desc')->get('trifase_os_custos')->result();
         $this->data['erroCustoOs'] = $erro;
         $this->data['editarCustoOs'] = $this->permite('eOs');

@@ -36,12 +36,13 @@ final class TrifaseCancelamentoAcessoTest extends \PHPUnit\Framework\TestCase
         $dados = [
             'osCancelamento' => (object) ['idOs' => 1, 'status' => 'Aprovado'],
             'pedidoCancelamento' => (object) ['id' => 1, 'tipo' => 'solicitar', 'solicitante' => '<script>QA</script>', 'motivo' => '<b>Motivo</b>', 'criado_em' => '2026-11-04 12:00:00'],
-            'historicoCancelamento' => [], 'pecasCancelamento' => [['nome' => 'Peça', 'quantidade' => 1]], 'servicosCancelamento' => [],
+            'historicoCancelamento' => [], 'pecasCancelamento' => [['id' => 1, 'nome' => 'Peça', 'quantidade' => 1]], 'servicosCancelamento' => [],
             'financeiroCancelamento' => null, 'podeConfirmarCancelamento' => false, 'podePedirCancelamento' => true,
             'bloqueiosCancelamento' => [], 'erroCancelamento' => null, 'hashCancelamento' => 'hash', 'hashTecnicoCancelamento' => 'tecnico', 'tecnicaCancelamento' => null,
             'clienteCancelamento' => 'Cliente da OS',
             'valoresCancelamento' => ['origem' => 'cliente', 'motivo' => '', 'conferencia' => ''],
         ];
+        $dados['devolverPecasCancelamento'] = true;
         $html = $v->renderizar($dados);
         $this->assertStringContainsString('Pedido pendente', $html);
         $this->assertStringContainsString('&lt;script&gt;QA&lt;/script&gt;', $html);
@@ -51,7 +52,7 @@ final class TrifaseCancelamentoAcessoTest extends \PHPUnit\Framework\TestCase
         $this->assertStringNotContainsString('trifase_financeiro/visualizar/', $html);
         $this->assertStringContainsString('trifase_cancelamentos/retirar/', $html);
         $this->assertStringContainsString('name="pecas_nao_utilizadas"', $html);
-        $this->assertStringContainsString('name="servicos_nao_executados"', $html);
+        $this->assertStringContainsString('name="servicos_executados"', $html);
         $this->assertStringNotContainsString('name="financeiro_conferido"', $html);
         $this->assertStringNotContainsString('trifase_cadastros/cliente/', $html);
         $htmlFinanceiro = $v->renderizar(array_replace($dados, ['osCancelamento' => (object) ['idOs' => 1, 'status' => 'Aprovado', 'clientes_id' => 9], 'podeConfirmarCancelamento' => true, 'podeClassificarClienteCancelamento' => true, 'pecasCancelamento' => [], 'tecnicaCancelamento' => ['usuario_id' => 2, 'criado_em' => '2026-11-04 12:01:00']]));

@@ -10,6 +10,17 @@
         <p class="mt-3 text-caption text-muted"><?= e($resumoCustosOs['cancelada'] ? 'OS cancelada: custos não somados. Registros preservados para consulta.' : 'Custos registrados não representam lucro líquido nem despesas pagas. Não incluem itens desconhecidos ou trabalho não informado. No retorno, custos adicionais devem excluir os valores já registrados nos itens.') ?></p>
         <?php if ($resumoCustosOs['desconhecidos'] > 0) { ?><?= component('alert', ['variant' => 'warning', 'message' => $resumoCustosOs['desconhecidos'] . ' item(ns) sem custo conhecido. O total está incompleto; custos antigos não são inferidos do cadastro atual.']) ?><?php } ?>
     </section>
+    <?php if ($perdasCancelamentoOs !== []) { ?>
+        <section class="rounded-card border border-border bg-surface p-4">
+            <h2 class="text-heading-sm text-text">Peças consumidas ou perdidas no cancelamento</h2>
+            <p class="mt-2 text-caption text-muted">Custos de perda registrados à parte do total de peças e serviços vinculados.</p>
+            <ul class="mt-3 grid gap-2">
+                <?php foreach ($perdasCancelamentoOs as $perda) { ?>
+                    <li class="break-words"><?= e($perda['descricao'] . ' · Custo registrado: ' . ($perda['custo_c'] === null ? 'Não informado' : dinheiro($perda['custo_c'] / 100))) ?></li>
+                <?php } ?>
+            </ul>
+        </section>
+    <?php } ?>
     <section><h2 class="text-heading-sm text-text">Peças e serviços desta OS</h2><ul class="mt-3 grid min-w-0 grid-cols-1 gap-4">
         <?php foreach ($resumoCustosOs['linhas'] as $linhaCusto) { ?>
             <li class="min-w-0 rounded-card border border-border bg-surface p-4">

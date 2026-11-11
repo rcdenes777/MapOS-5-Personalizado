@@ -181,12 +181,22 @@ class Trifase_cancelamento_model extends CI_Model
         });
     }
 
-    public function retirarItem(int $id, int $pedido, string $tipo, int $item, int $usuario, string $operacao): int
+    public function retirarItem(int $id, int $pedido, string $tipo, int $item, int $usuario, string $operacao, ?string $perda = null): int
     {
         if (! in_array($tipo, ['produto', 'servico'], true)) {
             throw new DomainException('Tipo de item inválido.');
         }
-        return $this->executar($id, $usuario, $operacao, ['retirar_item', $pedido, $tipo, $item], function ($os) use ($id, $pedido, $tipo, $item, $usuario, $operacao) {
+        if ($perda !== null) {
+            if ($tipo !== 'produto') {
+                throw new DomainException('Somente peças podem ser registradas como consumidas.');
+            }
+            $perda = $this->texto($perda, 2000);
+        }
+        $dados = ['retirar_item', $pedido, $tipo, $item];
+        if ($perda !== null) {
+            $dados[] = $perda;
+        }
+        return $this->executar($id, $usuario, $operacao, $dados, function ($os) use ($id, $pedido, $tipo, $item, $usuario, $operacao, $perda) {
             $solicitacao = $this->pedido($id, $pedido);
             $conferencia = $this->conferencia($os);
             if ($conferencia['bloqueios'] !== []) {
@@ -204,7 +214,14 @@ class Trifase_cancelamento_model extends CI_Model
 
             $movimento = null;
             $motivo = $produto ? 'Peça não utilizada devolvida ao estoque' : 'Serviço não executado retirado';
-            if ($produto) {
+            $custo = null;
+            if ($perda !== null) {
+                $motivo = 'Peça consumida ou perdida';
+                if ($this->db->table_exists('trifase_os_custos')) {
+                    $custo = $this->db->where(['os_id' => $id, 'tipo' => 'produto', 'item_id' => $item])
+                        ->order_by('id', 'desc')->get('trifase_os_custos', 1)->row()->custo_unitario_c ?? null;
+                }
+            } elseif ($produto) {
                 require_once APPPATH . 'models/Trifase_estoque_model.php';
                 $estoque = new Trifase_estoque_model();
                 $estoque->db = $this->db;
@@ -218,7 +235,12 @@ class Trifase_cancelamento_model extends CI_Model
                 throw new RuntimeException('Não foi possível atualizar o desconto da OS.');
             }
             $descricao = $motivo . ': ' . $registro['nome'] . ' · Qtd. ' . $registro['quantidade'];
-            return $this->evento($id, 'retirar_item', $pedido, $solicitacao->solicitante, $descricao, ['tipo' => $tipo, 'item' => $registro, 'movimento_estoque_id' => $movimento], $usuario, $operacao);
+            $retrato = ['tipo' => $tipo, 'item' => $registro, 'movimento_estoque_id' => $movimento];
+            if ($perda !== null) {
+                $descricao .= ' · ' . $perda;
+                $retrato['custo_unitario_c'] = $custo !== null ? (int) $custo : null;
+            }
+            return $this->evento($id, $perda !== null ? 'consumir_peca' : 'retirar_item', $pedido, $solicitacao->solicitante, $descricao, $retrato, $usuario, $operacao);
         });
     }
 
@@ -236,6 +258,9 @@ class Trifase_cancelamento_model extends CI_Model
             return null;
         }
         $r = json_decode($e->retrato, true, 32, JSON_THROW_ON_ERROR);
+        if ($c['servicos'] !== [] && ($r['tecnica']['servicos_vinculados_executados'] ?? false) !== true) {
+            return null;
+        }
         return isset($r['hash_tecnico']) && hash_equals($r['hash_tecnico'], $this->hashTecnico($c)) ? $e : null;
     }
 
@@ -248,9 +273,11 @@ class Trifase_cancelamento_model extends CI_Model
                 throw new DomainException('Os dados técnicos mudaram. Reabra a conferência.');
             }
             if ($c['pecas'] !== []) {
-                throw new DomainException('Remova da OS as peças devolvidas pelo controle de peças antes de liberar a conferência financeira.');
+                throw new DomainException('Registre a devolução ou o consumo de cada peça antes de liberar a conferência financeira.');
             }
-            if (($dados['pecas_nao_utilizadas'] ?? '') !== '1' || ($dados['servicos_nao_executados'] ?? '') !== '1') {
+            $servicosConferidos = ($dados['servicos_executados'] ?? '') === '1'
+                || ($c['servicos'] === [] && ($dados['servicos_nao_executados'] ?? '') === '1');
+            if (($dados['pecas_nao_utilizadas'] ?? '') !== '1' || ! $servicosConferidos) {
                 throw new DomainException('Confirme peças e serviços. Pendências técnicas precisam ser conciliadas antes de liberar o financeiro.');
             }
             if (isset($dados['financeiro_conferido'])) {
@@ -258,7 +285,7 @@ class Trifase_cancelamento_model extends CI_Model
             }
             $obs = $this->texto($dados['observacoes_tecnicas'] ?? '', 2000, false);
             $c['hash_tecnico'] = $this->hashTecnico($c);
-            $c['tecnica'] = ['pecas_devolvidas' => true, 'servicos_conferidos' => true, 'observacoes' => $obs];
+            $c['tecnica'] = ['pecas_conferidas' => true, 'servicos_conferidos' => true, 'servicos_vinculados_executados' => ($dados['servicos_executados'] ?? '') === '1', 'observacoes' => $obs];
             return $this->evento($id, 'tecnica', $pedido, $p->solicitante, $obs !== '' ? $obs : 'Peças e serviços conferidos pelo responsável técnico.', $c, $usuario, $operacao);
         });
     }

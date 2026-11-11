@@ -88,7 +88,7 @@ final class TrifaseCancelamentoTest extends MaposTestCase
     private function dadosTecnicos(): array
     {
         $c = $this->modelo->conferencia($this->db->where('idOs', 1)->get('os')->row());
-        return ['hash_tecnico' => $this->modelo->hashTecnico($c), 'pecas_nao_utilizadas' => '1', 'servicos_nao_executados' => '1'];
+        return ['hash_tecnico' => $this->modelo->hashTecnico($c), 'pecas_nao_utilizadas' => '1', 'servicos_executados' => '1'];
     }
 
     private function devolverPecas(): void
@@ -147,7 +147,7 @@ final class TrifaseCancelamentoTest extends MaposTestCase
             $this->assertSame(1, $this->db->count_all('trifase_cancelamentos'));
         }
         $this->devolverPecas();
-        foreach ([['pecas_nao_utilizadas' => '0'], ['servicos_nao_executados' => '0'], ['financeiro_conferido' => '1']] as $dados) {
+        foreach ([['pecas_nao_utilizadas' => '0'], ['servicos_executados' => '0', 'servicos_nao_executados' => '1'], ['financeiro_conferido' => '1']] as $dados) {
             try {
                 $this->modelo->conferirTecnica(1, $pedido, array_replace($this->dadosTecnicos(), $dados), 2, 'tecnica_123456789');
                 $this->fail('Aceitou pendência ou financeiro na técnica');
@@ -244,17 +244,37 @@ final class TrifaseCancelamentoTest extends MaposTestCase
         $f->formalizar(1, 20000, 0, '2026-11-10', 7);
         $f->receber(1, 20000, '2026-11-04', 'Pix', 'recebimento_os1_20000', 7);
 
+        $this->db->insert('produtos', ['idProdutos' => 2, 'descricao' => 'IGBT', 'estoque' => 4, 'precoCompra' => '16.00']);
+        $this->db->insert('produtos_os', ['idProdutos_os' => 2, 'os_id' => 1, 'produtos_id' => 2, 'quantidade' => 1, 'preco' => '40.00', 'subTotal' => '40.00']);
+        $estoque = new Trifase_estoque_model();
+        $estoque->db = $this->db;
+        $estoque->capturarItem(1, 'produto', 2, 2);
         $pedido = $this->pedido();
         $resumoOriginal = $f->resumo(1);
         $evento = $this->modelo->retirarItem(1, $pedido, 'produto', 1, 2, 'devolucao_123456789');
         $this->assertSame($evento, $this->modelo->retirarItem(1, $pedido, 'produto', 1, 2, 'devolucao_123456789'));
-        $this->assertSame(10, (int) $this->db->get('produtos')->row()->estoque);
+        $consumida = $this->modelo->retirarItem(1, $pedido, 'produto', 2, 2, 'consumir_igbt_123456', 'Danificado no diagnóstico');
+        $this->assertSame($consumida, $this->modelo->retirarItem(1, $pedido, 'produto', 2, 2, 'consumir_igbt_123456', 'Danificado no diagnóstico'));
+        try {
+            $this->modelo->retirarItem(1, $pedido, 'produto', 2, 2, 'devolver_igbt_123456');
+            $this->fail('Devolveu uma peça já consumida');
+        } catch (DomainException $e) {
+            $this->assertStringContainsString('já foi retirado', $e->getMessage());
+        }
+        $this->assertSame(4, (int) $this->db->where('idProdutos', 2)->get('produtos')->row()->estoque);
+        $this->assertSame(10, (int) $this->db->where('idProdutos', 1)->get('produtos')->row()->estoque);
         $this->assertSame(1, $this->db->count_all_results('trifase_estoque_eventos'));
         $this->assertSame(0, $this->db->where('os_id', 1)->count_all_results('produtos_os'));
         $this->assertSame($resumoOriginal, $f->resumo(1));
         $this->assertSame($pedido, (int) $this->modelo->atual(1)->id);
-        $this->assertSame('retirar_item', $this->modelo->historico(1)[0]->tipo);
+        $historico = $this->modelo->historico(1);
+        $this->assertSame('consumir_peca', $historico[0]->tipo);
+        $this->assertSame('retirar_item', $historico[1]->tipo);
+        $retrato = json_decode($historico[0]->retrato, true, 32, JSON_THROW_ON_ERROR);
+        $this->assertSame(1600, $retrato['custo_unitario_c']);
+        $this->assertNull($retrato['movimento_estoque_id']);
         $this->modelo->conferirTecnica(1, $pedido, $this->dadosTecnicos(), 2, 'tecnica_123456789');
+        $this->assertSame(1, $this->db->where('os_id', 1)->count_all_results('servicos_os'));
 
         // Sem confirmar acerto_confirmado, continua bloqueado.
         try {
@@ -399,6 +419,28 @@ final class TrifaseCancelamentoTest extends MaposTestCase
         $atual = [1 => ['total_c' => 5000, 'saldo_c' => 3000, 'situacao' => 'Parcialmente pago']];
         $this->assertSame($atual, $this->modelo->resumosEncerrados([1], $atual));
         $this->assertSame([], $this->modelo->resumosEncerrados([2], []));
+    }
+
+    public function testFalhaAoRegistrarPerdaPreservaPecaEDesconto(): void
+    {
+        $this->db->query('ALTER TABLE os ADD COLUMN desconto INTEGER DEFAULT 5');
+        $this->db->query('ALTER TABLE os ADD COLUMN valor_desconto INTEGER DEFAULT 5');
+        $this->db->query('ALTER TABLE os ADD COLUMN tipo_desconto TEXT');
+        $pedido = $this->pedido();
+        $this->db->db_debug = false;
+        $this->db->query("CREATE TRIGGER falha_perda BEFORE INSERT ON trifase_cancelamentos WHEN NEW.tipo = 'consumir_peca' BEGIN SELECT RAISE(FAIL, 'falha perda'); END");
+        set_error_handler(static fn ($nivel, $mensagem) => $mensagem === 'SQLite3::exec(): falha perda');
+        try {
+            $this->modelo->retirarItem(1, $pedido, 'produto', 1, 2, 'consumir_igbt_123456', 'Perda em bancada');
+            $this->fail('Removeu a peça sem registrar a perda');
+        } catch (RuntimeException $e) {
+            $this->assertStringContainsString('preservar o registro', $e->getMessage());
+            $this->assertSame(1, $this->db->where('os_id', 1)->count_all_results('produtos_os'));
+            $this->assertSame(5, (int) $this->db->where('idOs', 1)->get('os')->row()->valor_desconto);
+            $this->assertSame(0, $this->db->count_all('trifase_estoque_eventos'));
+        } finally {
+            restore_error_handler();
+        }
     }
 
     public function testFalhaNoHistoricoPreservaConferenciaTecnicaSemCancelarParcialmente(): void

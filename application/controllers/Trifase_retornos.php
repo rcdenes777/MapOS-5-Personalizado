@@ -90,17 +90,20 @@ class Trifase_retornos extends MY_Controller
             show_404('', false);
         }
         $financeiro = $this->permite('vLancamento');
+        $verCusto = $this->permite('vCustoInterno');
         $this->data['retornoOs'] = $this->db->where('idOs', $id)->get('os', 1)->row();
         $this->data['vinculoRetorno'] = $v;
         $this->data['avaliacaoRetorno'] = $this->retornos->avaliacao($id);
-        $this->data['eventosRetorno'] = array_values(array_filter($this->retornos->eventos($id), static fn ($e) => $financeiro || $e->tipo === 'avaliar'));
+        $this->data['eventosRetorno'] = array_values(array_filter($this->retornos->eventos($id), static fn ($e) => $verCusto || $e->tipo === 'avaliar'));
         $this->data['outrosRetornos'] = $this->retornos->historicoUnidade((int) $v->equipamento_id);
         $this->data['podeAvaliarRetorno'] = $this->permite('eOs');
-        $this->data['verCustosRetorno'] = $financeiro;
+        $this->data['verCustosRetorno'] = $verCusto;
+        $this->data['editarCustosRetorno'] = $verCusto && $this->permite('eCustoInterno');
+        $this->data['verFinanceiroRetorno'] = $financeiro;
         $this->data['podeNovoRetorno'] = $this->permite('aOs') && $this->permite('eOs') && $this->data['retornoOs']->status === 'Finalizado';
-        $this->data['custosRetorno'] = $financeiro ? $this->retornos->custos($id) : null;
+        $this->data['custosRetorno'] = $verCusto ? $this->retornos->custos($id) : null;
         $total = ['valor_c' => 0, 'minutos' => 0];
-        if ($financeiro) {
+        if ($verCusto) {
             foreach ($this->data['outrosRetornos'] as $r) {
                 $c = $this->retornos->custos((int) $r->os_id);
                 $total['valor_c'] += $c['valor_c'];
@@ -109,11 +112,11 @@ class Trifase_retornos extends MY_Controller
         }
         $this->data['custosItensRetorno'] = null;
         require_once APPPATH . 'helpers/trifase_estoque_helper.php';
-        if ($financeiro && trifaseEstoqueHabilitado()) {
+        if ($verCusto && trifaseEstoqueHabilitado()) {
             $this->load->model('Trifase_estoque_model', 'estoque_retorno');
             $this->data['custosItensRetorno'] = $this->estoque_retorno->resumoOs($id);
         }
-        $this->data['custosUnidadeRetorno'] = $financeiro ? $total : null;
+        $this->data['custosUnidadeRetorno'] = $verCusto ? $total : null;
         require_once APPPATH . 'helpers/trifase_garantia_helper.php';
         $this->data['garantiaOperacoes'] = trifaseGarantiaOperacoesHabilitadas() && $this->db->table_exists('trifase_garantia_operacoes');
         if ($this->data['garantiaOperacoes']) {
@@ -160,7 +163,8 @@ class Trifase_retornos extends MY_Controller
     {
         if (! $this->permission->checkPermission($this->session->userdata('permissao'), 'vOs')
             || ! $this->permission->checkPermission($this->session->userdata('permissao'), 'eOs')
-            || ! $this->permission->checkPermission($this->session->userdata('permissao'), 'vLancamento')) {
+            || ! $this->permission->checkPermission($this->session->userdata('permissao'), 'vCustoInterno')
+            || ! $this->permission->checkPermission($this->session->userdata('permissao'), 'eCustoInterno')) {
             show_error('Você não tem permissão para registrar custos internos.', 403);
         }
         $id = $this->postId($id);
@@ -187,7 +191,8 @@ class Trifase_retornos extends MY_Controller
     {
         if (! $this->permission->checkPermission($this->session->userdata('permissao'), 'vOs')
             || ! $this->permission->checkPermission($this->session->userdata('permissao'), 'eOs')
-            || ! $this->permission->checkPermission($this->session->userdata('permissao'), 'vLancamento')) {
+            || ! $this->permission->checkPermission($this->session->userdata('permissao'), 'vCustoInterno')
+            || ! $this->permission->checkPermission($this->session->userdata('permissao'), 'eCustoInterno')) {
             show_error('Você não tem permissão para corrigir custos internos.', 403);
         }
         $id = $this->postId($id);
@@ -214,14 +219,19 @@ class Trifase_retornos extends MY_Controller
             show_error('Você não tem permissão para executar troca em garantia.', 403);
         }
         $id = $this->operacaoId($id);
+        $custoExterno = $this->input->post('custo_externo');
+        if ($custoExterno !== null && $custoExterno !== '' && (! $this->permite('vCustoInterno') || ! $this->permite('eCustoInterno'))) {
+            show_error('Você não tem permissão para informar custo interno da substituta.', 403);
+        }
         try {
             if ($this->input->post('confirmar') !== '1') {
                 throw new DomainException('Confira e confirme a substituição física e a saída do estoque, quando aplicável.');
             }
             $d = [];
-            foreach (['origem','produto_id','modelo_id','tipo','marca','modelo','selo','serie','imei','destino_antiga','custo_externo','motivo'] as $campo) {
+            foreach (['origem','produto_id','modelo_id','tipo','marca','modelo','selo','serie','imei','destino_antiga','motivo'] as $campo) {
                 $d[$campo] = $this->texto($campo);
             }
+            $d['custo_externo'] = $custoExterno === null ? '' : $this->texto('custo_externo');
             $this->garantia_operacao->trocar($id, $d, $this->inteiro('avaliacao', 1), $this->usuario(), $this->texto('operacao'));
             $this->session->set_flashdata('success', 'Troca registrada. Unidade anterior e prazo original preservados; substituta identificada.');
         } catch (DomainException $e) {

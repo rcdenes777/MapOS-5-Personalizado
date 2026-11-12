@@ -1,6 +1,7 @@
 <?php
 
 require_once APPPATH . 'models/Os_model.php';
+require_once APPPATH . 'helpers/api_helper.php';
 require_once APPPATH . 'controllers/api/v1/OsController.php';
 
 /**
@@ -54,9 +55,15 @@ final class ApiOsSegurancaTest extends MaposTestCase
 
             public bool $financeiro = true;
 
+            public bool $custo = true;
+
             public function checkPermission($permissao, $acao): bool
             {
-                return $this->pode && ($acao !== 'vLancamento' || $this->financeiro);
+                return $this->pode && match ($acao) {
+                    'vLancamento' => $this->financeiro,
+                    'vCustoInterno' => $this->custo,
+                    default => true,
+                };
             }
         };
 
@@ -108,6 +115,11 @@ final class ApiOsSegurancaTest extends MaposTestCase
             public function logged_user($reGenToken = false)
             {
                 return (object) ['level' => 1, 'usuario' => (object) ['nome' => 'Teste']];
+            }
+
+            public function criarTextoWhats($os, $totalProdutos, $totalServico)
+            {
+                return '';
             }
 
             public function getConfig($config)
@@ -270,6 +282,20 @@ final class ApiOsSegurancaTest extends MaposTestCase
         $this->controller->permission->financeiro = true;
         $lista = $this->chamar('index_get', []);
         $this->assertEquals(100, $lista['data']['result'][0]['totalProdutos']);
+    }
+
+    public function testPermissaoFinanceiraNaoExibeCustoDoProdutoNaOs(): void
+    {
+        $this->controller->permission->custo = false;
+        $resposta = $this->chamar('index_get', [1]);
+        $produto = $resposta['data']['result']['produtos'][0];
+        $this->assertSame(200, $resposta['code']);
+        $this->assertEquals(100, $produto['preco']);
+        $this->assertArrayNotHasKey('precoCompra', $produto);
+
+        $this->controller->permission->custo = true;
+        $resposta = $this->chamar('index_get', [1]);
+        $this->assertEquals(45, $resposta['data']['result']['produtos'][0]['precoCompra']);
     }
 
     public function testTecnicoNaoAlteraValoresPelaApi(): void

@@ -242,7 +242,7 @@ if (($pilotoEquipamento ?? null) !== null
                     <?php } ?>
                 </dl>
             </section>
-            <?php if (trifaseEstoqueHabilitado() && $verFinanceiro) { ?>
+            <?php if (trifaseEstoqueHabilitado() && $permite('vCustoInterno')) { ?>
                 <div><?= component('link', ['label' => 'Consultar custos internos do reparo', 'href' => site_url('trifase_estoque/os/' . $idOs)]) ?></div>
             <?php } ?>
         <?php } ?>

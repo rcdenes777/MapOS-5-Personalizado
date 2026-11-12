@@ -20,9 +20,10 @@ class ClientComprasController extends REST_Controller
         $this->load->library('format');
         $this->load->model('mapos_model');
         $this->load->model('os_model');
+        $this->load->helper('api');
     }
 
-    public function index_get(int $idVendas = null)
+    public function index_get(?int $idVendas = null)
     {
         $clientLogged = $this->logged_client();
 
@@ -79,7 +80,7 @@ class ClientComprasController extends REST_Controller
         );
         $chaveFormatada = $this->format->formatarChave($pixKey);
 
-        $produtos = $this->vendas_model->getProdutos($vendaId);
+        $produtos = array_map('apiProdutoSemCusto', $this->vendas_model->getProdutos($vendaId));
         unset(
             $result->senha,
             $result->email,

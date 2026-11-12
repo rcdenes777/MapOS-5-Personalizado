@@ -2,7 +2,7 @@
 
 defined('BASEPATH') or exit('No direct script access allowed');
 
-require APPPATH . '/libraries/REST_Controller.php';
+require_once APPPATH . '/libraries/REST_Controller.php';
 
 class ProdutosController extends REST_Controller
 {
@@ -11,7 +11,7 @@ class ProdutosController extends REST_Controller
         parent::__construct();
 
         $this->load->model('produtos_model');
-        $this->load->helper('validation_helper');
+        $this->load->helper(['validation_helper', 'api']);
     }
 
     public function index_get($id = '')
@@ -32,6 +32,9 @@ class ProdutosController extends REST_Controller
             $start = $page ? ($perPage * $page) : 0;
 
             $produtos = $this->produtos_model->get('produtos', '*', $search, $perPage, $start);
+            if (! $this->verCusto()) {
+                $produtos = array_map('apiProdutoSemCusto', $produtos);
+            }
 
             $this->response([
                 'status' => true,
@@ -41,7 +44,7 @@ class ProdutosController extends REST_Controller
         }
 
         if ($id && is_numeric($id)) {
-            $produto = $this->produtos_model->getById($id);
+            $produto = $this->produtoParaResposta($id);
 
             $this->response([
                 'status' => true,
@@ -72,9 +75,11 @@ class ProdutosController extends REST_Controller
             ], REST_Controller::HTTP_UNAUTHORIZED);
         }
 
-        $_POST = (array) json_decode(file_get_contents('php://input'), true);
+        $entrada = $this->post();
+        $precoCompra = $this->custoDaRequisicao($entrada);
 
         $this->load->library('form_validation');
+        $this->form_validation->set_data($entrada);
 
         if ($this->form_validation->run('produtos') == false) {
             $this->response([
@@ -83,8 +88,6 @@ class ProdutosController extends REST_Controller
             ], REST_Controller::HTTP_BAD_REQUEST);
         }
 
-        $precoCompra = $this->post('precoCompra', true);
-        $precoCompra = str_replace(',', '', $precoCompra);
         $precoVenda = $this->post('precoVenda', true);
         $precoVenda = str_replace(',', '', $precoVenda);
         $data = [
@@ -103,7 +106,7 @@ class ProdutosController extends REST_Controller
             $this->response([
                 'status' => true,
                 'message' => 'Produto adicionado com sucesso!',
-                'result' => $this->produtos_model->get('produtos', '*', "descricao = '{$data['descricao']}'", 1, 0, true),
+                'result' => $this->produtoParaResposta($this->db->insert_id()),
             ], REST_Controller::HTTP_CREATED);
         }
 
@@ -136,9 +139,9 @@ class ProdutosController extends REST_Controller
             ], REST_Controller::HTTP_BAD_REQUEST);
         }
 
+        $precoCompra = $this->custoDaRequisicao($this->put());
         if (! $this->put('descricao', true) ||
         ! $this->put('unidade', true) ||
-        ! $this->put('precoCompra', true) ||
         ! $this->put('precoVenda', true) ||
         ! $this->put('estoque', true)) {
             $this->response([
@@ -147,15 +150,12 @@ class ProdutosController extends REST_Controller
             ], REST_Controller::HTTP_BAD_REQUEST);
         }
 
-        $precoCompra = $this->put('precoCompra', true);
-        $precoCompra = str_replace(',', '', $precoCompra);
         $precoVenda = $this->put('precoVenda', true);
         $precoVenda = str_replace(',', '', $precoVenda);
         $data = [
             'codDeBarra' => $this->put('codDeBarra', true) ?: 0,
             'descricao' => $this->put('descricao', true),
             'unidade' => $this->put('unidade', true),
-            'precoCompra' => $precoCompra,
             'precoVenda' => $precoVenda,
             'estoque' => $this->put('estoque', true),
             'estoqueMinimo' => $this->put('estoqueMinimo', true) ?: 0,
@@ -163,11 +163,15 @@ class ProdutosController extends REST_Controller
             'entrada' => $this->put('entrada', true) ?: 0
         ];
 
+        if ($precoCompra !== null) {
+            $data['precoCompra'] = $precoCompra;
+        }
+
         if ($this->produtos_model->edit('produtos', $data, 'idProdutos', $id)) {
             $this->response([
                 'status' => true,
                 'message' => 'Produto editado com sucesso!',
-                'result' => $this->produtos_model->getById($id),
+                'result' => $this->produtoParaResposta($id),
             ], REST_Controller::HTTP_OK);
         }
 
@@ -175,6 +179,41 @@ class ProdutosController extends REST_Controller
             'status' => false,
             'message' => 'Não foi possível editar o Produto. Avise ao Administrador.',
         ], REST_Controller::HTTP_INTERNAL_SERVER_ERROR);
+    }
+
+    private function verCusto(): bool
+    {
+        return $this->permission->checkPermission($this->logged_user()->level, 'vCustoInterno');
+    }
+
+    private function produtoParaResposta($id): ?object
+    {
+        $produto = $this->produtos_model->getById($id);
+
+        return $this->verCusto() ? $produto : apiProdutoSemCusto($produto);
+    }
+
+    private function custoDaRequisicao(array $entrada): ?string
+    {
+        if (! array_key_exists('precoCompra', $entrada)) {
+            return null;
+        }
+        if (! $this->verCusto() || ! $this->permission->checkPermission($this->logged_user()->level, 'eCustoInterno')) {
+            $this->response(['status' => false, 'message' => 'Você não tem permissão para alterar o custo interno.'], REST_Controller::HTTP_FORBIDDEN);
+            return null;
+        }
+
+        $informado = $entrada['precoCompra'];
+        if ($informado === null || $informado === '') {
+            return null;
+        }
+        // A API usa ponto decimal e aceita vírgula como separador de milhar.
+        $valor = is_scalar($informado) ? valorDecimal(str_replace(',', '', (string) $informado)) : null;
+        if ($valor === null) {
+            $this->response(['status' => false, 'message' => 'Informe um preço de compra válido.'], REST_Controller::HTTP_BAD_REQUEST);
+        }
+
+        return $valor;
     }
 
     public function index_delete($id)

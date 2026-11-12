@@ -12,6 +12,7 @@ class ApiController extends REST_Controller
 
         $this->load->library('Authorization_Token');
         $this->load->model('mapos_model');
+        $this->load->helper('api');
     }
 
     public function index_get()
@@ -27,10 +28,13 @@ class ApiController extends REST_Controller
             'vendas' => $this->mapos_model->count('vendas'),
         ];
 
-        if ($this->permission->checkPermission($this->logged_user()->level, 'vOs')) {
+        if ($this->permission->checkPermission($user->level, 'vOs')) {
             $result['osAbertas'] = $this->mapos_model->getOsAbertas();
             $result['osAndamento'] = $this->mapos_model->getOsAndamento();
             $result['estoqueBaixo'] = $this->mapos_model->getProdutosMinimo();
+            if (! $this->permission->checkPermission($user->level, 'vCustoInterno')) {
+                $result['estoqueBaixo'] = array_map('apiProdutoSemCusto', $result['estoqueBaixo']);
+            }
         }
 
         $this->response([

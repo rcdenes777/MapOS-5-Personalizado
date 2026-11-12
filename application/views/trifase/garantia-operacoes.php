@@ -20,7 +20,7 @@ $ativaGarantia = ! in_array($retornoOs->status, ['Finalizado', 'Cancelado'], tru
         <div class="mt-4 grid gap-3">
             <p class="text-body-md text-text">Adicione peças e serviços nesta OS de retorno e publique uma versão para aprovação do cliente. A publicação não fatura automaticamente. Mudanças nos itens exigem nova versão aprovada.</p>
             <?= component('button', ['label' => 'Peças e serviços do retorno', 'variant' => 'outline', 'href' => site_url('os/visualizar/' . $idGarantia) . '?aba=produtos']) ?>
-            <?php if ($verCustosRetorno) { ?><?= component('button', ['label' => 'Prévia e aprovação do orçamento', 'variant' => 'outline', 'href' => site_url('trifase_orcamentos/visualizar/' . $idGarantia)]) ?><?php } ?>
+            <?php if ($verFinanceiroRetorno) { ?><?= component('button', ['label' => 'Prévia e aprovação do orçamento', 'variant' => 'outline', 'href' => site_url('trifase_orcamentos/visualizar/' . $idGarantia)]) ?><?php } ?>
         </div>
     <?php } elseif ($ativaGarantia && $solucaoGarantia === 'troca' && $podeTrocarGarantia) { ?>
         <form method="post" action="<?= e(site_url('trifase_retornos/trocar/' . $idGarantia)) ?>" class="mt-4 grid gap-4" <?= js_module('formulario/padrao') ?>>
@@ -41,13 +41,13 @@ $ativaGarantia = ! in_array($retornoOs->status, ['Finalizado', 'Cancelado'], tru
                 <?= component('input', ['name' => $campoGarantia, 'id' => 'garantia-' . $campoGarantia, 'label' => $rotuloGarantia, 'required' => in_array($campoGarantia, ['marca', 'modelo'], true), 'attrs' => ['maxlength' => 100]]) ?>
             <?php } ?>
             <?= component('select', ['name' => 'destino_antiga', 'id' => 'garantia-destino', 'label' => 'Destino da unidade antiga', 'options' => ['retida_assistencia' => 'Retida na assistência', 'devolvida_cliente' => 'Devolvida ao cliente']]) ?>
-            <?= component('input', ['name' => 'custo_externo', 'id' => 'garantia-custo', 'label' => 'Custo interno da unidade externa (opcional)', 'help' => 'Use ponto decimal. Não cria despesa paga nem cobrança ao cliente.']) ?>
+            <?php if ($editarCustosRetorno) { ?><?= component('input', ['name' => 'custo_externo', 'id' => 'garantia-custo', 'label' => 'Custo interno da unidade externa (opcional)', 'help' => 'Use ponto decimal. Não cria despesa paga nem cobrança ao cliente.']) ?><?php } ?>
             <?= component('textarea', ['name' => 'motivo', 'id' => 'garantia-motivo-troca', 'label' => 'Motivo e conferência da substituição', 'required' => true, 'attrs' => ['maxlength' => 2000]]) ?>
             <?= component('checkbox', ['name' => 'confirmar', 'id' => 'garantia-confirmar-troca', 'value' => '1', 'label' => 'Conferi a substituta e a unidade antiga. Confirmo a troca física e a baixa de uma unidade, se escolhi estoque. Não haverá cobrança automática.', 'required' => true]) ?>
             <?= component('button', ['label' => 'Registrar troca', 'type' => 'submit', 'variant' => 'outline']) ?>
         </form>
     <?php } ?>
-    <?php if ($verCustosRetorno && $financeiroGarantia) { ?>
+    <?php if ($verFinanceiroRetorno && $financeiroGarantia) { ?>
         <div class="mt-4 grid gap-2 text-body-md text-text">
             <p><?= e('Cobrança atual da origem: ' . dinheiro($financeiroGarantia['total_c'] / 100) . ' · recebido líquido: ' . dinheiro($financeiroGarantia['recebido_c'] / 100) . ' · saldo: ' . dinheiro($financeiroGarantia['saldo_c'] / 100)) ?></p>
             <p><?= e('Devolvido: ' . dinheiro(($financeiroGarantia['reembolsado_c'] ?? 0) / 100) . ' · abatimento acumulado: ' . dinheiro(($financeiroGarantia['abatimento_garantia_c'] ?? 0) / 100)) ?></p>

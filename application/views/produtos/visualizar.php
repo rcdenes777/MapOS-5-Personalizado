@@ -9,12 +9,7 @@
  * @var array<string, bool> $pode
  */
 $id = (int) $produto->idProdutos;
-$compra = (float) $produto->precoCompra;
 $venda = (float) $produto->precoVenda;
-// Markup sobre a compra e margem sobre a venda, como o cálculo do formulário.
-$markup = $compra > 0 ? ($venda - $compra) / $compra * 100 : null;
-$margem = $venda > 0 ? ($venda - $compra) / $venda * 100 : null;
-$porcento = static fn (?float $valor) => $valor === null ? '—' : number_format($valor, 1, ',', '.') . '%';
 $baixo = produtoEstoqueBaixo($produto);
 $unidade = (string) $produto->unidade;
 
@@ -26,13 +21,18 @@ $secoes = [
         'Unidade' => unidadesDeMedida()[$unidade] ?? $unidade,
         'Movimenta o estoque' => $movimento === [] ? 'Não' : implode(' e ', $movimento),
     ], static fn ($valor) => $valor !== ''),
-    'Preços' => [
-        'Compra' => dinheiro($compra),
-        'Venda' => dinheiro($venda),
+    'Preços' => ['Venda' => dinheiro($venda)],
+];
+if ($verCusto) {
+    $compra = $produto->precoCompra === null ? null : (float) $produto->precoCompra;
+    $markup = $compra !== null && $compra > 0 ? ($venda - $compra) / $compra * 100 : null;
+    $margem = $compra !== null && $venda > 0 ? ($venda - $compra) / $venda * 100 : null;
+    $porcento = static fn (?float $valor) => $valor === null ? '—' : number_format($valor, 1, ',', '.') . '%';
+    $secoes['Preços'] = ['Compra' => $compra === null ? '—' : dinheiro($compra)] + $secoes['Preços'] + [
         'Markup' => $porcento($markup),
         'Margem' => $porcento($margem),
-    ],
-];
+    ];
+}
 ?>
 <div class="flex flex-col gap-4 pt-2 pb-8">
     <header class="flex flex-wrap items-start justify-between gap-3">

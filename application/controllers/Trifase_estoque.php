@@ -34,6 +34,9 @@ class Trifase_estoque extends MY_Controller
             }
             try {
                 $tipo = $this->texto('tipo');
+                if ($tipo === 'entrada' && (! $this->permite('vCustoInterno') || ! $this->permite('eCustoInterno'))) {
+                    show_error('Sem permissão para registrar custo de compra.', 403);
+                }
                 if (! in_array($tipo, ['entrada', 'saida', 'contagem'], true)) {
                     throw new DomainException('Tipo de movimentação inválido.');
                 }
@@ -78,7 +81,8 @@ class Trifase_estoque extends MY_Controller
         $this->data['produtoEstoque'] = $p;
         $this->data['erroEstoque'] = $erro;
         $this->data['editarEstoque'] = $this->permite('eProduto');
-        $this->data['verCustoEstoque'] = $this->permite('vLancamento');
+        $this->data['verCustoEstoque'] = $this->permite('vCustoInterno');
+        $this->data['editarCustoEstoque'] = $this->data['verCustoEstoque'] && $this->permite('eCustoInterno');
         $this->data['movimentosEstoque'] = $this->estoque->historico($id, $filtros, $inicio);
         $this->data['filtrosEstoque'] = $filtros;
         $this->data['paginaEstoque'] = $inicio;
@@ -88,7 +92,7 @@ class Trifase_estoque extends MY_Controller
 
     public function servico($id = null)
     {
-        if (! $this->permission->checkPermission($this->session->userdata('permissao'), 'vServico') || ! $this->permission->checkPermission($this->session->userdata('permissao'), 'vLancamento')) {
+        if (! $this->permission->checkPermission($this->session->userdata('permissao'), 'vServico') || ! $this->permission->checkPermission($this->session->userdata('permissao'), 'vCustoInterno')) {
             show_error('Sem permissão para consultar custos de serviço.', 403);
         }
         $id = $this->id($id);
@@ -99,7 +103,7 @@ class Trifase_estoque extends MY_Controller
         $this->metodo();
         $erro = null;
         if ($this->input->method(true) === 'POST') {
-            if (! $this->permite('eServico')) {
+            if (! $this->permite('eServico') || ! $this->permite('eCustoInterno')) {
                 show_error('Sem permissão para definir custo de serviço.', 403);
             }
             try {
@@ -125,14 +129,14 @@ class Trifase_estoque extends MY_Controller
         $this->data['custoServico'] = $this->estoque->custoServico($id);
         $this->data['historicoServicoCusto'] = $this->db->where('servico_id', $id)->order_by('id', 'desc')->get('trifase_servico_custos')->result();
         $this->data['erroCusto'] = $erro;
-        $this->data['editarCustoServico'] = $this->permite('eServico');
+        $this->data['editarCustoServico'] = $this->permite('eServico') && $this->permite('eCustoInterno');
         $this->data['view'] = 'trifase/servico-custo';
         return $this->layout();
     }
 
     public function os($id = null)
     {
-        if (! $this->permission->checkPermission($this->session->userdata('permissao'), 'vOs') || ! $this->permission->checkPermission($this->session->userdata('permissao'), 'vLancamento')) {
+        if (! $this->permission->checkPermission($this->session->userdata('permissao'), 'vOs') || ! $this->permission->checkPermission($this->session->userdata('permissao'), 'vCustoInterno')) {
             show_error('Sem permissão para consultar custos da OS.', 403);
         }
         $id = $this->id($id);
@@ -143,7 +147,7 @@ class Trifase_estoque extends MY_Controller
         $this->metodo();
         $erro = null;
         if ($this->input->method(true) === 'POST') {
-            if (! $this->permite('eOs')) {
+            if (! $this->permite('eOs') || ! $this->permite('eCustoInterno')) {
                 show_error('Sem permissão para registrar custo.', 403);
             }
             try {
@@ -182,7 +186,7 @@ class Trifase_estoque extends MY_Controller
         $this->data['perdasCancelamentoOs'] = $perdas;
         $this->data['historicoCustosOs'] = $this->db->where('os_id', $id)->order_by('id', 'desc')->get('trifase_os_custos')->result();
         $this->data['erroCustoOs'] = $erro;
-        $this->data['editarCustoOs'] = $this->permite('eOs');
+        $this->data['editarCustoOs'] = $this->permite('eOs') && $this->permite('eCustoInterno');
         $manual = ['valor_c' => 0, 'minutos' => 0];
         $this->data['ehRetornoCusto'] = false;
         if ($this->db->table_exists('trifase_garantia_retornos') && $this->db->where('os_id', $id)->count_all_results('trifase_garantia_retornos')) {

@@ -449,7 +449,8 @@ class Mapos extends MY_Controller
 
     public function backup()
     {
-        if (!$this->permission->checkPermission($this->session->userdata('permissao'), 'cBackup')) {
+        if (! $this->permission->checkPermission($this->session->userdata('permissao'), 'cBackup')
+            || ! $this->permission->checkPermission($this->session->userdata('permissao'), 'vCustoInterno')) {
             $this->session->set_flashdata('error', 'Você não tem permissão para efetuar backup.');
             redirect(base_url());
         }
@@ -735,7 +736,7 @@ class Mapos extends MY_Controller
         $this->data['campos'] = configuracaoCampos($aba);
         $this->data['valores'] = configuracaoValores($aba, $this->input->method() === 'post' ? $this->input->post() : null, $this->data['configuration'], $_ENV);
         $this->data['erros'] = $erros;
-        $this->data['pode_backup'] = $this->permite('cBackup');
+        $this->data['pode_backup'] = $this->permite('cBackup') && $this->permite('vCustoInterno');
         $this->data['tema_pessoal'] = configuracaoTemaPessoal($this->data['configuration']);
         $this->data['view'] = 'mapos/configurar';
 

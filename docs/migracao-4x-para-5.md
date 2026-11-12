@@ -413,7 +413,7 @@ A migração `20261102030000_trifase_atendimentos` cria referência técnica pr�
 
 ## Extensão Trifase: retorno em garantia (opcional)
 
-A migração `20261102040000_trifase_retornos` cria vínculos e eventos, sem reabrir OS antigas ou converter garantias. Após backup e ensaio em cópia, ative `TRIFASE_RETORNOS_ENABLED=true` junto dos módulos de equipamentos e atendimentos. Origem precisa estar concluída e ter unidade/cliente e referência de garantia conhecidos. Leitura exige `vOs`; criação também `aOs+eOs`; avaliação `eOs`; custos também `vLancamento`. Decisões não executam pagamentos, estoque ou prorrogação de prazo. Preserve as tabelas ao desligar a função. Ver `trifase/RETORNOS_LAB.md`.
+A migração `20261102040000_trifase_retornos` cria vínculos e eventos, sem reabrir OS antigas ou converter garantias. Após backup e ensaio em cópia, ative `TRIFASE_RETORNOS_ENABLED=true` junto dos módulos de equipamentos e atendimentos. Origem precisa estar concluída e ter unidade/cliente e referência de garantia conhecidos. Leitura exige `vOs`; criação também `aOs+eOs`; avaliação `eOs`; custos seguem as permissões específicas de consulta e alteração. Decisões não executam pagamentos, estoque ou prorrogação de prazo. Preserve as tabelas ao desligar a função. Ver `trifase/RETORNOS_LAB.md`.
 
 ### Clientes, catálogo e custos do laboratório Trifase
 
@@ -441,3 +441,23 @@ A migração `20261103010000` adiciona somente o histórico `trifase_equipamento
 ### Cancelamento conferido da OS (extensão Trifase)
 
 A migração aditiva `20261104010000` cria o histórico privado de pedidos e confirmações de cancelamento. Após aplicá-la, o cancelamento utiliza o bloco **Cancelamento da OS**, com conferência de estoque e financeiro, em vez de mudar diretamente o status no editor. A confirmação exige edição de OS e consulta/edição de lançamentos. O técnico pode registrar o pedido e devolver peças não utilizadas, sem acesso a dinheiro. Obrigações financeiras ou encerramentos pendentes impedem confirmar; nenhum reembolso é automático. Preserve a tabela ao desabilitar a extensão. Veja [CANCELAMENTO_OS.md](trifase/CANCELAMENTO_OS.md).
+
+### Trifase: retificação financeira de cancelamento e custos internos
+
+A migration `20261112010000` prepara o histórico de retificações de recebimentos.
+Em **Configurações → Permissões**, atribua **Retificar financeiro de OS
+cancelada** somente a operadores designados para essa conferência. A operação
+também exige acesso à OS e aos lançamentos. O recebimento do saldo validado
+continua exigindo a permissão de adicionar lançamentos.
+
+A migration `20261112020000` preserva a consulta e alteração de custos no grupo
+administrativo da instalação (ID 1), respeitando escolhas já gravadas. Para os
+demais grupos, defina explicitamente **Consultar custos internos** e, quando
+necessário, **Alterar custos internos**. O download do backup integral requer
+consulta de custos porque o arquivo contém esses valores.
+
+Antes de aplicar as migrations, faça um backup verificável e programe uma janela
+de manutenção. Preserve a coluna de retificação e os eventos gravados em caso
+de reversão. Após uso da retificação, uma versão anterior pode exibir um saldo
+sem oferecer recebimento. Em caso de regressão, suspenda gravações e reconcilie
+os eventos pós-atualização antes de voltar código ou restaurar backup.

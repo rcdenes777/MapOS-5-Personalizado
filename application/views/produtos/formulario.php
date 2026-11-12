@@ -79,28 +79,31 @@ $caixa = 'rounded-xl border border-border bg-surface p-4 sm:p-6';
 
         <section class="<?= e($caixa) ?>" aria-labelledby="secao-precos">
             <h2 id="secao-precos" class="text-heading-sm text-text">Preços</h2>
-            <p class="mt-0.5 text-caption text-muted">Informe o lucro para calcular o preço de venda, ou digite o preço direto.</p>
+            <?php if ($podeEditarCusto) { ?>
+                <p class="mt-0.5 text-caption text-muted">Informe o lucro para calcular o preço de venda, ou digite o preço direto.</p>
+            <?php } ?>
             <div class="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                <?= component('input', $campo('precoCompra', [
-                    'label' => 'Preço de compra (R$)',
-                    'required' => true,
-                    'class' => 'text-right tabular-nums',
-                    'attrs' => ['data-mascara' => 'dinheiro', 'inputmode' => 'decimal', 'maxlength' => 20, 'data-msg-vazio' => 'Informe o preço de compra.'],
-                ])) ?>
-                <?= component('select', [
-                    'name' => 'lucro_tipo',
-                    'label' => 'Lucro por',
-                    'options' => ['markup' => 'Markup', 'margem' => 'Margem'],
-                    'selected' => 'markup',
-                    'help' => 'Markup: sobre a compra. Margem: sobre a venda.',
-                ]) ?>
-                <?= component('input', [
-                    'name' => 'lucro',
-                    'label' => 'Lucro (%)',
-                    'type' => 'number',
-                    'class' => 'text-right tabular-nums',
-                    'attrs' => ['min' => 0, 'max' => 999, 'step' => '0.01', 'inputmode' => 'decimal'],
-                ]) ?>
+                <?php if ($podeEditarCusto) { ?>
+                    <?= component('input', $campo('precoCompra', [
+                        'label' => 'Preço de compra (R$)',
+                        'class' => 'text-right tabular-nums',
+                        'attrs' => ['data-mascara' => 'dinheiro', 'inputmode' => 'decimal', 'maxlength' => 20],
+                    ])) ?>
+                    <?= component('select', [
+                        'name' => 'lucro_tipo',
+                        'label' => 'Lucro por',
+                        'options' => ['markup' => 'Markup', 'margem' => 'Margem'],
+                        'selected' => 'markup',
+                        'help' => 'Markup: sobre a compra. Margem: sobre a venda.',
+                    ]) ?>
+                    <?= component('input', [
+                        'name' => 'lucro',
+                        'label' => 'Lucro (%)',
+                        'type' => 'number',
+                        'class' => 'text-right tabular-nums',
+                        'attrs' => ['min' => 0, 'max' => 999, 'step' => '0.01', 'inputmode' => 'decimal'],
+                    ]) ?>
+                <?php } ?>
                 <?= component('input', $campo('precoVenda', [
                     'label' => 'Preço de venda (R$)',
                     'required' => true,

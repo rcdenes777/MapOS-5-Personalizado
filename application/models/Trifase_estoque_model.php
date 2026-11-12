@@ -73,7 +73,7 @@ class Trifase_estoque_model extends CI_Model
         }
         if ($tipo === 'produto') {
             $p = $this->travar('produtos', 'idProdutos', (int) $i->produtos_id);
-            $custo = $this->centavos((string) $p->precoCompra);
+            $custo = $p->precoCompra === null ? null : $this->centavos((string) $p->precoCompra);
             $descricao = $p->descricao;
         } else {
             $p = $this->travar('servicos', 'idServicos', (int) $i->servicos_id);

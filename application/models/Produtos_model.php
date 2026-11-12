@@ -81,7 +81,8 @@ class Produtos_model extends CI_Model
                     throw new RuntimeException('Não foi possível cadastrar o produto.');
                 }
                 $id = (int) $this->db->insert_id();
-                $modelo->movimentar($id, 'inicial', (int) $data['estoque'], $modelo->centavos((string) $data['precoCompra']), date('Y-m-d'), 'Saldo inicial informado no cadastro', 'Cadastro do produto', (int) get_instance()->session->userdata('id_admin'), bin2hex(random_bytes(16)));
+                $custo = isset($data['precoCompra']) ? $modelo->centavos((string) $data['precoCompra']) : null;
+                $modelo->movimentar($id, 'inicial', (int) $data['estoque'], $custo, date('Y-m-d'), 'Saldo inicial informado no cadastro', 'Cadastro do produto', (int) get_instance()->session->userdata('id_admin'), bin2hex(random_bytes(16)));
                 if (! $this->db->trans_status() || ! $this->db->trans_commit()) {
                     throw new RuntimeException('Falha ao confirmar o cadastro.');
                 }

@@ -34,6 +34,18 @@ if (! function_exists('apiSemSenha')) {
     }
 }
 
+if (! function_exists('apiProdutoSemCusto')) {
+    /** Remove o preço de aquisição de um produto antes de serializar a resposta. */
+    function apiProdutoSemCusto(?object $produto): ?object
+    {
+        if ($produto !== null) {
+            unset($produto->precoCompra);
+        }
+
+        return $produto;
+    }
+}
+
 if (! function_exists('usuarioApiPlanoEdicao')) {
     /**
      * Decide o que `PUT /api/v1/usuarios/{id}` pode gravar.

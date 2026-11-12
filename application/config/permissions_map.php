@@ -34,8 +34,8 @@ defined('BASEPATH') or exit('No direct script access allowed');
 $config['permissions_map'] = [
     'Trifase_estoque' => [
         'produto' => 'vProduto',
-        'servico' => ['todas' => ['vServico', 'vLancamento']],
-        'os' => ['todas' => ['vOs', 'vLancamento']],
+        'servico' => ['todas' => ['vServico', 'vCustoInterno']],
+        'os' => ['todas' => ['vOs', 'vCustoInterno']],
     ],
     'Trifase_cadastros' => [
         'cliente' => 'vCliente',
@@ -50,8 +50,8 @@ $config['permissions_map'] = [
         'novo' => ['todas' => ['vOs', 'aOs', 'eOs']],
         'visualizar' => 'vOs',
         'avaliar' => ['todas' => ['vOs', 'eOs']],
-        'custo' => ['todas' => ['vOs', 'eOs', 'vLancamento']],
-        'corrigirCusto' => ['todas' => ['vOs', 'eOs', 'vLancamento']],
+        'custo' => ['todas' => ['vOs', 'eOs', 'vCustoInterno', 'eCustoInterno']],
+        'corrigirCusto' => ['todas' => ['vOs', 'eOs', 'vCustoInterno', 'eCustoInterno']],
     ],
     'Trifase_atendimentos' => [
         'andamento' => ['todas' => ['vOs', 'eOs']],
@@ -190,7 +190,7 @@ $config['permissions_map'] = [
         'buscaRapida' => '*',
         'calendario' => 'vOs',
         'uploadUserImage' => 'cUsuario',
-        'backup' => 'cBackup',
+        'backup' => ['todas' => ['cBackup', 'vCustoInterno']],
         // Cadastrar, editar e trocar o logo do emitente são POST em emitente.
         'emitente' => 'cEmitente',
         'emails' => 'cEmail',

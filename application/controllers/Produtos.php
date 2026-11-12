@@ -93,22 +93,37 @@ class Produtos extends MY_Controller
     private function formulario(?object $produto)
     {
         $erros = [];
+        $podeEditarCusto = $this->permite('vCustoInterno') && $this->permite('eCustoInterno');
 
         if ($this->input->method() === 'post') {
+            $post = $this->input->post();
+            if (! $podeEditarCusto && array_key_exists('precoCompra', $post ?? [])) {
+                show_error('Você não tem permissão para alterar o custo interno.', 403);
+                return;
+            }
             if ($produto !== null && trifaseEstoqueHabilitado()) {
                 $_POST['estoque'] = (string) $produto->estoque;
             }
             $erros = $this->validarFormulario('produtos');
-            $precos = [];
-            foreach (['precoCompra', 'precoVenda'] as $campo) {
-                $precos[$campo] = valorDecimal($this->input->post($campo));
-                if (! isset($erros[$campo]) && $precos[$campo] === null) {
-                    $erros[$campo] = 'Informe o valor em reais, como 150,00 (até 99.999.999,99).';
+            $precoCompra = null;
+            $precoVenda = valorDecimal($this->input->post('precoVenda'));
+            $erroPreco = 'Informe o valor em reais, como 150,00 (até 99.999.999,99).';
+            if ($precoVenda === null) {
+                $erros['precoVenda'] ??= $erroPreco;
+            }
+            $compraInformada = $this->input->post('precoCompra');
+            if ($podeEditarCusto && $compraInformada !== null && $compraInformada !== '') {
+                $precoCompra = valorDecimal($compraInformada);
+                if ($precoCompra === null) {
+                    $erros['precoCompra'] = $erroPreco;
                 }
             }
 
             if ($erros === []) {
-                $dados = produtoDadosDoFormulario($this->input->post(), $precos['precoCompra'], $precos['precoVenda']);
+                $dados = produtoDadosDoFormulario($this->input->post(), $precoCompra, $precoVenda);
+                if ($produto !== null && $precoCompra === null) {
+                    unset($dados['precoCompra']);
+                }
 
                 if ($produto !== null && trifaseEstoqueHabilitado()) {
                     unset($dados['estoque']);
@@ -130,7 +145,11 @@ class Produtos extends MY_Controller
 
         $post = $this->input->method() === 'post' ? $this->input->post() : null;
         $valores = [];
-        foreach (['codDeBarra', 'descricao', 'unidade', 'precoCompra', 'precoVenda', 'estoque', 'estoqueMinimo'] as $campo) {
+        $campos = ['codDeBarra', 'descricao', 'unidade', 'precoVenda', 'estoque', 'estoqueMinimo'];
+        if ($podeEditarCusto) {
+            $campos[] = 'precoCompra';
+        }
+        foreach ($campos as $campo) {
             $valores[$campo] = is_array($post) ? (is_string($post[$campo] ?? null) ? $post[$campo] : '') : (string) ($produto->{$campo} ?? '');
         }
         // Novo produto: entra e sai do estoque, como na v4.
@@ -139,6 +158,7 @@ class Produtos extends MY_Controller
         }
 
         $this->data['produto'] = $produto;
+        $this->data['podeEditarCusto'] = $podeEditarCusto;
         $this->data['valores'] = $valores;
         $this->data['erros'] = $erros;
         $this->data['view'] = 'produtos/formulario';
@@ -160,6 +180,7 @@ class Produtos extends MY_Controller
         }
 
         $this->data['produto'] = $produto;
+        $this->data['verCusto'] = $this->permite('vCustoInterno');
         $this->data['pode'] = [
             'editar' => $this->permite('eProduto'),
             'excluir' => $this->permite('dProduto'),

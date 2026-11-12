@@ -2,7 +2,7 @@
 
 defined('BASEPATH') or exit('No direct script access allowed');
 
-require APPPATH . '/libraries/REST_Controller.php';
+require_once APPPATH . '/libraries/REST_Controller.php';
 
 require_once APPPATH . 'helpers/trifase_financeiro_helper.php';
 require_once APPPATH . 'helpers/trifase_entrega_helper.php';
@@ -57,6 +57,9 @@ class OsController extends REST_Controller
     private function dadosDaOs(object $os, bool $verValores): object
     {
         $os = apiSemSenha($os);
+        if (isset($os->produtos) && ! $this->permission->checkPermission($this->logged_user()->level, 'vCustoInterno')) {
+            $os->produtos = array_map('apiProdutoSemCusto', $os->produtos);
+        }
         if ($verValores) {
             return $os;
         }
@@ -681,6 +684,9 @@ class OsController extends REST_Controller
             $result = $lastProdutoOs;
             unset($result->descricao);
             $result->produto = $this->produtos_model->getById($this->post('idProduto', true));
+            if (! $this->permission->checkPermission($this->logged_user()->level, 'vCustoInterno')) {
+                $result->produto = apiProdutoSemCusto($result->produto);
+            }
 
             $this->response([
                 'status' => true,

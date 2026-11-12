@@ -18,6 +18,13 @@ final class ConfiguracoesTest extends MaposTestCase
 {
     // --- Configurações ------------------------------------------------------
 
+    public function testExemploDeEnvPodeSerCarregadoPeloDotenv(): void
+    {
+        $env = Dotenv\Dotenv::parse((string) file_get_contents(APPPATH . '.env.example'));
+
+        $this->assertSame('false', $env['TRIFASE_ESTOQUE_ENABLED']);
+    }
+
     /** Toda configuração que a v4 gravava continua editável em alguma aba. */
     public function testTodasAsConfiguracoesDaV4TemCampo(): void
     {

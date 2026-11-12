@@ -101,3 +101,42 @@ num caminho com `.local`: `.git/`, `.github/`, `assets/.qualquer/`, `application
 Desde esta versão o `csp-violacoes.json` fica em `<STORAGE_PATH>/logs/` (sem
 `STORAGE_PATH`, `application/storage/logs/`) e não mais em `application/logs/`.
 O Map-OS move o arquivo antigo sozinho no primeiro relatório recebido.
+
+## Limite de anexos em uma instalação Docker existente
+
+O limite padrão é de 200 MiB por arquivo. A configuração versionada em
+`docker/etc/php/uploads.ini` define `upload_max_filesize = 200M` e
+`post_max_size = 210M`. O limite maior permite os campos e cabeçalhos do
+multipart. Ele vale para a requisição inteira, inclusive em um envio múltiplo.
+O Nginx privado usa `client_max_body_size 210M`. A entrada pública, se
+separada, pode manter 1M porque não recebe anexos.
+
+Antes de implantar, faça backup da configuração efetiva do Compose e do PHP.
+Em uma cópia do arquivo de configuração do Compose, mantenha as montagens
+existentes e acrescente um arquivo com apenas estas duas diretivas depois do
+último override da imagem em `conf.d`:
+
+```ini
+upload_max_filesize = 200M
+post_max_size = 210M
+```
+
+Por exemplo, monte esse arquivo em
+`/usr/local/etc/php/conf.d/zzz-mapos-upload-limits.ini:ro` se o arquivo que
+sobrescreve o limite da imagem for `zz-mapos-uploads.ini`. Assim o ajuste
+não altera a memória ou outros limites da instalação. Confirme também que
+`UPLOAD_MAX_KB` está vazio ou configurado em 204800.
+
+Valide primeiro em laboratório com Nginx e PHP-FPM da instalação. Compare
+`upload_max_filesize` e `post_max_size` em `php-fpm -i` no contêiner e
+confirme que o Nginx aplica os 210M na rota privada. Envie um arquivo pequeno,
+um de 20 MiB, um de 209.715.200 bytes e outro de 209.715.201 bytes. Os três
+primeiros devem ser gravados e o último deve retornar erro sem criar registro.
+Confirme abertura autenticada e publicação seletiva. Se a requisição inteira
+exceder o limite do servidor, o Nginx pode responder 413 antes do PHP.
+
+A ativação em produção deve ser autorizada. Valide o Compose sem imprimir
+valores de ambiente e recrie somente o serviço PHP-FPM após a aprovação.
+Se a configuração ou os testes de aceitação falharem, restaure o Compose
+anterior, recrie o mesmo serviço e confira novamente os limites efetivos.
+Os volumes do banco e dos anexos permanecem montados nas mesmas origens.

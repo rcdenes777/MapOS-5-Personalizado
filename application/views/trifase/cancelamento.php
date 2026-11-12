@@ -119,8 +119,16 @@ $etapaCancelamento = $cancelado ? ($entregue ? 4 : 3) : ($pendenteCancelamento ?
                 <form method="post" action="<?= e(site_url('trifase_cancelamentos/tecnica/' . $idCancelamento)) ?>" class="mt-4 grid gap-4" <?= js_module('formulario/padrao') ?>>
                     <input type="hidden" name="<?= e($this->security->get_csrf_token_name()) ?>" value="<?= e($this->security->get_csrf_hash()) ?>">
                     <input type="hidden" name="operacao" value="<?= e(bin2hex(random_bytes(16))) ?>"><input type="hidden" name="pedido_id" value="<?= e((int) $pedidoCancelamento->id) ?>"><input type="hidden" name="hash_tecnico" value="<?= e($hashTecnicoCancelamento) ?>">
-                    <?= component('checkbox', ['name' => 'pecas_nao_utilizadas', 'value' => '1', 'label' => 'Conferi o destino de todas as peças.', 'required' => true, 'checked' => $tecnicaLiberada, 'disabled' => $tecnicaLiberada]) ?>
-                    <?= component('checkbox', ['name' => 'servicos_executados', 'value' => '1', 'label' => 'Conferi: os serviços ainda vinculados foram executados.', 'required' => true, 'checked' => $tecnicaLiberada, 'disabled' => $tecnicaLiberada]) ?>
+                    <?php if ($pecasCancelamento === []) { ?>
+                        <input type="hidden" name="pecas_nao_utilizadas" value="1">
+                        <p class="text-muted">Nenhuma peça pendente de conferência.</p>
+                    <?php } ?>
+                    <?php if ($servicosCancelamento === []) { ?>
+                        <input type="hidden" name="servicos_nao_executados" value="1">
+                        <p class="text-muted">Nenhum serviço vinculado.</p>
+                    <?php } else { ?>
+                        <?= component('checkbox', ['name' => 'servicos_executados', 'value' => '1', 'label' => 'Conferi: os serviços ainda vinculados foram executados.', 'required' => true, 'checked' => $tecnicaLiberada, 'disabled' => $tecnicaLiberada]) ?>
+                    <?php } ?>
                     <?php if (! $tecnicaLiberada) { ?>
                         <?= component('textarea', ['name' => 'observacoes_tecnicas', 'label' => 'Observações técnicas (opcional)', 'value' => $valoresCancelamento['observacoes_tecnicas'] ?? '', 'attrs' => ['maxlength' => 2000]]) ?>
                         <?= component('button', ['label' => 'Concluir conferência técnica', 'variant' => 'outline', 'type' => 'submit', 'disabled' => $pecasCancelamento !== []]) ?>

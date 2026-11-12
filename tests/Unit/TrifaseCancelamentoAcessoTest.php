@@ -51,8 +51,14 @@ final class TrifaseCancelamentoAcessoTest extends \PHPUnit\Framework\TestCase
         $this->assertStringNotContainsString('trifase_cancelamentos/confirmar/', $html);
         $this->assertStringNotContainsString('trifase_financeiro/visualizar/', $html);
         $this->assertStringContainsString('trifase_cancelamentos/retirar/', $html);
-        $this->assertStringContainsString('name="pecas_nao_utilizadas"', $html);
-        $this->assertStringContainsString('name="servicos_executados"', $html);
+        $this->assertStringNotContainsString('name="pecas_nao_utilizadas"', $html);
+        $this->assertStringNotContainsString('name="servicos_executados"', $html);
+        $this->assertStringContainsString('type="hidden" name="servicos_nao_executados" value="1"', $html);
+        $semPecasHtml = $v->renderizar(array_replace($dados, ['pecasCancelamento' => []]));
+        $this->assertStringContainsString('type="hidden" name="pecas_nao_utilizadas" value="1"', $semPecasHtml);
+        $comServicoHtml = $v->renderizar(array_replace($dados, ['servicosCancelamento' => [['id' => 2, 'nome' => 'Reparo', 'quantidade' => 1]]]));
+        $this->assertStringContainsString('name="servicos_executados"', $comServicoHtml);
+        $this->assertStringNotContainsString('name="servicos_nao_executados"', $comServicoHtml);
         $this->assertStringNotContainsString('name="financeiro_conferido"', $html);
         $this->assertStringNotContainsString('trifase_cadastros/cliente/', $html);
         $htmlFinanceiro = $v->renderizar(array_replace($dados, ['osCancelamento' => (object) ['idOs' => 1, 'status' => 'Aprovado', 'clientes_id' => 9], 'podeConfirmarCancelamento' => true, 'podeClassificarClienteCancelamento' => true, 'pecasCancelamento' => [], 'tecnicaCancelamento' => ['usuario_id' => 2, 'criado_em' => '2026-11-04 12:01:00']]));

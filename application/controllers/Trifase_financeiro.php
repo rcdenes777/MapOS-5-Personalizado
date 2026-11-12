@@ -102,6 +102,23 @@ class Trifase_financeiro extends MY_Controller
         }, 'Registro estornado. O saldo foi recomposto; nenhum reembolso bancário foi executado.');
     }
 
+    public function retificar($id = null)
+    {
+        if (! $this->permission->checkPermission($this->session->userdata('permissao'), 'vOs')
+            || ! $this->permission->checkPermission($this->session->userdata('permissao'), 'vLancamento')
+            || ! $this->permission->checkPermission($this->session->userdata('permissao'), 'retificarFinanceiroCancelado')) {
+            show_error('Você não tem permissão para retificar esta OS.', 403);
+        }
+        $os = $this->postOrdem($id);
+        return $this->executar($os, function () use ($os) {
+            $evento = filter_var($this->texto('evento_id'), FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
+            if ($evento === false) {
+                throw new DomainException('Selecione o registro a retificar.');
+            }
+            $this->financeiro_os->retificarCancelamento((int) $os->idOs, $evento, $this->texto('tipo_retificacao'), $this->texto('motivo'), $this->texto('data'), $this->texto('operacao'), $this->usuario());
+        }, 'Retificação financeira registrada. Confira o saldo atualizado.');
+    }
+
     public function andamento($id = null)
     {
         if (! $this->permission->checkPermission($this->session->userdata('permissao'), 'vOs')
@@ -286,7 +303,10 @@ class Trifase_financeiro extends MY_Controller
             : [];
         $this->data['osFinanceira'] = $os;
         $this->data['cancelamentoPendenteFinanceiro'] = ($cancelamentoPendente->tipo ?? '') === 'solicitar' && $os->status !== 'Cancelado';
-        $this->data['acertoCancelamentoReceber'] = ($retratoCancelamento['acerto']['resultado'] ?? '') === 'a_receber';
+        $this->data['acertoCancelamentoReceber'] = $gerida && $os->status === 'Cancelado'
+            && $this->financeiro_os->cancelamentoAdmiteRecebimento((int) $os->idOs);
+        $this->data['acertoCancelamentoOriginalReceber'] = ($retratoCancelamento['acerto']['resultado'] ?? '') === 'a_receber';
+        $this->data['totalConfirmadoCancelamento'] = $retratoCancelamento['acerto']['total_final_c'] ?? null;
         $this->data['financeiroResumo'] = $gerida ? $this->financeiro_os->resumo((int) $os->idOs) : null;
         $this->data['financeiroEventos'] = $gerida ? $this->financeiro_os->historico((int) $os->idOs) : [];
         $this->data['financeiroErro'] = $erro;

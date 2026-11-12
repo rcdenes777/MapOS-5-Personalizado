@@ -71,14 +71,8 @@ class Trifase_financeiro_model extends CI_Model
             if ($valor > $r['saldo_c']) {
                 throw new DomainException('Recebimento excede saldo.');
             }
-            if ($os->status === 'Cancelado') {
-                $acerto = $this->db->table_exists('trifase_cancelamentos')
-                    ? $this->db->where('os_id', $osId)->where('tipo', 'confirmar')->order_by('id', 'desc')->get('trifase_cancelamentos', 1)->row()
-                    : null;
-                $retrato = $acerto ? json_decode($acerto->retrato, true, 32, JSON_THROW_ON_ERROR) : [];
-                if (($retrato['acerto']['resultado'] ?? '') !== 'a_receber') {
-                    throw new DomainException('Recebimento excede saldo ou OS cancelada.');
-                }
+            if ($os->status === 'Cancelado' && ! $this->cancelamentoAdmiteRecebimento($osId)) {
+                throw new DomainException('Saldo de OS cancelada exige retificação financeira autorizada.');
             }
             // Distribuição incremental: não altera a parcela de desconto de recebimentos anteriores.
             $descontoRestante = (int) $o->desconto_c - $this->descontoRecebido($osId);
@@ -156,35 +150,113 @@ class Trifase_financeiro_model extends CI_Model
         return $this->obrigacao($osId) !== null ? $this->resumo($osId) : ['total_c' => 0, 'recebido_c' => 0, 'saldo_c' => 0, 'situacao' => 'Encerrado'];
     }
 
-    /** Correção de registro: não é reembolso bancário. Evento original permanece imutável. */
+    /** Corrige um recebimento sem movimentar dinheiro nem alterar o valor devido. */
     public function estornar(int $osId, int $eventoId, string $motivo, string $data, string $chave, int $usuario): array
+    {
+        return $this->corrigirRecebimento($osId, $eventoId, $motivo, $data, $chave, $usuario, null);
+    }
+
+    public function retificarCancelamento(int $osId, int $eventoId, string $tipo, string $motivo, string $data, string $chave, int $usuario): array
+    {
+        if (! in_array($tipo, ['lancamento_incorreto', 'nao_compensado', 'validar_saldo_anterior'], true)) {
+            throw new DomainException('Escolha o tipo de retificação financeira.');
+        }
+        return $this->corrigirRecebimento($osId, $eventoId, $motivo, $data, $chave, $usuario, $tipo);
+    }
+
+    private function corrigirRecebimento(int $osId, int $eventoId, string $motivo, string $data, string $chave, int $usuario, ?string $retificacao): array
     {
         $this->dataValida($data);
         $motivo = trim($motivo);
-        if ($usuario <= 0 || $motivo === '' || mb_strlen($motivo) > 500) {
-            throw new DomainException('Informe o motivo do estorno.');
+        if ($usuario <= 0 || $motivo === '' || ! mb_check_encoding($motivo, 'UTF-8') || mb_strlen($motivo) > 500) {
+            throw new DomainException('Informe a justificativa da correção.');
         }
-        return $this->transacao($osId, function () use ($osId, $eventoId, $motivo, $data, $chave, $usuario) {
-            $hash = $this->hashOperacao([$osId, 'estornar', $eventoId, $motivo, $data, $usuario]);
+        return $this->transacao($osId, function ($os) use ($osId, $eventoId, $motivo, $data, $chave, $usuario, $retificacao) {
+            $payload = [$osId, 'estornar', $eventoId, $motivo, $data, $usuario];
+            if ($retificacao !== null) {
+                $payload[] = $retificacao;
+            }
+            $hash = $this->hashOperacao($payload);
             if ($id = $this->repeticao($chave, $hash)) {
                 return ['evento_id' => $id] + $this->resumo($osId);
             }
             $this->exigirObrigacao($osId);
-            if (trifaseGarantiaCreditos($this->db, $osId)['reembolsado_c'] > 0
+            $cancelada = $os->status === 'Cancelado';
+            if ($retificacao !== null && ! $cancelada) {
+                throw new DomainException('Esta retificação é exclusiva para OS canceladas.');
+            }
+            $confirmacao = $cancelada ? $this->acertoConfirmado($osId) : [];
+            $acerto = $confirmacao['acerto'] ?? [];
+            if ($retificacao !== null && ($data < ($confirmacao['data'] ?? '') || $data > date('Y-m-d'))) {
+                throw new DomainException('Informe uma data de retificação entre a confirmação do cancelamento e hoje.');
+            }
+            $resumo = $this->resumo($osId);
+            if (($resumo['reembolsado_c'] ?? 0) > 0 || ($retificacao !== null && ($resumo['abatimento_garantia_c'] ?? 0) > 0)
                 || $this->db->where(['os_id' => $osId, 'tipo' => 'devolver'])->count_all_results('trifase_financeiro_eventos') > 0) {
-                throw new DomainException('Há devolução registrada nesta OS. Confira o histórico antes de estornar o recebimento.');
+                throw new DomainException('Há devolução ou abatimento registrado nesta OS. Confira o histórico antes de corrigir o recebimento.');
             }
-            $e = $this->db->where(['id' => $eventoId, 'os_id' => $osId, 'tipo' => 'receber'])->get('trifase_financeiro_eventos')->row();
-            if (! $e || $this->db->where('referencia_id', $eventoId)->count_all_results('trifase_financeiro_eventos') > 0 || $data < $e->data_evento) {
-                throw new DomainException('Recebimento inexistente, já estornado ou data inválida.');
+            if ($cancelada && $retificacao === null && ($acerto['resultado'] ?? '') !== 'a_receber') {
+                throw new DomainException('Para corrigir um recebimento após o acerto do cancelamento, use a retificação financeira autorizada.');
             }
-            $id = $this->gravar('trifase_financeiro_eventos', ['os_id' => $osId, 'tipo' => 'estornar', 'referencia_id' => $eventoId, 'valor_c' => $e->valor_c, 'desconto_c' => $e->desconto_c, 'data_evento' => $data, 'forma' => $e->forma, 'lancamento_id' => null, 'usuario_id' => $usuario, 'motivo' => $motivo, 'operacao' => $chave, 'payload_hash' => $hash]);
-            // Preserva ID nativo; o evento mantém valores/data originais para auditoria.
-            $this->atualizar('lancamentos', ['valor' => '0.00', 'desconto' => '0.00', 'valor_desconto' => '0.00', 'baixado' => 0, 'data_pagamento' => null], ['idLancamentos' => $e->lancamento_id]);
-            $this->atualizar('trifase_financeiro_projecoes', ['ativo' => 0], ['lancamento_id' => $e->lancamento_id]);
+            if ($retificacao !== null && ($resumo['total_c'] <= 0 || $resumo['total_c'] !== ($acerto['total_final_c'] ?? null))) {
+                throw new DomainException('A retificação exige valor devido no acerto confirmado do cancelamento.');
+            }
+            $validarSaldoAnterior = $retificacao === 'validar_saldo_anterior';
+            $tipoOriginal = $validarSaldoAnterior ? 'estornar' : 'receber';
+            $evento = $this->db->where(['id' => $eventoId, 'os_id' => $osId, 'tipo' => $tipoOriginal])->get('trifase_financeiro_eventos')->row();
+            if (! $evento || $this->db->where('referencia_id', $eventoId)->count_all_results('trifase_financeiro_eventos') > 0 || $data < $evento->data_evento) {
+                throw new DomainException('Registro inexistente, já corrigido ou data inválida.');
+            }
+            $saldoAnterior = $retificacao !== null && $resumo['saldo_c'] > 0 && ! $this->cancelamentoAdmiteRecebimento($osId);
+            if ($validarSaldoAnterior) {
+                $ultimoEstorno = $this->db->select('id')->where(['os_id' => $osId, 'tipo' => 'estornar'])
+                    ->order_by('id', 'desc')->get('trifase_financeiro_eventos', 1)->row();
+                if (! $saldoAnterior || $resumo['recebido_c'] < 0 || (int) ($ultimoEstorno->id ?? 0) !== $eventoId) {
+                    throw new DomainException('Confira o saldo pendente e o estorno mais recente antes de validar o saldo anterior.');
+                }
+            } elseif ($saldoAnterior) {
+                throw new DomainException('Valide o saldo anterior antes de corrigir outro recebimento.');
+            } elseif ($resumo['recebido_c'] < (int) $evento->valor_c) {
+                throw new DomainException('A correção deixaria o total recebido negativo.');
+            }
+            $dados = [
+                'os_id' => $osId, 'tipo' => $validarSaldoAnterior ? 'regularizar' : 'estornar', 'referencia_id' => $eventoId,
+                'valor_c' => $validarSaldoAnterior ? 0 : $evento->valor_c, 'desconto_c' => $validarSaldoAnterior ? 0 : $evento->desconto_c,
+                'data_evento' => $data, 'forma' => $validarSaldoAnterior ? '' : $evento->forma, 'lancamento_id' => null,
+                'usuario_id' => $usuario, 'motivo' => $motivo, 'operacao' => $chave, 'payload_hash' => $hash,
+            ];
+            if ($retificacao !== null) {
+                $dados['retificacao_cancelamento'] = $retificacao;
+            }
+            $id = $this->gravar('trifase_financeiro_eventos', $dados);
+            if (! $validarSaldoAnterior) {
+                // Preserva ID nativo e os dados originais no evento do recebimento.
+                $this->atualizar('lancamentos', ['valor' => '0.00', 'desconto' => '0.00', 'valor_desconto' => '0.00', 'baixado' => 0, 'data_pagamento' => null], ['idLancamentos' => $evento->lancamento_id]);
+                $this->atualizar('trifase_financeiro_projecoes', ['ativo' => 0], ['lancamento_id' => $evento->lancamento_id]);
+            }
             $this->saldoNativo($osId, $usuario);
             return ['evento_id' => $id] + $this->resumo($osId);
         });
+    }
+
+    public function cancelamentoAdmiteRecebimento(int $osId): bool
+    {
+        if (($this->acertoConfirmado($osId)['acerto']['resultado'] ?? '') === 'a_receber') {
+            return true;
+        }
+        return $this->db->field_exists('retificacao_cancelamento', 'trifase_financeiro_eventos')
+            && $this->db->where('os_id', $osId)->where_in('tipo', ['estornar', 'regularizar'])
+                ->where_in('retificacao_cancelamento', ['lancamento_incorreto', 'nao_compensado', 'validar_saldo_anterior'])
+                ->count_all_results('trifase_financeiro_eventos') > 0;
+    }
+
+    private function acertoConfirmado(int $osId): array
+    {
+        $confirmacao = $this->db->table_exists('trifase_cancelamentos')
+            ? $this->db->where('os_id', $osId)->where('tipo', 'confirmar')->order_by('id', 'desc')->get('trifase_cancelamentos', 1)->row()
+            : null;
+        $retrato = $confirmacao ? json_decode($confirmacao->retrato, true, 32, JSON_THROW_ON_ERROR) : [];
+        return $confirmacao ? ['acerto' => $retrato['acerto'] ?? [], 'data' => substr($confirmacao->criado_em, 0, 10)] : [];
     }
 
     public function resumo(int $osId): array
@@ -195,7 +267,7 @@ class Trifase_financeiro_model extends CI_Model
         foreach ($this->eventos($osId) as $e) {
             if ($e->tipo === 'devolver') {
                 $devolvidoCancelamento += (int) $e->valor_c;
-            } else {
+            } elseif ($e->tipo === 'receber' || $e->tipo === 'estornar') {
                 $recebido += ($e->tipo === 'receber' ? 1 : -1) * (int) $e->valor_c;
             }
         }
@@ -450,10 +522,9 @@ class Trifase_financeiro_model extends CI_Model
     {
         $valor = 0;
         foreach ($this->eventos($osId) as $e) {
-            if ($e->tipo === 'devolver') {
-                continue;
+            if ($e->tipo === 'receber' || $e->tipo === 'estornar') {
+                $valor += ($e->tipo === 'receber' ? 1 : -1) * (int) $e->desconto_c;
             }
-            $valor += ($e->tipo === 'receber' ? 1 : -1) * (int) $e->desconto_c;
         }
         return $valor;
     }

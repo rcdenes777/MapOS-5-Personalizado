@@ -67,6 +67,7 @@ if (! defined('PERMISSOES_SISTEMA')) {
         'registrarEntrega' => ['Registrar entrega de OS', 'Registrar retirada com recebedor identificado e confirmação das condições, sem quitar a OS.'],
         'corrigirEntrega' => ['Corrigir entrega de OS', 'Cancelar um registro de retirada com motivo e preservar seu histórico.'],
         'estornarRecebimento' => ['Estornar recebimento de OS', 'Corrigir registros financeiros Trifase, preservando o histórico. Não executa reembolso bancário.'],
+        'retificarFinanceiroCancelado' => ['Retificar financeiro de OS cancelada', 'Corrigir recebimento vinculado a um acerto de cancelamento, com justificativa e histórico.'],
         'cBackup' => ['Backup', 'Baixar a cópia do banco de dados.'],
     ]);
 }

@@ -91,6 +91,7 @@ $config['permissions_map'] = [
         'formalizar' => ['todas' => ['vOs', 'vLancamento', 'eOs', 'aLancamento']],
         'receber' => ['todas' => ['vOs', 'vLancamento', 'aLancamento']],
         'estornar' => ['todas' => ['vOs', 'vLancamento', 'estornarRecebimento']],
+        'retificar' => ['todas' => ['vOs', 'vLancamento', 'retificarFinanceiroCancelado']],
         'andamento' => ['todas' => ['vOs', 'eOs']],
         'tecnico' => ['todas' => ['vOs', 'eOs']],
         'conclusao' => ['todas' => ['vOs', 'eOs']],

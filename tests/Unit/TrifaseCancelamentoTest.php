@@ -421,6 +421,115 @@ final class TrifaseCancelamentoTest extends MaposTestCase
         $this->assertSame([], $this->modelo->resumosEncerrados([2], []));
     }
 
+    public function testDevolucaoParcialMantemSaldoDaLinhaECustoEPerdaNaoVoltaAoEstoque(): void
+    {
+        $this->db->query("ALTER TABLE produtos_os ADD COLUMN desconto TEXT DEFAULT '0.00'");
+        $this->db->query('ALTER TABLE produtos_os ADD COLUMN tipo_desconto TEXT');
+        $this->db->where('idProdutos_os', 1)->update('produtos_os', [
+            'quantidade' => 3, 'subTotal' => '59.99', 'desconto' => '0.01', 'tipo_desconto' => 'real',
+        ]);
+        $this->db->query('ALTER TABLE os ADD COLUMN desconto INTEGER DEFAULT 0');
+        $this->db->query('ALTER TABLE os ADD COLUMN valor_desconto INTEGER DEFAULT 0');
+        $this->db->query('ALTER TABLE os ADD COLUMN tipo_desconto TEXT');
+        $estoque = new Trifase_estoque_model();
+        $estoque->db = $this->db;
+        $estoque->capturarItem(1, 'produto', 1, 2);
+
+        $pedido = $this->pedido();
+        $devolucao = $this->modelo->retirarItem(1, $pedido, 'produto', 1, 2, 'devolucao_parcial_12', null, 2);
+        $this->assertSame($devolucao, $this->modelo->retirarItem(1, $pedido, 'produto', 1, 2, 'devolucao_parcial_12', null, 2));
+        $linha = $this->db->get('produtos_os')->row();
+        $this->assertSame(1, (int) $linha->quantidade);
+        $this->assertSame('19.99', $linha->subTotal);
+        $this->assertSame('0.01', $linha->desconto);
+        $this->assertSame(1000, $estoque->resumoOs(1)['valor_c']);
+        $this->assertSame(3, (int) $this->db->get('trifase_os_custos')->row()->quantidade);
+        $this->assertSame(10, (int) $this->db->get('produtos')->row()->estoque);
+
+        try {
+            $this->modelo->retirarItem(1, $pedido, 'produto', 1, 2, 'devolucao_parcial_12', null, 1);
+            $this->fail('Reutilizou a chave com quantidade diferente.');
+        } catch (DomainException $e) {
+            $this->assertStringContainsString('Chave já utilizada', $e->getMessage());
+        }
+
+        try {
+            $this->modelo->retirarItem(1, $pedido, 'produto', 1, 2, 'quantidade_excedente_123', null, 2);
+            $this->fail('Devolveu mais peças que o saldo da linha.');
+        } catch (DomainException $e) {
+            $this->assertStringContainsString('quantidade', $e->getMessage());
+        }
+
+        $perda = $this->modelo->retirarItem(1, $pedido, 'produto', 1, 2, 'perda_parcial_12345', 'Danificada', 1);
+        $this->assertSame($perda, $this->modelo->retirarItem(1, $pedido, 'produto', 1, 2, 'perda_parcial_12345', 'Danificada', 1));
+        $this->assertSame(0, $this->db->count_all('produtos_os'));
+        $this->assertSame(1, $this->db->count_all('trifase_estoque_eventos'));
+        $this->assertSame(10, (int) $this->db->get('produtos')->row()->estoque);
+
+        $historico = $this->modelo->historico(1);
+        $rPerda = json_decode($historico[0]->retrato, true, 32, JSON_THROW_ON_ERROR);
+        $rDevolucao = json_decode($historico[1]->retrato, true, 32, JSON_THROW_ON_ERROR);
+        $this->assertSame(1, $rPerda['item']['quantidade']);
+        $this->assertSame(1000, $rPerda['custo_unitario_c']);
+        $this->assertSame(2, $rDevolucao['item']['quantidade']);
+        $this->assertSame('40.00', $rDevolucao['item']['subTotal']);
+        $this->assertSame(1, $rDevolucao['quantidade_restante']);
+        $this->modelo->conferirTecnica(1, $pedido, $this->dadosTecnicos(), 2, 'tecnica_123456789');
+    }
+
+    public function testEstoqueAuditavelDesligadoPreservaPecasECancelamentoPendente(): void
+    {
+        $pedido = $this->pedido();
+        $_ENV['TRIFASE_ESTOQUE_ENABLED'] = 'false';
+        try {
+            $this->modelo->retirarItem(1, $pedido, 'produto', 1, 2, 'estoque_desligado_12', null, 1);
+            $this->fail('Devolveu com estoque auditável desligado.');
+        } catch (DomainException $e) {
+            $this->assertStringContainsString('Reative o estoque auditável', $e->getMessage());
+            $this->assertSame(2, (int) $this->db->get('produtos_os')->row()->quantidade);
+            $this->assertSame(8, (int) $this->db->get('produtos')->row()->estoque);
+            $this->assertSame($pedido, (int) $this->modelo->atual(1)->id);
+        }
+    }
+
+    public function testFalhaNaDevolucaoParcialReverteMovimentoEQuantidade(): void
+    {
+        $this->db->query('ALTER TABLE os ADD COLUMN desconto INTEGER DEFAULT 0');
+        $this->db->query('ALTER TABLE os ADD COLUMN valor_desconto INTEGER DEFAULT 0');
+        $this->db->query('ALTER TABLE os ADD COLUMN tipo_desconto TEXT');
+        $pedido = $this->pedido();
+        $this->db->db_debug = false;
+        $this->db->query("CREATE TRIGGER falha_devolucao BEFORE INSERT ON trifase_cancelamentos WHEN NEW.tipo = 'retirar_item' BEGIN SELECT RAISE(FAIL, 'falha devolucao'); END");
+        set_error_handler(static fn ($nivel, $mensagem) => $mensagem === 'SQLite3::exec(): falha devolucao');
+        try {
+            $this->modelo->retirarItem(1, $pedido, 'produto', 1, 2, 'devolucao_falha_123', null, 1);
+            $this->fail('Devolveu sem registrar o evento.');
+        } catch (RuntimeException $e) {
+            $this->assertStringContainsString('preservar o registro', $e->getMessage());
+            $linha = $this->db->get('produtos_os')->row();
+            $this->assertSame(2, (int) $linha->quantidade);
+            $this->assertSame('40.00', $linha->subTotal);
+            $this->assertSame(8, (int) $this->db->get('produtos')->row()->estoque);
+            $this->assertSame(0, $this->db->count_all('trifase_estoque_eventos'));
+        } finally {
+            restore_error_handler();
+        }
+    }
+
+    public function testRetiradaDeServicoPreservaQuantidadeFracionaria(): void
+    {
+        $this->db->query('ALTER TABLE os ADD COLUMN desconto INTEGER DEFAULT 0');
+        $this->db->query('ALTER TABLE os ADD COLUMN valor_desconto INTEGER DEFAULT 0');
+        $this->db->query('ALTER TABLE os ADD COLUMN tipo_desconto TEXT');
+        $this->db->where('idServicos_os', 1)->update('servicos_os', ['quantidade' => 0.5]);
+        $pedido = $this->pedido();
+        $this->modelo->retirarItem(1, $pedido, 'servico', 1, 2, 'retirar_servico_123');
+        $evento = $this->modelo->historico(1)[0];
+        $this->assertStringContainsString('Qtd. 0.5', $evento->motivo);
+        $this->assertSame(0.5, (float) json_decode($evento->retrato, true)['item']['quantidade']);
+        $this->assertSame(0, $this->db->count_all('servicos_os'));
+    }
+
     public function testFalhaAoRegistrarPerdaPreservaPecaEDesconto(): void
     {
         $this->db->query('ALTER TABLE os ADD COLUMN desconto INTEGER DEFAULT 5');
@@ -431,11 +540,11 @@ final class TrifaseCancelamentoTest extends MaposTestCase
         $this->db->query("CREATE TRIGGER falha_perda BEFORE INSERT ON trifase_cancelamentos WHEN NEW.tipo = 'consumir_peca' BEGIN SELECT RAISE(FAIL, 'falha perda'); END");
         set_error_handler(static fn ($nivel, $mensagem) => $mensagem === 'SQLite3::exec(): falha perda');
         try {
-            $this->modelo->retirarItem(1, $pedido, 'produto', 1, 2, 'consumir_igbt_123456', 'Perda em bancada');
+            $this->modelo->retirarItem(1, $pedido, 'produto', 1, 2, 'consumir_igbt_123456', 'Perda em bancada', 1);
             $this->fail('Removeu a peça sem registrar a perda');
         } catch (RuntimeException $e) {
             $this->assertStringContainsString('preservar o registro', $e->getMessage());
-            $this->assertSame(1, $this->db->where('os_id', 1)->count_all_results('produtos_os'));
+            $this->assertSame(2, (int) $this->db->where('os_id', 1)->get('produtos_os')->row()->quantidade);
             $this->assertSame(5, (int) $this->db->where('idOs', 1)->get('os')->row()->valor_desconto);
             $this->assertSame(0, $this->db->count_all('trifase_estoque_eventos'));
         } finally {

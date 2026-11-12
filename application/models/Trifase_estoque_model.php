@@ -119,7 +119,7 @@ class Trifase_estoque_model extends CI_Model
         foreach (['produto' => ['produtos_os', 'idProdutos_os'], 'servico' => ['servicos_os', 'idServicos_os']] as $tipo => [$tabela, $pk]) {
             foreach ($this->db->where('os_id', $os)->get($tabela)->result() as $item) {
                 $c = $this->db->where('os_id', $os)->where('tipo', $tipo)->where('item_id', (int) $item->$pk)->order_by('id', 'desc')->get('trifase_os_custos', 1)->row();
-                $total = $c && $c->custo_unitario_c !== null ? (int) $c->custo_unitario_c * (int) $c->quantidade : null;
+                $total = $c && $c->custo_unitario_c !== null ? (int) $c->custo_unitario_c * (int) $item->quantidade : null;
                 $primeiroCusto = $this->db->where('os_id', $os)->where('tipo', $tipo)->where('item_id', (int) $item->$pk)->order_by('id')->get('trifase_os_custos', 1)->row();
                 if ($primeiroCusto && $primeiroCusto->origem === 'Cadastro no momento da inclusão') {
                     $descricaoItem = $primeiroCusto->descricao;

@@ -83,13 +83,16 @@ $etapaCancelamento = $cancelado ? ($entregue ? 4 : 3) : ($pendenteCancelamento ?
                                             <input type="hidden" name="tipo_item" value="<?= e($ehPeca ? 'produto' : 'servico') ?>">
                                             <input type="hidden" name="operacao" value="<?= e(bin2hex(random_bytes(16))) ?>">
                                             <input type="hidden" name="idItem" value="<?= e((int) $itemCancelamento['id']) ?>">
+                                            <?php if ($ehPeca) { ?>
+                                                <?= component('input', ['name' => 'quantidade', 'id' => 'quantidade-' . $idAcao, 'label' => 'Quantidade de peças', 'type' => 'number', 'value' => 1, 'required' => true, 'attrs' => ['min' => 1, 'max' => (int) $itemCancelamento['quantidade'], 'step' => 1]]) ?>
+                                            <?php } ?>
                                             <?php if ($acao === 'consumir') { ?>
                                                 <input type="hidden" name="consumida" value="1">
                                                 <?= component('textarea', ['name' => 'motivo_perda', 'id' => 'motivo-' . $idAcao, 'label' => 'Motivo do consumo ou perda', 'required' => true, 'attrs' => ['maxlength' => 2000]]) ?>
                                             <?php } ?>
                                             <?= component('checkbox', ['name' => 'conferido', 'id' => 'conferido-' . $idAcao, 'value' => '1', 'label' => match (true) {
-                                                $acao === 'consumir' => 'Toda a quantidade deste item foi consumida ou perdida e não retorna ao estoque.',
-                                                $ehPeca => 'Esta peça não foi utilizada e está apta a voltar ao estoque.',
+                                                $acao === 'consumir' => 'A quantidade informada foi consumida ou perdida e não volta ao estoque.',
+                                                $ehPeca => 'A quantidade informada está sem uso e pode voltar ao estoque.',
                                                 default => 'Este serviço não foi executado.',
                                             }, 'required' => true]) ?>
                                             <?= component('button', ['label' => $rotulo, 'type' => 'submit', 'variant' => 'outline']) ?>

@@ -3,6 +3,7 @@
 defined('BASEPATH') or exit('No direct script access allowed');
 require_once APPPATH . 'libraries/Trifase_os_lock.php';
 require_once APPPATH . 'helpers/trifase_financeiro_helper.php';
+require_once APPPATH . 'helpers/financeiro_helper.php';
 require_once APPPATH . 'helpers/trifase_estoque_helper.php';
 require_once APPPATH . 'helpers/trifase_garantia_helper.php';
 require_once APPPATH . 'helpers/trifase_retorno_helper.php';
@@ -181,8 +182,11 @@ class Trifase_cancelamento_model extends CI_Model
         });
     }
 
-    public function retirarItem(int $id, int $pedido, string $tipo, int $item, int $usuario, string $operacao, ?string $perda = null): int
+    public function retirarItem(int $id, int $pedido, string $tipo, int $item, int $usuario, string $operacao, ?string $perda = null, ?int $quantidade = null): int
     {
+        if ($quantidade !== null && ($tipo !== 'produto' || $quantidade <= 0)) {
+            throw new DomainException('Informe uma quantidade inteira de peças maior que zero.');
+        }
         if (! in_array($tipo, ['produto', 'servico'], true)) {
             throw new DomainException('Tipo de item inválido.');
         }
@@ -196,7 +200,10 @@ class Trifase_cancelamento_model extends CI_Model
         if ($perda !== null) {
             $dados[] = $perda;
         }
-        return $this->executar($id, $usuario, $operacao, $dados, function ($os) use ($id, $pedido, $tipo, $item, $usuario, $operacao, $perda) {
+        if ($quantidade !== null) {
+            $dados[] = ['quantidade' => $quantidade];
+        }
+        return $this->executar($id, $usuario, $operacao, $dados, function ($os) use ($id, $pedido, $tipo, $item, $usuario, $operacao, $perda, $quantidade) {
             $solicitacao = $this->pedido($id, $pedido);
             $conferencia = $this->conferencia($os);
             if ($conferencia['bloqueios'] !== []) {
@@ -212,6 +219,12 @@ class Trifase_cancelamento_model extends CI_Model
                 throw new DomainException('O item já foi retirado ou não pertence a esta OS.');
             }
 
+            $disponivel = (int) $registro['quantidade'];
+            $processada = $quantidade ?? $disponivel;
+            if ($produto && ($processada <= 0 || $processada > $disponivel)) {
+                throw new DomainException('A quantidade supera o que resta nesta linha. Recarregue a página.');
+            }
+            $restante = $disponivel - $processada;
             $movimento = null;
             $motivo = $produto ? 'Peça não utilizada devolvida ao estoque' : 'Serviço não executado retirado';
             $custo = null;
@@ -225,17 +238,44 @@ class Trifase_cancelamento_model extends CI_Model
                 require_once APPPATH . 'models/Trifase_estoque_model.php';
                 $estoque = new Trifase_estoque_model();
                 $estoque->db = $this->db;
-                $movimento = $estoque->movimentar((int) $registro['produtos_id'], 'os_devolucao', (int) $registro['quantidade'], null, date('Y-m-d'), $motivo, 'OS #' . $id . ' · pedido #' . $pedido, $usuario, hash('sha256', 'cancelamento:' . $operacao));
+                $movimento = $estoque->movimentar((int) $registro['produtos_id'], 'os_devolucao', $processada, null, date('Y-m-d'), $motivo, 'OS #' . $id . ' · pedido #' . $pedido, $usuario, hash('sha256', 'cancelamento:' . $operacao));
             }
 
-            if (! $this->db->where(['os_id' => $id, $chave => $item])->delete($tabela) || $this->db->affected_rows() !== 1) {
+            if ($restante > 0) {
+                $linha = $this->db->where(['os_id' => $id, $chave => $item])->get($tabela, 1)->row();
+                $subtotal = financeiroCentavos((string) $registro['subTotal']);
+                $bruto = financeiroCentavos((string) $registro['preco']) * $restante;
+                // Rateia o total existente sem aplicar desconto ao acerto financeiro.
+                $retirado = intdiv($subtotal, $disponivel) * $processada + min($subtotal % $disponivel, $processada);
+                $subtotalRestante = $subtotal - $retirado;
+                $dadosRestantes = ['quantidade' => $restante];
+                if (($linha->tipo_desconto ?? null) === 'porcento') {
+                    [$desconto] = osDescontoDoItem($bruto / 100, 'porcento', $linha->desconto);
+                    $subtotalRestante = financeiroCentavos((string) $desconto['subTotal']);
+                } elseif (($linha->tipo_desconto ?? null) === 'real') {
+                    $dadosRestantes['desconto'] = financeiroDecimal(max(0, $bruto - $subtotalRestante));
+                }
+                $retirado = $subtotal - $subtotalRestante;
+                $dadosRestantes['subTotal'] = financeiroDecimal($subtotalRestante);
+                $registro['subTotal'] = financeiroDecimal($retirado);
+                $gravado = $this->db->where(['os_id' => $id, $chave => $item])->update($tabela, $dadosRestantes);
+            } else {
+                $gravado = $this->db->where(['os_id' => $id, $chave => $item])->delete($tabela);
+            }
+            if (! $gravado || $this->db->affected_rows() !== 1) {
                 throw new RuntimeException('Não foi possível retirar o item.');
             }
             if ($conferencia['financeiro'] === null && ! $this->db->where('idOs', $id)->update('os', ['desconto' => 0, 'valor_desconto' => 0, 'tipo_desconto' => null])) {
                 throw new RuntimeException('Não foi possível atualizar o desconto da OS.');
             }
+            if ($produto) {
+                $registro['quantidade'] = $processada;
+            }
             $descricao = $motivo . ': ' . $registro['nome'] . ' · Qtd. ' . $registro['quantidade'];
             $retrato = ['tipo' => $tipo, 'item' => $registro, 'movimento_estoque_id' => $movimento];
+            if ($restante > 0) {
+                $retrato['quantidade_restante'] = $restante;
+            }
             if ($perda !== null) {
                 $descricao .= ' · ' . $perda;
                 $retrato['custo_unitario_c'] = $custo !== null ? (int) $custo : null;

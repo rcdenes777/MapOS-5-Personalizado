@@ -64,6 +64,11 @@ class Trifase_cancelamentos extends MY_Controller
             if ($pedido === false || $item === false || $this->texto('conferido') !== '1') {
                 throw new DomainException('Confirme o item e sua condição antes de prosseguir.');
             }
+            $quantidadeInformada = $this->input->post('quantidade');
+            $quantidade = $quantidadeInformada === null ? null : filter_var($quantidadeInformada, FILTER_VALIDATE_INT, $opcoes);
+            if ($quantidade === false || ($quantidade !== null && $tipo !== 'produto')) {
+                throw new DomainException('Informe uma quantidade inteira de peças maior que zero.');
+            }
             $consumida = $this->input->post('consumida');
             if ($consumida !== null && $consumida !== '1') {
                 throw new DomainException('Destino da peça inválido.');
@@ -72,7 +77,7 @@ class Trifase_cancelamentos extends MY_Controller
             if ($tipo === 'produto' && $perda === null && ! ($this->data['configuration']['control_estoque'] ?? false)) {
                 throw new DomainException('Ative o controle de estoque antes da devolução.');
             }
-            $this->cancelamentos->retirarItem((int) $os->idOs, $pedido, $tipo, $item, (int) $this->session->userdata('id_admin'), $this->texto('operacao'), $perda);
+            $this->cancelamentos->retirarItem((int) $os->idOs, $pedido, $tipo, $item, (int) $this->session->userdata('id_admin'), $this->texto('operacao'), $perda, $quantidade);
             $resposta = ['result' => true];
         } catch (DomainException $e) {
             $this->output->set_status_header(422);

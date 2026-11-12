@@ -36,16 +36,21 @@ array_splice($cardsFilas, 4, 0, [[
         <h2 id="painel-filas-titulo" class="text-heading-md text-text">Ordens de serviço</h2>
         <?= component('button', ['label' => 'Ver OS', 'variant' => 'ghost', 'href' => site_url('os')]) ?>
     </div>
-    <div class="grid grid-cols-2 gap-3 lg:grid-cols-3 xl:grid-cols-5">
+    <div class="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
         <?php foreach ($cardsFilas as $cardFila) { ?>
             <?php
             $selecionado = isset($lista_painel) && $cardFila['href'] === site_url('mapos') . listagemQuery(['visao' => 'classica'] + $lista_painel['filtros']);
-            if ($selecionado) {
-                $cardFila['attrs'] = ['aria-current' => 'true'];
-                $cardFila['class'] = 'ring-2 ring-primary';
-            }
+            $classes = componenteClasses(
+                'flex min-h-11 items-center justify-between gap-2 rounded-lg border border-border bg-surface px-3 py-2 text-sm leading-tight text-text',
+                'hover:border-input focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-ring',
+                'kpi-acento-' . $cardFila['accent'],
+                $selecionado ? 'ring-2 ring-primary' : null
+            );
             ?>
-            <?= component('kpi-card', $cardFila) ?>
+            <a<?= componenteAtributos(['href' => $cardFila['href'], 'class' => $classes, 'aria-current' => $selecionado ? 'true' : null]) ?>>
+                <span class="font-medium"><?= e($cardFila['label']) ?></span>
+                <strong class="shrink-0 font-semibold tabular-nums"><?= e((string) $cardFila['value']) ?></strong>
+            </a>
         <?php } ?>
     </div>
     <p class="mt-2 text-caption text-muted">Clique em um indicador para ver a lista no lugar da agenda. Retornos e cancelamentos podem incluir OS dos demais indicadores.</p>

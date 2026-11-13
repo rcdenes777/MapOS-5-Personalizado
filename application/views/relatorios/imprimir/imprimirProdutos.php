@@ -1,3 +1,6 @@
+<?php
+$estoqueSemCusto = $verCusto && array_any($produtos, static fn ($p) => $p->precoCompra === null && (int) $p->estoque !== 0);
+?>
 <?php $this->load->view('relatorios/imprimir/partes/inicio', ['tituloDoc' => ucfirst($title)]); ?>
     <table class="rel-tabela">
         <thead>
@@ -21,13 +24,13 @@
                     <td class="rel-td"><?= e($p->descricao) ?></td>
                     <td class="rel-td text-center"><?= e($p->unidade) ?></td>
                     <?php if ($verCusto) { ?>
-                        <td class="rel-td text-center">R$: <?= e($p->precoCompra) ?></td>
+                        <td class="rel-td text-center"><?= e($p->precoCompra === null ? 'Não informado' : 'R$: ' . $p->precoCompra) ?></td>
                     <?php } ?>
                     <td class="rel-td text-center">R$: <?= e($p->precoVenda) ?></td>
                     <td class="rel-td text-center"><?= e($p->estoque) ?></td>
                     <td class="rel-td text-center">R$: <?= number_format($p->valorEstoque, 2, ',', '.') ?></td>
                     <?php if ($verCusto) { ?>
-                        <td class="rel-td text-center">R$: <?= number_format(floatval($p->estoque) * floatval($p->precoCompra), 2, ',', '.') ?></td>
+                        <td class="rel-td text-center"><?= e($p->precoCompra === null ? 'Não informado' : 'R$: ' . number_format((float) $p->valorEstoqueR, 2, ',', '.')) ?></td>
                     <?php } ?>
                 </tr>
             <?php endforeach; ?>
@@ -39,14 +42,15 @@
             <th class="rel-th">Itens em estoque</th>
             <th class="rel-th">Valor do estoque (venda)</th>
             <?php if ($verCusto) { ?>
-                <th class="rel-th">Valor do estoque (compra)</th>
+                <th class="rel-th"><?= e($estoqueSemCusto ? 'Subtotal dos custos informados' : 'Valor do estoque (compra)') ?></th>
             <?php } ?>
         </tr>
         <tr>
             <td class="rel-total text-center"><?= e(array_sum(array_column($produtos, 'estoque'))) ?></td>
             <td class="rel-total text-center">R$: <?= number_format(array_sum(array_column($produtos, 'valorEstoque')), 2, ',', '.') ?></td>
             <?php if ($verCusto) { ?>
-                <td class="rel-total text-center">R$: <?= number_format(array_sum(array_column($produtos, 'valorEstoqueR')), 2, ',', '.') ?></td>
+                <td class="rel-total text-center"><?php $custosInformados = array_filter(array_column($produtos, 'valorEstoqueR'), static fn ($custo) => $custo !== null); ?>
+                    <?= e($estoqueSemCusto && $custosInformados === [] ? 'Não informado' : 'R$: ' . number_format(array_sum($custosInformados), 2, ',', '.')) ?></td>
             <?php } ?>
         </tr>
     </table>

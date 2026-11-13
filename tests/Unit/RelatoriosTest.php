@@ -86,7 +86,7 @@ final class RelatoriosTest extends MaposTestCase
                 };
             }
 
-            public function renderizar(bool $verCusto): string
+            public function renderizar(bool $verCusto, bool $comCustoDesconhecido = false): string
             {
                 $title = 'Produtos';
                 $produtos = [(object) [
@@ -98,6 +98,12 @@ final class RelatoriosTest extends MaposTestCase
                     'valorEstoque' => 225,
                     'valorEstoqueR' => 114.86,
                 ]];
+                if ($comCustoDesconhecido) {
+                    $produtos[] = (object) [
+                        'descricao' => 'Sensor', 'unidade' => 'UNID', 'precoCompra' => null,
+                        'precoVenda' => '23.00', 'estoque' => 3, 'valorEstoque' => 69, 'valorEstoqueR' => null,
+                    ];
+                }
                 ob_start();
                 include APPPATH . 'views/relatorios/imprimir/imprimirProdutos.php';
 
@@ -113,6 +119,12 @@ final class RelatoriosTest extends MaposTestCase
             $this->assertStringNotContainsString($texto, $html);
             $this->assertStringContainsString($texto, $renderizador->renderizar(true));
         }
+        $parcial = $renderizador->renderizar(true, true);
+        $this->assertStringContainsString('Subtotal dos custos informados', $parcial);
+        $this->assertStringContainsString('Não informado', $parcial);
+        $this->assertStringContainsString('114,86', $parcial);
+        $this->assertStringNotContainsString('R$: 0,00', $parcial);
+        $this->assertStringNotContainsString('Subtotal dos custos informados', $renderizador->renderizar(false, true));
     }
 
     public function testFaixaAceitaDinheiroENumeroEDescartaOResto(): void

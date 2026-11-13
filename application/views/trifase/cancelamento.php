@@ -72,8 +72,8 @@ $etapaCancelamento = $cancelado ? ($entregue ? 4 : 3) : ($pendenteCancelamento ?
                             <?php if ($podePedirCancelamento && $bloqueiosCancelamento === []) {
                                 $ehPeca = $tituloCancelamento === 'Peças';
                                 $acoes = $ehPeca ? ['consumir' => 'Registrar peça consumida ou perdida'] : ['retirar' => 'Retirar serviço não executado'];
-                                if ($ehPeca && $devolverPecasCancelamento) {
-                                    $acoes = ['retirar' => 'Devolver peça não utilizada'] + $acoes;
+                                if ($ehPeca) {
+                                    $acoes = ['retirar' => 'Conferir peça não utilizada'] + $acoes;
                                 }
                                 foreach ($acoes as $acao => $rotulo) {
                                     $idAcao = ($ehPeca ? 'peca-' : 'servico-') . $itemCancelamento['id'] . '-' . $acao; ?>
@@ -83,13 +83,16 @@ $etapaCancelamento = $cancelado ? ($entregue ? 4 : 3) : ($pendenteCancelamento ?
                                             <input type="hidden" name="tipo_item" value="<?= e($ehPeca ? 'produto' : 'servico') ?>">
                                             <input type="hidden" name="operacao" value="<?= e(bin2hex(random_bytes(16))) ?>">
                                             <input type="hidden" name="idItem" value="<?= e((int) $itemCancelamento['id']) ?>">
+                                            <?php if ($ehPeca) { ?>
+                                                <?= component('input', ['name' => 'quantidade', 'id' => 'quantidade-' . $idAcao, 'label' => 'Quantidade de peças', 'type' => 'number', 'value' => 1, 'required' => true, 'attrs' => ['min' => 1, 'max' => (int) $itemCancelamento['quantidade'], 'step' => 1]]) ?>
+                                            <?php } ?>
                                             <?php if ($acao === 'consumir') { ?>
                                                 <input type="hidden" name="consumida" value="1">
                                                 <?= component('textarea', ['name' => 'motivo_perda', 'id' => 'motivo-' . $idAcao, 'label' => 'Motivo do consumo ou perda', 'required' => true, 'attrs' => ['maxlength' => 2000]]) ?>
                                             <?php } ?>
                                             <?= component('checkbox', ['name' => 'conferido', 'id' => 'conferido-' . $idAcao, 'value' => '1', 'label' => match (true) {
-                                                $acao === 'consumir' => 'Toda a quantidade deste item foi consumida ou perdida e não retorna ao estoque.',
-                                                $ehPeca => 'Esta peça não foi utilizada e está apta a voltar ao estoque.',
+                                                $acao === 'consumir' => 'A quantidade informada foi consumida ou perdida e não volta ao estoque.',
+                                                $ehPeca => 'A quantidade está sem uso. A devolução automática exige baixa comprovada para toda a linha.',
                                                 default => 'Este serviço não foi executado.',
                                             }, 'required' => true]) ?>
                                             <?= component('button', ['label' => $rotulo, 'type' => 'submit', 'variant' => 'outline']) ?>
@@ -116,8 +119,16 @@ $etapaCancelamento = $cancelado ? ($entregue ? 4 : 3) : ($pendenteCancelamento ?
                 <form method="post" action="<?= e(site_url('trifase_cancelamentos/tecnica/' . $idCancelamento)) ?>" class="mt-4 grid gap-4" <?= js_module('formulario/padrao') ?>>
                     <input type="hidden" name="<?= e($this->security->get_csrf_token_name()) ?>" value="<?= e($this->security->get_csrf_hash()) ?>">
                     <input type="hidden" name="operacao" value="<?= e(bin2hex(random_bytes(16))) ?>"><input type="hidden" name="pedido_id" value="<?= e((int) $pedidoCancelamento->id) ?>"><input type="hidden" name="hash_tecnico" value="<?= e($hashTecnicoCancelamento) ?>">
-                    <?= component('checkbox', ['name' => 'pecas_nao_utilizadas', 'value' => '1', 'label' => 'Conferi o destino de todas as peças.', 'required' => true, 'checked' => $tecnicaLiberada, 'disabled' => $tecnicaLiberada]) ?>
-                    <?= component('checkbox', ['name' => 'servicos_executados', 'value' => '1', 'label' => 'Conferi: os serviços ainda vinculados foram executados.', 'required' => true, 'checked' => $tecnicaLiberada, 'disabled' => $tecnicaLiberada]) ?>
+                    <?php if ($pecasCancelamento === []) { ?>
+                        <input type="hidden" name="pecas_nao_utilizadas" value="1">
+                        <p class="text-muted">Nenhuma peça pendente de conferência.</p>
+                    <?php } ?>
+                    <?php if ($servicosCancelamento === []) { ?>
+                        <input type="hidden" name="servicos_nao_executados" value="1">
+                        <p class="text-muted">Nenhum serviço vinculado.</p>
+                    <?php } else { ?>
+                        <?= component('checkbox', ['name' => 'servicos_executados', 'value' => '1', 'label' => 'Conferi: os serviços ainda vinculados foram executados.', 'required' => true, 'checked' => $tecnicaLiberada, 'disabled' => $tecnicaLiberada]) ?>
+                    <?php } ?>
                     <?php if (! $tecnicaLiberada) { ?>
                         <?= component('textarea', ['name' => 'observacoes_tecnicas', 'label' => 'Observações técnicas (opcional)', 'value' => $valoresCancelamento['observacoes_tecnicas'] ?? '', 'attrs' => ['maxlength' => 2000]]) ?>
                         <?= component('button', ['label' => 'Concluir conferência técnica', 'variant' => 'outline', 'type' => 'submit', 'disabled' => $pecasCancelamento !== []]) ?>

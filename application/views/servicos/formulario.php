@@ -65,6 +65,6 @@ $errosDeCampo = array_diff_key($erros, ['_geral' => true]);
     </form>
 </div>
 
-<?php if (($servico ?? null) !== null && trifaseEstoqueHabilitado() && $this->permission->checkPermission($this->session->userdata('permissao'), 'vLancamento')) { ?>
+<?php if (($servico ?? null) !== null && trifaseEstoqueHabilitado() && $this->permission->checkPermission($this->session->userdata('permissao'), 'vCustoInterno')) { ?>
     <div class="mt-4"><?= component('link', ['label' => 'Custo interno e histórico deste serviço', 'href' => site_url('trifase_estoque/servico/' . (int) $servico->idServicos)]) ?></div>
 <?php } ?>

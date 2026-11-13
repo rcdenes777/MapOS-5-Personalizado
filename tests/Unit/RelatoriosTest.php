@@ -72,6 +72,61 @@ final class RelatoriosTest extends MaposTestCase
         }
     }
 
+    public function testRelatorioDeProdutosMantemVendaEEstoqueSemExibirCusto(): void
+    {
+        $renderizador = new class() {
+            public object $load;
+
+            public function __construct()
+            {
+                $this->load = new class() {
+                    public function view($arquivo, $dados = []): void
+                    {
+                    }
+                };
+            }
+
+            public function renderizar(bool $verCusto, bool $comCustoDesconhecido = false): string
+            {
+                $title = 'Produtos';
+                $produtos = [(object) [
+                    'descricao' => 'Tela',
+                    'unidade' => 'UNID',
+                    'precoCompra' => '57.43',
+                    'precoVenda' => '112.50',
+                    'estoque' => 2,
+                    'valorEstoque' => 225,
+                    'valorEstoqueR' => 114.86,
+                ]];
+                if ($comCustoDesconhecido) {
+                    $produtos[] = (object) [
+                        'descricao' => 'Sensor', 'unidade' => 'UNID', 'precoCompra' => null,
+                        'precoVenda' => '23.00', 'estoque' => 3, 'valorEstoque' => 69, 'valorEstoqueR' => null,
+                    ];
+                }
+                ob_start();
+                include APPPATH . 'views/relatorios/imprimir/imprimirProdutos.php';
+
+                return (string) ob_get_clean();
+            }
+        };
+
+        $html = $renderizador->renderizar(false);
+        foreach (['Preço venda', '112.50', '225,00', 'Itens em estoque'] as $texto) {
+            $this->assertStringContainsString($texto, $html);
+        }
+        foreach (['Preço compra', 'Valor (compra)', 'Valor do estoque (compra)', '57.43', '114,86'] as $texto) {
+            $this->assertStringNotContainsString($texto, $html);
+            $this->assertStringContainsString($texto, $renderizador->renderizar(true));
+        }
+        $parcial = $renderizador->renderizar(true, true);
+        $this->assertStringContainsString('Subtotal dos custos informados', $parcial);
+        $this->assertStringContainsString('Não informado', $parcial);
+        $this->assertStringContainsString('114,86', $parcial);
+        $this->assertStringNotContainsString('R$: 0,00', $parcial);
+        $this->assertStringNotContainsString('Subtotal dos custos informados', $renderizador->renderizar(false, true));
+    }
+
     public function testFaixaAceitaDinheiroENumeroEDescartaOResto(): void
     {
         $this->assertSame(['1000.00', null], relatorioFaixa('1.000,00', '', true));

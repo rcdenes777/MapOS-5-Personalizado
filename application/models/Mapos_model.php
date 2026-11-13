@@ -211,28 +211,27 @@ class Mapos_model extends CI_Model
         return $this->db->count_all($table);
     }
     
-    public function getOsAbertas()
+    public function getOsAbertas(bool $verFinanceiro = false)
     {
-        $this->db->select('os.*, clientes.nomeCliente');
-        $this->db->from('os');
-        $this->db->join('clientes', 'clientes.idClientes = os.clientes_id');
-        $this->db->where('os.status', 'Aberto');
-        $this->db->limit(10);
-
-        return $this->db->get()->result();
+        return $this->selecionarOsDoPainel($verFinanceiro)->where('os.status', 'Aberto')->limit(10)->get()->result();
     }
 
-    public function getOsAndamento()
+    public function getOsAndamento(bool $verFinanceiro = false)
     {
-        $this->db->select('os.*, clientes.nomeCliente');
-        $this->db->from('os');
-        $this->db->join('clientes', 'clientes.idClientes = os.clientes_id');
-        $this->db->where('os.status', 'Em Andamento');
-        $this->db->limit(10);
-
-        return $this->db->get()->result();
+        return $this->selecionarOsDoPainel($verFinanceiro)->where('os.status', 'Em Andamento')->limit(10)->get()->result();
     }
-    
+
+    private function selecionarOsDoPainel(bool $verFinanceiro)
+    {
+        $this->db->select('os.idOs, os.dataInicial, os.dataFinal, os.garantia, os.descricaoProduto, os.defeito, os.status,
+            os.observacoes, os.laudoTecnico, os.clientes_id, os.usuarios_id, os.garantias_id, clientes.nomeCliente');
+        if ($verFinanceiro) {
+            $this->db->select('os.valorTotal, os.desconto, os.valor_desconto, os.tipo_desconto, os.lancamento, os.faturado');
+        }
+
+        return $this->db->from('os')->join('clientes', 'clientes.idClientes = os.clientes_id');
+    }
+
     /*
      * Painel inicial da v5 (#2847).
      */
@@ -307,29 +306,25 @@ class Mapos_model extends CI_Model
             ->result();
     }
 
-    public function calendario($start, $end, $status = null)
+    public function calendario($start, $end, $status = null, bool $verFinanceiro = false)
     {
-        // Com o desconto individual dos itens (#2880), o valor do item é o subTotal gravado.
-        $valorProduto = 'produtos_os.preco * produtos_os.quantidade';
-        $valorServico = 'servicos_os.preco * servicos_os.quantidade';
-        if ($this->db->field_exists('desconto', 'produtos_os') && $this->db->field_exists('desconto', 'servicos_os')) {
-            $valorProduto = "CASE WHEN produtos_os.desconto > 0 THEN produtos_os.subTotal ELSE {$valorProduto} END";
-            $valorServico = "CASE WHEN servicos_os.desconto > 0 THEN servicos_os.subTotal ELSE {$valorServico} END";
+        $this->selecionarOsDoPainel($verFinanceiro);
+        if ($verFinanceiro) {
+            // O subtotal gravado incorpora o desconto individual do item.
+            $valorProduto = 'produtos_os.preco * produtos_os.quantidade';
+            $valorServico = 'servicos_os.preco * servicos_os.quantidade';
+            if ($this->db->field_exists('desconto', 'produtos_os') && $this->db->field_exists('desconto', 'servicos_os')) {
+                $valorProduto = "CASE WHEN produtos_os.desconto > 0 THEN produtos_os.subTotal ELSE {$valorProduto} END";
+                $valorServico = "CASE WHEN servicos_os.desconto > 0 THEN servicos_os.subTotal ELSE {$valorServico} END";
+            }
+            $this->db->select(
+                "COALESCE((SELECT SUM({$valorProduto}) FROM produtos_os WHERE produtos_os.os_id = os.idOs), 0) totalProdutos,
+                COALESCE((SELECT SUM({$valorServico}) FROM servicos_os WHERE servicos_os.os_id = os.idOs), 0) totalServicos",
+                false
+            );
         }
-
-        $this->db->select(
-            "os.*,
-            clientes.nomeCliente,
-            COALESCE((SELECT SUM({$valorProduto}) FROM produtos_os WHERE produtos_os.os_id = os.idOs), 0) totalProdutos,
-            COALESCE((SELECT SUM({$valorServico}) FROM servicos_os WHERE servicos_os.os_id = os.idOs), 0) totalServicos"
-        );
-        $this->db->from('os');
-        $this->db->join('clientes', 'clientes.idClientes = os.clientes_id');
-        $this->db->join('produtos_os', 'produtos_os.os_id = os.idOs', 'left');
-        $this->db->join('servicos_os', 'servicos_os.os_id = os.idOs', 'left');
         $this->db->where('os.dataFinal >=', $start);
         $this->db->where('os.dataFinal <=', $end);
-        $this->db->group_by('os.idOs');
 
         if (! empty($status)) {
             $this->db->where('os.status', $status);
@@ -338,11 +333,18 @@ class Mapos_model extends CI_Model
         return $this->db->get()->result();
     }
 
-    public function getProdutosMinimo()
+    public function getProdutosMinimo(bool $verFinanceiro = false, bool $verCusto = false)
     {
-        $sql = 'SELECT * FROM produtos WHERE estoque <= estoqueMinimo AND estoqueMinimo > 0 LIMIT 10';
+        $this->db->select('idProdutos, codDeBarra, descricao, unidade, estoque, estoqueMinimo, saida, entrada');
+        if ($verFinanceiro) {
+            $this->db->select('precoVenda');
+        }
+        if ($verCusto) {
+            $this->db->select('precoCompra');
+        }
 
-        return $this->db->query($sql)->result();
+        return $this->db->where('estoque <= estoqueMinimo', null, false)
+            ->where('estoqueMinimo >', 0)->limit(10)->get('produtos')->result();
     }
 
     public function getEmitente()

@@ -9,12 +9,7 @@
  * @var array<string, bool> $pode
  */
 $id = (int) $produto->idProdutos;
-$compra = (float) $produto->precoCompra;
 $venda = (float) $produto->precoVenda;
-// Markup sobre a compra e margem sobre a venda, como o cálculo do formulário.
-$markup = $compra > 0 ? ($venda - $compra) / $compra * 100 : null;
-$margem = $venda > 0 ? ($venda - $compra) / $venda * 100 : null;
-$porcento = static fn (?float $valor) => $valor === null ? '—' : number_format($valor, 1, ',', '.') . '%';
 $baixo = produtoEstoqueBaixo($produto);
 $unidade = (string) $produto->unidade;
 
@@ -26,13 +21,18 @@ $secoes = [
         'Unidade' => unidadesDeMedida()[$unidade] ?? $unidade,
         'Movimenta o estoque' => $movimento === [] ? 'Não' : implode(' e ', $movimento),
     ], static fn ($valor) => $valor !== ''),
-    'Preços' => [
-        'Compra' => dinheiro($compra),
-        'Venda' => dinheiro($venda),
+    'Preços' => ['Venda' => dinheiro($venda)],
+];
+if ($verCusto) {
+    $compra = $produto->precoCompra === null ? null : (float) $produto->precoCompra;
+    $markup = $compra !== null && $compra > 0 ? ($venda - $compra) / $compra * 100 : null;
+    $margem = $compra !== null && $venda > 0 ? ($venda - $compra) / $venda * 100 : null;
+    $porcento = static fn (?float $valor) => $valor === null ? '—' : number_format($valor, 1, ',', '.') . '%';
+    $secoes['Preços'] = ['Compra' => $compra === null ? '—' : dinheiro($compra)] + $secoes['Preços'] + [
         'Markup' => $porcento($markup),
         'Margem' => $porcento($margem),
-    ],
-];
+    ];
+}
 ?>
 <div class="flex flex-col gap-4 pt-2 pb-8">
     <header class="flex flex-wrap items-start justify-between gap-3">
@@ -75,7 +75,7 @@ $secoes = [
                     <dd class="text-body-md tabular-nums text-text"><?= e($produto->estoqueMinimo !== null && $produto->estoqueMinimo !== '' ? (int) $produto->estoqueMinimo . ' ' . $unidade : '—') ?></dd>
                 </div>
             </dl>
-            <?php if (trifaseEstoqueHabilitado()) { ?>
+            <?php if ($estoqueAuditavel ?? trifaseEstoqueHabilitado()) { ?>
                 <div class="mt-4"><?= component('link', ['label' => 'Movimentar estoque e consultar histórico', 'href' => site_url('trifase_estoque/produto/' . $id)]) ?></div>
             <?php } elseif ($pode['editar']) { ?>
                 <form method="post" action="<?= e(site_url('produtos/atualizar_estoque')) ?>" novalidate class="mt-4 grid grid-cols-[minmax(0,1fr)_auto] items-start gap-2 border-t border-border pt-4" <?= js_module('formulario/padrao') ?>>

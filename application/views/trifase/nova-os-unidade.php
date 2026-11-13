@@ -13,7 +13,7 @@ $clienteUnidadeOs = $valores['clientes_id'] !== '';
     <div class="mt-4">
         <?= component('select', ['name' => 'equipamento_modo', 'id' => 'nova-os-equipamento-modo', 'label' => 'Como identificar o equipamento?', 'selected' => $modoNovaOs, 'options' => ['existente' => 'Selecionar equipamento deste cliente', 'novo' => 'Cadastrar outro equipamento', '' => 'Identificar depois'], 'help' => 'O equipamento será vinculado ao cliente selecionado quando você salvar a OS.']) ?>
     </div>
-    <fieldset data-nova-os-unidade-existente <?= e($buscaUnidadeOs ? '' : 'hidden disabled') ?>>
+    <fieldset class="min-w-0" data-nova-os-unidade-existente <?= e($buscaUnidadeOs ? '' : 'hidden disabled') ?>>
         <legend class="sr-only">Equipamentos já cadastrados deste cliente</legend>
         <div class="relative mt-4" data-nova-os-unidade-busca data-unidade-cliente-url="<?= e(site_url('trifase_equipamentos/unidadesCliente')) ?>" data-autocomplete="<?= e(site_url('trifase_equipamentos/unidadesCliente') . '?cliente_id=' . (int) $valores['clientes_id']) ?>" data-autocomplete-alvo="nova-os-equipamento-id" data-autocomplete-listar>
             <?= component('input', [
@@ -26,15 +26,15 @@ $clienteUnidadeOs = $valores['clientes_id'] !== '';
             <input type="hidden" id="nova-os-equipamento-id" name="equipamento_id" value="<?= e($unidadeNovaOs !== null ? (int) $unidadeNovaOs->id : '') ?>">
         </div>
         <p class="mt-2 text-caption text-muted" data-nova-os-unidade-confirmada role="status"><?= e($unidadeNovaOs !== null ? 'Equipamento #' . (int) $unidadeNovaOs->id . ($unidadeNovaOs->selo !== '' ? ' · Selo ' . $unidadeNovaOs->selo : '') : 'Nenhum equipamento selecionado.') ?></p>
-        <?= component('button', ['label' => 'Limpar equipamento selecionado', 'variant' => 'ghost', 'class' => 'mt-2', 'attrs' => ['data-nova-os-unidade-limpar' => '']]) ?>
+        <?= component('button', ['label' => 'Limpar seleção', 'variant' => 'ghost', 'class' => 'mt-2', 'attrs' => ['data-nova-os-unidade-limpar' => '']]) ?>
     </fieldset>
-    <fieldset class="mt-4 grid gap-4" data-nova-os-unidade-nova <?= e($novaUnidadeOs ? ($clienteUnidadeOs ? '' : 'disabled') : 'hidden disabled') ?>>
+    <fieldset class="mt-4 grid min-w-0 gap-4" data-nova-os-unidade-nova <?= e($novaUnidadeOs ? ($clienteUnidadeOs ? '' : 'disabled') : 'hidden disabled') ?>>
         <legend class="sr-only">Cadastro de outro equipamento físico</legend>
         <div class="relative" data-nova-os-modelo-busca data-autocomplete="<?= e(site_url('trifase_equipamentos/modelos')) ?>" data-autocomplete-alvo="nova-os-modelo-id" data-autocomplete-listar data-autocomplete-livre>
             <?= component('input', ['name' => 'equipamento_busca_modelo', 'id' => 'nova-os-modelo-busca', 'label' => 'Selecionar marca/modelo do catálogo', 'value' => $valorUnidadeNovaOs('modelo_id') !== '' ? $valorUnidadeNovaOs('marca') . ' · ' . $valorUnidadeNovaOs('modelo') : '', 'autocomplete' => 'off', 'placeholder' => 'Clique para listar ou digite para filtrar', 'help' => 'Opcional. Preenche somente tipo, marca e modelo, sem selecionar um equipamento de outro atendimento. Se não encontrar, preencha os campos abaixo.']) ?>
             <input type="hidden" name="equipamento_modelo_id" id="nova-os-modelo-id" value="<?= e($valorUnidadeNovaOs('modelo_id')) ?>">
         </div>
-        <?= component('button', ['label' => 'Informar marca/modelo manualmente', 'variant' => 'ghost', 'attrs' => ['data-nova-os-modelo-limpar' => '']]) ?>
+        <?= component('button', ['label' => 'Preencher manualmente', 'variant' => 'ghost', 'attrs' => ['data-nova-os-modelo-limpar' => '']]) ?>
         <div class="grid gap-4 sm:grid-cols-2">
             <?= component('select', ['name' => 'equipamento_tipo', 'id' => 'nova-os-tipo', 'label' => 'Tipo de equipamento', 'selected' => $valorUnidadeNovaOs('tipo') ?: 'placa', 'options' => ['placa' => 'Placa eletrônica', 'celular' => 'Celular', 'outro' => 'Outro equipamento'], 'required' => true]) ?>
             <?= component('input', ['name' => 'equipamento_marca', 'id' => 'nova-os-marca', 'label' => 'Marca', 'value' => $valorUnidadeNovaOs('marca'), 'required' => true, 'attrs' => ['maxlength' => 100]]) ?>

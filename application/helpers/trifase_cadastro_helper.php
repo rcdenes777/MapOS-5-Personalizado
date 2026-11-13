@@ -31,10 +31,13 @@ function trifaseClienteTemHistoricoProtegido(object $db, int $id): bool
     if ($db->table_exists('trifase_equipamentos') && $db->where('cliente_id', $id)->count_all_results('trifase_equipamentos')) {
         return true;
     }
-    foreach (['trifase_os_custos', 'trifase_financeiro_obrigacoes', 'trifase_entregas_eventos', 'trifase_orcamento_versoes', 'trifase_atendimentos'] as $tabela) {
+    foreach (['trifase_os_custos', 'trifase_financeiro_obrigacoes', 'trifase_entregas_eventos', 'trifase_orcamento_versoes', 'trifase_atendimentos', 'trifase_cancelamentos'] as $tabela) {
         if ($db->table_exists($tabela) && $db->from($tabela . ' tf_protegido')->join('os', 'os.idOs = tf_protegido.os_id')->where('os.clientes_id', $id)->count_all_results()) {
             return true;
         }
     }
-    return false;
+    return $db->table_exists('trifase_estoque_eventos')
+        && $db->field_exists('os_id', 'trifase_estoque_eventos')
+        && $db->from('trifase_estoque_eventos tf_estoque')->join('os', 'os.idOs = tf_estoque.os_id')
+            ->where('os.clientes_id', $id)->count_all_results() > 0;
 }

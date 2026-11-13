@@ -163,6 +163,8 @@ final class VendasFormularioTest extends MaposTestCase
         // Subclasse com as propriedades declaradas: o CI as cria dinamicamente,
         // o que é deprecado no PHP 8.2+ fora do framework.
         $controller = new class() extends Vendas {
+            public $db;
+
             public $vendas_model;
 
             public $produtos_model;
@@ -173,6 +175,7 @@ final class VendasFormularioTest extends MaposTestCase
             {
             }
         };
+        $controller->db = $this->db;
         $controller->vendas_model = $vendasModel;
         $controller->produtos_model = $produtosModel;
         $controller->load = new class() {

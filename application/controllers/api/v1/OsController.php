@@ -2,10 +2,11 @@
 
 defined('BASEPATH') or exit('No direct script access allowed');
 
-require APPPATH . '/libraries/REST_Controller.php';
+require_once APPPATH . '/libraries/REST_Controller.php';
 
 require_once APPPATH . 'helpers/trifase_financeiro_helper.php';
 require_once APPPATH . 'helpers/trifase_entrega_helper.php';
+require_once APPPATH . 'helpers/trifase_estoque_helper.php';
 require_once APPPATH . 'helpers/trifase_equipamento_helper.php';
 require_once APPPATH . 'helpers/trifase_orcamento_helper.php';
 require_once APPPATH . 'helpers/trifase_atendimento_helper.php';
@@ -39,7 +40,7 @@ class OsController extends REST_Controller
 
     private function travarFinanceiro(int $id): void
     {
-        if ((! trifaseFinanceiroHabilitado() && ! $this->db->table_exists('trifase_entregas_eventos') && ! $this->db->table_exists('trifase_os_equipamentos') && ! $this->db->table_exists('trifase_orcamento_versoes') && ! $this->db->table_exists('trifase_atendimentos') && ! $this->db->table_exists('trifase_cancelamentos')) || $this->financeiroLock !== null) {
+        if ((! trifaseFinanceiroHabilitado() && ! $this->db->table_exists('trifase_entregas_eventos') && ! $this->db->table_exists('trifase_os_equipamentos') && ! $this->db->table_exists('trifase_orcamento_versoes') && ! $this->db->table_exists('trifase_atendimentos') && ! $this->db->table_exists('trifase_cancelamentos') && ! $this->db->table_exists('trifase_estoque_eventos')) || $this->financeiroLock !== null) {
             return;
         }
         try {
@@ -57,6 +58,9 @@ class OsController extends REST_Controller
     private function dadosDaOs(object $os, bool $verValores): object
     {
         $os = apiSemSenha($os);
+        if (isset($os->produtos) && ! $this->permission->checkPermission($this->logged_user()->level, 'vCustoInterno')) {
+            $os->produtos = array_map('apiProdutoSemCusto', $os->produtos);
+        }
         if ($verValores) {
             return $os;
         }
@@ -338,7 +342,7 @@ class OsController extends REST_Controller
             }
         }
         if ($this->db->table_exists('trifase_cancelamentos') && $os->status !== $this->put('status', true)
-            && ($os->status === 'Cancelado' || $this->put('status', true) === 'Cancelado')) {
+            && (strcasecmp((string) $os->status, 'Cancelado') === 0 || strcasecmp((string) $this->put('status', true), 'Cancelado') === 0)) {
             $this->response(['status' => false, 'message' => 'Use o fluxo de cancelamento conferido. Preserve a OS cancelada e abra outro atendimento.'], 409);
             return;
         }
@@ -459,14 +463,6 @@ class OsController extends REST_Controller
     public function index_delete($id)
     {
         $this->logged_user();
-        if ($this->db->table_exists('trifase_cancelamentos') && $this->db->where('os_id', (int) $id)->count_all_results('trifase_cancelamentos')) {
-            $this->response(['status' => false, 'message' => 'OS com histórico de cancelamento não pode ser excluída.'], REST_Controller::HTTP_FORBIDDEN);
-            return;
-        }
-        if ($this->db->table_exists('trifase_os_custos') && $this->db->where('os_id', (int) $id)->count_all_results('trifase_os_custos')) {
-            $this->response(['status' => false, 'message' => 'OS com custos históricos não pode ser excluída.'], REST_Controller::HTTP_FORBIDDEN);
-            return;
-        }
         require_once APPPATH . 'helpers/trifase_estoque_helper.php';
         if (trifaseEstoqueHabilitado()) {
             $this->response(['status' => false, 'message' => 'Use as operações auditáveis do painel para preservar estoque e custos.'], REST_Controller::HTTP_FORBIDDEN);
@@ -487,6 +483,14 @@ class OsController extends REST_Controller
         }
 
         $this->travarFinanceiro((int) $id);
+        if ($this->db->table_exists('trifase_cancelamentos') && $this->db->where('os_id', (int) $id)->count_all_results('trifase_cancelamentos')) {
+            $this->response(['status' => false, 'message' => 'OS com histórico de cancelamento não pode ser excluída.'], REST_Controller::HTTP_FORBIDDEN);
+            return;
+        }
+        if ($this->db->table_exists('trifase_os_custos') && $this->db->where('os_id', (int) $id)->count_all_results('trifase_os_custos')) {
+            $this->response(['status' => false, 'message' => 'OS com custos históricos não pode ser excluída.'], REST_Controller::HTTP_FORBIDDEN);
+            return;
+        }
         if (trifaseAtendimentoDaOs($this->db, (int) $id) !== null) {
             $this->response(['status' => false, 'message' => 'OS com conclusão técnica registrada: exclusão bloqueada.'], 409);
             return;
@@ -647,6 +651,10 @@ class OsController extends REST_Controller
 
         $this->osParaEditar($id, 'OS Faturada/Cancelada não pode ser alterada.', 'Erro ao tentar inserir produto na OS. OS Não encontrada!');
         $this->validarValoresDoItem($this->post('preco', true), $this->post('quantidade', true));
+        if (floor((float) $this->post('quantidade', true)) !== (float) $this->post('quantidade', true)) {
+            $this->response(['status' => false, 'message' => 'A quantidade de produto deve ser inteira.'], 422);
+            return;
+        }
 
         if (! $this->os_model->getProdutoCadastro((int) $this->post('idProduto', true))) {
             $this->response([
@@ -663,12 +671,15 @@ class OsController extends REST_Controller
             'os_id' => $id,
         ];
 
+        $baixarEstoque = $this->validarBaixaEstoque();
         if ($this->os_model->add('produtos_os', $data)) {
-            $lastProdutoOs = $this->Api_model->lastRow('produtos_os', 'idProdutos_os');
+            $lastProdutoOs = $this->os_model->getProdutoDaOs((int) $id, (int) $this->db->insert_id());
 
             $this->load->model('produtos_model');
 
-            $this->produtoEstoque($this->post('idProduto', true), $this->post('quantidade', true), '-');
+            if ($baixarEstoque) {
+                $this->produtoEstoque((int) $id, (int) $lastProdutoOs->idProdutos_os, (int) $this->post('idProduto', true), (int) $this->post('quantidade', true), '-');
+            }
 
             $this->db->set('desconto', 0.00);
             $this->db->set('valor_desconto', 0.00);
@@ -681,6 +692,9 @@ class OsController extends REST_Controller
             $result = $lastProdutoOs;
             unset($result->descricao);
             $result->produto = $this->produtos_model->getById($this->post('idProduto', true));
+            if (! $this->permission->checkPermission($this->logged_user()->level, 'vCustoInterno')) {
+                $result->produto = apiProdutoSemCusto($result->produto);
+            }
 
             $this->response([
                 'status' => true,
@@ -731,6 +745,10 @@ class OsController extends REST_Controller
         }
 
         $this->validarValoresDoItem($this->put('preco', true), $this->put('quantidade', true));
+        if (floor((float) $this->put('quantidade', true)) !== (float) $this->put('quantidade', true)) {
+            $this->response(['status' => false, 'message' => 'A quantidade de produto deve ser inteira.'], 422);
+            return;
+        }
 
         $subTotal = $this->put('preco', true) * $this->put('quantidade', true);
 
@@ -746,12 +764,14 @@ class OsController extends REST_Controller
             $data += ['desconto' => 0, 'tipo_desconto' => null];
         }
 
+        $diferenca = (int) $data['quantidade'] - (int) $ddAntigo->quantidade;
+        $baixarEstoque = $diferenca > 0 && $this->validarBaixaEstoque();
+        if ($diferenca < 0) {
+            $this->produtoEstoque((int) $id, (int) $idProdutos_os, (int) $ddAntigo->produtos_id, -$diferenca, '+');
+        }
         if ($this->os_model->edit('produtos_os', $data, 'idProdutos_os', $idProdutos_os)) {
-            $operacao = $ddAntigo->quantidade > $this->put('quantidade', true) ? '+' : '-';
-            $diferenca = $operacao == '+' ? $ddAntigo->quantidade - $this->put('quantidade', true) : $this->put('quantidade', true) - $ddAntigo->quantidade;
-
-            if ($diferenca) {
-                $this->produtoEstoque($ddAntigo->produtos_id, $diferenca, $operacao);
+            if ($baixarEstoque) {
+                $this->produtoEstoque((int) $id, (int) $idProdutos_os, (int) $ddAntigo->produtos_id, $diferenca, '-');
             }
 
             $this->log_app("Atualizou a quantidade do produto id <b>{$ddAntigo->produtos_id}</b> na OS id <b>{$id}</b> de <b>{$ddAntigo->quantidade}</b> para <b>{$this->put('quantidade', true)}</b>");
@@ -797,8 +817,8 @@ class OsController extends REST_Controller
             ], REST_Controller::HTTP_NOT_FOUND);
         }
 
+        $this->produtoEstoque((int) $id, (int) $idProdutos_os, (int) $ddAntigo->produtos_id, (int) $ddAntigo->quantidade, '+');
         if ($this->os_model->delete('produtos_os', 'idProdutos_os', $idProdutos_os)) {
-            $this->produtoEstoque($ddAntigo->produtos_id, $ddAntigo->quantidade, '+');
 
             $this->db->set('desconto', 0.00);
             $this->db->set('valor_desconto', 0.00);
@@ -1348,12 +1368,34 @@ class OsController extends REST_Controller
         return 0;
     }
 
-    private function produtoEstoque($produtosId, $quantidade, $operacao)
+    private function validarBaixaEstoque(): bool
     {
-        $this->load->model('produtos_model');
+        $controleAtivo = (bool) $this->getConfig('control_estoque');
+        if ($controleAtivo && ! trifaseRazaoEstoquePorLinhaDisponivel($this->db)) {
+            $this->response(['status' => false, 'message' => 'Atualize o banco antes de registrar baixas de estoque da OS.'], 422);
+        }
 
-        if ($this->getConfig('control_estoque')) {
-            $this->produtos_model->updateEstoque($produtosId, $quantidade, $operacao);
+        return $controleAtivo;
+    }
+
+    private function produtoEstoque(int $os, int $item, int $produto, int $quantidade, string $operacao): void
+    {
+        if ($operacao === '+' && ! trifaseRazaoEstoquePorLinhaDisponivel($this->db)) {
+            return;
+        }
+        $this->load->model('produtos_model');
+        try {
+            $this->produtos_model->updateEstoque($produto, $quantidade, $operacao, [
+                'tipo' => $operacao === '+' ? 'os_devolucao' : 'os_saida',
+                'origem' => 'OS #' . $os,
+                'motivo' => 'Movimentação pela API da OS',
+                'usuario' => (int) $this->logged_user()->usuario->idUsuarios,
+                'linha_os' => ['os_id' => $os, 'os_item_id' => $item],
+            ]);
+        } catch (DomainException $e) {
+            $this->response(['status' => false, 'message' => $e->getMessage()], 422);
+        } catch (RuntimeException $e) {
+            $this->response(['status' => false, 'message' => 'Não foi possível conciliar o estoque.'], 500);
         }
     }
 
@@ -1407,29 +1449,21 @@ class OsController extends REST_Controller
         return true;
     }
 
-    private function devolucaoEstoque($id)
+    private function devolucaoEstoque($id): void
     {
-        if ($produtos = $this->os_model->getProdutos($id)) {
-            $this->load->model('produtos_model');
-            if ($this->getConfig('control_estoque')) {
-                foreach ($produtos as $p) {
-                    $this->produtos_model->updateEstoque($p->produtos_id, $p->quantidade, '+');
-                    log_info('ESTOQUE: Produto id ' . $p->produtos_id . ' voltou ao estoque. Quantidade: ' . $p->quantidade . '. Motivo: Cancelamento/Exclusão');
-                }
-            }
+        foreach ($this->os_model->getProdutos($id) as $p) {
+            $this->produtoEstoque((int) $id, (int) $p->idProdutos_os, (int) $p->produtos_id, (int) $p->quantidade, '+');
         }
     }
 
-    private function debitarEstoque($id)
+    private function debitarEstoque($id): void
     {
-        if ($produtos = $this->os_model->getProdutos($id)) {
-            $this->load->model('produtos_model');
-            if ($this->getConfig('control_estoque')) {
-                foreach ($produtos as $p) {
-                    $this->produtos_model->updateEstoque($p->produtos_id, $p->quantidade, '-');
-                    log_info('ESTOQUE: Produto id ' . $p->produtos_id . ' baixa do estoque. Quantidade: ' . $p->quantidade . '. Motivo: Mudou status que já estava Cancelado para outro');
-                }
-            }
+        $produtos = $this->os_model->getProdutos($id);
+        if (! $produtos || ! $this->validarBaixaEstoque()) {
+            return;
+        }
+        foreach ($produtos as $p) {
+            $this->produtoEstoque((int) $id, (int) $p->idProdutos_os, (int) $p->produtos_id, (int) $p->quantidade, '-');
         }
     }
 

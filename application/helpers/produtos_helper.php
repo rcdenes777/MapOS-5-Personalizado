@@ -39,7 +39,7 @@ if (! function_exists('produtoDadosDoFormulario')) {
      *
      * @param  mixed  $post  $this->input->post()
      */
-    function produtoDadosDoFormulario($post, string $precoCompra, string $precoVenda): array
+    function produtoDadosDoFormulario($post, ?string $precoCompra, string $precoVenda): array
     {
         $post = is_array($post) ? $post : [];
         $texto = static fn (string $campo): string => is_string($post[$campo] ?? null) ? trim($post[$campo]) : '';

@@ -152,6 +152,7 @@ class Relatorios extends MY_Controller
         $data['title'] = 'Relatório de Produtos';
 
         $this->load->helper('mpdf');
+        $data['verCusto'] = $this->permite('vCustoInterno');
         $html = $this->load->view('relatorios/imprimir/imprimirProdutos', $data, true);
         pdf_create($html, 'relatorio_produtos' . date('d/m/y'), true);
     }
@@ -168,6 +169,7 @@ class Relatorios extends MY_Controller
         $data['title'] = 'Relatório de Produtos Com Estoque Mínimo';
 
         $this->load->helper('mpdf');
+        $data['verCusto'] = $this->permite('vCustoInterno');
         $html = $this->load->view('relatorios/imprimir/imprimirProdutos', $data, true);
         pdf_create($html, 'relatorio_produtos' . date('d/m/y'), true);
     }
@@ -188,6 +190,7 @@ class Relatorios extends MY_Controller
         $data['title'] = 'Relatório de Produtos Customizado';
 
         $this->load->helper('mpdf');
+        $data['verCusto'] = $this->permite('vCustoInterno');
         $html = $this->load->view('relatorios/imprimir/imprimirProdutos', $data, true);
         pdf_create($html, 'relatorio_produtos' . date('d/m/y'), true);
     }

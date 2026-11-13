@@ -62,7 +62,7 @@ foreach ($eventosRetorno as $eventoCustoRetorno) {
                 <?= component('link', ['label' => 'Consultar composição e histórico dos custos', 'href' => site_url('trifase_estoque/os/' . $idRetorno)]) ?>
             <?php } ?>
 
-            <?php if ($editavelRetorno) { ?>
+            <?php if ($editavelRetorno && $editarCustosRetorno) { ?>
                 <details class="mt-4"><summary>Registrar custo ou tempo de trabalho</summary>
                     <form method="post" action="<?= e(site_url('trifase_retornos/custo/' . $idRetorno)) ?>" class="mt-3 grid gap-3" <?= js_module('formulario/padrao') ?>>
                         <input type="hidden" name="<?= e($this->security->get_csrf_token_name()) ?>" value="<?= e($this->security->get_csrf_hash()) ?>"><input type="hidden" name="operacao" value="<?= e(bin2hex(random_bytes(16))) ?>">
@@ -91,7 +91,7 @@ foreach ($eventosRetorno as $eventoCustoRetorno) {
                     <?php } ?>
                     <p class="mt-2 whitespace-pre-wrap break-words text-body-md text-text"><?= e($eventoRetorno->motivo) ?></p>
                     <?php if ($eventoRetorno->tipo === 'custo' && isset($custosCorrigidosRetorno[(int) $eventoRetorno->id])) { ?><?= component('pill-status', ['label' => 'Corrigido · original preservado', 'variant' => 'neutral']) ?><?php } ?>
-                    <?php if ($verCustosRetorno && $editavelRetorno && $eventoRetorno->tipo === 'custo' && ! isset($custosCorrigidosRetorno[(int) $eventoRetorno->id])) { ?>
+                    <?php if ($editarCustosRetorno && $editavelRetorno && $eventoRetorno->tipo === 'custo' && ! isset($custosCorrigidosRetorno[(int) $eventoRetorno->id])) { ?>
                         <details class="mt-3"><summary>Corrigir este custo</summary>
                             <form method="post" action="<?= e(site_url('trifase_retornos/corrigirCusto/' . $idRetorno)) ?>" class="mt-3 grid gap-3" <?= js_module('formulario/padrao') ?>>
                                 <input type="hidden" name="<?= e($this->security->get_csrf_token_name()) ?>" value="<?= e($this->security->get_csrf_hash()) ?>"><input type="hidden" name="operacao" value="<?= e(bin2hex(random_bytes(16))) ?>"><input type="hidden" name="evento" value="<?= e((int) $eventoRetorno->id) ?>">

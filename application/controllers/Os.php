@@ -435,7 +435,7 @@ class Os extends MY_Controller
             $this->erroEquipamentoNovaOs = 'Use Cancelamento da OS para registrar pedido e conferir estoque e financeiro. Atendimento cancelado deve permanecer no histórico; abra outra OS.';
             return null;
         }
-        if (! trifaseFinanceiroHabilitado() && ! trifaseEstoqueHabilitado() && ! $this->db->table_exists('trifase_orcamento_versoes') && ! $this->db->table_exists('trifase_atendimentos') && ! $this->db->table_exists('trifase_cancelamentos') && trifaseEquipamentoDaOs($this->db, (int) $os->idOs) === null) {
+        if (! trifaseFinanceiroHabilitado() && ! trifaseEstoqueHabilitado() && ! $this->db->table_exists('trifase_orcamento_versoes') && ! $this->db->table_exists('trifase_atendimentos') && ! $this->db->table_exists('trifase_cancelamentos') && ! $this->db->table_exists('trifase_estoque_eventos') && trifaseEquipamentoDaOs($this->db, (int) $os->idOs) === null) {
             return $this->salvarOsSemTrava($os, $dados);
         }
         $lock = new Trifase_os_lock($this->db, (int) $os->idOs);
@@ -515,7 +515,12 @@ class Os extends MY_Controller
             $this->devolucaoEstoque($idOs);
         }
         if ($antes === 'cancelado' && $depois !== 'cancelado') {
-            $this->debitarEstoque($idOs);
+            try {
+                $this->debitarEstoque($idOs);
+            } catch (DomainException $e) {
+                $this->erroEquipamentoNovaOs = $e->getMessage();
+                return null;
+            }
         }
 
         if (! $this->os_model->edit('os', $dados, 'idOs', $idOs)) {
@@ -842,7 +847,7 @@ class Os extends MY_Controller
     private function osParaAlterar(bool $tecnica = false): ?object
     {
         $id = (int) $this->input->post('idOs');
-        if (! $tecnica && (trifaseFinanceiroHabilitado() || trifaseEstoqueHabilitado() || $this->db->table_exists('trifase_orcamento_versoes'))) {
+        if (! $tecnica && (trifaseFinanceiroHabilitado() || trifaseEstoqueHabilitado() || $this->db->table_exists('trifase_orcamento_versoes') || $this->db->table_exists('trifase_estoque_eventos'))) {
             try {
                 $this->financeiroLock = new Trifase_os_lock($this->db, $id);
                 if (trifaseFinanceiroHabilitado() && ((int) $this->financeiroLock->os->faturado === 1 || $this->financeiroLock->os->status === 'Cancelado')) {
@@ -1095,11 +1100,8 @@ class Os extends MY_Controller
     {
         if ($produtos = $this->os_model->getProdutos($id)) {
             $this->load->model('produtos_model');
-            if ($this->data['configuration']['control_estoque']) {
-                foreach ($produtos as $p) {
-                    $this->produtos_model->updateEstoque($p->produtos_id, $p->quantidade, '+', ['tipo' => 'os_devolucao', 'origem' => 'OS #' . (int) $id, 'motivo' => 'Cancelamento ou exclusão da OS']);
-                    log_info('ESTOQUE: Produto id ' . $p->produtos_id . ' voltou ao estoque. Quantidade: ' . $p->quantidade . '. Motivo: Cancelamento/Exclusão');
-                }
+            foreach ($produtos as $p) {
+                $this->produtos_model->updateEstoque($p->produtos_id, $p->quantidade, '+', ['tipo' => 'os_devolucao', 'origem' => 'OS #' . (int) $id, 'motivo' => 'Cancelamento ou exclusão da OS', 'linha_os' => ['os_id' => (int) $id, 'os_item_id' => (int) $p->idProdutos_os]]);
             }
         }
     }
@@ -1110,7 +1112,7 @@ class Os extends MY_Controller
             $this->load->model('produtos_model');
             if ($this->data['configuration']['control_estoque']) {
                 foreach ($produtos as $p) {
-                    $this->produtos_model->updateEstoque($p->produtos_id, $p->quantidade, '-', ['tipo' => 'os_saida', 'origem' => 'OS #' . (int) $id, 'motivo' => 'Reativação da OS']);
+                    $this->produtos_model->updateEstoque($p->produtos_id, $p->quantidade, '-', ['tipo' => 'os_saida', 'origem' => 'OS #' . (int) $id, 'motivo' => 'Reativação da OS', 'linha_os' => ['os_id' => (int) $id, 'os_item_id' => (int) $p->idProdutos_os]]);
                     log_info('ESTOQUE: Produto id ' . $p->produtos_id . ' baixa do estoque. Quantidade: ' . $p->quantidade . '. Motivo: Mudou status que já estava Cancelado para outro');
                 }
             }
@@ -1126,7 +1128,7 @@ class Os extends MY_Controller
         }
 
         $id = (int) $this->input->post('id');
-        $lock = (trifaseFinanceiroHabilitado() || $this->db->table_exists('trifase_entregas_eventos') || $this->db->table_exists('trifase_os_equipamentos') || $this->db->table_exists('trifase_orcamento_versoes') || $this->db->table_exists('trifase_atendimentos')) && $id > 0 ? new Trifase_os_lock($this->db, $id) : null;
+        $lock = (trifaseFinanceiroHabilitado() || $this->db->table_exists('trifase_entregas_eventos') || $this->db->table_exists('trifase_os_equipamentos') || $this->db->table_exists('trifase_orcamento_versoes') || $this->db->table_exists('trifase_atendimentos') || $this->db->table_exists('trifase_estoque_eventos')) && $id > 0 ? new Trifase_os_lock($this->db, $id) : null;
         if ($this->db->table_exists('trifase_os_custos') && $this->db->where('os_id', $id)->count_all_results('trifase_os_custos')) {
             $this->session->set_flashdata('error', 'OS com histórico de custos não pode ser excluída.');
             $lock?->finalizar(false);
@@ -1388,6 +1390,12 @@ class Os extends MY_Controller
             return;
         }
 
+        if ($produto && $controleEstoque && ! trifaseRazaoEstoquePorLinhaDisponivel($this->db)) {
+            $this->responderJson(422, ['result' => false, 'message' => 'Atualize o banco antes de registrar baixas de estoque da OS.']);
+
+            return;
+        }
+
         if (! $this->os_model->add($produto ? 'produtos_os' : 'servicos_os', $dados + ['os_id' => $idOs])) {
             $this->responderJson(500, ['result' => false, 'message' => 'Não foi possível adicionar. Tente de novo.']);
 
@@ -1395,14 +1403,14 @@ class Os extends MY_Controller
         }
 
         try {
+            $itemNovo = (int) $this->db->insert_id();
             if (trifaseEstoqueHabilitado()) {
-                $itemNovo = (int) $this->db->insert_id();
                 $this->load->model('Trifase_estoque_model', 'custos_estoque');
                 $this->custos_estoque->capturarItem($idOs, $tipo, $itemNovo, (int) $this->session->userdata('id_admin'));
             }
             if ($produto && $controleEstoque) {
                 $this->load->model('produtos_model');
-                $this->produtos_model->updateEstoque($dados['produtos_id'], $dados['quantidade'], '-', ['tipo' => 'os_saida', 'origem' => 'OS #' . $idOs, 'motivo' => 'Inclusão de peça na OS']);
+                $this->produtos_model->updateEstoque($dados['produtos_id'], $dados['quantidade'], '-', ['tipo' => 'os_saida', 'origem' => 'OS #' . $idOs, 'motivo' => 'Inclusão de peça na OS', 'linha_os' => ['os_id' => $idOs, 'os_item_id' => $itemNovo]]);
             }
         } catch (DomainException $e) {
             $this->responderJson(422, ['result' => false, 'message' => $e->getMessage()]);
@@ -1536,15 +1544,23 @@ class Os extends MY_Controller
             return;
         }
 
+        if ($produto) {
+            $this->load->model('produtos_model');
+            try {
+                $this->produtos_model->updateEstoque($item->produtos_id, $item->quantidade, '+', ['tipo' => 'os_devolucao', 'origem' => 'OS #' . $idOs, 'motivo' => 'Remoção de peça da OS', 'linha_os' => ['os_id' => $idOs, 'os_item_id' => $idItem]]);
+            } catch (DomainException $e) {
+                $this->responderJson(422, ['result' => false, 'message' => $e->getMessage()]);
+                return;
+            } catch (RuntimeException $e) {
+                $this->responderJson(500, ['result' => false, 'message' => 'Não foi possível conciliar o estoque.']);
+                return;
+            }
+        }
+
         if (! $this->os_model->delete($produto ? 'produtos_os' : 'servicos_os', $produto ? 'idProdutos_os' : 'idServicos_os', $idItem)) {
             $this->responderJson(500, ['result' => false, 'message' => 'Não foi possível excluir. Tente de novo.']);
 
             return;
-        }
-
-        if ($produto && ($this->data['configuration']['control_estoque'] ?? false)) {
-            $this->load->model('produtos_model');
-            $this->produtos_model->updateEstoque($item->produtos_id, $item->quantidade, '+', ['tipo' => 'os_devolucao', 'origem' => 'OS #' . $idOs, 'motivo' => 'Remoção de peça da OS']);
         }
 
         $tinhaDesconto = (float) $os->valor_desconto > 0;

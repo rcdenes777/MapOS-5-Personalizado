@@ -180,18 +180,39 @@ class Clientes_model extends CI_Model
      */
     public function removeClientOs($os)
     {
+        require_once APPPATH . 'helpers/trifase_cadastro_helper.php';
+        if (! $this->db->trans_begin()) {
+            return false;
+        }
         try {
+            // Mesma ordem de travamento da OS usada nas alterações de estoque.
+            usort($os, static fn ($a, $b) => (int) $a->idOs <=> (int) $b->idOs);
+            $sufixo = $this->db->dbdriver === 'mysqli' ? ' FOR UPDATE' : '';
             foreach ($os as $o) {
-                $this->db->where('os_id', $o->idOs);
-                $this->db->delete('servicos_os');
-
-                $this->db->where('os_id', $o->idOs);
-                $this->db->delete('produtos_os');
-
-                $this->db->where('idOs', $o->idOs);
-                $this->db->delete('os');
+                $linha = $this->db->query('SELECT clientes_id FROM os WHERE idOs = ?' . $sufixo, [(int) $o->idOs])->row();
+                if (! $linha || (int) $linha->clientes_id !== (int) $o->clientes_id) {
+                    $this->db->trans_rollback();
+                    return false;
+                }
             }
-        } catch (Exception $e) {
+            if ($os !== [] && trifaseClienteTemHistoricoProtegido($this->db, (int) $os[0]->clientes_id)) {
+                $this->db->trans_rollback();
+                return false;
+            }
+            foreach ($os as $o) {
+                if (! $this->db->where('os_id', $o->idOs)->delete('servicos_os')
+                    || ! $this->db->where('os_id', $o->idOs)->delete('produtos_os')
+                    || ! $this->db->where('idOs', $o->idOs)->delete('os')) {
+                    $this->db->trans_rollback();
+                    return false;
+                }
+            }
+            if (! $this->db->trans_status() || ! $this->db->trans_commit()) {
+                $this->db->trans_rollback();
+                return false;
+            }
+        } catch (Throwable $e) {
+            $this->db->trans_rollback();
             return false;
         }
 

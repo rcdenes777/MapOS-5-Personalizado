@@ -5,11 +5,28 @@ $csrfValor = $this->security->get_csrf_hash();
 $permite = fn ($p) => $this->permission->checkPermission($this->session->userdata('permissao'), $p);
 $estornados = array_column(array_filter($financeiroEventos, fn ($e) => $e->tipo === 'estornar'), 'referencia_id');
 $opcoes = [];
+$estornosAnteriores = [];
+$retificacoes = [
+    'lancamento_incorreto' => 'Recebimento lançado incorretamente',
+    'nao_compensado' => 'Pagamento não compensado',
+    'validar_saldo_anterior' => 'Saldo anterior validado',
+];
 foreach ($financeiroEventos as $e) {
     if ($e->tipo === 'receber' && ! in_array($e->id, $estornados)) {
         $opcoes[(string) $e->id] = '#' . $e->id . ' · ' . dinheiro($e->valor_c / 100) . ' · ' . dataBr($e->data_evento);
     }
+    if ($e->tipo === 'estornar' && empty($e->retificacao_cancelamento)) {
+        $estornosAnteriores = [(string) $e->id => '#' . $e->id . ' · Estorno do recebimento #' . $e->referencia_id . ' · ' . dataBr($e->data_evento)];
+    }
 }
+$cancelada = $osFinanceira->status === 'Cancelado';
+$temDevolucao = ($financeiroResumo['reembolsado_c'] ?? 0) > 0
+    || array_filter($financeiroEventos, fn ($e) => $e->tipo === 'devolver') !== [];
+$podeRetificar = $cancelada && $permite('retificarFinanceiroCancelado') && ! $temDevolucao
+    && ($financeiroResumo['abatimento_garantia_c'] ?? 0) === 0
+    && ($financeiroResumo['total_c'] ?? 0) > 0
+    && $financeiroResumo['total_c'] === ($totalConfirmadoCancelamento ?? null);
+$saldoAnterior = $cancelada && ($financeiroResumo['saldo_c'] ?? 0) > 0 && ! ($acertoCancelamentoReceber ?? false);
 ?>
 <div class="flex flex-col gap-4 py-4">
     <header class="flex flex-wrap items-center justify-between gap-3">
@@ -65,13 +82,28 @@ foreach ($financeiroEventos as $e) {
                 <?php $this->load->view('trifase/formulario-recebimento', ['recebimentoIntegrado' => false]); ?>
             </section>
         <?php } ?>
+        <?php if ($saldoAnterior) { ?>
+            <?= component('alert', ['variant' => 'warning', 'message' => 'Este saldo exige validação financeira antes de registrar recebimentos.']) ?>
+        <?php } ?>
         <section class="rounded-card border border-border bg-surface p-4">
             <h2 class="mb-3 text-heading-sm text-text">Histórico financeiro</h2>
             <?php if ($financeiroEventos === []) { ?><p class="text-body-md text-muted">Nenhum recebimento registrado.</p><?php } ?>
             <ul class="flex flex-col gap-3">
                 <?php foreach ($financeiroEventos as $e) { ?>
                     <li class="border-b border-border pb-3 text-body-md text-text">
-                        <?= e('#' . $e->id . ' · ' . ($e->tipo === 'receber' ? 'Recebimento' : ($e->tipo === 'devolver' ? 'Devolução por cancelamento' : 'Estorno do registro #' . $e->referencia_id)) . ' · ' . dinheiro($e->valor_c / 100) . ' · ' . dataBr($e->data_evento) . ' · ' . $e->forma . ' · Operador #' . $e->usuario_id) ?>
+                        <?php
+                        $rotulo = match ($e->tipo) {
+                            'receber' => 'Recebimento',
+                            'devolver' => 'Devolução por cancelamento',
+                            'regularizar' => 'Validação do saldo anterior · estorno de referência #' . $e->referencia_id,
+                            default => 'Estorno do registro #' . $e->referencia_id,
+                        };
+                    if ($e->tipo === 'estornar' && isset($retificacoes[$e->retificacao_cancelamento ?? ''])) {
+                        $rotulo .= ' · Retificação: ' . $retificacoes[$e->retificacao_cancelamento];
+                    }
+                    $valor = $e->tipo === 'regularizar' ? '' : ' · ' . dinheiro($e->valor_c / 100) . ' · ' . $e->forma;
+                    ?>
+                        <?= e('#' . $e->id . ' · ' . $rotulo . $valor . ' · ' . dataBr($e->data_evento) . ' · Operador #' . $e->usuario_id) ?>
                         <?php if ($e->tipo === 'receber') { ?>
                             <div class="mt-2"><?= component('link', ['label' => in_array($e->id, $estornados) ? 'Consultar registro estornado' : 'Abrir recibo deste recebimento', 'href' => site_url('trifase_financeiro/recibo/' . $id . '/' . (int) $e->id), 'attrs' => ['target' => '_blank', 'rel' => 'noopener']]) ?></div>
                         <?php } ?>
@@ -81,7 +113,8 @@ foreach ($financeiroEventos as $e) {
                 <?php } ?>
             </ul>
         </section>
-        <?php if ($permite('estornarRecebimento') && $opcoes !== []) { ?>
+        <?php if ($permite('estornarRecebimento') && $opcoes !== [] && ! $temDevolucao
+            && (! $cancelada || ($acertoCancelamentoOriginalReceber ?? false))) { ?>
             <section class="rounded-card border border-border bg-surface p-4">
                 <h2 class="mb-3 text-heading-sm text-text">Corrigir recebimento</h2>
                 <p class="mb-3 text-caption text-muted">O estorno corrige o registro e recompõe o saldo. Não devolve dinheiro ao cliente.</p>
@@ -93,6 +126,27 @@ foreach ($financeiroEventos as $e) {
                     <div><?= component('button', ['label' => 'Revisar estorno', 'variant' => 'outline', 'attrs' => ['data-modal-abrir' => 'confirmar-trifase-estorno']]) ?></div>
                 </form>
                 <?= component('modal-confirm', ['id' => 'confirmar-trifase-estorno', 'title' => 'Estornar este registro?', 'message' => 'O recebimento selecionado deixará de compor o valor recebido e voltará ao saldo pendente. O histórico será preservado. Nenhum dinheiro será transferido.', 'confirm_label' => 'Estornar registro', 'confirm_attrs' => ['form' => 'trifase-estorno']]) ?>
+            </section>
+        <?php } ?>
+        <?php if ($podeRetificar && ($saldoAnterior ? $estornosAnteriores !== [] : $opcoes !== [])) { ?>
+            <section class="rounded-card border border-border bg-surface p-4">
+                <h2 class="mb-3 text-heading-sm text-text"><?= $saldoAnterior ? 'Validar saldo anterior' : 'Retificar acerto do cancelamento' ?></h2>
+                <p class="mb-3 text-caption text-muted"><?= $saldoAnterior
+                    ? 'Confira o saldo total, o histórico e o último estorno antes de liberar o saldo existente para recebimento.'
+                    : 'Use para corrigir um recebimento lançado incorretamente ou um pagamento que não foi compensado. O valor devido no acerto é preservado.' ?></p>
+                <form id="trifase-retificacao" method="post" action="<?= e(site_url('trifase_financeiro/retificar/' . $id)) ?>" class="grid gap-3 sm:grid-cols-2">
+                    <input type="hidden" name="<?= e($csrfNome) ?>" value="<?= e($csrfValor) ?>"><input type="hidden" name="operacao" value="<?= e(bin2hex(random_bytes(16))) ?>">
+                    <?php if ($saldoAnterior) { ?>
+                        <input type="hidden" name="tipo_retificacao" value="validar_saldo_anterior">
+                    <?php } else { ?>
+                        <?= component('select', ['name' => 'tipo_retificacao', 'label' => 'Tipo de retificação', 'options' => ['' => 'Selecione', 'lancamento_incorreto' => $retificacoes['lancamento_incorreto'], 'nao_compensado' => $retificacoes['nao_compensado']], 'required' => true]) ?>
+                    <?php } ?>
+                    <?= component('select', ['name' => 'evento_id', 'label' => $saldoAnterior ? 'Último estorno registrado' : 'Recebimento a corrigir', 'options' => ['' => 'Selecione'] + ($saldoAnterior ? $estornosAnteriores : $opcoes), 'required' => true]) ?>
+                    <?= component('input', ['name' => 'data', 'id' => 'trifase-retificacao-data', 'label' => 'Data da retificação', 'type' => 'date', 'value' => date('Y-m-d'), 'required' => true]) ?>
+                    <?= component('input', ['name' => 'motivo', 'id' => 'trifase-retificacao-motivo', 'label' => 'Justificativa', 'required' => true, 'attrs' => ['maxlength' => 500]]) ?>
+                    <div><?= component('button', ['label' => 'Revisar retificação', 'variant' => 'outline', 'type' => 'submit', 'disabled' => true, 'attrs' => ['data-modal-abrir' => 'confirmar-trifase-retificacao', 'data-modal-validar-formulario' => 'trifase-retificacao']]) ?></div>
+                </form>
+                <?= component('modal-confirm', ['id' => 'confirmar-trifase-retificacao', 'title' => 'Registrar retificação financeira?', 'message' => 'A OS continuará cancelada. A retificação será registrada no histórico e o saldo devido ficará disponível para recebimento. Nenhum dinheiro será devolvido.', 'confirm_label' => 'Confirmar retificação', 'confirm_attrs' => ['form' => 'trifase-retificacao']]) ?>
             </section>
         <?php } ?>
     <?php } ?>

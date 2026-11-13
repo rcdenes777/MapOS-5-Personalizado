@@ -236,7 +236,7 @@ final class OsFormularioTest extends MaposTestCase
 
     public function testCancelarDevolveEstoqueEReabrirDebita(): void
     {
-        $produtos = [(object) ['produtos_id' => 5, 'quantidade' => 2]];
+        $produtos = [(object) ['idProdutos_os' => 1, 'produtos_id' => 5, 'quantidade' => 2]];
 
         [$controller, $os, $registro] = $this->controllerComFakes('Aberto', $produtos);
         $this->assertSame(12, $this->invokeMethod($controller, 'salvarOs', [$os, ['status' => 'Cancelado']]));

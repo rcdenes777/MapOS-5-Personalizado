@@ -821,6 +821,7 @@ final class OsTelaTest extends MaposTestCase
         $_ENV['TRIFASE_UI_PILOTO_ENABLED'] = 'true';
         try {
             $this->criarBanco();
+            $this->db->query('CREATE TABLE trifase_estoque_eventos (os_item_id INTEGER)');
             foreach (['produto' => ['adicionarProduto', 'excluirProduto', 'idProduto', 'produtos_os', 'idProdutos_os', 100.0], 'servico' => ['adicionarServico', 'excluirServico', 'idServico', 'servicos_os', 'idServicos_os', 50.0]] as [$adicionar, $excluir, $campo, $tabela, $chave, $preco]) {
                 $c = $this->controller($this->model(), ['idOs' => '1', $campo => '1', 'quantidade' => '2']);
                 $this->comoTecnico($c);
@@ -952,6 +953,7 @@ final class OsTelaTest extends MaposTestCase
     public function testAdicionarProduto(): void
     {
         $this->criarBanco();
+        $this->db->query('CREATE TABLE trifase_estoque_eventos (os_item_id INTEGER)');
 
         $controller = $this->controller($this->model(), ['idOs' => '1', 'idProduto' => '1', 'quantidade' => '20', 'preco' => '100']);
         $controller->adicionarProduto();
@@ -974,9 +976,21 @@ final class OsTelaTest extends MaposTestCase
         $this->assertSame('Escolha um serviço da lista.', $this->resposta($controller)[1]['erros']['servico']);
     }
 
+    public function testAdicionarProdutoComBaixaRecusaBancoSemRazaoAntesDeInserir(): void
+    {
+        $this->criarBanco();
+        $controller = $this->controller($this->model(), ['idOs' => '1', 'idProduto' => '1', 'quantidade' => '1', 'preco' => '100']);
+        $controller->adicionarProduto();
+
+        $this->assertSame(422, $this->resposta($controller)[0]);
+        $this->assertSame(2, (int) $this->db->count_all('produtos_os'));
+        $this->assertSame([], $controller->produtos_model->chamadas);
+    }
+
     public function testAdicionarProdutoComDescontoDoItem(): void
     {
         $this->criarBanco();
+        $this->db->query('CREATE TABLE trifase_estoque_eventos (os_item_id INTEGER)');
         $this->db->query("UPDATE os SET desconto = 10, valor_desconto = 315, tipo_desconto = 'porcento' WHERE idOs = 1");
 
         $controller = $this->controller($this->model(), ['idOs' => '1', 'idProduto' => '1', 'quantidade' => '2', 'preco' => '80', 'tipoDescontoItem' => 'porcento', 'descontoItem' => '10']);
@@ -1019,8 +1033,8 @@ final class OsTelaTest extends MaposTestCase
         $this->assertStringContainsString('Atualizar banco', $corpo['erros']['_geral']);
         $this->assertSame(2, (int) $this->db->query('SELECT COUNT(*) AS n FROM produtos_os')->row()->n);
 
-        // Sem desconto, adicionar continua funcionando no banco antigo.
-        $controller = $this->controller($this->model(), ['idOs' => '1', 'idProduto' => '1', 'quantidade' => '1', 'preco' => '50']);
+        // Sem desconto, adicionar continua funcionando no banco antigo com o controle de estoque desligado.
+        $controller = $this->controller($this->model(), ['idOs' => '1', 'idProduto' => '1', 'quantidade' => '1', 'preco' => '50'], true, ['control_estoque' => '0']);
         $controller->adicionarProduto();
         $this->assertSame(200, $this->resposta($controller)[0]);
     }

@@ -1,6 +1,6 @@
 <?php
 $idProdutoEstoque = (int) $produtoEstoque->idProdutos;
-$nomesMovimento = ['entrada' => 'Entrada de compra', 'saida' => 'Saída manual', 'contagem' => 'Ajuste de contagem', 'os_saida' => 'Saída para OS', 'os_devolucao' => 'Devolução da OS', 'venda_saida' => 'Saída para venda', 'venda_devolucao' => 'Devolução da venda', 'legado_entrada' => 'Entrada nativa', 'legado_saida' => 'Saída nativa', 'inicial' => 'Saldo inicial'];
+$nomesMovimento = ['entrada' => 'Entrada de compra', 'saida' => 'Saída manual', 'contagem' => 'Ajuste de contagem', 'os_saida' => 'Saída para OS', 'os_devolucao' => 'Devolução da OS', 'os_consumo' => 'Baixa confirmada como consumida', 'os_conciliacao' => 'Conciliação sem reposição', 'venda_saida' => 'Saída para venda', 'venda_devolucao' => 'Devolução da venda', 'legado_entrada' => 'Entrada nativa', 'legado_saida' => 'Saída nativa', 'inicial' => 'Saldo inicial'];
 ?>
 <div class="grid min-w-0 grid-cols-1 gap-5 py-4">
     <header><h1 class="text-heading-xl text-text">Estoque e movimentações</h1><p class="mt-2 break-words text-body-md text-muted"><?= e($produtoEstoque->descricao . ' · Saldo atual: ' . (int) $produtoEstoque->estoque) ?></p></header>
@@ -12,9 +12,9 @@ $nomesMovimento = ['entrada' => 'Entrada de compra', 'saida' => 'Saída manual',
             <form method="post" class="mt-4 grid gap-4" <?= js_module('formulario/padrao') ?>>
                 <input type="hidden" name="<?= e($this->security->get_csrf_token_name()) ?>" value="<?= e($this->security->get_csrf_hash()) ?>"><input type="hidden" name="operacao" value="<?= e(bin2hex(random_bytes(16))) ?>">
                 <input type="hidden" name="esperado" value="<?= e((int) $produtoEstoque->estoque) ?>">
-                <?= component('select', ['name' => 'tipo', 'id' => 'estoque-movimento-tipo', 'label' => 'Tipo de movimentação', 'options' => ['entrada' => 'Entrada de compra', 'saida' => 'Saída manual', 'contagem' => 'Ajuste de contagem']]) ?>
+                <?= component('select', ['name' => 'tipo', 'id' => 'estoque-movimento-tipo', 'label' => 'Tipo de movimentação', 'options' => ($editarCustoEstoque ? ['entrada' => 'Entrada de compra'] : []) + ['saida' => 'Saída manual', 'contagem' => 'Ajuste de contagem']]) ?>
                 <?= component('input', ['name' => 'quantidade', 'label' => 'Quantidade', 'type' => 'number', 'required' => true, 'help' => 'Na contagem, informe o saldo contado. Para entrada ou saída, informe a quantidade movimentada.', 'attrs' => ['min' => 0, 'max' => 1000000, 'step' => 1]]) ?>
-                <?= component('input', ['name' => 'custo', 'label' => 'Custo unitário da compra (R$)', 'help' => 'Obrigatório na entrada. Atualiza o custo de referência para os próximos usos; o preço de venda e os custos antigos não mudam.', 'attrs' => ['inputmode' => 'decimal']]) ?>
+                <?php if ($editarCustoEstoque) { ?><?= component('input', ['name' => 'custo', 'label' => 'Custo unitário da compra (R$)', 'help' => 'Obrigatório na entrada. Atualiza o custo de referência para os próximos usos; o preço de venda e os custos antigos não mudam.', 'attrs' => ['inputmode' => 'decimal']]) ?><?php } ?>
                 <?= component('input', ['name' => 'data', 'label' => 'Data do movimento', 'type' => 'date', 'value' => date('Y-m-d'), 'required' => true, 'attrs' => ['min' => '1900-01-01', 'max' => date('Y-m-d')]]) ?>
                 <?= component('textarea', ['name' => 'motivo', 'label' => 'Motivo e referência', 'required' => true, 'attrs' => ['maxlength' => 2000, 'rows' => 2]]) ?>
                 <?= component('checkbox', ['name' => 'confirmar', 'value' => '1', 'label' => 'Conferi a movimentação e confirmo seu registro no histórico.', 'required' => true]) ?>
@@ -32,9 +32,16 @@ $nomesMovimento = ['entrada' => 'Entrada de compra', 'saida' => 'Saída manual',
             <?= component('button', ['label' => 'Filtrar', 'type' => 'submit', 'variant' => 'outline']) ?>
         </form>
         <ol class="mt-4 grid min-w-0 grid-cols-1 gap-3">
-            <?php foreach ($movimentosEstoque as $movimentoEstoque) { ?>
+            <?php foreach ($movimentosEstoque as $movimentoEstoque) {
+                $variacao = (int) $movimentoEstoque->saldo_depois - (int) $movimentoEstoque->saldo_antes;
+                $quantidadeEvento = match ($movimentoEstoque->tipo) {
+                    'inicial' => (int) $movimentoEstoque->saldo_depois . ' un. de saldo inicial',
+                    'os_consumo', 'os_conciliacao' => 'Sem alteração de estoque · ' . (int) $movimentoEstoque->quantidade . ' un. com baixa conciliada',
+                    default => sprintf('%+d', $variacao) . ' un.',
+                };
+                ?>
                 <li class="min-w-0 border-b border-border pb-3">
-                    <p class="text-label-md text-text"><?= e(($nomesMovimento[$movimentoEstoque->tipo] ?? $movimentoEstoque->tipo) . ' · ' . sprintf('%+d', $movimentoEstoque->quantidade) . ' un.') ?></p>
+                    <p class="text-label-md text-text"><?= e(($nomesMovimento[$movimentoEstoque->tipo] ?? $movimentoEstoque->tipo) . ' · ' . $quantidadeEvento) ?></p>
                     <p class="mt-1 text-body-md text-text"><?= e('Saldo: ' . $movimentoEstoque->saldo_antes . ' → ' . $movimentoEstoque->saldo_depois) ?></p>
                     <p class="mt-1 break-words text-caption text-muted"><?= e($movimentoEstoque->data_movimento . ' · Registrado ' . $movimentoEstoque->criado_em . ' · Operador #' . $movimentoEstoque->usuario_id . ' · ' . $movimentoEstoque->origem) ?></p>
                     <p class="mt-2 whitespace-pre-wrap break-words text-body-md text-text"><?= e($movimentoEstoque->motivo) ?></p>

@@ -188,7 +188,10 @@ final class LayoutTest extends MaposTestCase
      */
     public function testGruposSeguemAPermissaoDaRotaDeDestino(): void
     {
-        $menu = layoutMenuVisivel(layoutMenu(), $this->permite(['rCliente', 'cUsuario', 'cBackup']), 'Mapos', 'index');
+        $permissoes = ['rCliente', 'cUsuario', 'cBackup'];
+        $restrito = layoutMenuVisivel(layoutMenu(), $this->permite($permissoes), 'Mapos', 'index');
+        $this->assertNotContains('Configurações > Backup', self::rotulos($restrito));
+        $menu = layoutMenuVisivel(layoutMenu(), $this->permite([...$permissoes, 'vCustoInterno']), 'Mapos', 'index');
 
         $this->assertSame(
             ['Início', 'Relatórios > Clientes', 'Configurações > Usuários', 'Configurações > Backup'],
@@ -220,7 +223,7 @@ final class LayoutTest extends MaposTestCase
     {
         $todas = ['vCliente', 'vProduto', 'vServico', 'vVenda', 'vOs', 'vGarantia', 'vArquivo', 'vLancamento', 'vCobranca',
             'rCliente', 'rProduto', 'rServico', 'rOs', 'rVenda', 'rFinanceiro',
-            'cSistema', 'cUsuario', 'cEmitente', 'cPermissao', 'cAuditoria', 'cEmail', 'cBackup'];
+            'cSistema', 'cUsuario', 'cEmitente', 'cPermissao', 'cAuditoria', 'cEmail', 'cBackup', 'vCustoInterno'];
 
         $menu = layoutMenuVisivel(layoutMenu(), $this->permite($todas), 'Mapos', 'index');
 
@@ -337,7 +340,7 @@ final class LayoutTest extends MaposTestCase
 
         $todas = ['vCliente', 'vProduto', 'vServico', 'vVenda', 'vOs', 'vGarantia', 'vArquivo', 'vLancamento', 'vCobranca',
             'rCliente', 'rProduto', 'rServico', 'rOs', 'rVenda', 'rFinanceiro',
-            'cSistema', 'cUsuario', 'cEmitente', 'cPermissao', 'cAuditoria', 'cEmail', 'cBackup'];
+            'cSistema', 'cUsuario', 'cEmitente', 'cPermissao', 'cAuditoria', 'cEmail', 'cBackup', 'vCustoInterno'];
         $grupos = layoutMenuGrupos(layoutMenuVisivel(layoutMenu(), $this->permite($todas), 'Mapos', 'index'));
 
         $this->assertSame(['Operação', 'Financeiro', 'Sistema'], array_column($grupos, 'label'));

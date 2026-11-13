@@ -515,7 +515,12 @@ class Os extends MY_Controller
             $this->devolucaoEstoque($idOs);
         }
         if ($antes === 'cancelado' && $depois !== 'cancelado') {
-            $this->debitarEstoque($idOs);
+            try {
+                $this->debitarEstoque($idOs);
+            } catch (DomainException $e) {
+                $this->erroEquipamentoNovaOs = $e->getMessage();
+                return null;
+            }
         }
 
         if (! $this->os_model->edit('os', $dados, 'idOs', $idOs)) {
@@ -1381,6 +1386,12 @@ class Os extends MY_Controller
         $idOs = (int) $os->idOs;
         if (isset($dados['desconto']) && ! $this->os_model->descontoPorItemDisponivel()) {
             $this->responderDescontoPorItemIndisponivel();
+
+            return;
+        }
+
+        if ($produto && $controleEstoque && ! trifaseRazaoEstoquePorLinhaDisponivel($this->db)) {
+            $this->responderJson(422, ['result' => false, 'message' => 'Atualize o banco antes de registrar baixas de estoque da OS.']);
 
             return;
         }

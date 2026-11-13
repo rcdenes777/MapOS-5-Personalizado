@@ -159,15 +159,12 @@ class Produtos_model extends CI_Model
             throw new DomainException('Operação de estoque inválida.');
         }
         $linhaOs = $contexto['linha_os'] ?? null;
-        $razaoPorLinha = $this->db->table_exists('trifase_estoque_eventos')
-            && $this->db->field_exists('os_item_id', 'trifase_estoque_eventos');
+        $razaoPorLinha = trifaseRazaoEstoquePorLinhaDisponivel($this->db);
         if ($linhaOs !== null && ! $razaoPorLinha) {
             if ($operacao === '+') {
                 return true;
             }
-            if (trifaseEstoqueHabilitado()) {
-                throw new DomainException('Atualize o banco antes de registrar baixas de estoque da OS.');
-            }
+            throw new DomainException('Atualize o banco antes de registrar baixas de estoque da OS.');
         }
         if (($razaoPorLinha && ($linhaOs !== null || isset($contexto['tipo'])))
             || trifaseEstoqueHabilitado() || $this->temHistoricoEstoque((int) $produto)) {

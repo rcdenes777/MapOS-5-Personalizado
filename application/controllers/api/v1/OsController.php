@@ -6,6 +6,7 @@ require_once APPPATH . '/libraries/REST_Controller.php';
 
 require_once APPPATH . 'helpers/trifase_financeiro_helper.php';
 require_once APPPATH . 'helpers/trifase_entrega_helper.php';
+require_once APPPATH . 'helpers/trifase_estoque_helper.php';
 require_once APPPATH . 'helpers/trifase_equipamento_helper.php';
 require_once APPPATH . 'helpers/trifase_orcamento_helper.php';
 require_once APPPATH . 'helpers/trifase_atendimento_helper.php';
@@ -670,12 +671,15 @@ class OsController extends REST_Controller
             'os_id' => $id,
         ];
 
+        $baixarEstoque = $this->validarBaixaEstoque();
         if ($this->os_model->add('produtos_os', $data)) {
             $lastProdutoOs = $this->os_model->getProdutoDaOs((int) $id, (int) $this->db->insert_id());
 
             $this->load->model('produtos_model');
 
-            $this->produtoEstoque((int) $id, (int) $lastProdutoOs->idProdutos_os, (int) $this->post('idProduto', true), (int) $this->post('quantidade', true), '-');
+            if ($baixarEstoque) {
+                $this->produtoEstoque((int) $id, (int) $lastProdutoOs->idProdutos_os, (int) $this->post('idProduto', true), (int) $this->post('quantidade', true), '-');
+            }
 
             $this->db->set('desconto', 0.00);
             $this->db->set('valor_desconto', 0.00);
@@ -761,11 +765,12 @@ class OsController extends REST_Controller
         }
 
         $diferenca = (int) $data['quantidade'] - (int) $ddAntigo->quantidade;
+        $baixarEstoque = $diferenca > 0 && $this->validarBaixaEstoque();
         if ($diferenca < 0) {
             $this->produtoEstoque((int) $id, (int) $idProdutos_os, (int) $ddAntigo->produtos_id, -$diferenca, '+');
         }
         if ($this->os_model->edit('produtos_os', $data, 'idProdutos_os', $idProdutos_os)) {
-            if ($diferenca > 0) {
+            if ($baixarEstoque) {
                 $this->produtoEstoque((int) $id, (int) $idProdutos_os, (int) $ddAntigo->produtos_id, $diferenca, '-');
             }
 
@@ -1363,10 +1368,19 @@ class OsController extends REST_Controller
         return 0;
     }
 
+    private function validarBaixaEstoque(): bool
+    {
+        $controleAtivo = (bool) $this->getConfig('control_estoque');
+        if ($controleAtivo && ! trifaseRazaoEstoquePorLinhaDisponivel($this->db)) {
+            $this->response(['status' => false, 'message' => 'Atualize o banco antes de registrar baixas de estoque da OS.'], 422);
+        }
+
+        return $controleAtivo;
+    }
+
     private function produtoEstoque(int $os, int $item, int $produto, int $quantidade, string $operacao): void
     {
-        if (($operacao === '-' && ! $this->getConfig('control_estoque'))
-            || ($operacao === '+' && ! $this->db->table_exists('trifase_estoque_eventos'))) {
+        if ($operacao === '+' && ! trifaseRazaoEstoquePorLinhaDisponivel($this->db)) {
             return;
         }
         $this->load->model('produtos_model');
@@ -1444,7 +1458,11 @@ class OsController extends REST_Controller
 
     private function debitarEstoque($id): void
     {
-        foreach ($this->os_model->getProdutos($id) as $p) {
+        $produtos = $this->os_model->getProdutos($id);
+        if (! $produtos || ! $this->validarBaixaEstoque()) {
+            return;
+        }
+        foreach ($produtos as $p) {
             $this->produtoEstoque((int) $id, (int) $p->idProdutos_os, (int) $p->produtos_id, (int) $p->quantidade, '-');
         }
     }

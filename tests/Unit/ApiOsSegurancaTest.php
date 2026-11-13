@@ -208,6 +208,27 @@ final class ApiOsSegurancaTest extends MaposTestCase
         $this->assertSame(0, $this->contar('produtos_os', ['os_id' => 1]));
     }
 
+    public function testBaixaSemRazaoPorLinhaERecusadaAntesDeGravarItem(): void
+    {
+        foreach ([false, true] as $razaoSemVinculo) {
+            if ($razaoSemVinculo) {
+                $this->db->query('CREATE TABLE trifase_estoque_eventos (id INTEGER PRIMARY KEY)');
+                unset($this->db->data_cache['table_names']);
+            }
+            $this->controller->configs['control_estoque'] = '1';
+            $novo = ['idProduto' => '1', 'preco' => '100', 'quantidade' => '2'];
+            $this->assertSame(422, $this->chamar('produtos_post', [1], $novo)['code']);
+            $this->assertSame(422, $this->chamar('produtos_put', [1, 1], $novo)['code']);
+            $this->assertSame(1, $this->contar('produtos_os', ['os_id' => 1]));
+            $this->assertEquals(1, $this->db->get_where('produtos_os', ['idProdutos_os' => 1])->row()->quantidade);
+            $this->assertEquals(10, $this->db->get_where('produtos', ['idProdutos' => 1])->row()->estoque);
+            $this->assertSame($razaoSemVinculo, $this->db->table_exists('trifase_estoque_eventos'));
+        }
+
+        $this->assertSame(200, $this->chamar('produtos_delete', [1, 1])['code']);
+        $this->assertEquals(10, $this->db->get_where('produtos', ['idProdutos' => 1])->row()->estoque);
+    }
+
     public function testOsFaturadaOuCanceladaNaoMudaComControleEditosDesligado(): void
     {
         $this->assertSame(403, $this->chamar('produtos_put', [3, 3], ['preco' => '1', 'quantidade' => '1'])['code']);

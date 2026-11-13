@@ -190,7 +190,7 @@ if (function_exists('trifaseFinanceiroHabilitado') && trifaseFinanceiroHabilitad
         </section>
 
         <section class="<?= e($caixa) ?>" aria-labelledby="secao-equipamento">
-            <h2 id="secao-equipamento" class="text-heading-sm text-text">Equipamento e serviço</h2>
+            <h2 id="secao-equipamento" tabindex="-1" class="scroll-mt-20 text-heading-sm text-text">Equipamento e serviço</h2>
             <div class="<?= e($grade) ?>">
                 <?php
                 $identificacaoFormulario = $equipamentoDoFormulario ?? null;

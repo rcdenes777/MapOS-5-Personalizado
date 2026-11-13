@@ -850,11 +850,8 @@ class Mapos extends MY_Controller
                 ->set_output(json_encode(['error' => 'Informe start e end válidos (AAAA-MM-DD).']));
         }
 
-        $allOs = $this->mapos_model->calendario(
-            $start,
-            $end,
-            $status
-        );
+        $verFinanceiro = $this->permite('vLancamento');
+        $allOs = $this->mapos_model->calendario($start, $end, $status, $verFinanceiro);
         // Só texto e URLs (painelEventoDaOs()); o painel monta o modal.
         $this->load->helper(['os', 'painel']);
         $podeEditar = $this->permite('eOs');
@@ -862,7 +859,7 @@ class Mapos extends MY_Controller
             $os,
             site_url('os/visualizar/' . (int) $os->idOs),
             $podeEditar && $this->os_model->isEditable($os->idOs) ? site_url('os/editar/' . (int) $os->idOs) : null,
-            $this->permite('vLancamento')
+            $verFinanceiro
         ), $allOs);
 
         return $this->output

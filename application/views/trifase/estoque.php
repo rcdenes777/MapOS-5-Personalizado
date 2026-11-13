@@ -32,9 +32,16 @@ $nomesMovimento = ['entrada' => 'Entrada de compra', 'saida' => 'Saída manual',
             <?= component('button', ['label' => 'Filtrar', 'type' => 'submit', 'variant' => 'outline']) ?>
         </form>
         <ol class="mt-4 grid min-w-0 grid-cols-1 gap-3">
-            <?php foreach ($movimentosEstoque as $movimentoEstoque) { ?>
+            <?php foreach ($movimentosEstoque as $movimentoEstoque) {
+                $variacao = (int) $movimentoEstoque->saldo_depois - (int) $movimentoEstoque->saldo_antes;
+                $quantidadeEvento = match ($movimentoEstoque->tipo) {
+                    'inicial' => (int) $movimentoEstoque->saldo_depois . ' un. de saldo inicial',
+                    'os_consumo', 'os_conciliacao' => 'Sem alteração de estoque · ' . (int) $movimentoEstoque->quantidade . ' un. com baixa conciliada',
+                    default => sprintf('%+d', $variacao) . ' un.',
+                };
+                ?>
                 <li class="min-w-0 border-b border-border pb-3">
-                    <p class="text-label-md text-text"><?= e(($nomesMovimento[$movimentoEstoque->tipo] ?? $movimentoEstoque->tipo) . ' · ' . sprintf(in_array($movimentoEstoque->tipo, ['os_consumo', 'os_conciliacao'], true) ? '%d' : '%+d', $movimentoEstoque->quantidade) . ' un.') ?></p>
+                    <p class="text-label-md text-text"><?= e(($nomesMovimento[$movimentoEstoque->tipo] ?? $movimentoEstoque->tipo) . ' · ' . $quantidadeEvento) ?></p>
                     <p class="mt-1 text-body-md text-text"><?= e('Saldo: ' . $movimentoEstoque->saldo_antes . ' → ' . $movimentoEstoque->saldo_depois) ?></p>
                     <p class="mt-1 break-words text-caption text-muted"><?= e($movimentoEstoque->data_movimento . ' · Registrado ' . $movimentoEstoque->criado_em . ' · Operador #' . $movimentoEstoque->usuario_id . ' · ' . $movimentoEstoque->origem) ?></p>
                     <p class="mt-2 whitespace-pre-wrap break-words text-body-md text-text"><?= e($movimentoEstoque->motivo) ?></p>

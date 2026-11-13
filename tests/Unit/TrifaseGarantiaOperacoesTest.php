@@ -301,15 +301,15 @@ final class TrifaseGarantiaOperacoesTest extends MaposTestCase
             } catch (DomainException $e) {
             }
             $q->responder($this->id, $token, $versao, 'aprovar', 'Cliente fictício', '1', $this->chave('aprovar'));
-            $this->db->where('idServicos_os',1)->update('servicos_os',['preco'=>200,'subTotal'=>200]);
+            $this->db->where('idServicos_os', 1)->update('servicos_os', ['preco'=>200,'subTotal'=>200]);
             try {
-                $this->f->formalizar($this->id,20000,0,date('Y-m-d'),7);
+                $this->f->formalizar($this->id, 20000, 0, date('Y-m-d'), 7);
                 $this->fail('Faturou itens alterados');
             } catch (DomainException $e) {
             }
-            $this->db->where('idServicos_os',1)->update('servicos_os',['preco'=>100,'subTotal'=>100]);
-            $r=$this->f->formalizar($this->id,10000,0,date('Y-m-d'),7);
-            $this->assertSame(10000,$r['saldo_c']);
+            $this->db->where('idServicos_os', 1)->update('servicos_os', ['preco'=>100,'subTotal'=>100]);
+            $r=$this->f->formalizar($this->id, 10000, 0, date('Y-m-d'), 7);
+            $this->assertSame(10000, $r['saldo_c']);
         } finally {
             if ($antes===null) {
                 unset($_ENV['TRIFASE_GARANTIA_OPERACOES_ENABLED']);

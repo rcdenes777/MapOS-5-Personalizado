@@ -305,13 +305,13 @@ class Trifase_garantia_model extends CI_Model
     }
     private function data(string $v): void
     {
-        $d=DateTimeImmutable::createFromFormat('!Y-m-d',$v);
+        $d=DateTimeImmutable::createFromFormat('!Y-m-d', $v);
         if (!$d||$d->format('Y-m-d')!==$v||$v>date('Y-m-d')||$v<'1900-01-01') {
             throw new DomainException('Informe a data real da devolução, sem data futura.');
         }
     }
     private function decimal(int $v): string
     {
-        return intdiv($v,100).'.'.str_pad((string)($v%100),2,'0',STR_PAD_LEFT);
+        return intdiv($v, 100).'.'.str_pad((string)($v%100), 2, '0', STR_PAD_LEFT);
     }
 }

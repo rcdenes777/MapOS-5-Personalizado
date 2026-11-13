@@ -11,7 +11,37 @@ export function urlUnidadesCliente(base, cliente) {
     return `${base}?cliente_id=${encodeURIComponent(id)}`;
 }
 
+function iniciarOpcoesMoveis(elemento) {
+    const detalhe = elemento.querySelector('[data-os-opcoes-moveis]');
+    if (!detalhe) return;
+
+    const destino = detalhe.querySelector('[data-os-opcoes-campos]');
+    const grupos = [...elemento.querySelectorAll('[data-os-opcao-movel]')].map((grupo) => {
+        const origem = document.createComment('Posição dos campos no desktop');
+        grupo.before(origem);
+        return { grupo, origem };
+    });
+    const celular = window.matchMedia('(width < 40rem)');
+    const ajustar = () => {
+        const foco = document.activeElement;
+        const campoEmFoco = grupos.some(({ grupo }) => grupo.contains(foco));
+        if (celular.matches) {
+            destino.append(...grupos.map(({ grupo }) => grupo));
+            detalhe.hidden = false;
+            if (campoEmFoco || destino.querySelector('[aria-invalid="true"]')) detalhe.open = true;
+        } else {
+            for (const { grupo, origem } of grupos) origem.after(grupo);
+            detalhe.hidden = true;
+        }
+        if (campoEmFoco) foco.focus({ preventScroll: true });
+    };
+
+    ajustar();
+    celular.addEventListener('change', ajustar);
+}
+
 export default function iniciar(elemento) {
+    iniciarOpcoesMoveis(elemento);
     iniciarAutocompletes(elemento);
     const novoCliente = elemento.querySelector('[data-nova-os-cliente]');
     novoCliente?.addEventListener('click', () => {

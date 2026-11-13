@@ -118,6 +118,10 @@ export function iniciarAutocomplete(wrapper, { buscar = getPadrao, atraso = 250,
     if (modalNovo || wrapper.dataset.autocompleteNovo) {
         const rodape = doc.createElement(modalNovo ? 'button' : 'a');
         rodape.className = CLASSES_RODAPE;
+        if (wrapper.dataset.autocompleteRodapeDesktop !== undefined) {
+            rodape.classList.remove('flex');
+            rodape.classList.add('hidden', 'sm:flex');
+        }
         if (modalNovo) {
             rodape.type = 'button';
             rodape.classList.add('w-full', 'text-left');

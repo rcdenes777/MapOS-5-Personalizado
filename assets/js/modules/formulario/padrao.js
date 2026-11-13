@@ -92,6 +92,9 @@ export default function iniciar(formulario) {
 
         if (primeiro) {
             evento.preventDefault();
+            for (let detalhe = primeiro.closest('details'); detalhe; detalhe = detalhe.parentElement.closest('details')) {
+                detalhe.open = true;
+            }
             primeiro.focus();
             return;
         }

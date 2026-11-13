@@ -185,13 +185,13 @@ class CI_Model
 
 // Constantes definidas pelo index.php do CI3 e pelo core, antes de qualquer
 // controller carregar.
-const BASEPATH = '/var/www/html/';
-const APPPATH = '/var/www/html/application/';
-const FCPATH = '/var/www/html/';
+const FCPATH = __DIR__ . '/../';
+const APPPATH = FCPATH . 'application/';
+const BASEPATH = APPPATH . 'vendor/codeigniter/framework/system/';
 const SELF = 'index.php';
 const VIEWPATH = APPPATH . 'views/';
 const WRITEPATH = FCPATH;
-const SYSDIR = BASEPATH . 'system/';
+const SYSDIR = 'system';
 // Vem do .env em tempo de execução (ver index.php); define() com valor não
 // literal evita que o PHPStan trate as comparações como sempre verdadeiras.
 define('ENVIRONMENT', (string) ($_ENV['APP_ENVIRONMENT'] ?? 'production'));

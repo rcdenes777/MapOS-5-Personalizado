@@ -151,20 +151,8 @@ parameters:
 			path: application/controllers/api/v1/ApiController.php
 
 		-
-			message: '#^Path in require\(\) "/var/www/html/application//libraries/REST_Controller\.php" is not a file or it does not exist\.$#'
-			identifier: require.fileNotFound
-			count: 1
-			path: application/controllers/api/v1/ApiController.php
-
-		-
 			message: '#^Binary operation "\*" between 20\|non\-empty\-array\|non\-falsy\-string and non\-empty\-array\|non\-falsy\-string results in an error\.$#'
 			identifier: binaryOp.invalid
-			count: 1
-			path: application/controllers/api/v1/ClientesController.php
-
-		-
-			message: '#^Path in require\(\) "/var/www/html/application//libraries/REST_Controller\.php" is not a file or it does not exist\.$#'
-			identifier: require.fileNotFound
 			count: 1
 			path: application/controllers/api/v1/ClientesController.php
 
@@ -178,12 +166,6 @@ parameters:
 			message: '#^Loose comparison using \=\= between true and '''' will always evaluate to false\.$#'
 			identifier: equal.alwaysFalse
 			count: 2
-			path: application/controllers/api/v1/OsController.php
-
-		-
-			message: '#^Path in require\(\) "/var/www/html/application//libraries/REST_Controller\.php" is not a file or it does not exist\.$#'
-			identifier: require.fileNotFound
-			count: 1
 			path: application/controllers/api/v1/OsController.php
 
 		-
@@ -217,32 +199,14 @@ parameters:
 			path: application/controllers/api/v1/ProdutosController.php
 
 		-
-			message: '#^Path in require\(\) "/var/www/html/application//libraries/REST_Controller\.php" is not a file or it does not exist\.$#'
-			identifier: require.fileNotFound
-			count: 1
-			path: application/controllers/api/v1/ProdutosController.php
-
-		-
 			message: '#^Binary operation "\*" between 20\|non\-empty\-array\|non\-falsy\-string and non\-empty\-array\|non\-falsy\-string results in an error\.$#'
 			identifier: binaryOp.invalid
 			count: 1
 			path: application/controllers/api/v1/ServicosController.php
 
 		-
-			message: '#^Path in require\(\) "/var/www/html/application/libraries/REST_Controller\.php" is not a file or it does not exist\.$#'
-			identifier: require.fileNotFound
-			count: 1
-			path: application/controllers/api/v1/ServicosController.php
-
-		-
 			message: '#^Binary operation "\*" between 20\|non\-empty\-array\|non\-falsy\-string and non\-empty\-array\|non\-falsy\-string results in an error\.$#'
 			identifier: binaryOp.invalid
-			count: 1
-			path: application/controllers/api/v1/UsuariosController.php
-
-		-
-			message: '#^Path in require\(\) "/var/www/html/application//libraries/REST_Controller\.php" is not a file or it does not exist\.$#'
-			identifier: require.fileNotFound
 			count: 1
 			path: application/controllers/api/v1/UsuariosController.php
 
@@ -253,38 +217,14 @@ parameters:
 			path: application/controllers/api/v1/UsuariosController.php
 
 		-
-			message: '#^Path in require\(\) "/var/www/html/application//libraries/REST_Controller\.php" is not a file or it does not exist\.$#'
-			identifier: require.fileNotFound
-			count: 1
-			path: application/controllers/api/v1/client/ClientCobrancasController.php
-
-		-
 			message: '#^Deprecated in PHP 8\.4\: Parameter \#1 \$idVendas \(int\) is implicitly nullable via default value null\.$#'
 			identifier: parameter.implicitlyNullable
 			count: 1
 			path: application/controllers/api/v1/client/ClientComprasController.php
 
 		-
-			message: '#^Path in require\(\) "/var/www/html/application//libraries/REST_Controller\.php" is not a file or it does not exist\.$#'
-			identifier: require.fileNotFound
-			count: 1
-			path: application/controllers/api/v1/client/ClientComprasController.php
-
-		-
-			message: '#^Path in require\(\) "/var/www/html/application//libraries/REST_Controller\.php" is not a file or it does not exist\.$#'
-			identifier: require.fileNotFound
-			count: 1
-			path: application/controllers/api/v1/client/ClientLoginController.php
-
-		-
 			message: '#^Deprecated in PHP 8\.4\: Parameter \#1 \$id \(int\) is implicitly nullable via default value null\.$#'
 			identifier: parameter.implicitlyNullable
-			count: 1
-			path: application/controllers/api/v1/client/ClientOsController.php
-
-		-
-			message: '#^Path in require\(\) "/var/www/html/application//libraries/REST_Controller\.php" is not a file or it does not exist\.$#'
-			identifier: require.fileNotFound
 			count: 1
 			path: application/controllers/api/v1/client/ClientOsController.php
 
@@ -411,30 +351,6 @@ parameters:
 		-
 			message: '#^PHPDoc tag @return has invalid value \(\: user informations\)\: Unexpected token "\:", expected type at offset 60 on line 4$#'
 			identifier: phpDoc.parseError
-			count: 1
-			path: application/libraries/Authorization_Token.php
-
-		-
-			message: '#^Path in require_once\(\) "/var/www/html/application/third_party/php\-jwt/BeforeValidException\.php" is not a file or it does not exist\.$#'
-			identifier: requireOnce.fileNotFound
-			count: 1
-			path: application/libraries/Authorization_Token.php
-
-		-
-			message: '#^Path in require_once\(\) "/var/www/html/application/third_party/php\-jwt/ExpiredException\.php" is not a file or it does not exist\.$#'
-			identifier: requireOnce.fileNotFound
-			count: 1
-			path: application/libraries/Authorization_Token.php
-
-		-
-			message: '#^Path in require_once\(\) "/var/www/html/application/third_party/php\-jwt/JWT\.php" is not a file or it does not exist\.$#'
-			identifier: requireOnce.fileNotFound
-			count: 1
-			path: application/libraries/Authorization_Token.php
-
-		-
-			message: '#^Path in require_once\(\) "/var/www/html/application/third_party/php\-jwt/SignatureInvalidException\.php" is not a file or it does not exist\.$#'
-			identifier: requireOnce.fileNotFound
 			count: 1
 			path: application/libraries/Authorization_Token.php
 
@@ -675,12 +591,6 @@ parameters:
 		-
 			message: '#^Method REST_Controller\:\:_check_login\(\) should return bool but returns string\.$#'
 			identifier: return.type
-			count: 1
-			path: application/libraries/REST_Controller.php
-
-		-
-			message: '#^Path in require\(\) "/var/www/html/application/libraries/Format\.php" is not a file or it does not exist\.$#'
-			identifier: require.fileNotFound
 			count: 1
 			path: application/libraries/REST_Controller.php
 

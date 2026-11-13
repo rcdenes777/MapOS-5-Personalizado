@@ -22,12 +22,13 @@ parameters:
     # então precisam ser escaneadas para entrarem na tabela de símbolos.
     scanFiles:
         - phpstan-stubs/ci3.php
+        - application/vendor/codeigniter/framework/system/libraries/Migration.php
 
     excludePaths:
-        analyseAndScan:
-            # third_party e vendor não são código do Map-OS: entram na análise
-            # só como dependência, nunca como alvo.
+        analyse:
+            # Bibliotecas do vendor podem ser escaneadas por scanFiles.
             - application/vendor
+        analyseAndScan:
             - application/third_party
             - application/database/migrations
             - phpstan-stubs

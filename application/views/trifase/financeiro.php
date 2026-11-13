@@ -144,7 +144,7 @@ $saldoAnterior = $cancelada && ($financeiroResumo['saldo_c'] ?? 0) > 0 && ! ($ac
                     <?= component('select', ['name' => 'evento_id', 'label' => $saldoAnterior ? 'Último estorno registrado' : 'Recebimento a corrigir', 'options' => ['' => 'Selecione'] + ($saldoAnterior ? $estornosAnteriores : $opcoes), 'required' => true]) ?>
                     <?= component('input', ['name' => 'data', 'id' => 'trifase-retificacao-data', 'label' => 'Data da retificação', 'type' => 'date', 'value' => date('Y-m-d'), 'required' => true]) ?>
                     <?= component('input', ['name' => 'motivo', 'id' => 'trifase-retificacao-motivo', 'label' => 'Justificativa', 'required' => true, 'attrs' => ['maxlength' => 500]]) ?>
-                    <div><?= component('button', ['label' => 'Revisar retificação', 'variant' => 'outline', 'attrs' => ['data-modal-abrir' => 'confirmar-trifase-retificacao']]) ?></div>
+                    <div><?= component('button', ['label' => 'Revisar retificação', 'variant' => 'outline', 'type' => 'submit', 'disabled' => true, 'attrs' => ['data-modal-abrir' => 'confirmar-trifase-retificacao', 'data-modal-validar-formulario' => 'trifase-retificacao']]) ?></div>
                 </form>
                 <?= component('modal-confirm', ['id' => 'confirmar-trifase-retificacao', 'title' => 'Registrar retificação financeira?', 'message' => 'A OS continuará cancelada. A retificação será registrada no histórico e o saldo devido ficará disponível para recebimento. Nenhum dinheiro será devolvido.', 'confirm_label' => 'Confirmar retificação', 'confirm_attrs' => ['form' => 'trifase-retificacao']]) ?>
             </section>

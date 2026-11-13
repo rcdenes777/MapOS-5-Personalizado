@@ -3,7 +3,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 
-import { deveFecharPeloFundo, preencher } from '../../assets/js/modules/componentes/modal.js';
+import iniciarModal, { deveFecharPeloFundo, preencher } from '../../assets/js/modules/componentes/modal.js';
 import { criarTemporizador } from '../../assets/js/modules/componentes/toast.js';
 import { aplicarModo } from '../../assets/js/modules/componentes/catalogo.js';
 import { criarToast, regiaoDeToasts, CLASSES_REGIAO } from '../../assets/js/lib/toast.js';
@@ -158,4 +158,31 @@ test('modal: preenche os alvos com os data-valor-* do gatilho, sem HTML', () => 
     assert.equal(nome.textContent, '<b>Ana</b>');
     assert.equal(nome.innerHTML, undefined);
     assert.equal(semValor.textContent, 'antes');
+});
+
+
+test('modal: valida o formulário indicado antes de abrir a confirmação', () => {
+    let valido = false;
+    let abrir = 0;
+    let clique;
+    const gatilho = { disabled: true, dataset: { modalAbrir: 'confirmar', modalValidarFormulario: 'operacao' } };
+    const raiz = {
+        addEventListener: (_evento, fn) => { clique = fn; },
+        getElementById: (id) => id === 'operacao' ? { reportValidity: () => valido } : null,
+        querySelectorAll: (seletor) => seletor === '[data-modal-validar-formulario]' ? [gatilho] : [],
+    };
+    iniciarModal({
+        id: 'confirmar',
+        dataset: {},
+        addEventListener: () => {},
+        querySelectorAll: () => [],
+        showModal: () => abrir++,
+    }, raiz);
+    assert.equal(gatilho.disabled, false);
+    const evento = { target: { closest: () => gatilho }, preventDefault: () => {} };
+    clique(evento);
+    assert.equal(abrir, 0);
+    valido = true;
+    clique(evento);
+    assert.equal(abrir, 1);
 });

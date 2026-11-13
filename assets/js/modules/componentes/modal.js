@@ -52,6 +52,10 @@ export default function iniciar(dialogo, raiz = document) {
 
         if (gatilho && gatilho.dataset.modalAbrir === dialogo.id) {
             evento.preventDefault();
+            const formularioId = gatilho.dataset.modalValidarFormulario;
+            if (formularioId && !raiz.getElementById(formularioId)?.reportValidity()) {
+                return;
+            }
             preencher([
                 ...dialogo.querySelectorAll('[data-modal-valor]'),
                 ...[...raiz.querySelectorAll('[data-modal-de][data-modal-valor]')].filter((alvo) => alvo.dataset.modalDe === dialogo.id),
@@ -67,6 +71,12 @@ export default function iniciar(dialogo, raiz = document) {
             dialogo.close();
         }
     });
+
+    for (const gatilho of raiz.querySelectorAll('[data-modal-validar-formulario]')) {
+        if (gatilho.dataset.modalAbrir === dialogo.id) {
+            gatilho.disabled = false;
+        }
+    }
 
     if (dialogo.dataset.modalAberto === 'true' && !dialogo.open) {
         dialogo.showModal();

@@ -378,3 +378,9 @@ html[data-valores="ocultos"] .kpi-oculto-valores {
     display: none;
   }
 }
+
+.trifase-os #os-secoes [data-abas-lista] > a {
+  flex-shrink: 0;
+  overflow-wrap: normal;
+  white-space: nowrap;
+}

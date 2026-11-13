@@ -445,8 +445,10 @@ A migração aditiva `20261104010000` cria o histórico privado de pedidos e con
 ### Trifase: retificação financeira de cancelamento e custos internos
 
 A migration `20261112010000` prepara o histórico de retificações de recebimentos.
-Em **Configurações → Permissões**, atribua **Retificar financeiro de OS
-cancelada** somente a operadores designados para essa conferência. A operação
+A migration `20261112030000` habilita **Retificar financeiro de OS cancelada**
+no grupo administrativo nativo (ID 1), preservando negativas explícitas. Em
+**Configurações → Permissões**, conceda o acesso aos demais grupos somente
+quando forem designados para essa conferência. A operação
 também exige acesso à OS e aos lançamentos. O recebimento do saldo validado
 continua exigindo a permissão de adicionar lançamentos.
 

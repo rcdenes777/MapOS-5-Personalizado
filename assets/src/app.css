@@ -379,6 +379,10 @@ html[data-valores="ocultos"] .kpi-oculto-valores {
   }
 }
 
+.trifase-os #os-secoes {
+  grid-template-columns: minmax(0, 1fr);
+}
+
 .trifase-os #os-secoes [data-abas-lista] > a {
   flex-shrink: 0;
   overflow-wrap: normal;

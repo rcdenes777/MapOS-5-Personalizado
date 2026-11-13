@@ -8,7 +8,7 @@ class Trifase_estoque extends MY_Controller
     public function __construct()
     {
         parent::__construct();
-        if (! trifaseEstoqueHabilitado() || ! $this->db->table_exists('trifase_estoque_eventos') || ! $this->db->table_exists('trifase_os_custos') || ! $this->db->table_exists('trifase_servico_custos')) {
+        if (! $this->db->table_exists('trifase_estoque_eventos')) {
             show_404('', false);
         }
         $this->load->model('Trifase_estoque_model', 'estoque');
@@ -22,6 +22,9 @@ class Trifase_estoque extends MY_Controller
             show_error('Sem permissão para consultar estoque.', 403);
         }
         $id = $this->id($id);
+        if (! trifaseEstoqueHabilitado() && ! $this->db->where('produto_id', $id)->count_all_results('trifase_estoque_eventos')) {
+            show_404('', false);
+        }
         $p = $this->db->where('idProdutos', $id)->get('produtos', 1)->row();
         if (! $p) {
             show_404('', false);
@@ -74,7 +77,7 @@ class Trifase_estoque extends MY_Controller
             }
         }
         $tipo = $this->input->get('tipo');
-        if (is_string($tipo) && in_array($tipo, ['entrada', 'saida', 'contagem', 'os_saida', 'os_devolucao', 'venda_saida', 'venda_devolucao', 'inicial'], true)) {
+        if (is_string($tipo) && in_array($tipo, ['entrada', 'saida', 'contagem', 'os_saida', 'os_devolucao', 'os_consumo', 'os_conciliacao', 'venda_saida', 'venda_devolucao', 'inicial'], true)) {
             $filtros['tipo'] = $tipo;
         }
         $inicio = max(0, (int) $this->input->get('pagina'));
@@ -92,6 +95,9 @@ class Trifase_estoque extends MY_Controller
 
     public function servico($id = null)
     {
+        if (! trifaseEstoqueHabilitado() || ! $this->db->table_exists('trifase_os_custos') || ! $this->db->table_exists('trifase_servico_custos')) {
+            show_404('', false);
+        }
         if (! $this->permission->checkPermission($this->session->userdata('permissao'), 'vServico') || ! $this->permission->checkPermission($this->session->userdata('permissao'), 'vCustoInterno')) {
             show_error('Sem permissão para consultar custos de serviço.', 403);
         }
@@ -136,6 +142,9 @@ class Trifase_estoque extends MY_Controller
 
     public function os($id = null)
     {
+        if (! trifaseEstoqueHabilitado() || ! $this->db->table_exists('trifase_os_custos') || ! $this->db->table_exists('trifase_servico_custos')) {
+            show_404('', false);
+        }
         if (! $this->permission->checkPermission($this->session->userdata('permissao'), 'vOs') || ! $this->permission->checkPermission($this->session->userdata('permissao'), 'vCustoInterno')) {
             show_error('Sem permissão para consultar custos da OS.', 403);
         }

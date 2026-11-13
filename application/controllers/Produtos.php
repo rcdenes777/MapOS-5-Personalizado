@@ -93,6 +93,8 @@ class Produtos extends MY_Controller
     private function formulario(?object $produto)
     {
         $erros = [];
+        $estoqueAuditavel = trifaseEstoqueHabilitado() || ($produto !== null && $this->produtos_model->temHistoricoEstoque((int) $produto->idProdutos));
+        $this->data['estoqueAuditavel'] = $estoqueAuditavel;
         $podeEditarCusto = $this->permite('vCustoInterno') && $this->permite('eCustoInterno');
 
         if ($this->input->method() === 'post') {
@@ -101,7 +103,7 @@ class Produtos extends MY_Controller
                 show_error('Você não tem permissão para alterar o custo interno.', 403);
                 return;
             }
-            if ($produto !== null && trifaseEstoqueHabilitado()) {
+            if ($produto !== null && $estoqueAuditavel) {
                 $_POST['estoque'] = (string) $produto->estoque;
             }
             $erros = $this->validarFormulario('produtos');
@@ -125,7 +127,7 @@ class Produtos extends MY_Controller
                     unset($dados['precoCompra']);
                 }
 
-                if ($produto !== null && trifaseEstoqueHabilitado()) {
+                if ($produto !== null && $estoqueAuditavel) {
                     unset($dados['estoque']);
                 }
                 $salvou = $produto === null
@@ -180,6 +182,7 @@ class Produtos extends MY_Controller
         }
 
         $this->data['produto'] = $produto;
+        $this->data['estoqueAuditavel'] = trifaseEstoqueHabilitado() || $this->produtos_model->temHistoricoEstoque((int) $produto->idProdutos);
         $this->data['verCusto'] = $this->permite('vCustoInterno');
         $this->data['pode'] = [
             'editar' => $this->permite('eProduto'),
@@ -212,9 +215,14 @@ class Produtos extends MY_Controller
             redirect(site_url('produtos'));
         }
 
-        $this->produtos_model->delete('produtos_os', 'produtos_id', $id);
-        $this->produtos_model->delete('itens_de_vendas', 'produtos_id', $id);
-        $this->produtos_model->delete('produtos', 'idProdutos', $id);
+        if (! $this->db->table_exists('trifase_estoque_eventos')) {
+            $this->produtos_model->delete('produtos_os', 'produtos_id', $id);
+            $this->produtos_model->delete('itens_de_vendas', 'produtos_id', $id);
+        }
+        if (! $this->produtos_model->delete('produtos', 'idProdutos', $id)) {
+            $this->session->set_flashdata('error', 'Não foi possível excluir o produto. Confira os vínculos.');
+            return redirect('produtos/visualizar/' . $id);
+        }
 
         log_info('Removeu um produto. ID: ' . $id);
 
@@ -234,7 +242,7 @@ class Produtos extends MY_Controller
             redirect(base_url());
         }
 
-        if (trifaseEstoqueHabilitado()) {
+        if (trifaseEstoqueHabilitado() || $this->produtos_model->temHistoricoEstoque((int) $this->input->post('id'))) {
             $this->session->set_flashdata('error', 'Use Movimentar estoque para registrar tipo, motivo e histórico.');
             return redirect('trifase_estoque/produto/' . (int) $this->input->post('id'));
         }

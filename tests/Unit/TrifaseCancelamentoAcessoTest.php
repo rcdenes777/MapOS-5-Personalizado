@@ -42,7 +42,6 @@ final class TrifaseCancelamentoAcessoTest extends \PHPUnit\Framework\TestCase
             'clienteCancelamento' => 'Cliente da OS',
             'valoresCancelamento' => ['origem' => 'cliente', 'motivo' => '', 'conferencia' => ''],
         ];
-        $dados['devolverPecasCancelamento'] = true;
         $html = $v->renderizar($dados);
         $this->assertStringContainsString('Pedido pendente', $html);
         $this->assertStringContainsString('&lt;script&gt;QA&lt;/script&gt;', $html);

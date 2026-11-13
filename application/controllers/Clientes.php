@@ -304,8 +304,9 @@ class Clientes extends MY_Controller
         }
 
         $os = $this->clientes_model->getAllOsByClient($id);
-        if ($os != null) {
-            $this->clientes_model->removeClientOs($os);
+        if ($os != null && ! $this->clientes_model->removeClientOs($os)) {
+            $this->session->set_flashdata('error', 'Não foi possível excluir as OS vinculadas. Confira o histórico do cliente.');
+            return redirect('clientes/visualizar/' . (int) $id);
         }
 
         // excluindo Vendas vinculadas ao cliente

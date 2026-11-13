@@ -72,8 +72,8 @@ $etapaCancelamento = $cancelado ? ($entregue ? 4 : 3) : ($pendenteCancelamento ?
                             <?php if ($podePedirCancelamento && $bloqueiosCancelamento === []) {
                                 $ehPeca = $tituloCancelamento === 'Peças';
                                 $acoes = $ehPeca ? ['consumir' => 'Registrar peça consumida ou perdida'] : ['retirar' => 'Retirar serviço não executado'];
-                                if ($ehPeca && $devolverPecasCancelamento) {
-                                    $acoes = ['retirar' => 'Devolver peça não utilizada'] + $acoes;
+                                if ($ehPeca) {
+                                    $acoes = ['retirar' => 'Conferir peça não utilizada'] + $acoes;
                                 }
                                 foreach ($acoes as $acao => $rotulo) {
                                     $idAcao = ($ehPeca ? 'peca-' : 'servico-') . $itemCancelamento['id'] . '-' . $acao; ?>
@@ -92,7 +92,7 @@ $etapaCancelamento = $cancelado ? ($entregue ? 4 : 3) : ($pendenteCancelamento ?
                                             <?php } ?>
                                             <?= component('checkbox', ['name' => 'conferido', 'id' => 'conferido-' . $idAcao, 'value' => '1', 'label' => match (true) {
                                                 $acao === 'consumir' => 'A quantidade informada foi consumida ou perdida e não volta ao estoque.',
-                                                $ehPeca => 'A quantidade informada está sem uso e pode voltar ao estoque.',
+                                                $ehPeca => 'A quantidade está sem uso. A devolução automática exige baixa comprovada para toda a linha.',
                                                 default => 'Este serviço não foi executado.',
                                             }, 'required' => true]) ?>
                                             <?= component('button', ['label' => $rotulo, 'type' => 'submit', 'variant' => 'outline']) ?>

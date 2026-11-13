@@ -242,8 +242,10 @@ class ProdutosController extends REST_Controller
             ], REST_Controller::HTTP_BAD_REQUEST);
         }
 
-        $this->produtos_model->delete('produtos_os', 'produtos_id', $id);
-        $this->produtos_model->delete('itens_de_vendas', 'produtos_id', $id);
+        if (! $this->db->table_exists('trifase_estoque_eventos')) {
+            $this->produtos_model->delete('produtos_os', 'produtos_id', $id);
+            $this->produtos_model->delete('itens_de_vendas', 'produtos_id', $id);
+        }
 
         if ($this->produtos_model->delete('produtos', 'idProdutos', $id)) {
             $this->log_app('Removeu um Produto. ID' . $id);

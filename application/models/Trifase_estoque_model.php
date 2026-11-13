@@ -20,10 +20,23 @@ class Trifase_estoque_model extends CI_Model
         return $this->db->order_by('id', 'desc')->limit(50, max(0, $inicio))->get('trifase_estoque_eventos')->result();
     }
 
-    public function movimentar(int $produto, string $tipo, int $quantidade, ?int $custo, string $data, string $motivo, string $origem, int $usuario, string $operacao, ?int $esperado = null): int
+    public function saldoBaixaDaLinha(int $os, int $item, int $produto): int
+    {
+        if (! $this->db->table_exists('trifase_estoque_eventos')
+            || ! $this->db->field_exists('os_item_id', 'trifase_estoque_eventos')) {
+            return 0;
+        }
+        $saldo = $this->db->select_sum('quantidade')
+            ->where(['os_id' => $os, 'os_item_id' => $item, 'produto_id' => $produto])
+            ->where_in('tipo', ['os_saida', 'os_devolucao', 'os_consumo', 'os_conciliacao'])->get('trifase_estoque_eventos')->row();
+
+        return max(0, -(int) ($saldo->quantidade ?? 0));
+    }
+
+    public function movimentar(int $produto, string $tipo, int $quantidade, ?int $custo, string $data, string $motivo, string $origem, int $usuario, string $operacao, ?int $esperado = null, ?array $linhaOs = null): ?int
     {
         $this->validarOperacao($usuario, $operacao);
-        if (! in_array($tipo, ['entrada', 'saida', 'contagem', 'os_saida', 'os_devolucao', 'venda_saida', 'venda_devolucao', 'legado_entrada', 'legado_saida', 'troca_saida', 'inicial'], true)
+        if (! in_array($tipo, ['entrada', 'saida', 'contagem', 'os_saida', 'os_devolucao', 'os_consumo', 'os_conciliacao', 'venda_saida', 'venda_devolucao', 'legado_entrada', 'legado_saida', 'troca_saida', 'inicial'], true)
             || abs($quantidade) > ($tipo === 'inicial' ? 99999999 : 1000000) || (in_array($tipo, ['contagem', 'inicial'], true) ? $quantidade < 0 : $quantidade <= 0)
             || ($custo !== null && ($custo < 0 || $custo > 9999999999))
             || ! $this->dataValida($data) || trim($motivo) === '' || mb_strlen($motivo) > 2000 || mb_strlen($origem) > 100) {
@@ -32,18 +45,44 @@ class Trifase_estoque_model extends CI_Model
         if ($tipo === 'entrada' && $custo === null) {
             throw new DomainException('Informe o custo unitário desta entrada.');
         }
-        $hash = hash('sha256', json_encode([$produto, $tipo, $quantidade, $custo, $data, $motivo, $origem, $usuario, $esperado], JSON_THROW_ON_ERROR));
-        return $this->transacao(function () use ($produto, $tipo, $quantidade, $custo, $data, $motivo, $origem, $usuario, $operacao, $esperado, $hash) {
+        $movimentoOs = in_array($tipo, ['os_saida', 'os_devolucao', 'os_consumo', 'os_conciliacao'], true);
+        if ($movimentoOs !== ($linhaOs !== null)) {
+            throw new DomainException('Informe o vínculo da movimentação com a linha da OS.');
+        }
+        $vinculo = $linhaOs === null ? [] : ['os_id' => $linhaOs['os_id'], 'os_item_id' => $linhaOs['os_item_id']];
+        $payload = [$produto, $tipo, $quantidade, $custo, $data, $motivo, $origem, $usuario, $esperado];
+        if ($vinculo !== []) {
+            $payload[] = $vinculo;
+        }
+        $hash = hash('sha256', json_encode($payload, JSON_THROW_ON_ERROR));
+        return $this->transacao(function () use ($produto, $tipo, $quantidade, $custo, $data, $motivo, $origem, $usuario, $operacao, $esperado, $vinculo, $hash) {
             $p = $this->travar('produtos', 'idProdutos', $produto);
             if ($r = $this->reenvio('trifase_estoque_eventos', $operacao, $hash)) {
                 return $r;
+            }
+            if ($vinculo !== []) {
+                $linha = $this->db->where(['os_id' => $vinculo['os_id'], 'idProdutos_os' => $vinculo['os_item_id'], 'produtos_id' => $produto])
+                    ->get('produtos_os', 1)->row();
+                if (! $linha || $quantidade > (int) $linha->quantidade) {
+                    throw new DomainException('A quantidade não pertence à linha da OS.');
+                }
+                if (in_array($tipo, ['os_devolucao', 'os_consumo', 'os_conciliacao'], true)) {
+                    $saldo = $this->saldoBaixaDaLinha($vinculo['os_id'], $vinculo['os_item_id'], $produto);
+                    if ($tipo === 'os_devolucao' && $saldo < (int) $linha->quantidade) {
+                        return null;
+                    }
+                    $quantidade = min($quantidade, $saldo);
+                    if ($quantidade === 0) {
+                        return null;
+                    }
+                }
             }
             $antes = (int) $p->estoque;
             if ($tipo === 'contagem' && ($esperado === null || $esperado !== $antes)) {
                 throw new DomainException('O saldo mudou desde a conferência. Recarregue e conte novamente.');
             }
             $sinal = in_array($tipo, ['saida', 'os_saida', 'venda_saida', 'legado_saida', 'troca_saida'], true) ? -1 : 1;
-            $depois = $tipo === 'inicial' ? $antes : ($tipo === 'contagem' ? $quantidade : $antes + $sinal * $quantidade);
+            $depois = in_array($tipo, ['inicial', 'os_consumo', 'os_conciliacao'], true) ? $antes : ($tipo === 'contagem' ? $quantidade : $antes + $sinal * $quantidade);
             if ($depois < 0 || $depois > 2147483647) {
                 throw new DomainException('Saldo insuficiente ou fora do limite permitido.');
             }
@@ -52,10 +91,14 @@ class Trifase_estoque_model extends CI_Model
             if ($tipo === 'entrada') {
                 $alteracoes['precoCompra'] = sprintf('%d.%02d', intdiv($custo, 100), $custo % 100);
             }
-            $this->gravar($this->db->where('idProdutos', $produto)->update('produtos', $alteracoes));
+            if (! in_array($tipo, ['os_consumo', 'os_conciliacao'], true)) {
+                $this->gravar($this->db->where('idProdutos', $produto)->update('produtos', $alteracoes));
+            }
             return $this->evento('trifase_estoque_eventos', ['produto_id' => $produto, 'tipo' => $tipo, 'origem' => $origem,
-                'quantidade' => $tipo === 'inicial' ? $antes : $depois - $antes, 'saldo_antes' => $tipo === 'inicial' ? 0 : $antes, 'saldo_depois' => $depois,
-                'custo_unitario_c' => $custo, 'data_movimento' => $data, 'motivo' => $motivo], $usuario, $operacao, $hash);
+                'quantidade' => match ($tipo) {
+                    'inicial' => $antes, 'os_consumo', 'os_conciliacao' => $quantidade, default => $depois - $antes
+                }, 'saldo_antes' => $tipo === 'inicial' ? 0 : $antes, 'saldo_depois' => $depois,
+                'custo_unitario_c' => $custo, 'data_movimento' => $data, 'motivo' => $motivo] + $vinculo, $usuario, $operacao, $hash);
         });
     }
 
@@ -190,7 +233,7 @@ class Trifase_estoque_model extends CI_Model
         }
         return $r;
     }
-    private function transacao(callable $acao): int
+    private function transacao(callable $acao): ?int
     {
         if (! $this->db->trans_begin()) {
             throw new RuntimeException('Não foi possível iniciar a operação.');

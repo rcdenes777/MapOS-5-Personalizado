@@ -102,16 +102,29 @@ class Produtos_model extends CI_Model
 
     public function edit($table, $data, $fieldID, $ID)
     {
-        if ($table === 'produtos' && $this->db->table_exists('trifase_estoque_eventos') && $this->db->where('produto_id', (int) $ID)->count_all_results('trifase_estoque_eventos')) {
-            unset($data['estoque']);
+        $travarEstoque = $table === 'produtos' && array_key_exists('estoque', $data)
+            && $this->db->table_exists('trifase_estoque_eventos');
+        if (! $travarEstoque) {
+            return $this->db->where($fieldID, $ID)->update($table, $data);
         }
-        $this->db->where($fieldID, $ID);
-        $this->db->update($table, $data);
-
-        if ($this->db->affected_rows() >= 0) {
-            return true;
+        if (! $this->db->trans_begin()) {
+            return false;
         }
-
+        try {
+            $sufixo = $this->db->dbdriver === 'mysqli' ? ' FOR UPDATE' : '';
+            $this->db->query('SELECT idProdutos FROM produtos WHERE idProdutos = ?' . $sufixo, [(int) $ID]);
+            if ($this->temHistoricoEstoque((int) $ID)) {
+                unset($data['estoque']);
+            }
+            if (($data === [] || $this->db->where($fieldID, $ID)->update($table, $data))
+                && $this->db->trans_status() && $this->db->trans_commit()) {
+                return true;
+            }
+        } catch (Throwable $e) {
+            $this->db->trans_rollback();
+            throw $e;
+        }
+        $this->db->trans_rollback();
         return false;
     }
 
@@ -134,33 +147,61 @@ class Produtos_model extends CI_Model
         return $this->db->count_all($table);
     }
 
+    public function temHistoricoEstoque(int $produto): bool
+    {
+        return $this->db->table_exists('trifase_estoque_eventos')
+            && $this->db->where('produto_id', $produto)->count_all_results('trifase_estoque_eventos') > 0;
+    }
+
     public function updateEstoque($produto, $quantidade, $operacao = '-', array $contexto = [])
     {
         if (! in_array($operacao, ['+', '-'], true)) {
             throw new DomainException('Operação de estoque inválida.');
         }
-        if (trifaseEstoqueHabilitado()) {
+        $linhaOs = $contexto['linha_os'] ?? null;
+        $razaoPorLinha = $this->db->table_exists('trifase_estoque_eventos')
+            && $this->db->field_exists('os_item_id', 'trifase_estoque_eventos');
+        if ($linhaOs !== null && ! $razaoPorLinha) {
+            if ($operacao === '+') {
+                return true;
+            }
+            if (trifaseEstoqueHabilitado()) {
+                throw new DomainException('Atualize o banco antes de registrar baixas de estoque da OS.');
+            }
+        }
+        if (($razaoPorLinha && ($linhaOs !== null || isset($contexto['tipo'])))
+            || trifaseEstoqueHabilitado() || $this->temHistoricoEstoque((int) $produto)) {
             require_once APPPATH . 'models/Trifase_estoque_model.php';
             $modelo = new Trifase_estoque_model();
             $modelo->db = $this->db;
             $usuario = (int) ($contexto['usuario'] ?? get_instance()->session->userdata('id_admin'));
+            $tipo = $contexto['tipo'] ?? ($operacao === '+' ? 'legado_entrada' : 'legado_saida');
+            if ($linhaOs !== null && $tipo === 'os_devolucao') {
+                $linha = $this->db->where(['os_id' => $linhaOs['os_id'], 'idProdutos_os' => $linhaOs['os_item_id'], 'produtos_id' => (int) $produto])
+                    ->get('produtos_os', 1)->row();
+                if ($linha && $modelo->saldoBaixaDaLinha($linhaOs['os_id'], $linhaOs['os_item_id'], (int) $produto) < (int) $linha->quantidade) {
+                    $tipo = 'os_conciliacao';
+                }
+            }
             $modelo->movimentar(
                 (int) $produto,
-                $contexto['tipo'] ?? ($operacao === '+' ? 'legado_entrada' : 'legado_saida'),
+                $tipo,
                 (int) $quantidade,
                 null,
                 date('Y-m-d'),
                 $contexto['motivo'] ?? 'Movimentação pelo fluxo nativo',
                 $contexto['origem'] ?? 'Painel nativo',
                 $usuario,
-                $contexto['operacao'] ?? bin2hex(random_bytes(16))
+                $contexto['operacao'] ?? bin2hex(random_bytes(16)),
+                null,
+                $linhaOs
             );
             return true;
         }
-        if ($this->db->table_exists('trifase_estoque_eventos') && $this->db->where('produto_id', (int) $produto)->count_all_results('trifase_estoque_eventos')) {
-            throw new DomainException('Reative o estoque auditável para movimentar este produto e preservar seu histórico.');
+        $sql = "UPDATE produtos SET estoque = estoque $operacao ? WHERE idProdutos = ? AND estoque $operacao ? BETWEEN 0 AND 2147483647";
+        if (! $this->db->query($sql, [$quantidade, $produto, $quantidade]) || $this->db->affected_rows() !== 1) {
+            throw new DomainException('Saldo de estoque insuficiente ou fora do limite.');
         }
-        $sql = "UPDATE produtos set estoque = estoque $operacao ? WHERE idProdutos = ?";
-        return $this->db->query($sql, [$quantidade, $produto]);
+        return true;
     }
 }

@@ -97,3 +97,20 @@ Cada peça não utilizada pode ser devolvida na própria tela, com confirmação
 Depois de pedido ou conferência técnica o usuário permanece no fluxo. Após confirmar, a próxima ação é Registrar entrega, que abre o controle existente na OS. Concluída a retirada, o fluxo mostra data, recebedor e comprovante. A fila do início inclui pedidos ativos e cancelamentos confirmados sem entrega ativa; pedido retirado ou entrega ativa remove a pendência. Correção da entrega faz a OS reaparecer.
 
 Validação no laboratório 8230: OS fictícia 9070; estoque Fusível cerâmico 5A 18 → 17 na inclusão → 18 na devolução pela tela. Conferência técnica, acerto sem cobrança, cancelamento e entrega com comprovante 8 executados no navegador. A OS 9070 saiu da fila depois da entrega; seus registros foram preservados como evidência. OS 9065 permaneceu com uma peça e um serviço, sem alterações neste teste. Desktop e largura de celular conferidos. Testes PHP 1905/9155 sem falhas (1 depreciação e 1 ignorado preexistentes), 28 testes JS e PHPStan aprovados.
+
+### EST-02 — comprovação da baixa por linha
+
+A migration `20261113010000` adiciona ao razão as referências de OS e linha de
+produto. Nas inclusões novas, a saída feita com controle de estoque habilitado
+grava o vínculo na mesma transação. Movimentos antigos ficam sem vínculo.
+
+A devolução automática exige baixa comprovada e ainda não compensada para a
+quantidade atual da linha. Uma linha sem comprovação integral pode ser
+conciliada tecnicamente sem reposição. A conferência e o consumo encerram a
+elegibilidade correspondente sem alterar o saldo físico. Para ajustar estoque
+depois de conferir uma linha antiga ou mista, use a contagem em **Movimentar
+estoque**, com quantidade, justificativa e autorização de edição de produto.
+
+Em caso de reversão, preserve os eventos e as colunas da migration. A versão
+anterior volta a permitir reposição sem comprovação. Suspenda as gravações de
+estoque e cancelamento se precisar recuperar o código anterior.

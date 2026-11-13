@@ -4,6 +4,7 @@ require_once APPPATH . 'models/Trifase_cancelamento_model.php';
 require_once APPPATH . 'models/Trifase_estoque_model.php';
 require_once APPPATH . 'database/migrations/20261104010000_trifase_cancelamentos.php';
 require_once APPPATH . 'database/migrations/20261102060000_trifase_estoque_custos.php';
+require_once APPPATH . 'database/migrations/20261113010000_trifase_estoque_linha_os.php';
 require_once BASEPATH . 'database/DB_forge.php';
 require_once BASEPATH . 'database/drivers/sqlite3/sqlite3_forge.php';
 
@@ -43,6 +44,13 @@ final class TrifaseCancelamentoTest extends MaposTestCase
         $e->db = $this->db;
         $e->dbforge = new CI_DB_sqlite3_forge($this->db);
         $e->up();
+        $vinculo = new class() extends Migration_trifase_estoque_linha_os {
+            public object $dbforge;
+        };
+        $vinculo->db = $this->db;
+        $vinculo->dbforge = new CI_DB_sqlite3_forge($this->db);
+        $vinculo->up();
+        $vinculo->up();
         $this->modelo = new Trifase_cancelamento_model();
         $this->modelo->db = $this->db;
     }
@@ -91,11 +99,20 @@ final class TrifaseCancelamentoTest extends MaposTestCase
         return ['hash_tecnico' => $this->modelo->hashTecnico($c), 'pecas_nao_utilizadas' => '1', 'servicos_executados' => '1'];
     }
 
+    private function registrarBaixa(int $quantidade): void
+    {
+        $estoque = new Trifase_estoque_model();
+        $estoque->db = $this->db;
+        $this->db->set('estoque', 'estoque + ' . $quantidade, false)->where('idProdutos', 1)->update('produtos');
+        $estoque->movimentar(1, 'os_saida', $quantidade, null, date('Y-m-d'), 'Baixa comprovada', 'OS #1', 2, 'baixa_123456789012', null, ['os_id' => 1, 'os_item_id' => 1]);
+    }
+
     private function devolverPecas(): void
     {
         $e = new Trifase_estoque_model();
         $e->db = $this->db;
-        $e->movimentar(1, 'os_devolucao', 2, null, date('Y-m-d'), 'Remoção de peça da OS', 'OS #1', 2, 'devolucao_123456789');
+        $this->registrarBaixa(2);
+        $e->movimentar(1, 'os_devolucao', 2, null, date('Y-m-d'), 'Remoção de peça da OS', 'OS #1', 2, 'devolucao_123456789', null, ['os_id' => 1, 'os_item_id' => 1]);
         $this->db->where('os_id', 1)->delete('produtos_os');
     }
 
@@ -126,7 +143,7 @@ final class TrifaseCancelamentoTest extends MaposTestCase
         $this->assertSame('Cancelado', $this->db->where('idOs', 1)->get('os')->row()->status);
         $this->assertSame('Não liga', $this->db->where('idOs', 1)->get('os')->row()->defeito);
         $this->assertSame(10, (int) $this->db->get('produtos')->row()->estoque);
-        $this->assertSame(1, $this->db->count_all('trifase_estoque_eventos'));
+        $this->assertSame(2, $this->db->count_all('trifase_estoque_eventos'));
         $this->assertSame(0, $this->db->count_all('produtos_os'));
         $this->assertSame(1, $this->db->count_all('servicos_os'));
         $this->assertSame(1, $this->db->count_all('os_historico'));
@@ -251,6 +268,7 @@ final class TrifaseCancelamentoTest extends MaposTestCase
         $estoque->capturarItem(1, 'produto', 2, 2);
         $pedido = $this->pedido();
         $resumoOriginal = $f->resumo(1);
+        $this->registrarBaixa(2);
         $evento = $this->modelo->retirarItem(1, $pedido, 'produto', 1, 2, 'devolucao_123456789');
         $this->assertSame($evento, $this->modelo->retirarItem(1, $pedido, 'produto', 1, 2, 'devolucao_123456789'));
         $consumida = $this->modelo->retirarItem(1, $pedido, 'produto', 2, 2, 'consumir_igbt_123456', 'Danificado no diagnóstico');
@@ -263,7 +281,7 @@ final class TrifaseCancelamentoTest extends MaposTestCase
         }
         $this->assertSame(4, (int) $this->db->where('idProdutos', 2)->get('produtos')->row()->estoque);
         $this->assertSame(10, (int) $this->db->where('idProdutos', 1)->get('produtos')->row()->estoque);
-        $this->assertSame(1, $this->db->count_all_results('trifase_estoque_eventos'));
+        $this->assertSame(2, $this->db->count_all_results('trifase_estoque_eventos'));
         $this->assertSame(0, $this->db->where('os_id', 1)->count_all_results('produtos_os'));
         $this->assertSame($resumoOriginal, $f->resumo(1));
         $this->assertSame($pedido, (int) $this->modelo->atual(1)->id);
@@ -436,6 +454,7 @@ final class TrifaseCancelamentoTest extends MaposTestCase
         $estoque->capturarItem(1, 'produto', 1, 2);
 
         $pedido = $this->pedido();
+        $this->registrarBaixa(3);
         $devolucao = $this->modelo->retirarItem(1, $pedido, 'produto', 1, 2, 'devolucao_parcial_12', null, 2);
         $this->assertSame($devolucao, $this->modelo->retirarItem(1, $pedido, 'produto', 1, 2, 'devolucao_parcial_12', null, 2));
         $linha = $this->db->get('produtos_os')->row();
@@ -463,7 +482,7 @@ final class TrifaseCancelamentoTest extends MaposTestCase
         $perda = $this->modelo->retirarItem(1, $pedido, 'produto', 1, 2, 'perda_parcial_12345', 'Danificada', 1);
         $this->assertSame($perda, $this->modelo->retirarItem(1, $pedido, 'produto', 1, 2, 'perda_parcial_12345', 'Danificada', 1));
         $this->assertSame(0, $this->db->count_all('produtos_os'));
-        $this->assertSame(1, $this->db->count_all('trifase_estoque_eventos'));
+        $this->assertSame(3, $this->db->count_all('trifase_estoque_eventos'));
         $this->assertSame(10, (int) $this->db->get('produtos')->row()->estoque);
 
         $historico = $this->modelo->historico(1);
@@ -477,19 +496,30 @@ final class TrifaseCancelamentoTest extends MaposTestCase
         $this->modelo->conferirTecnica(1, $pedido, $this->dadosTecnicos(), 2, 'tecnica_123456789');
     }
 
-    public function testEstoqueAuditavelDesligadoPreservaPecasECancelamentoPendente(): void
+    public function testLinhaSemBaixaComprovadaConciliaSemUsarMovimentoDeOutraLinha(): void
     {
+        $this->db->query('ALTER TABLE os ADD COLUMN desconto INTEGER DEFAULT 0');
+        $this->db->query('ALTER TABLE os ADD COLUMN valor_desconto INTEGER DEFAULT 0');
+        $this->db->query('ALTER TABLE os ADD COLUMN tipo_desconto TEXT');
+        $this->registrarBaixa(2);
+        $this->db->query("INSERT INTO produtos_os VALUES (2, 1, 1, 2, '20.00', '40.00')");
+        $this->db->insert('trifase_estoque_eventos', [
+            'produto_id' => 1, 'tipo' => 'os_saida', 'origem' => 'OS #1', 'quantidade' => -2,
+            'saldo_antes' => 10, 'saldo_depois' => 8, 'data_movimento' => date('Y-m-d'),
+            'motivo' => 'Baixa legada sem linha', 'usuario_id' => 2, 'criado_em' => date('Y-m-d H:i:s'),
+            'operacao' => 'legado_1234567890', 'payload_hash' => str_repeat('a', 64),
+        ]);
         $pedido = $this->pedido();
         $_ENV['TRIFASE_ESTOQUE_ENABLED'] = 'false';
-        try {
-            $this->modelo->retirarItem(1, $pedido, 'produto', 1, 2, 'estoque_desligado_12', null, 1);
-            $this->fail('Devolveu com estoque auditável desligado.');
-        } catch (DomainException $e) {
-            $this->assertStringContainsString('Reative o estoque auditável', $e->getMessage());
-            $this->assertSame(2, (int) $this->db->get('produtos_os')->row()->quantidade);
-            $this->assertSame(8, (int) $this->db->get('produtos')->row()->estoque);
-            $this->assertSame($pedido, (int) $this->modelo->atual(1)->id);
-        }
+        $id = $this->modelo->retirarItem(1, $pedido, 'produto', 2, 2, 'estoque_desligado_12');
+        $this->assertSame($id, $this->modelo->retirarItem(1, $pedido, 'produto', 2, 2, 'estoque_desligado_12'));
+        $this->assertSame(8, (int) $this->db->get('produtos')->row()->estoque);
+        $retrato = json_decode($this->modelo->historico(1)[0]->retrato, true, 32, JSON_THROW_ON_ERROR);
+        $this->assertSame(0, $retrato['quantidade_devolvida_estoque']);
+        $this->assertNull($retrato['movimento_estoque_id']);
+        $this->modelo->retirarItem(1, $pedido, 'produto', 1, 2, 'devolver_comprovada_12');
+        $this->assertSame(10, (int) $this->db->get('produtos')->row()->estoque);
+        $this->assertSame(0, $this->db->count_all('produtos_os'));
     }
 
     public function testFalhaNaDevolucaoParcialReverteMovimentoEQuantidade(): void
@@ -498,6 +528,7 @@ final class TrifaseCancelamentoTest extends MaposTestCase
         $this->db->query('ALTER TABLE os ADD COLUMN valor_desconto INTEGER DEFAULT 0');
         $this->db->query('ALTER TABLE os ADD COLUMN tipo_desconto TEXT');
         $pedido = $this->pedido();
+        $this->registrarBaixa(2);
         $this->db->db_debug = false;
         $this->db->query("CREATE TRIGGER falha_devolucao BEFORE INSERT ON trifase_cancelamentos WHEN NEW.tipo = 'retirar_item' BEGIN SELECT RAISE(FAIL, 'falha devolucao'); END");
         set_error_handler(static fn ($nivel, $mensagem) => $mensagem === 'SQLite3::exec(): falha devolucao');
@@ -510,7 +541,7 @@ final class TrifaseCancelamentoTest extends MaposTestCase
             $this->assertSame(2, (int) $linha->quantidade);
             $this->assertSame('40.00', $linha->subTotal);
             $this->assertSame(8, (int) $this->db->get('produtos')->row()->estoque);
-            $this->assertSame(0, $this->db->count_all('trifase_estoque_eventos'));
+            $this->assertSame(1, $this->db->count_all('trifase_estoque_eventos'));
         } finally {
             restore_error_handler();
         }
@@ -565,7 +596,7 @@ final class TrifaseCancelamentoTest extends MaposTestCase
             $this->fail('Confirmou parcialmente');
         } catch (RuntimeException $e) {
             $this->assertSame(10, (int) $this->db->get('produtos')->row()->estoque);
-            $this->assertSame(1, $this->db->count_all('trifase_estoque_eventos'));
+            $this->assertSame(2, $this->db->count_all('trifase_estoque_eventos'));
             $this->assertSame(2, $this->db->count_all('trifase_cancelamentos'));
             $this->assertSame('Aprovado', $this->db->where('idOs', 1)->get('os')->row()->status);
         } finally {

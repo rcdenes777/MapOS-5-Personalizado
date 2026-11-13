@@ -74,9 +74,6 @@ class Trifase_cancelamentos extends MY_Controller
                 throw new DomainException('Destino da peça inválido.');
             }
             $perda = $consumida === '1' ? $this->texto('motivo_perda') : null;
-            if ($tipo === 'produto' && $perda === null && ! ($this->data['configuration']['control_estoque'] ?? false)) {
-                throw new DomainException('Ative o controle de estoque antes da devolução.');
-            }
             $this->cancelamentos->retirarItem((int) $os->idOs, $pedido, $tipo, $item, (int) $this->session->userdata('id_admin'), $this->texto('operacao'), $perda, $quantidade);
             $resposta = ['result' => true];
         } catch (DomainException $e) {
@@ -195,7 +192,6 @@ class Trifase_cancelamentos extends MY_Controller
         }
         $this->data += ['erroCancelamento' => $erro, 'osCancelamento' => $os,
             'pedidoCancelamento' => $pedido, 'entregaCancelamento' => $entrega,
-            'devolverPecasCancelamento' => (bool) ($this->data['configuration']['control_estoque'] ?? false),
             'hashTecnicoCancelamento' => $this->cancelamentos->hashTecnico($c),
             'tecnicaCancelamento' => $tecnica !== null ? ['usuario_id' => (int) $tecnica->usuario_id, 'criado_em' => $tecnica->criado_em] : null,
             'historicoCancelamento' => $this->cancelamentos->historico((int) $os->idOs),

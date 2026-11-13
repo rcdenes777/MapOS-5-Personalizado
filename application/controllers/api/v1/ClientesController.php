@@ -202,8 +202,9 @@ class ClientesController extends REST_Controller
         }
 
         $os = $this->clientes_model->getAllOsByClient($id);
-        if ($os != null) {
-            $this->clientes_model->removeClientOs($os);
+        if ($os != null && ! $this->clientes_model->removeClientOs($os)) {
+            $this->response(['status' => false, 'message' => 'Não foi possível excluir as OS vinculadas. Confira o histórico do cliente.'], 409);
+            return;
         }
 
         $vendas = $this->clientes_model->getAllVendasByClient($id);

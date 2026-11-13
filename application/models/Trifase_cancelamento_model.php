@@ -4,7 +4,6 @@ defined('BASEPATH') or exit('No direct script access allowed');
 require_once APPPATH . 'libraries/Trifase_os_lock.php';
 require_once APPPATH . 'helpers/trifase_financeiro_helper.php';
 require_once APPPATH . 'helpers/financeiro_helper.php';
-require_once APPPATH . 'helpers/trifase_estoque_helper.php';
 require_once APPPATH . 'helpers/trifase_garantia_helper.php';
 require_once APPPATH . 'helpers/trifase_retorno_helper.php';
 
@@ -141,9 +140,6 @@ class Trifase_cancelamento_model extends CI_Model
         if (trifaseRetornoTemDerivados($this->db, $id) || trifaseGarantiaResolucaoExecutada($this->db, $id)) {
             $bloqueios[] = 'Há retorno ou solução de garantia vinculada. Preserve o histórico e concilie a garantia.';
         }
-        if ($pecas !== [] && (! trifaseEstoqueHabilitado() || ! $this->db->table_exists('trifase_estoque_eventos'))) {
-            $bloqueios[] = 'Reative o estoque auditável para conferir e registrar a devolução das peças não utilizadas.';
-        }
         $retrato = ['os' => $id, 'status' => $os->status, 'pecas' => $pecas, 'servicos' => $servicos, 'financeiro' => $financeiro, 'bloqueios' => $bloqueios];
         return $retrato + ['hash' => hash('sha256', json_encode($retrato, JSON_THROW_ON_ERROR))];
     }
@@ -234,11 +230,21 @@ class Trifase_cancelamento_model extends CI_Model
                     $custo = $this->db->where(['os_id' => $id, 'tipo' => 'produto', 'item_id' => $item])
                         ->order_by('id', 'desc')->get('trifase_os_custos', 1)->row()->custo_unitario_c ?? null;
                 }
-            } elseif ($produto) {
+            }
+            if ($produto) {
                 require_once APPPATH . 'models/Trifase_estoque_model.php';
                 $estoque = new Trifase_estoque_model();
                 $estoque->db = $this->db;
-                $movimento = $estoque->movimentar((int) $registro['produtos_id'], 'os_devolucao', $processada, null, date('Y-m-d'), $motivo, 'OS #' . $id . ' · pedido #' . $pedido, $usuario, hash('sha256', 'cancelamento:' . $operacao));
+                $produtoId = (int) $registro['produtos_id'];
+                $saldoBaixa = $estoque->saldoBaixaDaLinha($id, $item, $produtoId);
+                $devolvida = $perda === null && $saldoBaixa >= $disponivel ? $processada : 0;
+                $tipoMovimento = $perda !== null ? 'os_consumo' : ($devolvida > 0 ? 'os_devolucao' : 'os_conciliacao');
+                if ($perda === null && $devolvida === 0) {
+                    $motivo = 'Peça não utilizada conciliada sem entrada no estoque: baixa não comprovada para toda a linha';
+                }
+                if ($saldoBaixa > 0) {
+                    $movimento = $estoque->movimentar($produtoId, $tipoMovimento, $processada, null, date('Y-m-d'), $motivo, 'OS #' . $id . ' · pedido #' . $pedido, $usuario, hash('sha256', 'cancelamento:' . $operacao), null, ['os_id' => $id, 'os_item_id' => $item]);
+                }
             }
 
             if ($restante > 0) {
@@ -273,6 +279,9 @@ class Trifase_cancelamento_model extends CI_Model
             }
             $descricao = $motivo . ': ' . $registro['nome'] . ' · Qtd. ' . $registro['quantidade'];
             $retrato = ['tipo' => $tipo, 'item' => $registro, 'movimento_estoque_id' => $movimento];
+            if ($produto && $perda === null) {
+                $retrato['quantidade_devolvida_estoque'] = $devolvida;
+            }
             if ($restante > 0) {
                 $retrato['quantidade_restante'] = $restante;
             }

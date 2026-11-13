@@ -1,6 +1,6 @@
 <?php
 $idProdutoEstoque = (int) $produtoEstoque->idProdutos;
-$nomesMovimento = ['entrada' => 'Entrada de compra', 'saida' => 'Saída manual', 'contagem' => 'Ajuste de contagem', 'os_saida' => 'Saída para OS', 'os_devolucao' => 'Devolução da OS', 'venda_saida' => 'Saída para venda', 'venda_devolucao' => 'Devolução da venda', 'legado_entrada' => 'Entrada nativa', 'legado_saida' => 'Saída nativa', 'inicial' => 'Saldo inicial'];
+$nomesMovimento = ['entrada' => 'Entrada de compra', 'saida' => 'Saída manual', 'contagem' => 'Ajuste de contagem', 'os_saida' => 'Saída para OS', 'os_devolucao' => 'Devolução da OS', 'os_consumo' => 'Baixa confirmada como consumida', 'os_conciliacao' => 'Conciliação sem reposição', 'venda_saida' => 'Saída para venda', 'venda_devolucao' => 'Devolução da venda', 'legado_entrada' => 'Entrada nativa', 'legado_saida' => 'Saída nativa', 'inicial' => 'Saldo inicial'];
 ?>
 <div class="grid min-w-0 grid-cols-1 gap-5 py-4">
     <header><h1 class="text-heading-xl text-text">Estoque e movimentações</h1><p class="mt-2 break-words text-body-md text-muted"><?= e($produtoEstoque->descricao . ' · Saldo atual: ' . (int) $produtoEstoque->estoque) ?></p></header>
@@ -34,7 +34,7 @@ $nomesMovimento = ['entrada' => 'Entrada de compra', 'saida' => 'Saída manual',
         <ol class="mt-4 grid min-w-0 grid-cols-1 gap-3">
             <?php foreach ($movimentosEstoque as $movimentoEstoque) { ?>
                 <li class="min-w-0 border-b border-border pb-3">
-                    <p class="text-label-md text-text"><?= e(($nomesMovimento[$movimentoEstoque->tipo] ?? $movimentoEstoque->tipo) . ' · ' . sprintf('%+d', $movimentoEstoque->quantidade) . ' un.') ?></p>
+                    <p class="text-label-md text-text"><?= e(($nomesMovimento[$movimentoEstoque->tipo] ?? $movimentoEstoque->tipo) . ' · ' . sprintf(in_array($movimentoEstoque->tipo, ['os_consumo', 'os_conciliacao'], true) ? '%d' : '%+d', $movimentoEstoque->quantidade) . ' un.') ?></p>
                     <p class="mt-1 text-body-md text-text"><?= e('Saldo: ' . $movimentoEstoque->saldo_antes . ' → ' . $movimentoEstoque->saldo_depois) ?></p>
                     <p class="mt-1 break-words text-caption text-muted"><?= e($movimentoEstoque->data_movimento . ' · Registrado ' . $movimentoEstoque->criado_em . ' · Operador #' . $movimentoEstoque->usuario_id . ' · ' . $movimentoEstoque->origem) ?></p>
                     <p class="mt-2 whitespace-pre-wrap break-words text-body-md text-text"><?= e($movimentoEstoque->motivo) ?></p>

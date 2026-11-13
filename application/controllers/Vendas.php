@@ -223,7 +223,7 @@ class Vendas extends MY_Controller
     private function salvarVenda(object $venda, array $dados): ?int
     {
         $idVenda = (int) $venda->idVendas;
-        $lock = trifaseEstoqueHabilitado() ? new Trifase_venda_lock($this->db, $idVenda) : null;
+        $lock = (trifaseEstoqueHabilitado() || $this->db->table_exists('trifase_estoque_eventos')) ? new Trifase_venda_lock($this->db, $idVenda) : null;
         try {
             $venda = $lock ? $this->vendas_model->getById($idVenda) : $venda;
             if ($lock && ! $this->vendas_model->isEditable($idVenda)) {
@@ -412,7 +412,7 @@ class Vendas extends MY_Controller
     private function vendaParaAlterar(bool $mexeNosItens = false): ?object
     {
         $id = (int) $this->input->post('idVendas');
-        if (trifaseEstoqueHabilitado()) {
+        if (trifaseEstoqueHabilitado() || $this->db->table_exists('trifase_estoque_eventos')) {
             try {
                 $this->estoqueLock = new Trifase_venda_lock($this->db, $id);
             } catch (DomainException $e) {
@@ -533,7 +533,7 @@ class Vendas extends MY_Controller
         }
 
         $id = (int) $this->input->post('id');
-        $lock = trifaseEstoqueHabilitado() ? new Trifase_venda_lock($this->db, $id) : null;
+        $lock = (trifaseEstoqueHabilitado() || $this->db->table_exists('trifase_estoque_eventos')) ? new Trifase_venda_lock($this->db, $id) : null;
         // Volta para a listagem com os mesmos filtros (só os permitidos).
         $listagem = site_url('vendas/gerenciar') . listagemQuery($this->filtrosDaListagem());
 

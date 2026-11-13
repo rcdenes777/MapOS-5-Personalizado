@@ -1,6 +1,7 @@
 <?php
 require_once APPPATH . 'models/Trifase_estoque_model.php';
 require_once APPPATH . 'database/migrations/20261102060000_trifase_estoque_custos.php';
+require_once APPPATH . 'database/migrations/20261113010000_trifase_estoque_linha_os.php';
 require_once BASEPATH . 'database/DB_forge.php';
 require_once BASEPATH . 'database/drivers/sqlite3/sqlite3_forge.php';
 
@@ -27,6 +28,13 @@ final class TrifaseEstoqueTest extends MaposTestCase
         $m->dbforge = new CI_DB_sqlite3_forge($this->db);
         $m->up();
         $m->up();
+        $vinculo = new class() extends Migration_trifase_estoque_linha_os {
+            public object $dbforge;
+        };
+        $vinculo->db = $this->db;
+        $vinculo->dbforge = new CI_DB_sqlite3_forge($this->db);
+        $vinculo->up();
+        $vinculo->up();
         $this->modelo = new Trifase_estoque_model();
         $this->modelo->db = $this->db;
     }
@@ -112,7 +120,7 @@ final class TrifaseEstoqueTest extends MaposTestCase
     {
         $this->db->trans_begin();
         $this->modelo->capturarItem(1, 'produto', 1, 7);
-        $this->mover('os_saida', 2, 'baixa');
+        $this->modelo->movimentar(1, 'os_saida', 2, null, date('Y-m-d'), 'Motivo QA', 'OS #1', 7, 'baixa_123456789012', null, ['os_id' => 1, 'os_item_id' => 1]);
         $this->db->trans_rollback();
         $this->assertSame([], $this->modelo->historico(1));
         $this->assertSame(0, $this->db->count_all('trifase_os_custos'));

@@ -49,6 +49,9 @@ export function iniciarBusca(form, { buscar = fetch, atraso = 350, doc = documen
                 const destino = pagina.getElementById(dialogo.id);
                 if (destino) destino.replaceWith(dialogo);
             }
+            const filtrosAtivos = form.querySelector('[data-os-filtros-ativos]');
+            const filtrosDaResposta = novoForm.querySelector('[data-os-filtros-ativos]');
+            if (filtrosAtivos && filtrosDaResposta) filtrosAtivos.textContent = filtrosDaResposta.textContent;
             novoForm.replaceWith(form, estado);
             main.replaceChildren(...novo.childNodes);
             navegador.history.replaceState(null, '', url);

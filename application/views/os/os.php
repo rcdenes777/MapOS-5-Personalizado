@@ -20,6 +20,15 @@ $urlLista = site_url($contextoFinanceiro ? 'financeiro/ordens' : 'os');
 $clienteComLink = ! $contextoFinanceiro || ($listaVerCliente ?? false);
 $filtrarFilas = ! empty($listaFilas);
 $filtrarFinanceiro = $contextoFinanceiro && ($trifase_ui_piloto ?? false) && ($listaVerFinanceiro ?? false) && ($listaFinanceiroHabilitado ?? false);
+$filtrosMoveis = ! $contextoFinanceiro;
+$andamentos = osOpcoesAndamento();
+$filtrosAtivos = array_filter([
+    ($andamentos[$filtros['status'] ?? ''] ?? ''),
+    ($listaEntregaHabilitada ?? false) ? (['pendente' => 'Aguardando retirada', 'entregue' => 'Entregues'][$filtros['entrega'] ?? ''] ?? '') : '',
+    $listaFilas[$filtros['fila'] ?? ''] ?? '',
+    empty($filtros['de']) ? '' : 'Entrada desde ' . dataBr($filtros['de']),
+    empty($filtros['ate']) ? '' : 'Previsão até ' . dataBr($filtros['ate']),
+]);
 $cancelamentosPendentes = $cancelamentosPendentes ?? [];
 $mapaCancelamentosPendentes = [];
 foreach ($cancelamentosPendentes as $cp) {
@@ -220,11 +229,16 @@ $resumo = ($total === 1 ? '1 ordem de serviço' : number_format($total, 0, ',', 
             <?= component('input', ['name' => 'vencimento_de', 'label' => 'Vencimento a partir de', 'type' => 'date', 'value' => $filtros['vencimento_de'] ?? null]) ?>
             <?= component('input', ['name' => 'vencimento_ate', 'label' => 'Vencimento até', 'type' => 'date', 'value' => $filtros['vencimento_ate'] ?? null]) ?>
         <?php } else { ?>
+        <?php if ($filtrosMoveis) { ?>
+            <details class="os-filtros-complementares min-w-0">
+                <summary class="cursor-pointer text-label-md text-text">Mais filtros<span data-os-filtros-ativos class="block text-caption font-normal text-muted"><?= e(implode(' · ', $filtrosAtivos)) ?></span></summary>
+                <div class="mt-3 grid gap-3">
+        <?php } ?>
         <?= component('select', [
             'name' => 'status',
             'label' => ($trifase_ui_piloto ?? false) ? 'Andamento do serviço' : 'Status',
             'placeholder' => 'Todos',
-            'options' => osOpcoesAndamento(),
+            'options' => $andamentos,
             'selected' => $filtros['status'] ?? null,
         ]) ?>
         <?php if ($listaEntregaHabilitada ?? false) { ?>
@@ -249,6 +263,10 @@ $resumo = ($total === 1 ? '1 ordem de serviço' : number_format($total, 0, ',', 
             'type' => 'date',
             'value' => $filtros['ate'] ?? null,
         ]) ?>
+        <?php if ($filtrosMoveis) { ?>
+                </div>
+            </details>
+        <?php } ?>
         <?php } ?>
         <div class="flex gap-2">
             <?= component('button', ['label' => 'Filtrar', 'icon' => 'search', 'variant' => 'outline', 'type' => 'submit']) ?>

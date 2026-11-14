@@ -123,9 +123,9 @@ $saldoAnterior = $cancelada && ($financeiroResumo['saldo_c'] ?? 0) > 0 && ! ($ac
                     <?= component('select', ['name' => 'evento_id', 'label' => 'Recebimento a estornar', 'options' => $opcoes, 'required' => true]) ?>
                     <?= component('input', ['name' => 'data', 'id' => 'trifase-estorno-data', 'label' => 'Data da correção', 'type' => 'date', 'value' => date('Y-m-d'), 'required' => true]) ?>
                     <?= component('input', ['name' => 'motivo', 'label' => 'Motivo do estorno', 'required' => true, 'attrs' => ['maxlength' => 500]]) ?>
-                    <div><?= component('button', ['label' => 'Revisar estorno', 'variant' => 'outline', 'attrs' => ['data-modal-abrir' => 'confirmar-trifase-estorno']]) ?></div>
+                    <div><?= component('button', ['label' => 'Fazer Estorno', 'variant' => 'outline', 'attrs' => ['data-modal-abrir' => 'confirmar-trifase-estorno']]) ?></div>
                 </form>
-                <?= component('modal-confirm', ['id' => 'confirmar-trifase-estorno', 'title' => 'Estornar este registro?', 'message' => 'O recebimento selecionado deixará de compor o valor recebido e voltará ao saldo pendente. O histórico será preservado. Nenhum dinheiro será transferido.', 'confirm_label' => 'Estornar registro', 'confirm_attrs' => ['form' => 'trifase-estorno']]) ?>
+                <?= component('modal-confirm', ['id' => 'confirmar-trifase-estorno', 'title' => 'Estornar este registro?', 'message' => 'O recebimento selecionado deixará de compor o valor recebido e voltará ao saldo pendente. O histórico será preservado. Nenhum dinheiro será transferido.', 'confirm_label' => 'Confirmar Estorno', 'confirm_attrs' => ['form' => 'trifase-estorno']]) ?>
             </section>
         <?php } ?>
         <?php if ($podeRetificar && ($saldoAnterior ? $estornosAnteriores !== [] : $opcoes !== [])) { ?>

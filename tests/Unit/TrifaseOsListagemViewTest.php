@@ -138,7 +138,7 @@ final class TrifaseOsListagemViewTest extends \PHPUnit\Framework\TestCase
     public function testFiltrosESaldoAparecemSomenteComPermissaoEModulosAtivos(): void
     {
         $resumos = [1 => ['total_c' => 50000, 'saldo_c' => 30000, 'situacao' => 'Parcialmente pago']];
-        $html = $this->renderizar($resumos, [], ['filtros' => ['financeiro' => 'parcial', 'pendencia' => 'receber']]);
+        $html = $this->renderizar($resumos, [], ['filtros' => ['financeiro' => 'parcial', 'pendencia' => 'receber', 'vencimento_de' => '2026-11-01']]);
         $this->assertSame(['A receber: R$ 300,00'], $this->celulas($html, 'Acerto financeiro'));
         $dom = new DOMDocument();
         @$dom->loadHTML($html);
@@ -148,7 +148,8 @@ final class TrifaseOsListagemViewTest extends \PHPUnit\Framework\TestCase
         $this->assertCount(0, $xpath->query('//select[@name="financeiro"]'));
         $this->assertStringNotContainsString('name="fila"', $html);
         $this->assertStringContainsString('name="vencimento_de"', $html);
-        $this->assertStringNotContainsString('Mais filtros', $html);
+        $this->assertCount(1, $xpath->query('//details[summary]/div//input[@name="vencimento_de"]'));
+        $this->assertStringContainsString('De 01/11/2026', $html);
         $this->assertStringNotContainsString('name="status"', $html);
         foreach (['listaVerFinanceiro', 'listaFinanceiroHabilitado', 'trifase_ui_piloto'] as $flag) {
             $restrito = $this->renderizar($resumos, [], [$flag => false]);

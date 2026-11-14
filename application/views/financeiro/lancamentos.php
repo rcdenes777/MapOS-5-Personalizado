@@ -144,20 +144,28 @@ $resumo = ($total === 1 ? '1 lançamento' : number_format($total, 0, ',', '.') .
             'options' => FINANCEIRO_PERIODOS,
             'selected' => $filtros['periodo'],
         ]) ?>
-        <?= component('input', [
-            'name' => 'de',
-            'id' => 'filtro-de',
-            'label' => $movimentacoes ? 'Pagamento de' : 'Vencimento de',
-            'type' => 'date',
-            'value' => $filtros['de'] ?? '',
-        ]) ?>
-        <?= component('input', [
-            'name' => 'ate',
-            'id' => 'filtro-ate',
-            'label' => $movimentacoes ? 'Pagamento até' : 'Vencimento até',
-            'type' => 'date',
-            'value' => $filtros['ate'] ?? '',
-        ]) ?>
+        <details class="os-filtros-complementares">
+            <summary class="cursor-pointer text-label-md text-text">Mais filtros<span data-os-filtros-ativos class="block text-caption font-normal text-muted"><?= e(implode(' · ', array_filter([
+                empty($filtros['de']) ? '' : 'De ' . dataBr($filtros['de']),
+                empty($filtros['ate']) ? '' : 'Até ' . dataBr($filtros['ate']),
+            ]))) ?></span></summary>
+            <div class="mt-3 grid gap-3">
+                <?= component('input', [
+                    'name' => 'de',
+                    'id' => 'filtro-de',
+                    'label' => $movimentacoes ? 'Pagamento de' : 'Vencimento de',
+                    'type' => 'date',
+                    'value' => $filtros['de'] ?? '',
+                ]) ?>
+                <?= component('input', [
+                    'name' => 'ate',
+                    'id' => 'filtro-ate',
+                    'label' => $movimentacoes ? 'Pagamento até' : 'Vencimento até',
+                    'type' => 'date',
+                    'value' => $filtros['ate'] ?? '',
+                ]) ?>
+            </div>
+        </details>
         <?php if ($areaFinanceira !== null) { ?><input type="hidden" name="area" value="<?= e($areaFinanceira) ?>"><?php } ?>
         <?php if (! in_array($areaFinanceira, ['receber', 'pagar'], true)) { ?>
         <?= component('select', [
@@ -189,9 +197,9 @@ $resumo = ($total === 1 ? '1 lançamento' : number_format($total, 0, ',', '.') .
         </div>
         <div class="flex flex-wrap gap-2 lg:col-span-2">
             <?= component('button', ['label' => 'Filtrar', 'icon' => 'search', 'variant' => 'outline', 'type' => 'submit']) ?>
-            <?php if ($temFiltro) { ?>
+            <div data-listagem-limpar<?= e($temFiltro ? '' : ' hidden') ?>>
                 <?= component('button', ['label' => 'Limpar', 'icon' => 'x', 'variant' => 'ghost', 'href' => site_url('financeiro/lancamentos') . $queryDoPeriodo]) ?>
-            <?php } ?>
+            </div>
         </div>
     </form>
 

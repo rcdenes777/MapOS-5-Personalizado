@@ -7,8 +7,9 @@ $nomesMovimento = ['entrada' => 'Entrada de compra', 'saida' => 'Saída manual',
     <?= component('link', ['label' => 'Voltar à ficha do produto', 'href' => site_url('produtos/visualizar/' . $idProdutoEstoque)]) ?>
     <?php if ($erroEstoque !== null) { ?><?= component('alert', ['variant' => 'danger', 'message' => $erroEstoque]) ?><?php } ?>
     <?php if ($editarEstoque) { ?>
-        <section class="rounded-card border border-border bg-surface p-4 sm:p-6">
-            <h2 class="text-heading-sm text-text">Registrar movimentação</h2>
+        <details class="opcoes-moveis rounded-card border border-border bg-surface p-4 sm:p-6"<?= e($erroEstoque !== null ? ' open' : '') ?>>
+            <summary class="cursor-pointer text-heading-sm text-text sm:hidden">Registrar movimentação</summary>
+            <h2 class="hidden text-heading-sm text-text sm:block">Registrar movimentação</h2>
             <form method="post" class="mt-4 grid gap-4" <?= js_module('formulario/padrao') ?>>
                 <input type="hidden" name="<?= e($this->security->get_csrf_token_name()) ?>" value="<?= e($this->security->get_csrf_hash()) ?>"><input type="hidden" name="operacao" value="<?= e(bin2hex(random_bytes(16))) ?>">
                 <input type="hidden" name="esperado" value="<?= e((int) $produtoEstoque->estoque) ?>">
@@ -20,7 +21,7 @@ $nomesMovimento = ['entrada' => 'Entrada de compra', 'saida' => 'Saída manual',
                 <?= component('checkbox', ['name' => 'confirmar', 'value' => '1', 'label' => 'Conferi a movimentação e confirmo seu registro no histórico.', 'required' => true]) ?>
                 <?= component('button', ['label' => 'Registrar movimentação', 'type' => 'submit']) ?>
             </form>
-        </section>
+        </details>
     <?php } ?>
     <section class="min-w-0 rounded-card border border-border bg-surface p-4 sm:p-6">
         <h2 class="text-heading-sm text-text">Histórico de estoque</h2>

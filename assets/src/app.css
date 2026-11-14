@@ -374,9 +374,7 @@ html[data-valores="ocultos"] .kpi-oculto-valores {
     display: contents;
     content-visibility: visible;
   }
-  .opcoes-moveis::details-content {
-    content-visibility: visible;
-  }
+
   .os-filtros-complementares > summary {
     display: none;
   }
@@ -390,4 +388,32 @@ html[data-valores="ocultos"] .kpi-oculto-valores {
   flex-shrink: 0;
   overflow-wrap: normal;
   white-space: nowrap;
+}
+
+
+.opcoes-moveis-titulo {
+  display: none;
+}
+
+@media (min-width: 40rem) {
+  @supports selector(::details-content) {
+    .opcoes-moveis::details-content {
+      content-visibility: visible;
+    }
+    .opcoes-moveis > summary {
+      display: none;
+    }
+    .opcoes-moveis-titulo {
+      display: block;
+    }
+  }
+
+  @supports not selector(::details-content) {
+    .opcoes-moveis[open] > summary {
+      display: none;
+    }
+    .opcoes-moveis[open] > .opcoes-moveis-titulo {
+      display: block;
+    }
+  }
 }

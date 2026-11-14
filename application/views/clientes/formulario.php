@@ -98,9 +98,9 @@ $grade = 'mt-4 grid gap-4 sm:grid-cols-2';
             <section class="<?= e($caixa) ?>" aria-labelledby="secao-acesso">
         <?php } else { ?>
             <details class="opcoes-moveis <?= e($caixa) ?>"<?= e(array_intersect_key($errosDeCampo, array_flip(['senha'])) !== [] ? ' open' : '') ?>>
-                <summary class="cursor-pointer text-heading-sm text-text sm:hidden">Área do cliente</summary>
+                <summary class="cursor-pointer text-heading-sm text-text">Área do cliente</summary>
         <?php } ?>
-            <h2 id="secao-acesso" class="<?= e($editando ? 'text-heading-sm text-text' : 'hidden text-heading-sm text-text sm:block') ?>">Área do cliente</h2>
+            <h2 id="secao-acesso" class="<?= e($editando ? 'text-heading-sm text-text' : 'opcoes-moveis-titulo text-heading-sm text-text') ?>">Área do cliente</h2>
             <p class="mt-0.5 text-caption text-muted">Acesso do cliente para acompanhar ordens de serviço, compras e cobranças.</p>
             <div class="<?= e($grade) ?>">
                 <div class="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-2">
@@ -125,9 +125,9 @@ $grade = 'mt-4 grid gap-4 sm:grid-cols-2';
             <section class="<?= e($caixa) ?>" aria-labelledby="secao-endereco">
         <?php } else { ?>
             <details class="opcoes-moveis <?= e($caixa) ?>"<?= e(array_intersect_key($errosDeCampo, array_flip(['cep', 'rua', 'numero', 'complemento', 'bairro', 'cidade', 'estado'])) !== [] ? ' open' : '') ?>>
-                <summary class="cursor-pointer text-heading-sm text-text sm:hidden">Endereço</summary>
+                <summary class="cursor-pointer text-heading-sm text-text">Endereço</summary>
         <?php } ?>
-            <h2 id="secao-endereco" class="<?= e($editando ? 'text-heading-sm text-text' : 'hidden text-heading-sm text-text sm:block') ?>">Endereço</h2>
+            <h2 id="secao-endereco" class="<?= e($editando ? 'text-heading-sm text-text' : 'opcoes-moveis-titulo text-heading-sm text-text') ?>">Endereço</h2>
             <p class="mt-0.5 text-caption text-muted">Digite o CEP para preencher o resto.</p>
             <div class="<?= e($grade) ?>">
                 <?= component('input', $campo('cep', ['label' => 'CEP', 'autocomplete' => 'postal-code', 'attrs' => ['data-mascara' => 'cep', 'inputmode' => 'numeric', 'maxlength' => 9]])) ?>

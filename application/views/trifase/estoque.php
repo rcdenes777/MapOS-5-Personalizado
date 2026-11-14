@@ -8,8 +8,8 @@ $nomesMovimento = ['entrada' => 'Entrada de compra', 'saida' => 'Saída manual',
     <?php if ($erroEstoque !== null) { ?><?= component('alert', ['variant' => 'danger', 'message' => $erroEstoque]) ?><?php } ?>
     <?php if ($editarEstoque) { ?>
         <details class="opcoes-moveis rounded-card border border-border bg-surface p-4 sm:p-6"<?= e($erroEstoque !== null ? ' open' : '') ?>>
-            <summary class="cursor-pointer text-heading-sm text-text sm:hidden">Registrar movimentação</summary>
-            <h2 class="hidden text-heading-sm text-text sm:block">Registrar movimentação</h2>
+            <summary class="cursor-pointer text-heading-sm text-text">Registrar movimentação</summary>
+            <h2 class="opcoes-moveis-titulo text-heading-sm text-text">Registrar movimentação</h2>
             <form method="post" class="mt-4 grid gap-4" <?= js_module('formulario/padrao') ?>>
                 <input type="hidden" name="<?= e($this->security->get_csrf_token_name()) ?>" value="<?= e($this->security->get_csrf_hash()) ?>"><input type="hidden" name="operacao" value="<?= e(bin2hex(random_bytes(16))) ?>">
                 <input type="hidden" name="esperado" value="<?= e((int) $produtoEstoque->estoque) ?>">

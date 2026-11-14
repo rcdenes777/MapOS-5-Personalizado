@@ -374,6 +374,9 @@ html[data-valores="ocultos"] .kpi-oculto-valores {
     display: contents;
     content-visibility: visible;
   }
+  .opcoes-moveis::details-content {
+    content-visibility: visible;
+  }
   .os-filtros-complementares > summary {
     display: none;
   }

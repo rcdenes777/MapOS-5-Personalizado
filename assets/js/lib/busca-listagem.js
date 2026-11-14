@@ -52,6 +52,9 @@ export function iniciarBusca(form, { buscar = fetch, atraso = 350, doc = documen
             const filtrosAtivos = form.querySelector('[data-os-filtros-ativos]');
             const filtrosDaResposta = novoForm.querySelector('[data-os-filtros-ativos]');
             if (filtrosAtivos && filtrosDaResposta) filtrosAtivos.textContent = filtrosDaResposta.textContent;
+            const limpar = form.querySelector('[data-listagem-limpar]');
+            const limparDaResposta = novoForm.querySelector('[data-listagem-limpar]');
+            if (limpar && limparDaResposta) limpar.hidden = limparDaResposta.hidden;
             novoForm.replaceWith(form, estado);
             main.replaceChildren(...novo.childNodes);
             navegador.history.replaceState(null, '', url);

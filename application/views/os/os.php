@@ -270,9 +270,9 @@ $resumo = ($total === 1 ? '1 ordem de serviço' : number_format($total, 0, ',', 
         <?php } ?>
         <div class="flex gap-2">
             <?= component('button', ['label' => 'Filtrar', 'icon' => 'search', 'variant' => 'outline', 'type' => 'submit']) ?>
-            <?php if ($temFiltro) { ?>
+            <div data-listagem-limpar<?= e($temFiltro ? '' : ' hidden') ?>>
                 <?= component('button', ['label' => 'Limpar', 'icon' => 'x', 'variant' => 'ghost', 'href' => $urlLista]) ?>
-            <?php } ?>
+            </div>
         </div>
     </form>
 

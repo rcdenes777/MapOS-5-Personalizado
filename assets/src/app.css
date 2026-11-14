@@ -365,3 +365,26 @@ html[data-valores="ocultos"] .kpi-oculto-valores {
 @media (min-width: 48rem) {
   .trifase-os-adicionar form > div:last-child { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
+
+
+@media (width >= 40rem) {
+  .os-filtros-complementares,
+  .os-filtros-complementares > div,
+  .os-filtros-complementares::details-content {
+    display: contents;
+    content-visibility: visible;
+  }
+  .os-filtros-complementares > summary {
+    display: none;
+  }
+}
+
+.trifase-os #os-secoes {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.trifase-os #os-secoes [data-abas-lista] > a {
+  flex-shrink: 0;
+  overflow-wrap: normal;
+  white-space: nowrap;
+}

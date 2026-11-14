@@ -100,12 +100,13 @@ if (function_exists('trifaseFinanceiroHabilitado') && trifaseFinanceiroHabilitad
                     'data-autocomplete-novo' => site_url('clientes/adicionar'),
                     'data-autocomplete-novo-modal' => 'cliente-rapido',
                     'data-autocomplete-novo-rotulo' => 'Cadastrar novo cliente',
+                    'data-autocomplete-rodape-desktop' => $editando ? null : '',
                 ] : []))) ?>>
                     <?= component('input', $visivel('cliente', [
                         'label' => 'Cliente',
                         'required' => true,
                         'placeholder' => 'Clique para listar ou digite nome, documento ou telefone',
-                        'help' => $pode['cadastrar_cliente'] ? 'Não encontrou? Use Cadastrar novo cliente na lista. Seus dados da OS serão mantidos.' : 'Clique para listar ou digite para filtrar os clientes cadastrados.',
+                        'help' => $pode['cadastrar_cliente'] ? 'Não encontrou? Use Cadastrar cliente. Seus dados da OS serão mantidos.' : 'Clique para listar ou digite para filtrar os clientes cadastrados.',
                         'attrs' => [
                             'autofocus' => ! $editando,
                             'data-msg-vazio' => 'Escolha o cliente da OS.',
@@ -139,25 +140,29 @@ if (function_exists('trifaseFinanceiroHabilitado') && trifaseFinanceiroHabilitad
         <section class="<?= e($caixa) ?>" aria-labelledby="secao-situacao">
             <h2 id="secao-situacao" class="text-heading-sm text-text">Situação e prazos</h2>
             <div class="<?= e($grade) ?>">
-                <?= component('select', [
-                    'name' => 'status',
-                    'label' => 'Status',
-                    'required' => true,
-                    'options' => $statusOpcoes,
-                    'selected' => $valores['status'] !== '' ? $valores['status'] : null,
-                    'error' => $errosDeCampo['status'] ?? null,
-                    'help' => ($cancelamentoFluxoDisponivel ?? false) ? 'Para cancelar, use o bloco Cancelamento da OS, com motivo e conferência.' : ((function_exists('trifaseAtendimentoHabilitado') && trifaseAtendimentoHabilitado()) ? 'Finalizar pela primeira vez registra a conclusão de hoje e o prazo concedido. Cancelar devolve produtos ao estoque.' : ($editando ? 'Cancelar a OS devolve os produtos ao estoque.' : null)),
-                ]) ?>
+                <div class="contents"<?= $editando ? '' : ' data-os-opcao-movel' ?>>
+                    <?= component('select', [
+                        'name' => 'status',
+                        'label' => 'Status',
+                        'required' => true,
+                        'options' => $statusOpcoes,
+                        'selected' => $valores['status'] !== '' ? $valores['status'] : null,
+                        'error' => $errosDeCampo['status'] ?? null,
+                        'help' => ($cancelamentoFluxoDisponivel ?? false) ? 'Para cancelar, use o bloco Cancelamento da OS, com motivo e conferência.' : ((function_exists('trifaseAtendimentoHabilitado') && trifaseAtendimentoHabilitado()) ? 'Finalizar pela primeira vez registra a conclusão de hoje e o prazo concedido. Cancelar devolve produtos ao estoque.' : ($editando ? 'Cancelar a OS devolve os produtos ao estoque.' : null)),
+                    ]) ?>
+                </div>
                 <div class="hidden sm:block" aria-hidden="true"></div>
-                <?= component('input', [
-                    'name' => 'dataInicial',
-                    'label' => 'Data inicial',
-                    'type' => 'date',
-                    'required' => true,
-                    'value' => $valores['dataInicial'] !== '' ? $valores['dataInicial'] : null,
-                    'error' => $errosDeCampo['dataInicial'] ?? null,
-                    'attrs' => ['data-msg-vazio' => 'Informe a data inicial.'],
-                ]) ?>
+                <div class="contents"<?= $editando ? '' : ' data-os-opcao-movel' ?>>
+                    <?= component('input', [
+                        'name' => 'dataInicial',
+                        'label' => 'Data inicial',
+                        'type' => 'date',
+                        'required' => true,
+                        'value' => $valores['dataInicial'] !== '' ? $valores['dataInicial'] : null,
+                        'error' => $errosDeCampo['dataInicial'] ?? null,
+                        'attrs' => ['data-msg-vazio' => 'Informe a data inicial.'],
+                    ]) ?>
+                </div>
                 <?= component('input', [
                     'name' => 'dataFinal',
                     'label' => 'Data final',
@@ -168,29 +173,31 @@ if (function_exists('trifaseFinanceiroHabilitado') && trifaseFinanceiroHabilitad
                     'help' => 'Previsão de entrega ao cliente.',
                     'attrs' => ['data-msg-vazio' => 'Informe a data final.'],
                 ]) ?>
-                <?= component('input', [
-                    'name' => 'garantia',
-                    'label' => 'Garantia (dias)',
-                    'type' => 'number',
-                    'value' => $valores['garantia'] !== '' ? $valores['garantia'] : null,
-                    'error' => $errosDeCampo['garantia'] ?? null,
-                    'help' => 'Novas OS começam com 90 dias. Digite outro prazo se necessário; em branco ou 0 quando não há garantia.',
-                    'attrs' => ['min' => 0, 'max' => 9999, 'step' => 1, 'inputmode' => 'numeric', 'data-msg-invalido' => 'Informe a garantia em dias, de 0 a 9999.'],
-                ]) ?>
-                <div<?= componenteAtributos($wrapper(site_url('os/autoCompleteTermoGarantia'), 'garantias_id', ['data-autocomplete-min' => '1'])) ?>>
-                    <?= component('input', $visivel('termoGarantia', [
-                        'label' => 'Termo de garantia',
-                        'placeholder' => 'Opcional',
-                        'help' => 'Texto impresso no termo de garantia da OS.',
-                        'attrs' => ['data-msg-invalido' => 'Escolha um termo da lista ou deixe o campo em branco.'],
-                    ])) ?>
-                    <input<?= componenteAtributos($oculto('garantias_id')) ?>>
+                <div class="contents"<?= $editando ? '' : ' data-os-opcao-movel' ?>>
+                    <?= component('input', [
+                        'name' => 'garantia',
+                        'label' => 'Garantia (dias)',
+                        'type' => 'number',
+                        'value' => $valores['garantia'] !== '' ? $valores['garantia'] : null,
+                        'error' => $errosDeCampo['garantia'] ?? null,
+                        'help' => 'Novas OS começam com 90 dias. Digite outro prazo se necessário; em branco ou 0 quando não há garantia.',
+                        'attrs' => ['min' => 0, 'max' => 9999, 'step' => 1, 'inputmode' => 'numeric', 'data-msg-invalido' => 'Informe a garantia em dias, de 0 a 9999.'],
+                    ]) ?>
+                    <div<?= componenteAtributos($wrapper(site_url('os/autoCompleteTermoGarantia'), 'garantias_id', ['data-autocomplete-min' => '1'])) ?>>
+                        <?= component('input', $visivel('termoGarantia', [
+                            'label' => 'Termo de garantia',
+                            'placeholder' => 'Opcional',
+                            'help' => 'Texto impresso no termo de garantia da OS.',
+                            'attrs' => ['data-msg-invalido' => 'Escolha um termo da lista ou deixe o campo em branco.'],
+                        ])) ?>
+                        <input<?= componenteAtributos($oculto('garantias_id')) ?>>
+                    </div>
                 </div>
             </div>
         </section>
 
         <section class="<?= e($caixa) ?>" aria-labelledby="secao-equipamento">
-            <h2 id="secao-equipamento" class="text-heading-sm text-text">Equipamento e serviço</h2>
+            <h2 id="secao-equipamento" tabindex="-1" class="scroll-mt-20 text-heading-sm text-text">Equipamento e serviço</h2>
             <div class="<?= e($grade) ?>">
                 <?php
                 $identificacaoFormulario = $equipamentoDoFormulario ?? null;
@@ -205,10 +212,22 @@ $esconderDescricao = $editando ? $identificacaoFormulario !== null && ! $descric
                     <?php if ($descricaoAnterior) { ?></details><?php } ?>
                 </div>
                 <?= component('textarea', $texto('defeito', 'Defeito', 'O que o cliente relatou.')) ?>
-                <?= component('textarea', $texto('observacoes', 'Observações')) ?>
-                <?= component('textarea', $texto('laudoTecnico', 'Laudo técnico', 'Diagnóstico e o que foi feito.')) ?>
+                <div class="contents"<?= $editando ? '' : ' data-os-opcao-movel' ?>>
+                    <?= component('textarea', $texto('observacoes', 'Observações')) ?>
+                    <?= component('textarea', $texto('laudoTecnico', 'Laudo técnico', 'Diagnóstico e o que foi feito.')) ?>
+                </div>
             </div>
         </section>
+
+        <?php if (! $editando) { ?>
+            <details data-os-opcoes-moveis class="<?= e($caixa) ?>" hidden>
+                <summary class="cursor-pointer text-label-md text-text">
+                    Mais opções da OS
+                    <span class="block text-caption font-normal text-muted">Status, data inicial, garantia, observações e laudo</span>
+                </summary>
+                <div class="<?= e($grade) ?>" data-os-opcoes-campos></div>
+            </details>
+        <?php } ?>
 
         <div class="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
             <?= component('button', ['label' => 'Cancelar', 'variant' => 'ghost', 'href' => site_url('os')]) ?>

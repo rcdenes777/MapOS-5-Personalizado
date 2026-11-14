@@ -103,7 +103,7 @@ if (($pilotoEquipamento ?? null) !== null
         <div class="trifase-os-secao-titulo">
             <h2 id="piloto-equipamento">Equipamento e atendimento</h2>
             <?php if ($editarUrl !== null && ($pilotoTecnico ?? null) === null) { ?>
-                <?= component('button', ['label' => 'Editar OS', 'icon' => 'pencil', 'variant' => 'outline', 'href' => $editarUrl]) ?>
+                <?= component('button', ['label' => 'Editar relato e laudo', 'icon' => 'pencil', 'variant' => 'outline', 'href' => $editarUrl . ($pode['editar'] ? '#secao-equipamento' : '#secao-relato-tecnico')]) ?>
             <?php } ?>
         </div>
         <dl class="trifase-os-relato">
@@ -113,7 +113,7 @@ if (($pilotoEquipamento ?? null) !== null
         </dl>
         <?php if ($editarTecnico && ($pilotoTecnico ?? null) !== null) { ?>
             <details class="trifase-os-adicionar mt-4">
-                <summary>Editar OS</summary>
+                <summary>Editar relato e laudo</summary>
                 <p class="text-muted">Produtos, serviços, pagamentos e conclusão são preservados.</p>
                 <?php $this->load->view('trifase/formulario-tecnico', ['osTecnica' => $os, 'metaTecnica' => $pilotoTecnico, 'tecnicoIntegrado' => true]); ?>
             </details>

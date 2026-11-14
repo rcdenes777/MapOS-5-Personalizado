@@ -311,3 +311,17 @@ html[data-gaveta="aberta"] .v5-sidebar {
     }
   }
 }
+
+/* Em navegadores antigos, o módulo abre os filtros no desktop. Sem JS,
+   o resumo continua acessível para abrir o bloco manualmente. */
+@media (min-width: 40rem) {
+  @supports not selector(::details-content) {
+    .os-filtros-complementares[open],
+    .os-filtros-complementares[open] > div {
+      display: contents;
+    }
+    .os-filtros-complementares:not([open]) > summary {
+      display: list-item;
+    }
+  }
+}

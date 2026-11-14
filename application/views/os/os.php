@@ -226,8 +226,16 @@ $resumo = ($total === 1 ? '1 ordem de serviço' : number_format($total, 0, ',', 
             <?php } else { ?>
                 <?= component('select', ['name' => 'situacao', 'label' => 'Situação financeira', 'placeholder' => 'Todas as pendências', 'options' => $opcoesFinanceiras, 'selected' => $filtros['pendencia'] ?? '']) ?>
             <?php } ?>
-            <?= component('input', ['name' => 'vencimento_de', 'label' => 'Vencimento a partir de', 'type' => 'date', 'value' => $filtros['vencimento_de'] ?? null]) ?>
-            <?= component('input', ['name' => 'vencimento_ate', 'label' => 'Vencimento até', 'type' => 'date', 'value' => $filtros['vencimento_ate'] ?? null]) ?>
+            <details class="os-filtros-complementares">
+                <summary class="cursor-pointer text-label-md text-text">Mais filtros<span data-os-filtros-ativos class="block text-caption font-normal text-muted"><?= e(implode(' · ', array_filter([
+                    empty($filtros['vencimento_de']) ? '' : 'De ' . dataBr($filtros['vencimento_de']),
+                    empty($filtros['vencimento_ate']) ? '' : 'Até ' . dataBr($filtros['vencimento_ate']),
+                ]))) ?></span></summary>
+                <div class="mt-3 grid gap-3">
+                    <?= component('input', ['name' => 'vencimento_de', 'label' => 'Vencimento a partir de', 'type' => 'date', 'value' => $filtros['vencimento_de'] ?? null]) ?>
+                    <?= component('input', ['name' => 'vencimento_ate', 'label' => 'Vencimento até', 'type' => 'date', 'value' => $filtros['vencimento_ate'] ?? null]) ?>
+                </div>
+            </details>
         <?php } else { ?>
         <?php if ($filtrosMoveis) { ?>
             <details class="os-filtros-complementares min-w-0">

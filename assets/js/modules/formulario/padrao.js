@@ -85,16 +85,16 @@ export default function iniciar(formulario) {
             }
             const mensagem = mensagemDoCampo(campo);
             mostrarErroDoCampo(campo, mensagem);
-            if (mensagem && !primeiro) {
-                primeiro = campo;
+            if (mensagem) {
+                primeiro ??= campo;
+                for (let detalhe = campo.closest('details'); detalhe; detalhe = detalhe.parentElement.closest('details')) {
+                    detalhe.open = true;
+                }
             }
         }
 
         if (primeiro) {
             evento.preventDefault();
-            for (let detalhe = primeiro.closest('details'); detalhe; detalhe = detalhe.parentElement.closest('details')) {
-                detalhe.open = true;
-            }
             primeiro.focus();
             return;
         }

@@ -54,7 +54,10 @@ export function iniciarBusca(form, { buscar = fetch, atraso = 350, doc = documen
             if (filtrosAtivos && filtrosDaResposta) filtrosAtivos.textContent = filtrosDaResposta.textContent;
             const limpar = form.querySelector('[data-listagem-limpar]');
             const limparDaResposta = novoForm.querySelector('[data-listagem-limpar]');
-            if (limpar && limparDaResposta) limpar.hidden = limparDaResposta.hidden;
+            if (limpar && limparDaResposta) {
+                limpar.hidden = limparDaResposta.hidden;
+                limpar.querySelector('a').href = limparDaResposta.querySelector('a').getAttribute('href');
+            }
             novoForm.replaceWith(form, estado);
             main.replaceChildren(...novo.childNodes);
             navegador.history.replaceState(null, '', url);

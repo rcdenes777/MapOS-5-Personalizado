@@ -15,7 +15,42 @@ export function nomeDeModuloValido(nome) {
     return typeof nome === 'string' && NOME_VALIDO.test(nome);
 }
 
+const DETALHES_MOVEIS = 'details.os-filtros-complementares, details.opcoes-moveis';
+const detalhesPreparados = new WeakSet();
+
+function iniciarDetalhesMoveis(raiz) {
+    if (typeof window === 'undefined' || window.CSS?.supports('selector(::details-content)')) return;
+
+    if (!window.matchMedia) return;
+
+    for (const detalhe of raiz.querySelectorAll(DETALHES_MOVEIS)) {
+        if (detalhesPreparados.has(detalhe)) continue;
+        detalhesPreparados.add(detalhe);
+
+        const desktop = window.matchMedia('(min-width: 40rem)');
+        let abertoNoCelular = detalhe.open;
+        let emDesktop = desktop.matches;
+        const ajustar = () => {
+            if (desktop.matches === emDesktop) return;
+            emDesktop = desktop.matches;
+            if (emDesktop) {
+                abertoNoCelular = detalhe.open;
+                detalhe.open = true;
+            } else {
+                detalhe.open = abertoNoCelular || detalhe.contains(document.activeElement);
+            }
+        };
+
+        if (desktop.matches) detalhe.open = true;
+        desktop.addEventListener('change', ajustar);
+        detalhe.addEventListener('toggle', () => {
+            if (!desktop.matches) abertoNoCelular = detalhe.open;
+        });
+    }
+}
+
 export async function iniciarModulos(raiz = document) {
+    iniciarDetalhesMoveis(raiz);
     const elementos = raiz.querySelectorAll('[data-module]');
 
     await Promise.all(Array.from(elementos, async (elemento) => {

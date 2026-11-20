@@ -2,7 +2,7 @@
     <header><h1 class="text-heading-xl text-text"><?= e('Orçamento da OS #' . (int) $ordemOrcamento->idOs) ?></h1><p class="mt-2 text-body-md text-muted">Confira a prévia antes de publicar. Somente a versão publicada estará disponível pelo link ativo desta OS.</p></header>
     <?= component('link', ['label' => 'Voltar à OS', 'href' => site_url('os/visualizar/' . (int) $ordemOrcamento->idOs)]) ?>
     <?php if ($orcamentoEntregue ?? false) { ?>
-        <?= component('alert', ['variant' => 'info', 'message' => 'Equipamento entregue. Novas decisões normais estão bloqueadas; orçamento e histórico permanecem disponíveis para consulta.']) ?>
+        <?= component('alert', ['variant' => 'info', 'message' => 'Equipamento entregue. Novas publicações e decisões normais estão bloqueadas; orçamento e histórico permanecem disponíveis para consulta.']) ?>
     <?php } ?>
     <?php if ($orcamentoAtual !== null) { ?>
         <section class="rounded-card border border-border bg-surface p-4">
@@ -24,7 +24,7 @@
         <h2 id="orcamento-previa" class="mb-3 text-heading-sm text-text">Prévia dos itens atuais</h2>
         <?php if ($retratoOrcamento['itens'] === []) { ?><p class="text-muted">Adicione peças ou serviços à OS antes de publicar.</p><?php } else { ?>
             <?php $this->load->view('trifase/orcamento-itens'); ?>
-            <?php if ($podePublicarOrcamento && $ordemOrcamento->status !== 'Cancelado') { ?>
+            <?php if ($podePublicarOrcamento && $ordemOrcamento->status !== 'Cancelado' && ! ($orcamentoEntregue ?? false)) { ?>
                 <form method="post" action="<?= e(site_url('trifase_orcamentos/publicar/' . (int) $ordemOrcamento->idOs)) ?>" class="mt-5 grid gap-3">
                     <input type="hidden" name="<?= e($this->security->get_csrf_token_name()) ?>" value="<?= e($this->security->get_csrf_hash()) ?>">
                     <input type="hidden" name="retrato_hash" value="<?= e($hashOrcamento) ?>"><input type="hidden" name="operacao" value="<?= e(bin2hex(random_bytes(16))) ?>">

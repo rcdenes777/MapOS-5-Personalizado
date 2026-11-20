@@ -42,12 +42,15 @@ function keyFor(string $name): string
 {
     return 'mysql_' . str_pad($name, 20, '_');
 }
-function act(array $a): void
+function act(array $a): ?int
 {
     global $o, $e;
     [$action, $id, $version, $key] = $a;
     $communication = ['canal' => 'telefone', 'comunicado_em' => date('Y-m-d\TH:i'), 'observacao' => 'Sintetico', 'justificativa' => 'Registro tardio sintetico'];
-    if ($action === 'delivery') {
+    if ($action === 'publish') {
+        // Carry the preview hash into the worker; do not refresh it after waiting.
+        return $o->publicar($id, $version, 7, $key, $a[4] ?? []);
+    } elseif ($action === 'delivery') {
         $e->registrar($id, ['recebedor' => 'Cliente Teste', 'itens' => 'Equipamento', 'terceiro' => '0', 'confirmou_condicoes' => '1', 'entregue_em' => date('Y-m-d\TH:i')], 7, $key);
     } elseif ($action === 'correction') {
         $e->cancelar($id, $version, 'Correcao sintetica', 7, $key);
@@ -57,6 +60,7 @@ function act(array $a): void
         $method = $action === 'regularize' ? 'registrarRegularizacao' : 'registrarRespostaInterna';
         $o->$method($id, $version, $action === 'recusar' ? 'recusar' : 'aprovar', 'Cliente Teste', '1', $key, 7, $communication);
     }
+    return null;
 }
 if (($argv[1] ?? '') === 'worker') {
     $a = json_decode($argv[2], true, 512, JSON_THROW_ON_ERROR);
@@ -143,6 +147,16 @@ function seed(): array
 function snapshot(int $id): array
 {
     return [sql('SELECT * FROM os WHERE idOs=?', [$id])->row_array(), sql('SELECT * FROM os_historico WHERE os_id=? ORDER BY id', [$id])->result_array(), sql('SELECT * FROM trifase_orcamento_eventos WHERE os_id=? ORDER BY id', [$id])->result_array()];
+}
+/** Includes immutable versions and both projections, not just OS status/events. */
+function publicationSnapshot(int $id): array
+{
+    $result = [snapshot($id)];
+    foreach (['trifase_orcamento_versoes', 'trifase_orcamento_estado', 'trifase_entregas_eventos', 'trifase_entregas_estado'] as $table) {
+        $order = str_ends_with($table, '_estado') ? 'os_id' : 'id';
+        $result[] = sql("SELECT * FROM $table WHERE os_id=? ORDER BY $order", [$id])->result_array();
+    }
+    return $result;
 }
 function invariants(int $id): void
 {
@@ -256,6 +270,98 @@ try {
         }
         insist((int) scalar("SELECT COUNT(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND ENGINE<>'InnoDB'") === 0, 'Non-InnoDB table');
     });
+    foreach ([false, true] as $deliveryFirst) {
+        testCase('publish-vs-delivery-' . ($deliveryFirst ? 'delivery-first' : 'publish-first'), function () use ($o, $e, $deliveryFirst) {
+            [$id, $v] = seed();
+            act(['aprovar', $id, $v, keyFor('publish_approved_' . $id)]);
+            $approved = (array) $o->decisao($v);
+            $before = publicationSnapshot($id);
+            $hash = $o->atual($id)->conteudo_hash;
+            $publish = ['publish', $id, $hash, keyFor('race_publish_' . $id)];
+            $delivery = ['delivery', $id, $v, keyFor('race_delivery_' . $id)];
+            // race() holds the real OS lock and proves the second connection's
+            // wait in performance_schema before allowing the first operation.
+            $results = race($deliveryFirst ? $delivery : $publish, $deliveryFirst ? $publish : $delivery);
+            insist($results === ($deliveryFirst ? ['ok', 'denied'] : ['ok', 'ok']), 'Publication/delivery ordering violated: ' . json_encode($results));
+            $after = publicationSnapshot($id);
+            insist($e->ativa($id) !== null && count($after[3]) === 1 && count($after[4]) === 1, 'Delivery event/projection missing or duplicated');
+            insist((array) $o->decisao($v) === $approved && $approved['tipo'] === 'aprovar', 'Historical approval changed');
+            if ($deliveryFirst) {
+                insist(array_slice($after, 0, 3) === array_slice($before, 0, 3), 'Losing publication mutated OS/history/events/versions/state');
+                insist((int) $o->atual($id)->id === $v && (int) $o->atual($id)->ativo === 1, 'Delivery winner lost approved current version');
+            } else {
+                $current = $o->atual($id);
+                insist(count($after[1]) === 2 && $after[1][0] === $before[1][0], 'Publication did not append exactly one immutable version');
+                insist((int) $current->id !== $v && (int) $current->numero === 2 && (int) $current->ativo === 1, 'New version/projection incorrect');
+                insist($o->decisao((int) $current->id) === null, 'Approval copied into new version');
+                insist(count($after[0][2]) === count($before[0][2]) + 1 && array_slice($after[0][2], 0, count($before[0][2])) === $before[0][2], 'Publication altered historical events');
+                $event = $after[0][2][count($after[0][2]) - 1];
+                insist($event['tipo'] === 'publicar' && $event['operacao'] === $publish[3] && (int) $event['versao_id'] === (int) $current->id, 'Publication event does not reference new version');
+                insist($after[0][0]['status'] === 'Negociação' && count($after[0][1]) === count($before[0][1]) + 1, 'Publication status/history incorrect');
+                insist(act($publish) === (int) $current->id, 'New publication replay returned wrong version');
+            }
+            // Even a no-longer-current publication must replay before the
+            // delivery guard, without resurrecting its projection or approval.
+            $historical = ['publish', $id, $hash, keyFor('publish_' . $id)];
+            insist(act($historical) === $v, 'Historical publication replay denied or returned wrong version');
+            insist(publicationSnapshot($id) === $after, 'Replay duplicated version/event or changed projection');
+            try {
+                act([...$historical, ['diagnostico' => 'Outro diagnostico sintetico']]);
+                throw new LogicException('Publication accepted conflicting payload with same key');
+            } catch (DomainException $x) {
+            }
+            insist(publicationSnapshot($id) === $after, 'Conflicting publication mutated database');
+            invariants($id);
+        });
+    }
+    foreach (['Aprovado', 'Em Andamento', 'Finalizado'] as $status) {
+        foreach ([false, true] as $enabled) {
+            testCase('publish-delivered-status-' . $status . '-flags-' . (int) $enabled, function () use ($o, $e, $status, $enabled) {
+                $flags = ['TRIFASE_ENTREGAS_ENABLED', 'TRIFASE_ORCAMENTOS_ENABLED', 'TRIFASE_GARANTIA_OPERACOES_ENABLED'];
+                $saved = [];
+                foreach ($flags as $flag) {
+                    $saved[$flag] = $_ENV[$flag] ?? null;
+                    $_ENV[$flag] = $enabled ? 'true' : 'false';
+                }
+                try {
+                    [$id, $v] = seed();
+                    act(['aprovar', $id, $v, keyFor('status_approve_' . $id)]);
+                    sql('UPDATE os SET status=? WHERE idOs=?', [$status, $id]);
+                    act(['delivery', $id, $v, keyFor('status_delivery_' . $id)]);
+                    $before = publicationSnapshot($id);
+                    $publish = ['publish', $id, $o->atual($id)->conteudo_hash, keyFor('status_publish_' . $id)];
+                    try {
+                        act($publish);
+                        throw new LogicException('New publication accepted with active delivery');
+                    } catch (DomainException $x) {
+                    }
+                    insist(publicationSnapshot($id) === $before, 'Denied publication changed versions/state/events/OS/history/delivery');
+                    insist($o->decisao($v)->tipo === 'aprovar', 'Denied publication lost approval');
+                    // An administrative cancellation removes the guard, not the
+                    // old delivery evidence; the exact denied key may now work.
+                    act(['correction', $id, (int) $e->ativa($id)->id, keyFor('status_cancel_' . $id)]);
+                    $corrected = publicationSnapshot($id);
+                    insist($e->ativa($id) === null && count($corrected[3]) === 2 && $corrected[3][0] === $before[3][0], 'Administrative cancellation lost delivery evidence');
+                    $new = act($publish);
+                    $after = publicationSnapshot($id);
+                    insist($new !== $v && (int) $o->atual($id)->id === $new && count($after[1]) === 2, 'Publication not restored after cancellation');
+                    insist($after[1][0] === $before[1][0] && $after[3] === $corrected[3] && $after[4] === [], 'Publication mutated historical version/delivery');
+                    insist($o->decisao($v)->tipo === 'aprovar' && $o->decisao($new) === null, 'Approval overwritten or copied');
+                    insist($after[0][0]['status'] === ($status === 'Aprovado' ? 'Negociação' : $status), 'Publication changed technical status');
+                    insist(act($publish) === $new && publicationSnapshot($id) === $after, 'Publication replay after correction duplicated writes');
+                    invariants($id);
+                } finally {
+                    foreach ($saved as $flag => $value) {
+                        if ($value === null) {
+                            unset($_ENV[$flag]);
+                        } else {
+                            $_ENV[$flag] = $value;
+                        }
+                    }
+                }
+            });
+        }
+    }
     foreach (['internal', 'public'] as $channel) {
         foreach (['aprovar','recusar'] as $decision) {
             foreach ([false,true] as $deliveryFirst) {

@@ -54,7 +54,7 @@ final class TrifaseOrcamentoTest extends MaposTestCase
         $this->modelo->db = $this->db;
     }
 
-    private function entregar(): array
+    private function entregar(string $chave = 'entrega'): array
     {
         $m = new class() extends Migration_trifase_entregas {
             public object $dbforge;
@@ -65,8 +65,57 @@ final class TrifaseOrcamentoTest extends MaposTestCase
         $entregas = new Trifase_entrega_model();
         $entregas->db = $this->db;
         $id = $entregas->registrar(1, ['recebedor' => 'Cliente QA', 'entregue_em' => date('Y-m-d\TH:i'),
-            'itens' => 'Equipamento sintético', 'terceiro' => '0', 'confirmou_condicoes' => '1'], 7, $this->chave('entrega'));
+            'itens' => 'Equipamento sintético', 'terceiro' => '0', 'confirmou_condicoes' => '1'], 7, $this->chave($chave));
         return [$entregas, $id];
+    }
+
+    public function testPublicacaoAposEntregaPreservaVersaoAprovadaEConsultaMesmoSemFlag(): void
+    {
+        $versao = $this->publicar();
+        $this->modelo->responder(1, $this->token, $versao, 'aprovar', 'Cliente QA', '1', $this->chave('aprovada'));
+        $this->entregar();
+        $env = $_ENV;
+        $_ENV['TRIFASE_ENTREGAS_ENABLED'] = 'false';
+        try {
+            foreach (['Em Andamento', 'Finalizado', 'Aberto', 'Estado personalizado'] as $status) {
+                $this->db->where('idOs', 1)->update('os', ['status' => $status]);
+                $antes = $this->estadoOperacional();
+                $atual = (array) $this->modelo->atual(1);
+                $eventos = $this->modelo->eventos(1);
+                $links = $this->db->get('trifase_publico_links')->result_array();
+                $decisao = (array) $this->modelo->decisao($versao);
+                try {
+                    $this->publicar('apos-entrega');
+                    $this->fail('Publicou outra versão após entrega ativa');
+                } catch (DomainException $e) {
+                    $this->assertStringContainsString('entregue', $e->getMessage());
+                }
+                $this->assertSame($antes, $this->estadoOperacional());
+                $this->assertSame($atual, (array) $this->modelo->atual(1));
+                $this->assertSame($decisao, (array) $this->modelo->decisao($versao));
+                $this->assertEquals($eventos, $this->modelo->eventos(1));
+                $this->assertSame($links, $this->db->get('trifase_publico_links')->result_array());
+                $this->assertCount(1, $this->modelo->historico(1));
+                $this->assertSame($versao, (int) $this->modelo->publicado(1, $this->token)->id);
+            }
+        } finally {
+            $_ENV = $env;
+        }
+    }
+
+    public function testReenvioDePublicacaoAnteriorAEntregaNaoDuplicaNemAceitaPayloadDiferente(): void
+    {
+        $versao = $this->publicar();
+        $this->entregar();
+        $antes = $this->estadoOperacional();
+        $eventos = $this->modelo->eventos(1);
+        $this->assertSame($versao, $this->publicar());
+        $this->assertSame($antes, $this->estadoOperacional());
+        $this->assertEquals($eventos, $this->modelo->eventos(1));
+        $this->assertCount(1, $this->modelo->historico(1));
+        $this->expectException(DomainException::class);
+        $this->expectExceptionMessage('Chave já utilizada com outros dados.');
+        $this->modelo->publicar(1, $this->modelo->hash($this->retrato()), 7, $this->chave('publicar'), ['diagnostico' => 'Outro diagnóstico']);
     }
 
     public function testEntregaAtivaBloqueiaAmbosCanaisEDecisoesSemRevogarConsulta(): void
@@ -140,8 +189,10 @@ final class TrifaseOrcamentoTest extends MaposTestCase
     {
         $antiga = $this->publicar();
         [$entregas, $entrega] = $this->entregar();
-        $nova = $this->publicar('nova-versao');
         $entregas->cancelar(1, $entrega, 'Entrega registrada por engano', 7, $this->chave('corrigir-entrega'));
+        $nova = $this->publicar('nova-versao');
+        $this->assertNotSame($antiga, $nova);
+        $this->assertCount(2, $this->db->get('trifase_entregas_eventos')->result());
         try {
             $this->modelo->responder(1, $this->token, $antiga, 'aprovar', 'Cliente QA', '1', $this->chave('obsoleta'));
             $this->fail('Aceitou versão obsoleta após correção');
@@ -189,9 +240,7 @@ final class TrifaseOrcamentoTest extends MaposTestCase
             foreach (['aprovar', 'recusar'] as $tipo) {
                 $versao = $this->publicar($canal . $tipo);
                 $this->db->where('id', $versao)->update('trifase_orcamento_versoes', ['criado_em' => date('Y-m-d H:i:s', time() - 7200)]);
-                if (! $this->modelo->entregue(1)) {
-                    $this->entregar();
-                }
+                [$entregas, $entrega] = $this->entregar('entrega-' . $canal . $tipo);
                 $dados = ['canal' => $canal, 'comunicado_em' => date('Y-m-d\TH:i', time() - 3600), 'justificativa' => 'Registro atrasado', 'observacao' => 'Cliente confirmou'];
                 $antes = $this->estadoOperacional();
                 $inicio = date('Y-m-d H:i:s');
@@ -208,6 +257,7 @@ final class TrifaseOrcamentoTest extends MaposTestCase
                 $this->assertGreaterThanOrEqual($inicio, $evento['criado_em']);
                 $this->assertLessThanOrEqual(date('Y-m-d H:i:s'), $evento['criado_em']);
                 $this->assertSame($antes, $this->estadoOperacional());
+                $entregas->cancelar(1, $entrega, 'Entrega sintética encerrada para próximo caso', 7, $this->chave('corrigir-' . $canal . $tipo));
             }
         }
     }
@@ -373,9 +423,9 @@ final class TrifaseOrcamentoTest extends MaposTestCase
 
     public function testRegularizacaoPreservaTodasEtapasTecnicasEInicioMinutoVersao(): void
     {
-        $this->entregar();
         foreach (['Aberto', 'Orçamento', 'Negociação', 'Orçamento recusado', 'Aprovado', 'Em Andamento', 'Finalizado', 'Estado personalizado'] as $indice => $status) {
             $versao = $this->publicar('etapa-' . $indice);
+            [$entregas, $entrega] = $this->entregar('entrega-etapa-' . $indice);
             $minuto = date('Y-m-d H:i:00', time() - 60);
             $this->db->where('id', $versao)->update('trifase_orcamento_versoes', ['criado_em' => substr($minuto, 0, 17) . '59']);
             $this->db->where('idOs', 1)->update('os', ['status' => $status]);
@@ -392,6 +442,7 @@ final class TrifaseOrcamentoTest extends MaposTestCase
             );
             $this->assertSame($antes, $this->estadoOperacional());
             $this->assertSame($minuto, $this->modelo->decisao($versao)->comunicado_em);
+            $entregas->cancelar(1, $entrega, 'Entrega sintética encerrada para próximo caso', 7, $this->chave('corrigir-etapa-' . $indice));
         }
         $metodo = new ReflectionMethod(Trifase_orcamento_model::class, 'registrarRegularizacao');
         $this->assertTrue($metodo->isPublic());
@@ -412,8 +463,8 @@ final class TrifaseOrcamentoTest extends MaposTestCase
         } catch (DomainException $e) {
             $this->assertSame($evento, (array) $this->modelo->decisao($versao));
         }
-        $nova = $this->publicar('apos-decisao');
         $entregas->cancelar(1, $entrega, 'Entrega registrada por engano', 7, $this->chave('cancelar-entrega'));
+        $nova = $this->publicar('apos-decisao');
         $this->expectException(DomainException::class);
         $this->modelo->registrarRegularizacao(1, $nova, 'aprovar', 'Cliente QA', '1', $this->chave('cancelada-tardia'), 7, $dados);
     }

@@ -81,6 +81,9 @@ class Trifase_orcamento_model extends CI_Model
             if ($anterior = $this->reenvio($id, $chave, $hash)) {
                 return (int) $anterior->versao_id;
             }
+            if ($this->entregue($id)) {
+                throw new DomainException('Equipamento entregue. Corrija a entrega ativa antes de publicar outra versão do orçamento.');
+            }
             if ($os->status === 'Cancelado') {
                 throw new DomainException('Não publique orçamento de OS cancelada.');
             }

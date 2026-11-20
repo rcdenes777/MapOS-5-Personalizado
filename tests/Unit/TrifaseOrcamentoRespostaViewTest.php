@@ -92,6 +92,25 @@ final class TrifaseOrcamentoRespostaViewTest extends \PHPUnit\Framework\TestCase
         $this->assertStringContainsString('Entrega #9', $interno);
     }
 
+    public function testPainelNaoOfereceNovaPublicacaoAposEntregaMasPreservaConsulta(): void
+    {
+        $dados = ['ordemOrcamento' => (object) ['idOs' => 1, 'status' => 'Em Andamento'],
+            'orcamentoAtual' => null, 'podePublicarOrcamento' => true, 'hashOrcamento' => str_repeat('a', 64),
+            'versoesOrcamento' => [], 'eventosOrcamento' => [],
+            'apresentacaoOrcamento' => ['equipamento' => '', 'defeito' => '', 'diagnostico' => ''],
+            'termosCondicoes' => [], 'escolhasCondicoes' => trifaseOrcamentoEscolhas([], []),
+            'retratoOrcamento' => ['os' => 1, 'itens' => [['nome' => 'Serviço sintético', 'tipo' => 'servico', 'quantidade' => '1', 'unitario_c' => 100, 'desconto_c' => 0, 'total_c' => 100]],
+                'pecas_c' => 0, 'servicos_c' => 100, 'desconto_c' => 0, 'total_c' => 100]];
+        $livre = $this->renderizar('trifase/orcamento-painel', $dados);
+        $this->assertStringContainsString('trifase_orcamentos/publicar/1', $livre);
+        $entregue = $this->renderizar('trifase/orcamento-painel', $dados + ['orcamentoEntregue' => true]);
+        $this->assertStringNotContainsString('trifase_orcamentos/publicar/1', $entregue);
+        $this->assertStringNotContainsString('Publicar nova versão', $entregue);
+        $this->assertStringContainsString('Equipamento entregue', $entregue);
+        $this->assertStringContainsString('Serviço sintético', $entregue);
+        $this->assertStringContainsString('Versões e respostas', $entregue);
+    }
+
     private function decisao(): object
     {
         return (object) ['tipo' => 'aprovar', 'nome' => '<script>Pessoa</script>', 'usuario_id' => 7,

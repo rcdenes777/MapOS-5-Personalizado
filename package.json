@@ -11,6 +11,9 @@
     "build:css": "tailwindcss -i assets/src/app.css -o assets/dist/app.css --minify && tailwindcss -i assets/src/layout.css -o assets/dist/layout.css --minify && tailwindcss -i assets/src/imprimir.css -o assets/dist/imprimir.css --minify && tailwindcss -i assets/src/instalador.css -o install/assets/css/instalador.css --minify && npm run build:pdf",
     "build:stickers": "svgo --multipass --quiet -f assets/src/stickers -o assets/img/stickers",
     "build:vendor": "node scripts/build-vendor.mjs",
+    "test:e2e:orcamento-entrega": "node tests/e2e/orcamento-entrega-regularizacao.cjs",
+    "test:e2e:orcamento": "npm run test:e2e:orcamento-canais && npm run test:e2e:orcamento-entrega",
+    "test:e2e:orcamento-canais": "node tests/e2e/orcamento-canais.cjs",
     "test:js": "node --test tests/js/*.mjs",
     "watch:css": "tailwindcss -i assets/src/app.css -o assets/dist/app.css --watch",
     "watch:layout": "tailwindcss -i assets/src/layout.css -o assets/dist/layout.css --watch",
@@ -19,6 +22,7 @@
   "devDependencies": {
     "@tailwindcss/cli": "4.3.3",
     "lightningcss": "1.32.0",
+    "playwright": "1.64.1",
     "svgo": "4.1.0",
     "tailwindcss": "4.3.3"
   },

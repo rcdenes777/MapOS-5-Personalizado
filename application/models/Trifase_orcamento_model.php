@@ -81,6 +81,9 @@ class Trifase_orcamento_model extends CI_Model
             if ($anterior = $this->reenvio($id, $chave, $hash)) {
                 return (int) $anterior->versao_id;
             }
+            if ($this->entregue($id)) {
+                throw new DomainException('Equipamento entregue. Corrija a entrega ativa antes de publicar outra versão do orçamento.');
+            }
             if ($os->status === 'Cancelado') {
                 throw new DomainException('Não publique orçamento de OS cancelada.');
             }
@@ -151,15 +154,75 @@ class Trifase_orcamento_model extends CI_Model
         $this->registrarResposta($id, $token, $versao, $tipo, $nome, $confirmado, $chave, null);
     }
 
-    public function registrarRespostaInterna(int $id, int $versao, mixed $tipo, mixed $nome, mixed $confirmado, string $chave, int $usuario): void
+    public function registrarRespostaInterna(int $id, int $versao, mixed $tipo, mixed $nome, mixed $confirmado, string $chave, int $usuario, array $comunicacao): void
+    {
+        $comunicacao = $this->validarComunicacao($usuario, $comunicacao);
+        $this->registrarResposta($id, null, $versao, $tipo, $nome, $confirmado, $chave, $usuario, $comunicacao);
+    }
+
+    public function registrarRegularizacao(int $id, int $versao, mixed $tipo, mixed $nome, mixed $confirmado, string $chave, int $usuario, array $comunicacao): void
+    {
+        $comunicacao = $this->validarComunicacao($usuario, $comunicacao, true);
+        $this->registrarResposta($id, null, $versao, $tipo, $nome, $confirmado, $chave, $usuario, $comunicacao, true);
+    }
+
+    private function validarComunicacao(int $usuario, array $comunicacao, bool $regularizacao = false): array
     {
         if ($usuario <= 0) {
             throw new DomainException('Identifique quem está registrando a resposta.');
         }
-        $this->registrarResposta($id, null, $versao, $tipo, $nome, $confirmado, $chave, $usuario);
+        if (! in_array($comunicacao['canal'] ?? null, ['telefone', 'whatsapp', 'presencial'], true)) {
+            throw new DomainException('Informe o canal da comunicação: telefone, WhatsApp ou presencial.');
+        }
+        $data = $comunicacao['comunicado_em'] ?? null;
+        if (! is_string($data) || ! preg_match('/\A\d{4}-\d{2}-\d{2}T\d{2}:\d{2}\z/', $data)) {
+            throw new DomainException('Informe a data e hora da comunicação.');
+        }
+        $instante = DateTimeImmutable::createFromFormat('!Y-m-d\TH:i', $data);
+        if ($instante === false || $instante->format('Y-m-d\TH:i') !== $data || $instante->getTimestamp() > time()) {
+            throw new DomainException('Informe uma data de comunicação válida, não futura.');
+        }
+        // Canonizar antes do limite, do hash idempotente e da persistência.
+        foreach (['observacao', 'justificativa'] as $campo) {
+            if (isset($comunicacao[$campo]) && is_string($comunicacao[$campo])) {
+                $comunicacao[$campo] = str_replace("\r\n", "\n", $comunicacao[$campo]);
+            }
+        }
+        if (array_key_exists('observacao', $comunicacao)
+            && (! is_string($comunicacao['observacao']) || ! mb_check_encoding($comunicacao['observacao'], 'UTF-8')
+                || mb_strlen($comunicacao['observacao']) > 2000 || preg_match('/[\x00-\x09\x0b-\x1f\x7f\x{0080}-\x{009f}\x{202a}-\x{202e}\x{2066}-\x{2069}]/u', $comunicacao['observacao']))) {
+            throw new DomainException('Informe uma observação válida com até 2000 caracteres, sem controles.');
+        }
+        $justificativa = $comunicacao['justificativa'] ?? null;
+        if ($regularizacao && (! is_string($justificativa) || ! mb_check_encoding($justificativa, 'UTF-8')
+            || preg_match('/[\x00-\x09\x0b-\x1f\x7f\x{0080}-\x{009f}\x{202a}-\x{202e}\x{2066}-\x{2069}]/u', $justificativa)
+            || mb_strlen(trim($justificativa)) < 5 || mb_strlen($justificativa) > 2000)) {
+            throw new DomainException('Informe uma justificativa válida de 5 a 2000 caracteres, sem controles.');
+        }
+        $comunicacao = ['canal' => $comunicacao['canal'],
+            'comunicado_em' => $instante->format('Y-m-d H:i:s'),
+            'observacao' => $comunicacao['observacao'] ?? null];
+        return $regularizacao ? $comunicacao + ['regularizacao_tardia' => 1, 'justificativa' => trim($justificativa)] : $comunicacao;
     }
 
-    private function registrarResposta(int $id, mixed $token, int $versao, mixed $tipo, mixed $nome, mixed $confirmado, string $chave, ?int $usuario): void
+    /** A trava por OS do chamador serializa esta leitura com registro/correção de entrega. */
+    public function entregue(int $id): bool
+    {
+        return $this->entregaAtiva($id) !== null;
+    }
+
+    private function entregaAtiva(int $id): ?object
+    {
+        if (! $this->db->table_exists('trifase_entregas_estado')) {
+            return null;
+        }
+        require_once APPPATH . 'models/Trifase_entrega_model.php';
+        $entregas = new Trifase_entrega_model();
+        $entregas->db = $this->db;
+        return $entregas->ativa($id);
+    }
+
+    private function registrarResposta(int $id, mixed $token, int $versao, mixed $tipo, mixed $nome, mixed $confirmado, string $chave, ?int $usuario, array $comunicacao = [], bool $regularizacao = false): void
     {
         $this->validarOperacao($chave);
         if (! in_array($tipo, ['aprovar', 'recusar'], true) || $confirmado !== '1' || ! is_string($nome)
@@ -168,20 +231,36 @@ class Trifase_orcamento_model extends CI_Model
             throw new DomainException('Informe seu nome e confirme a decisão sobre esta versão.');
         }
         $nome = trim($nome);
-        $hash = $this->hash($usuario === null ? ['responder', $id, $versao, $tipo, $nome] : ['resposta_interna', $id, $versao, $tipo, $nome, $usuario]);
-        $this->transacao($id, function ($os) use ($id, $token, $versao, $tipo, $nome, $chave, $hash, $usuario) {
+        $hash = $this->hash($usuario === null ? ['responder', $id, $versao, $tipo, $nome] : [$regularizacao ? 'regularizacao_tardia' : 'resposta_interna', $id, $versao, $tipo, $nome, $usuario, $comunicacao]);
+        $this->transacao($id, function ($os) use ($id, $token, $versao, $tipo, $nome, $chave, $hash, $usuario, $comunicacao, $regularizacao) {
             $atual = $usuario === null ? $this->publicadoSobTrava($os, $token) : $this->versaoVigente($os);
             if ($atual === null || (int) $atual->id !== $versao) {
                 throw new DomainException('Orçamento indisponível ou atualizado. Reabra e confira a versão.');
             }
+            if ($usuario !== null && $comunicacao['comunicado_em'] < substr($atual->criado_em, 0, 16) . ':00') {
+                throw new DomainException('A comunicação não pode ser anterior à criação desta versão.');
+            }
             if ($this->reenvio($id, $chave, $hash)) {
                 return;
+            }
+            $entrega = $this->entregaAtiva($id);
+            if ($regularizacao) {
+                if ($entrega === null) {
+                    throw new DomainException('A regularização exige uma entrega ativa.');
+                }
+                // Ambos os formulários têm precisão de minuto; igualdade é permitida.
+                if ($comunicacao['comunicado_em'] > $entrega->entregue_em) {
+                    throw new DomainException('A comunicação não pode ser posterior à entrega ativa.');
+                }
+                $comunicacao['entrega_id'] = (int) $entrega->id;
+            } elseif ($entrega !== null) {
+                throw new DomainException('Equipamento entregue. Este orçamento está disponível somente para consulta.');
             }
             if ($this->decisao($versao) !== null) {
                 throw new DomainException('Esta versão já recebeu uma decisão. Use uma nova versão para registrar outra resposta.');
             }
-            $this->evento($id, $versao, $tipo, $nome, $usuario, $versao, $chave, $hash);
-            if (in_array($os->status, self::ETAPAS_DE_ORCAMENTO, true)) {
+            $this->evento($id, $versao, $tipo, $nome, $usuario, $versao, $chave, $hash, $comunicacao);
+            if (! $regularizacao && in_array($os->status, self::ETAPAS_DE_ORCAMENTO, true)) {
                 $this->registrarAndamento($os, $tipo === 'aprovar' ? 'Aprovado' : 'Orçamento recusado', $usuario, $this->decisao($versao)->criado_em);
             }
         });
@@ -243,10 +322,10 @@ class Trifase_orcamento_model extends CI_Model
         return $link ? $this->versaoVigente($os) : null;
     }
 
-    private function evento(int $os, int $versao, string $tipo, string $nome, ?int $usuario, ?int $decisao, string $chave, string $hash): void
+    private function evento(int $os, int $versao, string $tipo, string $nome, ?int $usuario, ?int $decisao, string $chave, string $hash, array $comunicacao = []): void
     {
         $this->inserir('trifase_orcamento_eventos', ['os_id' => $os, 'versao_id' => $versao, 'tipo' => $tipo, 'nome' => $nome,
-            'usuario_id' => $usuario, 'decisao_versao' => $decisao, 'criado_em' => date('Y-m-d H:i:s'), 'operacao' => $chave, 'payload_hash' => $hash]);
+            'usuario_id' => $usuario, 'decisao_versao' => $decisao, 'criado_em' => date('Y-m-d H:i:s'), 'operacao' => $chave, 'payload_hash' => $hash] + $comunicacao);
     }
 
     private function reenvio(int $os, string $chave, string $hash): ?object

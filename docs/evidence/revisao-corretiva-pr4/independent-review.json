@@ -1,0 +1,51 @@
+{
+  "passed": true,
+  "security_concerns": [],
+  "logic_errors": [],
+  "not_formal_pr_approval": true,
+  "source_sha": "3564bb4cd98ed76018d591557ea2c4b6a3ff8b3a",
+  "review_scope": "Diff corretivo e candidata não commitada identificada pelos hashes abaixo; reavaliação independente somente leitura.",
+  "suggestions": [
+    "Adicionar matriz unitária permanente para comunicacaoPost(): MIME com case/charset, MIME ausente/incompatível, arrays e bytes inválidos. O probe independente cobriu esses caminhos, mas não fica como regressão versionada.",
+    "Integrações manuais de respostas internas e regularizações que enviavam multipart devem migrar para application/x-www-form-urlencoded. Multipart não permanece compatível, mesmo com texto válido.",
+    "Charset não causa transcodificação: o helper reconhece o MIME com parâmetros, mas o modelo exige bytes UTF-8 válidos."
+  ],
+  "tests_run": [
+    {
+      "command": "docker exec --user 1000:1000 mapos5-orcamento-lab-php php application/vendor/bin/phpunit --do-not-cache-result --filter 'TrifaseOrcamento|TrifaseGarantiaOperacoes|TrifaseRetorno'",
+      "result": "OK: 81 testes, 1225 asserções, PHP 8.5.12 / PHPUnit 12.5.33; 198 issues ignoradas pelo baseline."
+    },
+    {
+      "command": "Probe por reflexão dos métodos reais CI_Input::input_stream(), Trifase_orcamentos::comunicacaoPost() e Trifase_orcamento_model::validarComunicacao()",
+      "result": "Revisor relatou PASS em 154 combinações de MIME/payload/modo normal-tardio: formatos incompatíveis recusados; case/charset URL-encoded aceitos; LF/CRLF válidos; arrays, NUL/C0/DEL/UTF-8 inválido/CR isolado/C1/bidi rejeitados. Sem banco."
+    },
+    {
+      "command": "Probe do hook real application/hooks/compress.php",
+      "result": "PASS: LF colapsado em p, preservado em pre junto com markup escapado."
+    },
+    {
+      "command": "node --check tests/e2e/orcamento-canais.cjs; node --check tests/e2e/orcamento-entrega-regularizacao.cjs",
+      "result": "Ambos passaram; revisor não executou E2E."
+    },
+    {
+      "command": "Leitura dos diffs completos, git diff --check, git rev-parse HEAD e sha256sum",
+      "result": "Diff relido, whitespace correto, HEAD em SOURCE_SHA, seis hashes iguais em duas leituras."
+    }
+  ],
+  "reviewed_files_sha256": {
+    "application/controllers/Trifase_orcamentos.php": "fe93d71a52cdf084584dd6e121b8a8f93bf3a3c26a1c2636cdbe723d49070876",
+    "application/models/Trifase_orcamento_model.php": "b8d90220f8bdfec6a4c1931e98c2583d0f5f89be8464e9e92a3ad61677526e62",
+    "application/views/trifase/orcamento-painel.php": "5b0dc56e13d8a92186dbe69f6915da26db4495f2f2b864adcc08e2c5b002dce6",
+    "application/views/trifase/orcamento-decisao.php": "de006926a572c56384f9a9431fe675cb0d0a611a6381857f11df4e2da7adb2e1",
+    "tests/e2e/orcamento-canais.cjs": "8962e3bf5c590bdf1ac0a14a6fb4c10014ad22140683e1994c3459a86b681309",
+    "tests/e2e/orcamento-entrega-regularizacao.cjs": "9cf512b963b60a52d8aa80164d88ab40ff1d7948bd68a9e7b79cf8a23cc9c25e"
+  },
+  "limites": [
+    "Revisor não executou E2E, POST HTTP, integração MySQL, corrida real ou suíte completa nessa reavaliação; execução do engenheiro não foi tratada como execução própria do revisor.",
+    "Probes por reflexão não inicializam o pipeline HTTP: autenticação/permissões/CSRF foram reavaliados por leitura, sem alterações nas verificações nem exclusões CSRF.",
+    "Não foram exercitados cabeçalhos malformados, duplicação de campos, diferenças SAPI/parse_str, limites max_input_vars/post_max_size ou corpos truncados.",
+    "Não houve verificação visual responsiva pelo revisor nessa rodada; LF foi ensaiado com o compressor e escape/privacidade nos testes de view.",
+    "Nenhuma edição, commit, push, acesso a produção ou credenciais pelo revisor. Parecer restrito à candidata, não aprovação formal do PR."
+  ],
+  "summary": "Finding multipart fechado: MIME não permitido gera DomainException antes do modelo, sem fallback limpo. Nenhum outro defeito concreto encontrado. Bloqueio de publicação sob trava da própria OS após replay, preservando os contratos examinados. Multipart deixa deliberadamente de ser suportado nas duas ações internas."
+}

@@ -647,12 +647,15 @@ class Os extends MY_Controller
             $dados['pilotoEntregasHistorico'] = $this->piloto_entregas->historico((int) $os->idOs);
         }
         $dados['pilotoPodeRegistrarResposta'] = $this->permite('vLancamento') && $this->permite('eOs') && $this->permite('publicarOrcamento');
+        $dados['pilotoPodeRegularizarOrcamento'] = $dados['pilotoPodeRegistrarResposta'] && $this->permite('regularizarOrcamento');
+        $dados['pilotoOrcamentoEntregue'] = false;
         $dados['pilotoOrcamento'] = null;
         $dados['pilotoOrcamentoDecisao'] = null;
         $dados['pilotoOrcamentoValido'] = false;
         $dados['pilotoRespostaCliente'] = null;
         if (trifaseOrcamentoHabilitado()) {
             $this->load->model('Trifase_orcamento_model', 'orcamentos_os');
+            $dados['pilotoOrcamentoEntregue'] = $this->orcamentos_os->entregue((int) $os->idOs);
             $atualOrcamento = $this->orcamentos_os->atual((int) $os->idOs);
             if ($atualOrcamento !== null) {
                 $decisaoOrcamento = $this->orcamentos_os->decisao((int) $atualOrcamento->id);

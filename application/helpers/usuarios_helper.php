@@ -61,6 +61,8 @@ if (! defined('PERMISSOES_SISTEMA')) {
         'cSistema' => ['Configurações do sistema', 'Preferências, atualização do banco e consulta da versão oficial.'],
         'cEmail' => ['Fila de e-mails', 'Ver e limpar a fila de envio.'],
         'cAuditoria' => ['Auditoria', 'Ver o registro das ações dos usuários.'],
+        // Sem concessão automática: cada grupo requer autorização explícita do proprietário.
+        'regularizarOrcamento' => ['Regularizar resposta de orçamento após entrega', 'Registrar excepcionalmente comunicação anterior à entrega, com justificativa e histórico; não altera retirada, status ou dinheiro.'],
         'publicarOrcamento' => ['Publicar orçamento no link da OS', 'Compartilhar peças, serviços e valores conferidos e retirar a publicação, preservando decisões.'],
         'trocarGarantia' => ['Executar troca em garantia', 'Substituir unidade e, quando escolhida, baixar uma peça do estoque.'],
         'reembolsarGarantia' => ['Registrar devolução de garantia', 'Registrar dinheiro devolvido e abatimento da cobrança original. Não transfere dinheiro.'],

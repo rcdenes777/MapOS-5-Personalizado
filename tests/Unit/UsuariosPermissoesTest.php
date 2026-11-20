@@ -26,6 +26,16 @@ final class UsuariosPermissoesTest extends MaposTestCase
 {
     // --- Permissões ---------------------------------------------------------
 
+    public function testRegularizacaoDeOrcamentoExigeConcessaoExplicitaSemHerdarPermissaoComum(): void
+    {
+        $comum = permissoesDoFormulario(['vOs', 'eOs', 'vLancamento', 'publicarOrcamento']);
+        $this->assertArrayHasKey('regularizarOrcamento', $comum);
+        $this->assertSame(0, $comum['regularizarOrcamento']);
+        $explicita = permissoesDoFormulario(['regularizarOrcamento']);
+        $this->assertSame(1, $explicita['regularizarOrcamento']);
+        $this->assertNotContains('regularizarOrcamento', permissoesMarcadas('{"publicarOrcamento":1}'));
+    }
+
     public function testCodigosCobremAMatrizRelatoriosESistema(): void
     {
         $codigos = permissoesCodigos();

@@ -40,6 +40,7 @@ class Trifase_orcamentos extends MY_Controller
             'garantia' => isset($os->garantia) && $os->garantia !== '' ? $os->garantia . ' dias' : '',
         ];
         $this->data['hashOrcamento'] = $this->orcamentos->hash($this->data['retratoOrcamento']);
+        $this->data['orcamentoEntregue'] = $this->orcamentos->entregue((int) $os->idOs);
         $this->data['orcamentoAtual'] = $this->orcamentos->atual((int) $os->idOs);
         if ($this->data['orcamentoAtual'] !== null) {
             $publicadoAnterior = json_decode($this->data['orcamentoAtual']->conteudo, true, 32, JSON_THROW_ON_ERROR);
@@ -101,13 +102,54 @@ class Trifase_orcamentos extends MY_Controller
                 $this->input->post('nome'),
                 $this->input->post('confirmar'),
                 $this->textoPost('operacao'),
-                (int) $this->session->userdata('id_admin')
+                (int) $this->session->userdata('id_admin'),
+                [
+                    'canal' => $this->input->post('canal'),
+                    'comunicado_em' => $this->input->post('comunicado_em'),
+                    'observacao' => $this->comunicacaoPost('observacao') ?? '',
+                ]
             );
             $this->session->set_flashdata('success', 'Resposta registrada na versão do orçamento.');
         } catch (DomainException $e) {
             $this->session->set_flashdata('error', $e->getMessage());
         } catch (RuntimeException $e) {
             $this->session->set_flashdata('error', 'Não foi possível confirmar a resposta. Confira o histórico antes de tentar novamente.');
+        }
+        redirect('os/visualizar/' . (int) $os->idOs . '?secao=compartilhamento#os-secoes');
+    }
+
+    public function regularizar_resposta($id = null)
+    {
+        if (! $this->permission->checkPermission($this->session->userdata('permissao'), 'vOs')
+            || ! $this->permission->checkPermission($this->session->userdata('permissao'), 'vLancamento')
+            || ! $this->permission->checkPermission($this->session->userdata('permissao'), 'eOs')
+            || ! $this->permission->checkPermission($this->session->userdata('permissao'), 'publicarOrcamento')
+            || ! $this->permission->checkPermission($this->session->userdata('permissao'), 'regularizarOrcamento')) {
+            show_error('Você não tem permissão para regularizar respostas de orçamento.', 403);
+        }
+        $this->somentePost();
+        $os = $this->ordem($id);
+        try {
+            $this->orcamentos->registrarRegularizacao(
+                (int) $os->idOs,
+                (int) $this->textoPost('versao'),
+                $this->input->post('decisao'),
+                $this->input->post('nome'),
+                $this->input->post('confirmar'),
+                $this->textoPost('operacao'),
+                (int) $this->session->userdata('id_admin'),
+                [
+                    'canal' => $this->input->post('canal'),
+                    'comunicado_em' => $this->input->post('comunicado_em'),
+                    'observacao' => $this->comunicacaoPost('observacao') ?? '',
+                    'justificativa' => $this->comunicacaoPost('justificativa'),
+                ]
+            );
+            $this->session->set_flashdata('success', 'Regularização administrativa tardia registrada com o horário atual. Entrega e status preservados.');
+        } catch (DomainException $e) {
+            return $this->falha($e->getMessage());
+        } catch (RuntimeException $e) {
+            return $this->falha('Não foi possível confirmar a regularização. Confira o histórico antes de tentar novamente.', 500);
         }
         redirect('os/visualizar/' . (int) $os->idOs . '?secao=compartilhamento#os-secoes');
     }
@@ -177,6 +219,17 @@ class Trifase_orcamentos extends MY_Controller
         if ($this->input->method(true) !== 'POST') {
             show_error('Use o formulário de orçamento.', 405);
         }
+    }
+
+    private function comunicacaoPost(string $campo): mixed
+    {
+        // O POST já foi limpo pelo CI. Estes formulários não enviam arquivos;
+        // só aceitar URL-encoded, preservando os bytes para validar no modelo.
+        $tipo = explode(';', (string) $this->input->server('CONTENT_TYPE'), 2)[0];
+        if (strtolower(trim($tipo)) !== 'application/x-www-form-urlencoded') {
+            throw new DomainException('Formato de comunicação não suportado. Use o formulário URL-encoded do orçamento.');
+        }
+        return $this->input->input_stream($campo, false);
     }
 
     private function textoPost(string $campo): string

@@ -271,7 +271,20 @@ final class TrifaseGarantiaOperacoesTest extends MaposTestCase
     public function testOrcamentoRequerDecisaoAprovadaEDadosAindaIguais(): void
     {
         require_once APPPATH.'models/Trifase_orcamento_model.php';
+        require_once APPPATH.'models/Trifase_entrega_model.php';
+        require_once APPPATH.'database/migrations/20261102000000_trifase_entregas.php';
         require_once APPPATH.'database/migrations/20261102020000_trifase_orcamentos.php';
+        $m=new class extends Migration_trifase_entregas {
+            public object $dbforge;
+        };
+        $m->db=$this->db;
+        $m->dbforge=new CI_DB_sqlite3_forge($this->db);
+        $m->up();
+        $entregas=new Trifase_entrega_model();
+        $entregas->db=$this->db;
+        $dadosEntrega=['recebedor'=>'Cliente sintético', 'entregue_em'=>date('Y-m-d\TH:i'), 'itens'=>'Placa de teste', 'terceiro'=>'0', 'confirmou_condicoes'=>'1'];
+        $entregaOrigem=$entregas->registrar(1, $dadosEntrega, 7, $this->chave('entregar-origem'));
+        $origemAntes=$this->db->where('idOs', 1)->get('os')->row_array();
         $m=new class extends Migration_trifase_orcamentos {
             public object $dbforge;
         };
@@ -294,6 +307,10 @@ final class TrifaseGarantiaOperacoesTest extends MaposTestCase
         try {
             $os=$this->db->where('idOs', $this->id)->get('os')->row();
             $versao=$q->publicar($this->id, $q->hash($q->retrato($os)), 7, $this->chave('publicar'));
+            $this->assertTrue($q->entregue(1));
+            $this->assertFalse($q->entregue($this->id));
+            $this->assertSame($origemAntes, $this->db->where('idOs', 1)->get('os')->row_array());
+            $this->assertSame($entregaOrigem, (int) $entregas->ativa(1)->id);
             $this->assertSame(1, $this->db->where('tipo', 'orcamento')->count_all_results('trifase_garantia_operacoes'));
             try {
                 $this->f->formalizar($this->id, 10000, 0, date('Y-m-d'), 7);
@@ -310,6 +327,17 @@ final class TrifaseGarantiaOperacoesTest extends MaposTestCase
             $this->db->where('idServicos_os', 1)->update('servicos_os', ['preco'=>100,'subTotal'=>100]);
             $r=$this->f->formalizar($this->id, 10000, 0, date('Y-m-d'), 7);
             $this->assertSame(10000, $r['saldo_c']);
+            $entregaRetorno=$entregas->registrar($this->id, $dadosEntrega, 7, $this->chave('entregar-retorno'));
+            try {
+                $q->publicar($this->id, $q->hash($q->retrato($this->db->where('idOs', $this->id)->get('os')->row())), 7, $this->chave('republicar-retorno'));
+                $this->fail('Publicou no retorno após sua própria entrega');
+            } catch (DomainException $e) {
+                $this->assertStringContainsString('entregue', $e->getMessage());
+                $this->assertSame($versao, (int) $q->atual($this->id)->id);
+                $this->assertSame('aprovar', $q->decisao($versao)->tipo);
+                $this->assertSame($entregaRetorno, (int) $entregas->ativa($this->id)->id);
+                $this->assertCount(1, $q->historico($this->id));
+            }
         } finally {
             if ($antes===null) {
                 unset($_ENV['TRIFASE_GARANTIA_OPERACOES_ENABLED']);

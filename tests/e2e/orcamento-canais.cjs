@@ -13,6 +13,21 @@ assert(
   "Only loopback lab URLs are permitted",
 );
 const checks = [];
+const note = "NOTA-PRIVADA-F001\nsegunda linha <b data-private-f001>HTML privado & sintético</b>";
+function multipartBody(data, field, value) {
+  const boundary = "mapos-pr4-" + require("crypto").randomBytes(12).toString("hex");
+  const parts = Object.entries(data).flatMap(([key, text]) => [
+    Buffer.from(`--${boundary}\r\nContent-Disposition: form-data; name="${key}"\r\n\r\n`),
+    key === field && value === null ? Buffer.from([0x4e, 0x6f, 0x74, 0x61, 0xff]) : Buffer.from(String(text)),
+    Buffer.from("\r\n"),
+  ]);
+  return { headers: { "Content-Type": "multipart/form-data; boundary=" + boundary },
+    data: Buffer.concat([...parts, Buffer.from(`--${boundary}--\r\n`)]) };
+}
+const state = () => JSON.parse(cp.execFileSync("docker", [
+  "exec", "-e", "CANAIS_MODE=assert", "mapos5-orcamento-lab-php", "php",
+  "-d", "variables_order=EGPCS", "/var/www/html/tests/Support/trifase_orcamento_canais.php",
+], { encoding: "utf8" }));
 const ok = (n) => {
   checks.push(n);
   console.log("PASS " + n);
@@ -134,7 +149,7 @@ const ok = (n) => {
         await f.locator("[name=nome]").fill("Cliente Sintetico F001");
         const max = await f.locator("[name=comunicado_em]").getAttribute("max");
         await f.locator("[name=comunicado_em]").fill(max);
-        await f.locator("[name=observacao]").fill("NOTA-PRIVADA-F001");
+        await f.locator("textarea[name=observacao]").fill(note);
         await f.locator("[name=confirmar]").check();
         const payload = await f.evaluate((el) =>
           Object.fromEntries(new FormData(el)),
@@ -158,6 +173,51 @@ const ok = (n) => {
           await bad.close();
           ok("missing CSRF 403");
         }
+        if (canal === "telefone" && decisao === "aprovar") {
+          const before = state();
+          for (const [label, value] of [
+            ["NUL", "nota\0invalida"], ["C0", "nota\x01invalida"],
+            ["tab", "nota\tinvalida"], ["CR isolado", "nota\rinvalida"],
+            ["DEL", "nota\x7finvalida"], ["C1", "nota\u0085invalida"],
+            ["bidi override", "nota\u202einvalida"],
+            ["bidi isolate", "nota\u2066invalida"],
+            ["size", "x".repeat(2001)], ["UTF8", null],
+          ]) {
+            await page.goto(share());
+            const invalid = { ...payload, operacao: require("crypto").randomBytes(16).toString("hex"),
+              MAPOS_TOKEN: await page.locator("[name=MAPOS_TOKEN]").first().inputValue(),
+              observacao: value === null ? "invalid" : value };
+            const response = await ctx.request.post(endpoint, value === null ? {
+              headers: { "Content-Type": "application/x-www-form-urlencoded" },
+              data: new URLSearchParams(invalid).toString().replace("observacao=invalid", "observacao=invalid%FF"),
+            } : { form: invalid });
+            assert.equal(response.status(), 200, "internal rejection must redirect to the ordinary screen");
+            assert((await response.text()).includes("observação válida"), label + " missing validation error");
+            assert.deepStrictEqual(state(), before, label + " changed persistent state");
+          }
+          ok("observation controls bidi invalid UTF8 and size rejected without writes");
+          for (const [label, value] of [["NUL", "Nota\0invalida"], ["C0", "Nota\x01invalida"],
+            ["DEL", "Nota\x7finvalida"], ["UTF8", null], ["plain", "Nota válida"]]) {
+            await page.goto(share());
+            const invalid = { ...payload, operacao: require("crypto").randomBytes(16).toString("hex"),
+              MAPOS_TOKEN: await page.locator("[name=MAPOS_TOKEN]").first().inputValue(),
+              observacao: value === null ? "invalid" : value };
+            const response = await ctx.request.post(endpoint, multipartBody(invalid, "observacao", value));
+            assert.equal(response.status(), 200);
+            assert((await response.text()).includes("Formato de comunicação não suportado"), "multipart " + label + " was not explicitly rejected");
+            assert.deepStrictEqual(state(), before, "multipart " + label + " wrote a decision");
+          }
+          ok("multipart plain NUL C0 DEL invalid UTF8 explicitly rejected with valid CSRF and no writes");
+          await page.goto(share());
+          await page.getByText("Registrar resposta do cliente", { exact: true }).click();
+          await f.evaluate((el, values) => {
+            for (const [key, value] of Object.entries(values)) {
+              if (["MAPOS_TOKEN", "confirmar"].includes(key)) continue;
+              el.elements.namedItem(key).value = value;
+            }
+          }, payload);
+          await f.locator("[name=confirmar]").check();
+        }
         await Promise.all([
           page.waitForNavigation(),
           f.getByRole("button", { name: "Salvar resposta" }).click(),
@@ -177,7 +237,16 @@ const ok = (n) => {
           .first()
           .inputValue();
         payload.MAPOS_TOKEN = csrf;
-        await ctx.request.post(endpoint, { form: payload });
+        // Exercise both wire encodings explicitly, not just browser serialization.
+        const saved = state();
+        for (const observation of [note, note.replace(/\n/g, "\r\n")]) {
+          await page.goto(share());
+          payload.MAPOS_TOKEN = await page.locator("[name=MAPOS_TOKEN]").first().inputValue();
+          const replayResponse = await ctx.request.post(endpoint, { form: { ...payload, observacao: observation } });
+          assert.equal(replayResponse.status(), 200);
+          assert((await replayResponse.text()).includes("Resposta registrada na versão"), "LF/CRLF replay must ACK, not just leave state unchanged");
+          assert.deepStrictEqual(state(), saved, "LF/CRLF replay duplicated or changed decision");
+        }
         ok(canal + " " + decisao + " UI and replay");
         await page.goto(
           base + "/index.php/trifase_orcamentos/visualizar/" + id,
@@ -187,7 +256,11 @@ const ok = (n) => {
             "NOTA-PRIVADA-F001",
           ),
         );
-        ok(canal + " " + decisao + " internal history");
+        const privateHtml = await page.content();
+        assert(privateHtml.includes("&lt;b data-private-f001&gt;"), "private HTML not escaped");
+        assert.equal(await page.locator("[data-private-f001]").count(), 0);
+        assert((await page.locator("body").textContent()).includes(note));
+        ok(canal + " " + decisao + " internal multiline escaped history");
         const pc = await browser.newContext(),
           pp = await pc.newPage();
         await pp.goto(publicUrl);
@@ -195,6 +268,14 @@ const ok = (n) => {
         const text = await pp.locator("body").innerText();
         assert(!text.includes("NOTA-PRIVADA-F001"));
         assert(!text.includes("Operador #" + fixture.operator));
+        const standalone = base + "/index.php/orcamento_publico/ver/" + new URL(publicUrl).pathname.split("/").pop();
+        for (const url of [publicUrl, standalone]) {
+          const response = await pc.request.get(url);
+          assert.equal(response.status(), 200);
+          const html = await response.text();
+          for (const secret of ["NOTA-PRIVADA-F001", "segunda linha", "data-private-f001"])
+            assert(!html.includes(secret), "private observation leaked in public HTML");
+        }
         assert(
           text.includes(
             canal === "telefone"
@@ -318,7 +399,7 @@ const ok = (n) => {
     for (const row of sql.decisions) {
       assert.equal(row.usuario_id, fixture.operator);
       assert(row.comunicado_em && row.criado_em);
-      assert.equal(row.observacao, "NOTA-PRIVADA-F001");
+      assert.equal(row.observacao, note, "CRLF must persist canonically as LF");
     }
     ok("MySQL six decisions persisted exactly once with operator and dates");
     fs.writeFileSync(

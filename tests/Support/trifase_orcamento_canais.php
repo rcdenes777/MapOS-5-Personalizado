@@ -54,6 +54,11 @@ if ($mode==='create') {
     echo json_encode(['operator'=>$u,'permissions'=>json_decode($p['permissoes'], true),'pending'=>migracoesPendentes($ci->db),'db_migration'=>$ci->db->get('migrations')->row()->version], JSON_PRETTY_PRINT);
 } else {
     $id=json_decode(file_get_contents('/lab/orcamento-canais-private.json'), true)['os'];
-    $rows=$ci->db->select('tipo,usuario_id,canal,comunicado_em,criado_em,observacao')->where('os_id', $id)->where_in('tipo', ['aprovar','recusar'])->get('trifase_orcamento_eventos')->result_array();
-    echo json_encode(['os'=>$id,'decisions'=>$rows,'count'=>count($rows)], JSON_PRETTY_PRINT);
+    $rows=$ci->db->select('tipo,usuario_id,canal,comunicado_em,criado_em,observacao')->where('os_id', $id)->where_in('tipo', ['aprovar','recusar'])->order_by('id')->get('trifase_orcamento_eventos')->result_array();
+    $snapshot=[];
+    foreach (['trifase_orcamento_eventos','trifase_orcamento_versoes','trifase_orcamento_estado','trifase_publico_links'] as $table) {
+        // Only a digest leaves the process: link/token fields never enter artifacts.
+        $snapshot[$table]=hash('sha256', json_encode($ci->db->where('os_id', $id)->get($table)->result_array(), JSON_THROW_ON_ERROR));
+    }
+    echo json_encode(['os'=>$id,'decisions'=>$rows,'count'=>count($rows),'snapshot'=>$snapshot], JSON_PRETTY_PRINT);
 }

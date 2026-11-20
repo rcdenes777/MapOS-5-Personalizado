@@ -31,6 +31,16 @@ const fixture = (mode) =>
       { encoding: "utf8" },
     ),
   );
+function multipartBody(data, field, value) {
+  const boundary = "mapos-pr4-" + crypto.randomBytes(12).toString("hex");
+  const parts = Object.entries(data).flatMap(([key, text]) => [
+    Buffer.from(`--${boundary}\r\nContent-Disposition: form-data; name="${key}"\r\n\r\n`),
+    key === field && value === null ? Buffer.from([0x4e, 0x6f, 0x74, 0x61, 0xff]) : Buffer.from(String(text)),
+    Buffer.from("\r\n"),
+  ]);
+  return { headers: { "Content-Type": "multipart/form-data; boundary=" + boundary },
+    data: Buffer.concat([...parts, Buffer.from(`--${boundary}--\r\n`)]) };
+}
 const ok = (n) => {
     checks.push(n);
     console.log("PASS " + n);
@@ -115,6 +125,21 @@ const ok = (n) => {
       );
       ok("layout " + name + " no horizontal overflow");
     }
+    const budgetPanel = (os = id) => base + "/index.php/trifase_orcamentos/visualizar/" + os;
+    await visit(normal.page, budgetPanel());
+    const publicationForm = normal.page.locator('form[action*="/publicar/"]');
+    assert.equal(await publicationForm.count(), 1);
+    await publicationForm.locator("[name=confirmar]").check();
+    const publicationReplay = await publicationForm.evaluate(el => Object.fromEntries(new FormData(el)));
+    const publicationEndpoint = await publicationForm.getAttribute("action");
+    await Promise.all([
+      normal.page.waitForNavigation(),
+      publicationForm.getByRole("button", { name: "Publicar nova versão", exact: true }).click(),
+    ]);
+    const published = fixture("assert").current;
+    assert.equal(published.budget_versions.length, 2);
+    assert.equal(published.budget_events.filter(e => e.tipo === "publicar").length, 2);
+    ok("real publication UI captured for historical replay after delivery");
     await visit(normal.page);
     const internal = normal.page.locator('form[action*="registrar_resposta"]');
     assert.equal(await internal.count(), 1);
@@ -212,6 +237,21 @@ const ok = (n) => {
       ),
     );
     ok("normal forms absent and read-only notice after delivery");
+    async function assertPublicationBlocked(label) {
+      await visit(normal.page, budgetPanel());
+      assert.equal(await normal.page.locator('form[action*="/publicar/"]').count(), 0);
+      assert.equal(await normal.page.getByRole("button", { name: "Publicar nova versão", exact: true }).count(), 0);
+      const before = fixture("assert").current;
+      const denied = await post(normal, publicationEndpoint, { ...publicationReplay, operacao: op() });
+      assert.equal(denied.status(), 422, "direct publication must be denied, not ACKed");
+      assert(/entreg/i.test(await denied.text()), "delivery denial missing");
+      assert.deepStrictEqual(fixture("assert").current, before, "denied publication changed version decision physical state or link");
+      const ack = await post(normal, publicationEndpoint, publicationReplay);
+      assert([302, 303].includes(ack.status()), "historical publication replay should ACK");
+      assert.deepStrictEqual(fixture("assert").current, before, "historical publication replay duplicated or changed state");
+      ok(label + " publication hidden direct CSRF POST denied historical replay ACK unchanged SQL");
+    }
+    await assertPublicationBlocked("delivered pending version");
     await visit(pub, budgetUrl);
     assert.equal(await pub.locator('form[action*="responder"]').count(), 0);
     assert(
@@ -249,9 +289,9 @@ const ok = (n) => {
       confirmar: "1",
       canal: "telefone",
       comunicado_em: deliveryTime,
-      observacao: "NOTA-PRIVADA-F002",
+      observacao: "NOTA-PRIVADA-F002\nsegunda linha <b data-private-f002-note>HTML privado & sintético</b>",
       justificativa:
-        "JUSTIFICATIVA-PRIVADA-F002 comunicacao confirmada antes da retirada",
+        "JUSTIFICATIVA-PRIVADA-F002\ncomunicacao confirmada <i data-private-f002-reason>antes da retirada & privada</i>",
       operacao: op(),
     };
     r = await post(
@@ -293,6 +333,48 @@ const ok = (n) => {
       1,
     );
     ok("regularizer exclusive late form visible");
+    const beforeInvalid = fixture("assert").current;
+    // A fresh valid-CSRF request per case proves text validation, not CSRF rejection.
+    for (const field of ["observacao", "justificativa"]) {
+      for (const [label, value] of [
+        ["NUL", "texto\0invalido"], ["C0", "texto\x01invalido"],
+        ["tab", "texto\tinvalido"], ["CR isolado", "texto\rinvalido"],
+        ["DEL", "texto\x7finvalido"], ["C1", "texto\u0085invalido"],
+        ["bidi override", "texto\u202einvalido"], ["bidi isolate", "texto\u2066invalido"],
+        ["size", "x".repeat(2001)], ["UTF8", null],
+      ]) {
+        await visit(reg.page);
+        const invalid = { ...data, operacao: op(), MAPOS_TOKEN: await csrf(reg.page),
+          [field]: value === null ? "invalid" : value };
+        const response = await reg.ctx.request.post(endpoint, {
+          headers: { "X-Requested-With": "XMLHttpRequest", "Content-Type": "application/x-www-form-urlencoded" },
+          data: new URLSearchParams(invalid).toString().replace(field + "=invalid", field + "=invalid" + (value === null ? "%FF" : "")),
+          maxRedirects: 0,
+        });
+        assert.equal(response.status(), 422, field + " " + label + " should be rejected");
+        assert((await response.text()).includes(field === "observacao" ? "observação válida" : "justificativa válida"));
+        assert.deepStrictEqual(fixture("assert").current, beforeInvalid, field + " " + label + " wrote state");
+      }
+    }
+    for (const field of ["observacao", "justificativa"]) {
+      for (const [label, value] of [["NUL", "Texto\0invalido"], ["C0", "Texto\x01invalido"],
+        ["DEL", "Texto\x7finvalido"], ["UTF8", null], ["plain", "Texto válido"]]) {
+        await visit(reg.page);
+        const invalid = { ...data, operacao: op(), MAPOS_TOKEN: await csrf(reg.page), [field]: value === null ? "invalid" : value };
+        const response = await reg.ctx.request.post(endpoint, { ...multipartBody(invalid, field, value), maxRedirects: 0 });
+        assert.equal(response.status(), 422, "multipart " + field + " " + label + " must fail");
+        assert((await response.text()).includes("Formato de comunicação não suportado"));
+        assert.deepStrictEqual(fixture("assert").current, beforeInvalid, "multipart " + field + " " + label + " wrote state");
+      }
+    }
+    ok("multipart rejected explicitly for both private fields with valid CSRF and no writes");
+    await visit(reg.page);
+    const withoutCsrf = { ...data, operacao: op() };
+    delete withoutCsrf.MAPOS_TOKEN;
+    r = await reg.ctx.request.post(endpoint, { form: withoutCsrf, maxRedirects: 0 });
+    assert.equal(r.status(), 403);
+    assert.deepStrictEqual(fixture("assert").current, beforeInvalid);
+    ok("both private textareas reject controls bidi invalid UTF8 size and missing CSRF without writes");
     r = await post(reg, endpoint, {
       ...data,
       comunicado_em: "2099-01-01T12:00",
@@ -350,7 +432,7 @@ const ok = (n) => {
       .click();
     const form = reg.page.locator('form[action*="regularizar_resposta"]');
     for (const key of ["nome", "comunicado_em", "observacao", "justificativa"])
-      await form.locator("[name=" + key + "]").fill(data[key]);
+      await form.locator((["observacao", "justificativa"].includes(key) ? "textarea" : "") + "[name=" + key + "]").fill(data[key]);
     await form.locator("[name=decisao]").selectOption("aprovar");
     await form.locator("[name=canal]").selectOption("telefone");
     await form.locator("[name=confirmar]").check();
@@ -372,7 +454,18 @@ const ok = (n) => {
         "NOTA-PRIVADA-F002",
       ),
     );
-    ok("real regularization UI stores late decision and private history");
+    for (const [field, marker] of [["observacao", "b data-private-f002-note"], ["justificativa", "i data-private-f002-reason"]]) {
+      assert((await reg.page.locator("body").textContent()).includes(data[field]));
+      assert((await reg.page.content()).includes("&lt;" + marker + "&gt;"));
+    }
+    assert.equal(await reg.page.locator("[data-private-f002-note], [data-private-f002-reason]").count(), 0);
+    ok("real regularization UI stores multiline escaped private history");
+    // Test normalization before idempotency hashing for BOTH textarea fields.
+    const normalized = fixture("assert").current;
+    const crlfReplay = { ...replay, observacao: data.observacao.replace(/\n/g, "\r\n"), justificativa: data.justificativa.replace(/\n/g, "\r\n") };
+    r = await post(reg, endpoint, crlfReplay);
+    assert([302, 303].includes(r.status()));
+    assert.deepStrictEqual(fixture("assert").current, normalized, "CRLF replay wrote a duplicate");
     r = await post(reg, endpoint, replay);
     assert([302, 303].includes(r.status()));
     ok("identical regularization replay idempotent");
@@ -382,6 +475,7 @@ const ok = (n) => {
     r = await post(reg, endpoint, { ...replay, operacao: op() });
     assert.equal(r.status(), 422);
     ok("second decision new key rejected 422");
+    await assertPublicationBlocked("delivered approved version");
     await visit(reg.page);
     await screenshot(reg.page, "regularization-desktop");
     await reg.page.setViewportSize({ width: 393, height: 852 });
@@ -395,9 +489,14 @@ const ok = (n) => {
       "F002 regularizador PRIVADO",
     ])
       assert(!publicText.includes(secret));
-    ok(
-      "public late decision consultable without private notes justification or operator",
-    );
+    for (const url of [publicUrl, standalone]) {
+      const response = await pubctx.request.get(url);
+      assert.equal(response.status(), 200);
+      const html = await response.text();
+      for (const secret of ["NOTA-PRIVADA-F002", "JUSTIFICATIVA-PRIVADA-F002", "data-private-f002-note", "data-private-f002-reason", "F002 regularizador PRIVADO"])
+        assert(!html.includes(secret), "private multiline text leaked in public HTML");
+    }
+    ok("both public pages omit multiline notes justification HTML and operator");
     await screenshot(pub, "public-desktop");
     await pub.setViewportSize({ width: 393, height: 852 });
     await screenshot(pub, "public-mobile393");
@@ -417,6 +516,10 @@ const ok = (n) => {
     );
     assert.equal(decision.observacao, data.observacao);
     assert.equal(decision.justificativa, data.justificativa);
+    assert.deepStrictEqual(sql.current.budget_versions, afterDelivery.current.budget_versions);
+    assert.deepStrictEqual(sql.current.budget_state, afterDelivery.current.budget_state);
+    assert.equal(sql.current.link_digest, afterDelivery.current.link_digest);
+    assert.deepStrictEqual(sql.current.budget_events.filter(e => e.tipo === "publicar"), afterDelivery.current.budget_events);
     for (const key of [
       "os",
       "delivery",
@@ -448,7 +551,50 @@ const ok = (n) => {
     ok(
       "SQL exactly one late decision operator timestamps delivery and all OS finance stock invariants intact",
     );
-    fs.writeFileSync(lab + "/f002-sql.json", JSON.stringify(sql, null, 2));
+    // Positive boundary: a finished OS without its OWN active delivery can still publish.
+    const finishedBefore = fixture("assert").finished;
+    assert.equal(finishedBefore.os.status, "Finalizado");
+    assert.equal(finishedBefore.delivery.length, 0);
+    await visit(normal.page, budgetPanel(f.finished));
+    const finishedForm = normal.page.locator('form[action*="/publicar/"]');
+    assert.equal(await finishedForm.count(), 1);
+    await finishedForm.locator("[name=confirmar]").check();
+    await Promise.all([normal.page.waitForNavigation(), finishedForm.getByRole("button", { name: "Publicar nova versão", exact: true }).click()]);
+    const finishedAfter = fixture("assert").finished;
+    assert.equal(finishedAfter.budget_versions.length, 1);
+    assert.equal(finishedAfter.budget_events.filter(e => e.tipo === "publicar").length, 1);
+    for (const key of ["os", "delivery", "delivery_state", "history", "services", "products", "stock", "financial", "link_digest"])
+      assert.deepStrictEqual(finishedAfter[key], finishedBefore[key], "finished publication mutated " + key);
+    ok("Finalizado without delivery publishes through UI and preserves physical workflow state");
+    // Administrative correction is an audited HTTP operation, never a fixture DB edit.
+    r = await post(normal, base + "/index.php/trifase_entregas/cancelar/" + id, {
+      evento_id: String(sql.current.delivery[0].id), motivo: "F002 correcao sintetica de entrega indevida", operacao: op(),
+    });
+    assert.equal(r.status(), 200);
+    assert.equal((await r.json()).result, true);
+    const corrected = fixture("assert").current;
+    assert.equal(corrected.delivery.length, 2);
+    assert.equal(corrected.delivery[1].tipo, "cancelar");
+    assert.deepStrictEqual(corrected.delivery_state, [], "correction must clear the active own-delivery pointer");
+    assert.deepStrictEqual(corrected.budget_versions, sql.current.budget_versions);
+    assert.deepStrictEqual(corrected.budget_events, sql.current.budget_events);
+    for (const key of ["budget_state", "os", "history", "services", "products", "stock", "financial", "link_digest"])
+      assert.deepStrictEqual(corrected[key], sql.current[key], "delivery correction mutated " + key);
+    await visit(normal.page, budgetPanel());
+    const reopened = normal.page.locator('form[action*="/publicar/"]');
+    assert.equal(await reopened.count(), 1);
+    await reopened.locator("[name=confirmar]").check();
+    await Promise.all([normal.page.waitForNavigation(), reopened.getByRole("button", { name: "Publicar nova versão", exact: true }).click()]);
+    const republished = fixture("assert").current;
+    assert.equal(republished.budget_versions.length, corrected.budget_versions.length + 1);
+    assert.equal(republished.budget_events.length, corrected.budget_events.length + 1);
+    assert.equal(republished.budget_events.at(-1).tipo, "publicar");
+    assert.notEqual(republished.budget_state[0].versao_id, corrected.budget_state[0].versao_id);
+    assert.deepStrictEqual(republished.budget_events.filter(e => ["aprovar", "recusar"].includes(e.tipo)), sql.decisions);
+    for (const key of ["os", "delivery", "delivery_state", "history", "services", "products", "stock", "financial", "link_digest"])
+      assert.deepStrictEqual(republished[key], corrected[key], "republication mutated " + key);
+    ok("audited delivery correction re-enables new publication preserving approval history and physical state");
+    fs.writeFileSync(lab + "/f002-sql.json", JSON.stringify({ ...sql, corrected, republished, finishedAfter }, null, 2));
     fs.writeFileSync(
       lab + "/f002-results.json",
       JSON.stringify(

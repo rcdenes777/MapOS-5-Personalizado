@@ -1,0 +1,47 @@
+{
+  "source_sha": "67d628a275a52cce90bb59c03c887d9b2163a65b",
+  "implementation_branch": "feat/orcamento-canais-entrega",
+  "phpunit": {
+    "name": "/app/phpunit.xml",
+    "tests": "1982",
+    "assertions": "9990",
+    "errors": "0",
+    "failures": "0",
+    "skipped": "0",
+    "time": "14.066442"
+  },
+  "playwright": {
+    "f001": 27,
+    "f002_regularizacao": 26,
+    "total_checks": 53
+  },
+  "mysql": {
+    "engine": "8.4.11",
+    "passed": 21,
+    "failed": 0,
+    "skipped": 0,
+    "failures": [],
+    "skips": []
+  },
+  "production_changed": false,
+  "migrations_production": false,
+  "deploy_executed": false,
+  "code_sha256": {
+    "application/config/permissions_map.php": "a112127d54b2f46591caa4760d28a6181b7756fca56b74a30ca4528658325524",
+    "application/controllers/Orcamento_publico.php": "6d4ba64aacecb7c63c1f2f958e1f3cb5b90d66ada21217f2609c7698cd791c85",
+    "application/controllers/Os.php": "04cf4e5fe329700d960cfa92d7ecaad96863d8942c320efd2fe07b5cb48fcc3b",
+    "application/controllers/Publico.php": "5430adf615551a8dc8f973193cf598f2a5903054ee12e5bff61147c8c3e4a805",
+    "application/controllers/Trifase_orcamentos.php": "c8a2755bec464337afb10c88adcc0d7395168bb68522a2edeeeed0d01354bf0e",
+    "application/helpers/usuarios_helper.php": "6e325dd3202d866ea8616b713c6ad6f15665cce6c5da85e65613a39675f8d050",
+    "application/models/Trifase_orcamento_model.php": "7e89f490b283f40c287d9c5ce3b15f27c37e4f12ec2165b7fce7b1c6628ef04b",
+    "application/views/trifase/orcamento-atendimento.php": "05518710911bcb057acc03f8041e6c5f4c200a1a7eb69b603024a5d15ef9c773",
+    "application/views/trifase/orcamento-condicoes.php": "060cb7ed2c3adb9957a66b29b4a0f2e92240e58df3ac3ff3dc9c85c84a2a9d7a",
+    "application/views/trifase/orcamento-conteudo.php": "a4e2ea362df9fbd5d320fa8cf2b9d4fc5902568bf184768b1ce911d174fd2be0",
+    "application/views/trifase/orcamento-decisao.php": "9d4d37bbb754ef1c803ba2071cf822a1be0eff364da3a0c3515318137390ddc8",
+    "application/views/trifase/orcamento-itens.php": "35d2fce4575c3bf72db8dd61ad4ac426a2d83ca5f9a5f9a9d0158ad6563560f4",
+    "application/views/trifase/orcamento-painel.php": "b8e66ec8c32df0c635dd8b81320c8ae8b6bb89ada91b3b75a5693547be739973",
+    "application/views/trifase/orcamento-publico.php": "9482da330b37a0c00d34305bec87425943488e3ade2374c9e995d16649b4234f",
+    "application/views/trifase/orcamento-resposta-campos.php": "5749ecddd05374bb2207e3692fcd26b638aae1842a06e5fe478066866b06f190",
+    "application/views/trifase/orcamento-resumo.php": "2b359ba58a59abb9d9b4625454f0340566952aa74a812451678d7dcd45c3597e"
+  }
+}

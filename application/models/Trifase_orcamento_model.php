@@ -182,14 +182,20 @@ class Trifase_orcamento_model extends CI_Model
         if ($instante === false || $instante->format('Y-m-d\TH:i') !== $data || $instante->getTimestamp() > time()) {
             throw new DomainException('Informe uma data de comunicação válida, não futura.');
         }
+        // Canonizar antes do limite, do hash idempotente e da persistência.
+        foreach (['observacao', 'justificativa'] as $campo) {
+            if (isset($comunicacao[$campo]) && is_string($comunicacao[$campo])) {
+                $comunicacao[$campo] = str_replace("\r\n", "\n", $comunicacao[$campo]);
+            }
+        }
         if (array_key_exists('observacao', $comunicacao)
             && (! is_string($comunicacao['observacao']) || ! mb_check_encoding($comunicacao['observacao'], 'UTF-8')
-                || mb_strlen($comunicacao['observacao']) > 2000 || preg_match('/[\x00-\x1f\x7f\x{0080}-\x{009f}\x{202a}-\x{202e}\x{2066}-\x{2069}]/u', $comunicacao['observacao']))) {
+                || mb_strlen($comunicacao['observacao']) > 2000 || preg_match('/[\x00-\x09\x0b-\x1f\x7f\x{0080}-\x{009f}\x{202a}-\x{202e}\x{2066}-\x{2069}]/u', $comunicacao['observacao']))) {
             throw new DomainException('Informe uma observação válida com até 2000 caracteres, sem controles.');
         }
         $justificativa = $comunicacao['justificativa'] ?? null;
         if ($regularizacao && (! is_string($justificativa) || ! mb_check_encoding($justificativa, 'UTF-8')
-            || preg_match('/[\x00-\x1f\x7f\x{0080}-\x{009f}\x{202a}-\x{202e}\x{2066}-\x{2069}]/u', $justificativa)
+            || preg_match('/[\x00-\x09\x0b-\x1f\x7f\x{0080}-\x{009f}\x{202a}-\x{202e}\x{2066}-\x{2069}]/u', $justificativa)
             || mb_strlen(trim($justificativa)) < 5 || mb_strlen($justificativa) > 2000)) {
             throw new DomainException('Informe uma justificativa válida de 5 a 2000 caracteres, sem controles.');
         }

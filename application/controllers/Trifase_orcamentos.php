@@ -106,7 +106,7 @@ class Trifase_orcamentos extends MY_Controller
                 [
                     'canal' => $this->input->post('canal'),
                     'comunicado_em' => $this->input->post('comunicado_em'),
-                    'observacao' => $this->input->post('observacao') ?? '',
+                    'observacao' => $this->comunicacaoPost('observacao') ?? '',
                 ]
             );
             $this->session->set_flashdata('success', 'Resposta registrada na versão do orçamento.');
@@ -141,8 +141,8 @@ class Trifase_orcamentos extends MY_Controller
                 [
                     'canal' => $this->input->post('canal'),
                     'comunicado_em' => $this->input->post('comunicado_em'),
-                    'observacao' => $this->input->post('observacao') ?? '',
-                    'justificativa' => $this->input->post('justificativa'),
+                    'observacao' => $this->comunicacaoPost('observacao') ?? '',
+                    'justificativa' => $this->comunicacaoPost('justificativa'),
                 ]
             );
             $this->session->set_flashdata('success', 'Regularização administrativa tardia registrada com o horário atual. Entrega e status preservados.');
@@ -219,6 +219,17 @@ class Trifase_orcamentos extends MY_Controller
         if ($this->input->method(true) !== 'POST') {
             show_error('Use o formulário de orçamento.', 405);
         }
+    }
+
+    private function comunicacaoPost(string $campo): mixed
+    {
+        // O POST já foi limpo pelo CI. Estes formulários não enviam arquivos;
+        // só aceitar URL-encoded, preservando os bytes para validar no modelo.
+        $tipo = explode(';', (string) $this->input->server('CONTENT_TYPE'), 2)[0];
+        if (strtolower(trim($tipo)) !== 'application/x-www-form-urlencoded') {
+            throw new DomainException('Formato de comunicação não suportado. Use o formulário URL-encoded do orçamento.');
+        }
+        return $this->input->input_stream($campo, false);
     }
 
     private function textoPost(string $campo): string

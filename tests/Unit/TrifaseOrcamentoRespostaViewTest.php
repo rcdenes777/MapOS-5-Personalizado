@@ -111,6 +111,25 @@ final class TrifaseOrcamentoRespostaViewTest extends \PHPUnit\Framework\TestCase
         $this->assertStringContainsString('Versões e respostas', $entregue);
     }
 
+    public function testHistoricoMultilinhaEscapaHtmlENaoExibeNotasPrivadasAoPublico(): void
+    {
+        $decisao = $this->decisao();
+        $decisao->observacao = "NOTA_PRIVADA\n<script>nota</script>";
+        $decisao->regularizacao_tardia = 1;
+        $decisao->justificativa = "JUSTIFICATIVA_PRIVADA\n<img src=x onerror=alert(1)>";
+        $decisao->entrega_id = 9;
+        $interno = $this->renderizar('trifase/orcamento-resumo', ['pilotoOrcamentoDecisao' => $decisao]);
+        // O hook de compressão preserva LF em pre, mas o elimina em p.
+        $this->assertSame(2, substr_count($interno, '<pre class='));
+        $this->assertStringContainsString("NOTA_PRIVADA\n&lt;script&gt;nota&lt;/script&gt;", $interno);
+        $this->assertStringContainsString("JUSTIFICATIVA_PRIVADA\n&lt;img src=x onerror=alert(1)&gt;", $interno);
+        $this->assertStringNotContainsString('<script>nota</script>', $interno);
+        $publico = $this->renderizar('trifase/orcamento-conteudo', ['decisaoOrcamento' => $decisao]);
+        foreach (['NOTA_PRIVADA', 'JUSTIFICATIVA_PRIVADA', '<script>nota</script>', 'onerror'] as $privado) {
+            $this->assertStringNotContainsString($privado, $publico);
+        }
+    }
+
     private function decisao(): object
     {
         return (object) ['tipo' => 'aprovar', 'nome' => '<script>Pessoa</script>', 'usuario_id' => 7,

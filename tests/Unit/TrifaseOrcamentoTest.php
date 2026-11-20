@@ -118,6 +118,68 @@ final class TrifaseOrcamentoTest extends MaposTestCase
         $this->modelo->publicar(1, $this->modelo->hash($this->retrato()), 7, $this->chave('publicar'), ['diagnostico' => 'Outro diagnóstico']);
     }
 
+    public static function quebrasDeLinha(): array
+    {
+        return ['normal LF' => [false, "\n"], 'normal CRLF' => [false, "\r\n"],
+            'tardia LF' => [true, "\n"], 'tardia CRLF' => [true, "\r\n"]];
+    }
+
+    #[\PHPUnit\Framework\Attributes\DataProvider('quebrasDeLinha')]
+    public function testComunicacaoMultilinhaNormalizaAntesDoLimiteEHash(bool $tardia, string $quebra): void
+    {
+        $versao = $this->publicar();
+        if ($tardia) {
+            $this->entregar();
+        }
+        $fim = "\nConversa registrada.\nFim";
+        $canonico = str_repeat('é', 2000 - mb_strlen($fim)) . $fim;
+        $texto = str_replace("\n", $quebra, $canonico);
+        $dados = ['canal' => 'whatsapp', 'comunicado_em' => date('Y-m-d\TH:i'), 'observacao' => $texto];
+        if ($tardia) {
+            $dados['justificativa'] = $texto;
+        }
+        $metodo = $tardia ? 'registrarRegularizacao' : 'registrarRespostaInterna';
+        $chave = $this->chave('multilinha');
+        $this->modelo->$metodo(1, $versao, 'aprovar', 'Cliente QA', '1', $chave, 7, $dados);
+        $evento = (array) $this->modelo->decisao($versao);
+        $this->assertSame($canonico, $evento['observacao']);
+        $this->assertSame(2000, mb_strlen($evento['observacao']));
+        $this->assertSame($tardia ? $canonico : null, $evento['justificativa']);
+        $dados['observacao'] = $canonico;
+        if ($tardia) {
+            $dados['justificativa'] = $canonico;
+        }
+        $this->modelo->$metodo(1, $versao, 'aprovar', 'Cliente QA', '1', $chave, 7, $dados);
+        $this->assertSame($evento, (array) $this->modelo->decisao($versao));
+        $this->assertCount(2, $this->modelo->eventos(1));
+    }
+
+    public function testMultilinhaContinuaNegandoControlesBidiUtf8ETamanhoSemEfeitos(): void
+    {
+        $versao = $this->publicar();
+        $this->entregar();
+        $dados = ['canal' => 'telefone', 'comunicado_em' => date('Y-m-d\TH:i'), 'observacao' => 'Nota válida', 'justificativa' => 'Motivo válido'];
+        $invalidos = [null, [], 1, "\xff", str_repeat('é', 2001)];
+        foreach (array_merge(range(0, 31), [127], range(128, 159), range(0x202a, 0x202e), range(0x2066, 0x2069)) as $controle) {
+            if ($controle !== 10) {
+                $invalidos[] = 'Texto' . mb_chr($controle, 'UTF-8') . 'inválido';
+            }
+        }
+        $antes = $this->estadoOperacional();
+        foreach (['observacao', 'justificativa'] as $campo) {
+            foreach ($invalidos as $valor) {
+                try {
+                    $this->modelo->registrarRegularizacao(1, $versao, 'aprovar', 'Cliente QA', '1', $this->chave('controle'), 7, array_replace($dados, [$campo => $valor]));
+                    $this->fail('Aceitou valor proibido em ' . $campo);
+                } catch (DomainException $e) {
+                    $this->assertNull($this->modelo->decisao($versao));
+                    $this->assertSame($antes, $this->estadoOperacional());
+                    $this->assertCount(1, $this->modelo->eventos(1));
+                }
+            }
+        }
+    }
+
     public function testEntregaAtivaBloqueiaAmbosCanaisEDecisoesSemRevogarConsulta(): void
     {
         $versao = $this->publicar();
@@ -303,7 +365,7 @@ final class TrifaseOrcamentoTest extends MaposTestCase
         $this->entregar();
         $dados = ['canal' => 'telefone', 'comunicado_em' => date('Y-m-d\TH:i', time() - 3600), 'justificativa' => 'Registro atrasado'];
         $invalidos = [];
-        foreach ([null, [], 1, '', 'abcd', str_repeat('é', 2001), "motivo\0", "motivo\n", "\xff", "motivo\u{202e}"] as $valor) {
+        foreach ([null, [], 1, '', 'abcd', str_repeat('é', 2001), "motivo\0", "motivo\r", "\xff", "motivo\u{202e}"] as $valor) {
             $invalidos[] = array_replace($dados, ['justificativa' => $valor]);
         }
         foreach (['2026-02-30T10:00', '2026-11-19 10:00', [], date('Y-m-d\TH:i', time() + 120), date('Y-m-d\TH:i', time() - 10800)] as $valor) {
@@ -555,7 +617,7 @@ final class TrifaseOrcamentoTest extends MaposTestCase
             '2026-11-19T10:00:00', '2026-1-01T10:00', "2026-11-19T10:00\n", date('Y-m-d\TH:i', time() + 120)] as $data) {
             $invalidas[] = array_replace($valida, ['comunicado_em' => $data]);
         }
-        foreach ([[], null, 1, str_repeat('é', 2001), "nota\0", "nota\n", "nota\x7f", "\xff"] as $nota) {
+        foreach ([[], null, 1, str_repeat('é', 2001), "nota\0", "nota\r", "nota\x7f", "\xff"] as $nota) {
             $invalidas[] = array_replace($valida, ['observacao' => $nota]);
         }
         foreach ($invalidas as $dados) {

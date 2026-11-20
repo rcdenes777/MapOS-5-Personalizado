@@ -118,6 +118,24 @@ final class TrifaseOrcamentoTest extends MaposTestCase
         $this->modelo->responder(1, $this->token, $versao, 'recusar', 'Cliente QA', '1', $chave);
     }
 
+    public function testReenvioInternoAposEntregaPreservaMetadadosEOperadorSemNovoEvento(): void
+    {
+        $versao = $this->publicar();
+        $dados = ['canal' => 'telefone', 'comunicado_em' => date('Y-m-d\TH:i'), 'observacao' => 'Referência interna QA'];
+        $chave = $this->chave('interna-antes-entrega');
+        $this->modelo->registrarRespostaInterna(1, $versao, 'aprovar', 'Cliente QA', '1', $chave, 7, $dados);
+        $evento = (array) $this->modelo->decisao($versao);
+        [$entregas, $entrega] = $this->entregar();
+        $antes = $this->estadoOperacional();
+        $this->modelo->registrarRespostaInterna(1, $versao, 'aprovar', 'Cliente QA', '1', $chave, 7, $dados);
+        $this->assertSame($evento, (array) $this->modelo->decisao($versao));
+        $this->assertCount(2, $this->modelo->eventos(1));
+        $this->assertSame($antes, $this->estadoOperacional());
+        $this->assertSame($entrega, (int) $entregas->ativa(1)->id);
+        $this->expectException(DomainException::class);
+        $this->modelo->registrarRespostaInterna(1, $versao, 'aprovar', 'Cliente QA', '1', $chave, 7, array_replace($dados, ['canal' => 'whatsapp']));
+    }
+
     public function testCorrecaoDeEntregaReavaliaVersaoETokenSemAceitarFormularioObsoleto(): void
     {
         $antiga = $this->publicar();

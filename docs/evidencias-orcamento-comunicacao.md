@@ -1,5 +1,7 @@
 # Evidências — comunicação, entrega e regularização de orçamento
 
+Este registro preserva os ensaios da entrega original. A investigação e os novos testes do PR #4 estão em [Revisão corretiva do PR #4](revisao-corretiva-pr4.md); o fechamento no PR vincula a repetição final ao novo SHA.
+
 ## Origem e limites
 
 - `SOURCE_SHA`: `67d628a275a52cce90bb59c03c887d9b2163a65b`.
@@ -77,9 +79,9 @@ No ambiente desta missão o PHP foi executado em `mapos5-preview-php`; o runner 
 
 Para repetir toda a suíte sem root, montar um diretório gravável novo em `/app/assets/uploads/temp`, definir `TMPDIR` e o cache/JUnit em outro diretório de evidências gravável, usando `docker run --user "$(id -u):$(id -g)" --network none`. Não mudar permissões de uma instalação real para testar.
 
-## Decisão administrativa pendente
+## Decisão administrativa — aplicação pendente
 
-A permissão `regularizarOrcamento` não é concedida a nenhum grupo pelas migrations. Recomendação: concessão apenas ao grupo administrativo designado expressamente pelo proprietário; não incluir Financeiro ou Técnico automaticamente. Essa decisão e qualquer ativação em produção ficam para outra missão autorizada.
+A permissão `regularizarOrcamento` não é concedida a nenhum grupo pelas migrations. Na missão corretiva do PR #4, o proprietário decidiu que a futura concessão será inicialmente **apenas ao grupo Administrador**, sem inclusão automática de Financeiro ou Técnico. A aplicação dessa decisão em produção fica para outra missão autorizada; não foi feita nesta revisão.
 
 Os formulários têm precisão de minuto. Comunicação no mesmo minuto da criação da versão/retirada é admitida conforme a regra documentada; não é prova da ordem dos fatos. A interface identifica a informação como declarada pela equipe, registra o horário atual e exige justificativa. Nenhum evento foi retroagido para acelerar os testes.
 

@@ -1,0 +1,37 @@
+{
+  "engine": "8.4.11",
+  "passed": 22,
+  "failed": 7,
+  "skipped": 0,
+  "failures": [
+    {
+      "case": "publish-vs-delivery-delivery-first",
+      "message": "Publication/delivery ordering violated: [\"ok\",\"ok\"]"
+    },
+    {
+      "case": "publish-delivered-status-Aprovado-flags-0",
+      "message": "New publication accepted with active delivery"
+    },
+    {
+      "case": "publish-delivered-status-Aprovado-flags-1",
+      "message": "New publication accepted with active delivery"
+    },
+    {
+      "case": "publish-delivered-status-Em Andamento-flags-0",
+      "message": "New publication accepted with active delivery"
+    },
+    {
+      "case": "publish-delivered-status-Em Andamento-flags-1",
+      "message": "New publication accepted with active delivery"
+    },
+    {
+      "case": "publish-delivered-status-Finalizado-flags-0",
+      "message": "New publication accepted with active delivery"
+    },
+    {
+      "case": "publish-delivered-status-Finalizado-flags-1",
+      "message": "New publication accepted with active delivery"
+    }
+  ],
+  "skips": []
+}

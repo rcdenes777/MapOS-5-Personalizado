@@ -53,6 +53,6 @@ if ($mode==='create') {
 } else {
     $f=json_decode(file_get_contents($state), true);
     $id=$f['os'];
-    $result=['os'=>$id,'version'=>$f['version'],'roles'=>$f['roles'],'current'=>snapshot($ci, $id),'baseline'=>$f['baseline'],'decisions'=>$ci->db->where('os_id', $id)->where_in('tipo',['aprovar','recusar'])->get('trifase_orcamento_eventos')->result_array()];
+    $result=['os'=>$id,'version'=>$f['version'],'roles'=>$f['roles'],'current'=>snapshot($ci, $id),'baseline'=>$f['baseline'],'decisions'=>$ci->db->where('os_id', $id)->where_in('tipo', ['aprovar','recusar'])->get('trifase_orcamento_eventos')->result_array()];
     echo json_encode($result);
 }

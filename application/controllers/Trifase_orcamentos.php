@@ -101,7 +101,12 @@ class Trifase_orcamentos extends MY_Controller
                 $this->input->post('nome'),
                 $this->input->post('confirmar'),
                 $this->textoPost('operacao'),
-                (int) $this->session->userdata('id_admin')
+                (int) $this->session->userdata('id_admin'),
+                [
+                    'canal' => $this->input->post('canal'),
+                    'comunicado_em' => $this->input->post('comunicado_em'),
+                    'observacao' => $this->input->post('observacao') ?? '',
+                ]
             );
             $this->session->set_flashdata('success', 'Resposta registrada na versão do orçamento.');
         } catch (DomainException $e) {

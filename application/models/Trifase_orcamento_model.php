@@ -151,15 +151,34 @@ class Trifase_orcamento_model extends CI_Model
         $this->registrarResposta($id, $token, $versao, $tipo, $nome, $confirmado, $chave, null);
     }
 
-    public function registrarRespostaInterna(int $id, int $versao, mixed $tipo, mixed $nome, mixed $confirmado, string $chave, int $usuario): void
+    public function registrarRespostaInterna(int $id, int $versao, mixed $tipo, mixed $nome, mixed $confirmado, string $chave, int $usuario, array $comunicacao): void
     {
         if ($usuario <= 0) {
             throw new DomainException('Identifique quem está registrando a resposta.');
         }
-        $this->registrarResposta($id, null, $versao, $tipo, $nome, $confirmado, $chave, $usuario);
+        if (! in_array($comunicacao['canal'] ?? null, ['telefone', 'whatsapp', 'presencial'], true)) {
+            throw new DomainException('Informe o canal da comunicação: telefone, WhatsApp ou presencial.');
+        }
+        $data = $comunicacao['comunicado_em'] ?? null;
+        if (! is_string($data) || ! preg_match('/\A\d{4}-\d{2}-\d{2}T\d{2}:\d{2}\z/', $data)) {
+            throw new DomainException('Informe a data e hora da comunicação.');
+        }
+        $instante = DateTimeImmutable::createFromFormat('!Y-m-d\TH:i', $data);
+        if ($instante === false || $instante->format('Y-m-d\TH:i') !== $data || $instante->getTimestamp() > time()) {
+            throw new DomainException('Informe uma data de comunicação válida, não futura.');
+        }
+        if (array_key_exists('observacao', $comunicacao)
+            && (! is_string($comunicacao['observacao']) || ! mb_check_encoding($comunicacao['observacao'], 'UTF-8')
+                || mb_strlen($comunicacao['observacao']) > 2000 || preg_match('/[\x00-\x1f\x7f\x{0080}-\x{009f}\x{202a}-\x{202e}\x{2066}-\x{2069}]/u', $comunicacao['observacao']))) {
+            throw new DomainException('Informe uma observação válida com até 2000 caracteres, sem controles.');
+        }
+        $comunicacao = ['canal' => $comunicacao['canal'],
+            'comunicado_em' => $instante->format('Y-m-d H:i:s'),
+            'observacao' => $comunicacao['observacao'] ?? null];
+        $this->registrarResposta($id, null, $versao, $tipo, $nome, $confirmado, $chave, $usuario, $comunicacao);
     }
 
-    private function registrarResposta(int $id, mixed $token, int $versao, mixed $tipo, mixed $nome, mixed $confirmado, string $chave, ?int $usuario): void
+    private function registrarResposta(int $id, mixed $token, int $versao, mixed $tipo, mixed $nome, mixed $confirmado, string $chave, ?int $usuario, array $comunicacao = []): void
     {
         $this->validarOperacao($chave);
         if (! in_array($tipo, ['aprovar', 'recusar'], true) || $confirmado !== '1' || ! is_string($nome)
@@ -168,11 +187,14 @@ class Trifase_orcamento_model extends CI_Model
             throw new DomainException('Informe seu nome e confirme a decisão sobre esta versão.');
         }
         $nome = trim($nome);
-        $hash = $this->hash($usuario === null ? ['responder', $id, $versao, $tipo, $nome] : ['resposta_interna', $id, $versao, $tipo, $nome, $usuario]);
-        $this->transacao($id, function ($os) use ($id, $token, $versao, $tipo, $nome, $chave, $hash, $usuario) {
+        $hash = $this->hash($usuario === null ? ['responder', $id, $versao, $tipo, $nome] : ['resposta_interna', $id, $versao, $tipo, $nome, $usuario, $comunicacao]);
+        $this->transacao($id, function ($os) use ($id, $token, $versao, $tipo, $nome, $chave, $hash, $usuario, $comunicacao) {
             $atual = $usuario === null ? $this->publicadoSobTrava($os, $token) : $this->versaoVigente($os);
             if ($atual === null || (int) $atual->id !== $versao) {
                 throw new DomainException('Orçamento indisponível ou atualizado. Reabra e confira a versão.');
+            }
+            if ($usuario !== null && $comunicacao['comunicado_em'] < substr($atual->criado_em, 0, 16) . ':00') {
+                throw new DomainException('A comunicação não pode ser anterior à criação desta versão.');
             }
             if ($this->reenvio($id, $chave, $hash)) {
                 return;
@@ -180,7 +202,7 @@ class Trifase_orcamento_model extends CI_Model
             if ($this->decisao($versao) !== null) {
                 throw new DomainException('Esta versão já recebeu uma decisão. Use uma nova versão para registrar outra resposta.');
             }
-            $this->evento($id, $versao, $tipo, $nome, $usuario, $versao, $chave, $hash);
+            $this->evento($id, $versao, $tipo, $nome, $usuario, $versao, $chave, $hash, $comunicacao);
             if (in_array($os->status, self::ETAPAS_DE_ORCAMENTO, true)) {
                 $this->registrarAndamento($os, $tipo === 'aprovar' ? 'Aprovado' : 'Orçamento recusado', $usuario, $this->decisao($versao)->criado_em);
             }
@@ -243,10 +265,10 @@ class Trifase_orcamento_model extends CI_Model
         return $link ? $this->versaoVigente($os) : null;
     }
 
-    private function evento(int $os, int $versao, string $tipo, string $nome, ?int $usuario, ?int $decisao, string $chave, string $hash): void
+    private function evento(int $os, int $versao, string $tipo, string $nome, ?int $usuario, ?int $decisao, string $chave, string $hash, array $comunicacao = []): void
     {
         $this->inserir('trifase_orcamento_eventos', ['os_id' => $os, 'versao_id' => $versao, 'tipo' => $tipo, 'nome' => $nome,
-            'usuario_id' => $usuario, 'decisao_versao' => $decisao, 'criado_em' => date('Y-m-d H:i:s'), 'operacao' => $chave, 'payload_hash' => $hash]);
+            'usuario_id' => $usuario, 'decisao_versao' => $decisao, 'criado_em' => date('Y-m-d H:i:s'), 'operacao' => $chave, 'payload_hash' => $hash] + $comunicacao);
     }
 
     private function reenvio(int $os, string $chave, string $hash): ?object

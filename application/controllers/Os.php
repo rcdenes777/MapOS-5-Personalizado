@@ -647,6 +647,7 @@ class Os extends MY_Controller
             $dados['pilotoEntregasHistorico'] = $this->piloto_entregas->historico((int) $os->idOs);
         }
         $dados['pilotoPodeRegistrarResposta'] = $this->permite('vLancamento') && $this->permite('eOs') && $this->permite('publicarOrcamento');
+        $dados['pilotoPodeRegularizarOrcamento'] = $dados['pilotoPodeRegistrarResposta'] && $this->permite('regularizarOrcamento');
         $dados['pilotoOrcamentoEntregue'] = false;
         $dados['pilotoOrcamento'] = null;
         $dados['pilotoOrcamentoDecisao'] = null;

@@ -6,6 +6,12 @@ $canalOrcamento = match ($decisaoExibida->canal ?? '') {
     'telefone' => ' por telefone', 'whatsapp' => ' por WhatsApp', 'presencial' => ' presencialmente', default => '',
 };
 ?>
+<?php if (! empty($decisaoExibida->regularizacao_tardia)) { ?>
+    <p class="mt-2 text-caption text-info-ink">Regularização administrativa tardia — informação declarada pela equipe, registrada após a entrega.</p>
+    <?php if ($respostaPrivada ?? false) { ?>
+        <p class="mt-2 whitespace-pre-wrap break-words text-caption text-muted"><?= e('Justificativa: ' . ($decisaoExibida->justificativa ?? '') . ' · Entrega #' . (int) ($decisaoExibida->entrega_id ?? 0)) ?></p>
+    <?php } ?>
+<?php } ?>
 <p class="mt-2 break-words text-caption text-muted"><?= e($internaOrcamento ? 'Resposta registrada pela equipe' . $canalOrcamento . '. Informação declarada pela equipe.' : 'Resposta enviada pelo link.') ?></p>
 <p class="mt-2 break-words text-caption text-muted"><?= e(($internaOrcamento ? 'Pessoa que comunicou: ' : 'Nome informado pelo link: ') . $decisaoExibida->nome) ?></p>
 <?php if ($internaOrcamento && ! empty($decisaoExibida->comunicado_em)) { ?>

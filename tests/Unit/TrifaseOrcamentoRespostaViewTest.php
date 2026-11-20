@@ -63,6 +63,35 @@ final class TrifaseOrcamentoRespostaViewTest extends \PHPUnit\Framework\TestCase
         $this->assertStringContainsString('por telefone', $anterior);
     }
 
+    public function testRegularizacaoSoApareceComEntregaVersaoElegivelEPermissaoEspecifica(): void
+    {
+        $dados = ['pilotoOrcamentoEntregue' => true, 'pilotoPodeRegularizarOrcamento' => true];
+        $permitido = $this->renderizar('trifase/orcamento-resumo', $dados);
+        foreach (['Regularização administrativa tardia', 'regularizar_resposta/1', 'name="justificativa"', 'name="comunicado_em"', 'name="canal"', 'name="confirmar"'] as $texto) {
+            $this->assertStringContainsString($texto, $permitido);
+        }
+        $negado = $this->renderizar('trifase/orcamento-resumo', array_replace($dados, ['pilotoPodeRegularizarOrcamento' => false]));
+        $this->assertStringNotContainsString('regularizar_resposta/1', $negado);
+        $obsoleto = $this->renderizar('trifase/orcamento-resumo', array_replace($dados, ['pilotoOrcamentoValido' => false]));
+        $this->assertStringNotContainsString('regularizar_resposta/1', $obsoleto);
+        $jaDecidido = $this->renderizar('trifase/orcamento-resumo', array_replace($dados, ['pilotoOrcamentoDecisao' => $this->decisao()]));
+        $this->assertStringNotContainsString('regularizar_resposta/1', $jaDecidido);
+    }
+
+    public function testRegularizacaoExibeAvisoSemExporJustificativaOuOperadorAoPublico(): void
+    {
+        $decisao = $this->decisao();
+        $decisao->regularizacao_tardia = 1;
+        $decisao->justificativa = 'JUSTIFICATIVA_PRIVADA';
+        $decisao->entrega_id = 9;
+        $publico = $this->renderizar('trifase/orcamento-conteudo', ['decisaoOrcamento' => $decisao, 'orcamentoEntregue' => true]);
+        $this->assertStringContainsString('Regularização administrativa tardia', $publico);
+        $this->assertStringNotContainsString('JUSTIFICATIVA_PRIVADA', $publico);
+        $interno = $this->renderizar('trifase/orcamento-resumo', ['pilotoOrcamentoDecisao' => $decisao]);
+        $this->assertStringContainsString('JUSTIFICATIVA_PRIVADA', $interno);
+        $this->assertStringContainsString('Entrega #9', $interno);
+    }
+
     private function decisao(): object
     {
         return (object) ['tipo' => 'aprovar', 'nome' => '<script>Pessoa</script>', 'usuario_id' => 7,

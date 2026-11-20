@@ -118,6 +118,42 @@ class Trifase_orcamentos extends MY_Controller
         redirect('os/visualizar/' . (int) $os->idOs . '?secao=compartilhamento#os-secoes');
     }
 
+    public function regularizar_resposta($id = null)
+    {
+        if (! $this->permission->checkPermission($this->session->userdata('permissao'), 'vOs')
+            || ! $this->permission->checkPermission($this->session->userdata('permissao'), 'vLancamento')
+            || ! $this->permission->checkPermission($this->session->userdata('permissao'), 'eOs')
+            || ! $this->permission->checkPermission($this->session->userdata('permissao'), 'publicarOrcamento')
+            || ! $this->permission->checkPermission($this->session->userdata('permissao'), 'regularizarOrcamento')) {
+            show_error('Você não tem permissão para regularizar respostas de orçamento.', 403);
+        }
+        $this->somentePost();
+        $os = $this->ordem($id);
+        try {
+            $this->orcamentos->registrarRegularizacao(
+                (int) $os->idOs,
+                (int) $this->textoPost('versao'),
+                $this->input->post('decisao'),
+                $this->input->post('nome'),
+                $this->input->post('confirmar'),
+                $this->textoPost('operacao'),
+                (int) $this->session->userdata('id_admin'),
+                [
+                    'canal' => $this->input->post('canal'),
+                    'comunicado_em' => $this->input->post('comunicado_em'),
+                    'observacao' => $this->input->post('observacao') ?? '',
+                    'justificativa' => $this->input->post('justificativa'),
+                ]
+            );
+            $this->session->set_flashdata('success', 'Regularização administrativa tardia registrada com o horário atual. Entrega e status preservados.');
+        } catch (DomainException $e) {
+            return $this->falha($e->getMessage());
+        } catch (RuntimeException $e) {
+            return $this->falha('Não foi possível confirmar a regularização. Confira o histórico antes de tentar novamente.', 500);
+        }
+        redirect('os/visualizar/' . (int) $os->idOs . '?secao=compartilhamento#os-secoes');
+    }
+
     public function retirar($id = null)
     {
         if (! $this->permission->checkPermission($this->session->userdata('permissao'), 'vOs')

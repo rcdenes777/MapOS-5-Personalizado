@@ -5,6 +5,7 @@ require_once APPPATH . 'models/Trifase_entrega_model.php';
 require_once APPPATH . 'database/migrations/20261102000000_trifase_entregas.php';
 require_once APPPATH . 'database/migrations/20261102020000_trifase_orcamentos.php';
 require_once APPPATH . 'database/migrations/20261119010000_trifase_orcamento_comunicacao.php';
+require_once APPPATH . 'database/migrations/20261119020000_trifase_orcamento_regularizacao.php';
 require_once BASEPATH . 'database/DB_forge.php';
 require_once BASEPATH . 'database/drivers/sqlite3/sqlite3_forge.php';
 
@@ -45,6 +46,9 @@ final class TrifaseOrcamentoTest extends MaposTestCase
             $m->db = $this->db;
             $m->dbforge = new CI_DB_sqlite3_forge($this->db);
             $m->up();
+        }
+        if (! in_array($this->name(), ['testMigracaoComunicacaoAditivaPreservaLegadoAoExecutarDuasVezes', 'testMigracaoRegularizacaoPreservaLegado'], true)) {
+            $this->migrarRegularizacao();
         }
         $this->modelo = new Trifase_orcamento_model();
         $this->modelo->db = $this->db;
@@ -143,6 +147,266 @@ final class TrifaseOrcamentoTest extends MaposTestCase
         } finally {
             $_ENV = $env;
         }
+    }
+
+    public function testRegularizacaoExigeEntregaAtiva(): void
+    {
+        $versao = $this->publicar();
+        $this->expectException(DomainException::class);
+        $this->modelo->registrarRegularizacao(
+            1,
+            $versao,
+            'aprovar',
+            'Cliente QA',
+            '1',
+            $this->chave('tardia'),
+            7,
+            ['canal' => 'telefone', 'comunicado_em' => date('Y-m-d\TH:i'), 'justificativa' => 'Registro atrasado']
+        );
+    }
+
+    public function testRegularizacaoPersisteTresCanaisEDecisoesSemAlterarOperacao(): void
+    {
+        foreach (['telefone', 'whatsapp', 'presencial'] as $canal) {
+            foreach (['aprovar', 'recusar'] as $tipo) {
+                $versao = $this->publicar($canal . $tipo);
+                $this->db->where('id', $versao)->update('trifase_orcamento_versoes', ['criado_em' => date('Y-m-d H:i:s', time() - 7200)]);
+                if (! $this->modelo->entregue(1)) {
+                    $this->entregar();
+                }
+                $dados = ['canal' => $canal, 'comunicado_em' => date('Y-m-d\TH:i', time() - 3600), 'justificativa' => 'Registro atrasado', 'observacao' => 'Cliente confirmou'];
+                $antes = $this->estadoOperacional();
+                $inicio = date('Y-m-d H:i:s');
+                $chave = $this->chave('tardia-' . $canal . $tipo);
+                $this->modelo->registrarRegularizacao(1, $versao, $tipo, 'Cliente QA', '1', $chave, 7, $dados);
+                $evento = (array) $this->modelo->decisao($versao);
+                $this->modelo->registrarRegularizacao(1, $versao, $tipo, 'Cliente QA', '1', $chave, 7, $dados);
+                $this->assertSame($evento, (array) $this->modelo->decisao($versao));
+                $this->assertSame(1, (int) $evento['regularizacao_tardia']);
+                $this->assertSame($canal, $evento['canal']);
+                $this->assertSame($tipo, $evento['tipo']);
+                $this->assertSame($dados['justificativa'], $evento['justificativa']);
+                $this->assertGreaterThan(0, (int) $evento['entrega_id']);
+                $this->assertGreaterThanOrEqual($inicio, $evento['criado_em']);
+                $this->assertLessThanOrEqual(date('Y-m-d H:i:s'), $evento['criado_em']);
+                $this->assertSame($antes, $this->estadoOperacional());
+            }
+        }
+    }
+
+    private function migrarRegularizacao(): void
+    {
+        $m = new class() extends Migration_trifase_orcamento_regularizacao {
+            public object $dbforge;
+        };
+        $m->db = $this->db;
+        $m->dbforge = new CI_DB_sqlite3_forge($this->db);
+        $m->up();
+    }
+
+    public function testMigracaoRegularizacaoPreservaLegado(): void
+    {
+        $versao = $this->publicar();
+        $this->modelo->registrarRespostaInterna(
+            1,
+            $versao,
+            'aprovar',
+            'Cliente QA',
+            '1',
+            $this->chave('legado'),
+            7,
+            ['canal' => 'telefone', 'comunicado_em' => date('Y-m-d\TH:i')]
+        );
+        $antes = (array) $this->modelo->decisao($versao);
+        $this->migrarRegularizacao();
+        $this->migrarRegularizacao();
+        $depois = (array) $this->modelo->decisao($versao);
+        $this->assertSame(0, (int) $depois['regularizacao_tardia']);
+        $this->assertNull($depois['justificativa']);
+        $this->assertNull($depois['entrega_id']);
+        unset($depois['regularizacao_tardia'], $depois['justificativa'], $depois['entrega_id']);
+        $this->assertSame($antes, $depois);
+    }
+
+    public function testRegularizacaoRejeitaDadosInvalidosESegundaDecisao(): void
+    {
+        $versao = $this->publicar();
+        $this->db->where('id', $versao)->update('trifase_orcamento_versoes', ['criado_em' => date('Y-m-d H:i:s', time() - 7200)]);
+        $this->entregar();
+        $dados = ['canal' => 'telefone', 'comunicado_em' => date('Y-m-d\TH:i', time() - 3600), 'justificativa' => 'Registro atrasado'];
+        $invalidos = [];
+        foreach ([null, [], 1, '', 'abcd', str_repeat('é', 2001), "motivo\0", "motivo\n", "\xff", "motivo\u{202e}"] as $valor) {
+            $invalidos[] = array_replace($dados, ['justificativa' => $valor]);
+        }
+        foreach (['2026-02-30T10:00', '2026-11-19 10:00', [], date('Y-m-d\TH:i', time() + 120), date('Y-m-d\TH:i', time() - 10800)] as $valor) {
+            $invalidos[] = array_replace($dados, ['comunicado_em' => $valor]);
+        }
+        $invalidos[] = array_replace($dados, ['canal' => 'email']);
+        $invalidos[] = array_replace($dados, ['observacao' => "nota\u{202e}"]);
+        $antes = $this->estadoOperacional();
+        foreach ($invalidos as $invalido) {
+            try {
+                $this->modelo->registrarRegularizacao(1, $versao, 'aprovar', 'Cliente QA', '1', $this->chave('invalida'), 7, $invalido);
+                $this->fail('Aceitou dados inválidos');
+            } catch (DomainException $e) {
+                $this->assertNull($this->modelo->decisao($versao));
+                $this->assertSame($antes, $this->estadoOperacional());
+            }
+        }
+        foreach ([0, -1] as $usuario) {
+            try {
+                $this->modelo->registrarRegularizacao(1, $versao, 'aprovar', 'Cliente QA', '1', $this->chave('operador'), $usuario, $dados);
+                $this->fail('Aceitou operador inválido');
+            } catch (DomainException $e) {
+                $this->assertNull($this->modelo->decisao($versao));
+            }
+        }
+        $chave = $this->chave('decisao-tardia');
+        $this->modelo->registrarRegularizacao(1, $versao, 'aprovar', 'Cliente QA', '1', $chave, 7, $dados);
+        $evento = (array) $this->modelo->decisao($versao);
+        foreach (['canal' => 'whatsapp', 'comunicado_em' => date('Y-m-d\TH:i', time() - 1800), 'justificativa' => 'Outro motivo', 'observacao' => 'Nova nota'] as $campo => $valor) {
+            try {
+                $this->modelo->registrarRegularizacao(1, $versao, 'aprovar', 'Cliente QA', '1', $chave, 7, array_replace($dados, [$campo => $valor]));
+                $this->fail('Aceitou conflito de metadados');
+            } catch (DomainException $e) {
+                $this->assertSame('Chave já utilizada com outros dados.', $e->getMessage());
+                $this->assertSame($evento, (array) $this->modelo->decisao($versao));
+            }
+        }
+        foreach (['aprovar', 'recusar'] as $tipo) {
+            try {
+                $this->modelo->registrarRegularizacao(1, $versao, $tipo, 'Cliente QA', '1', $this->chave('segunda-' . $tipo), 7, $dados);
+                $this->fail('Aceitou segunda decisão');
+            } catch (DomainException $e) {
+                $this->assertSame($evento, (array) $this->modelo->decisao($versao));
+            }
+        }
+    }
+
+    public function testRegularizacaoLimitaComunicacaoPelaEntregaEAceitaMesmoMinuto(): void
+    {
+        $versao = $this->publicar();
+        $this->db->where('id', $versao)->update('trifase_orcamento_versoes', ['criado_em' => date('Y-m-d H:i:s', time() - 7200)]);
+        [, $entrega] = $this->entregar();
+        $this->db->where('id', $entrega)->update('trifase_entregas_eventos', ['entregue_em' => date('Y-m-d H:i:00', time() - 3600)]);
+        $dados = ['canal' => 'presencial', 'comunicado_em' => date('Y-m-d\TH:i', time() - 1800), 'justificativa' => 'Registro atrasado'];
+        try {
+            $this->modelo->registrarRegularizacao(1, $versao, 'recusar', 'Cliente QA', '1', $this->chave('posterior'), 7, $dados);
+            $this->fail('Aceitou comunicação posterior à entrega');
+        } catch (DomainException $e) {
+            $this->assertNull($this->modelo->decisao($versao));
+        }
+        $dados['comunicado_em'] = date('Y-m-d\TH:i', time() - 3600);
+        $this->modelo->registrarRegularizacao(1, $versao, 'recusar', 'Cliente QA', '1', $this->chave('mesmo-minuto'), 7, $dados);
+        $this->assertSame($entrega, (int) $this->modelo->decisao($versao)->entrega_id);
+    }
+
+    public function testRegularizacaoRejeitaVersaoSubstituidaRetiradaCanceladaOuDivergente(): void
+    {
+        $antiga = $this->publicar();
+        $versao = $this->publicar('nova');
+        $this->entregar();
+        $dados = ['canal' => 'telefone', 'comunicado_em' => date('Y-m-d\TH:i'), 'justificativa' => 'Registro atrasado'];
+        foreach (['substituida', 'retirada', 'cancelada', 'divergente'] as $caso) {
+            $this->db->where('os_id', 1)->update('trifase_orcamento_estado', ['ativo' => $caso === 'retirada' ? 0 : 1]);
+            $this->db->where('idOs', 1)->update('os', ['status' => $caso === 'cancelada' ? 'Cancelado' : 'Finalizado']);
+            if ($caso === 'divergente') {
+                $this->db->where('idProdutos_os', 1)->update('produtos_os', ['subTotal' => 40]);
+            }
+            try {
+                $this->modelo->registrarRegularizacao(1, $caso === 'substituida' ? $antiga : $versao, 'aprovar', 'Cliente QA', '1', $this->chave($caso), 7, $dados);
+                $this->fail('Aceitou versão indisponível');
+            } catch (DomainException $e) {
+                $this->assertNull($this->modelo->decisao($versao));
+                $this->assertNull($this->modelo->decisao($antiga));
+            }
+        }
+    }
+
+    public function testRegularizacaoFalhaNoInsertReverteTudo(): void
+    {
+        $versao = $this->publicar();
+        $this->entregar();
+        $antes = $this->estadoOperacional();
+        $eventos = $this->modelo->eventos(1);
+        $this->db->db_debug = false;
+        $this->db->query("CREATE TRIGGER falha_tardia BEFORE INSERT ON trifase_orcamento_eventos BEGIN UPDATE os SET status = 'ALTERADO'; SELECT RAISE(FAIL, 'falha tardia'); END");
+        set_error_handler(static fn ($nivel, $mensagem) => $mensagem === 'SQLite3::exec(): falha tardia');
+        try {
+            $this->modelo->registrarRegularizacao(
+                1,
+                $versao,
+                'aprovar',
+                'Cliente QA',
+                '1',
+                $this->chave('falha-tardia'),
+                7,
+                ['canal' => 'telefone', 'comunicado_em' => date('Y-m-d\TH:i'), 'justificativa' => 'Registro atrasado']
+            );
+            $this->fail('Aceitou falha no insert');
+        } catch (RuntimeException $e) {
+            $this->assertSame($antes, $this->estadoOperacional());
+            $this->assertEquals($eventos, $this->modelo->eventos(1));
+            $this->assertNull($this->modelo->decisao($versao));
+        } finally {
+            restore_error_handler();
+        }
+    }
+
+    public function testRegularizacaoPreservaTodasEtapasTecnicasEInicioMinutoVersao(): void
+    {
+        $this->entregar();
+        foreach (['Aberto', 'Orçamento', 'Negociação', 'Orçamento recusado', 'Aprovado', 'Em Andamento', 'Finalizado', 'Estado personalizado'] as $indice => $status) {
+            $versao = $this->publicar('etapa-' . $indice);
+            $minuto = date('Y-m-d H:i:00', time() - 60);
+            $this->db->where('id', $versao)->update('trifase_orcamento_versoes', ['criado_em' => substr($minuto, 0, 17) . '59']);
+            $this->db->where('idOs', 1)->update('os', ['status' => $status]);
+            $antes = $this->estadoOperacional();
+            $this->modelo->registrarRegularizacao(
+                1,
+                $versao,
+                'aprovar',
+                'Cliente QA',
+                '1',
+                $this->chave('status-' . $indice),
+                7,
+                ['canal' => 'telefone', 'comunicado_em' => str_replace(' ', 'T', substr($minuto, 0, 16)), 'justificativa' => str_repeat('é', 2000)]
+            );
+            $this->assertSame($antes, $this->estadoOperacional());
+            $this->assertSame($minuto, $this->modelo->decisao($versao)->comunicado_em);
+        }
+        $metodo = new ReflectionMethod(Trifase_orcamento_model::class, 'registrarRegularizacao');
+        $this->assertTrue($metodo->isPublic());
+        $this->assertSame(8, $metodo->getNumberOfRequiredParameters());
+        $this->assertSame('void', (string) $metodo->getReturnType());
+    }
+
+    public function testRegularizacaoNegaDecisaoNormalPreexistenteEEntregaCancelada(): void
+    {
+        $versao = $this->publicar();
+        $this->modelo->responder(1, $this->token, $versao, 'aprovar', 'Cliente QA', '1', $this->chave('normal-anterior'));
+        [$entregas, $entrega] = $this->entregar();
+        $dados = ['canal' => 'telefone', 'comunicado_em' => date('Y-m-d\TH:i'), 'justificativa' => 'Registro atrasado'];
+        $evento = (array) $this->modelo->decisao($versao);
+        try {
+            $this->modelo->registrarRegularizacao(1, $versao, 'aprovar', 'Cliente QA', '1', $this->chave('segunda-tardia'), 7, $dados);
+            $this->fail('Aceitou decisão anterior');
+        } catch (DomainException $e) {
+            $this->assertSame($evento, (array) $this->modelo->decisao($versao));
+        }
+        $nova = $this->publicar('apos-decisao');
+        $entregas->cancelar(1, $entrega, 'Entrega registrada por engano', 7, $this->chave('cancelar-entrega'));
+        $this->expectException(DomainException::class);
+        $this->modelo->registrarRegularizacao(1, $nova, 'aprovar', 'Cliente QA', '1', $this->chave('cancelada-tardia'), 7, $dados);
+    }
+
+    private function estadoOperacional(): array
+    {
+        $estado = [];
+        foreach (['os', 'os_historico', 'produtos', 'produtos_os', 'servicos_os', 'trifase_entregas_estado', 'trifase_entregas_eventos'] as $tabela) {
+            $estado[$tabela] = $this->db->get($tabela)->result_array();
+        }
+        return $estado;
     }
 
     private function chave(string $id): string

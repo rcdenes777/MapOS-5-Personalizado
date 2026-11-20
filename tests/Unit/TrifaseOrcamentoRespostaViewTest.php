@@ -48,6 +48,21 @@ final class TrifaseOrcamentoRespostaViewTest extends \PHPUnit\Framework\TestCase
         $this->assertStringContainsString('Resposta enviada pelo link', $html);
     }
 
+    public function testEntregaOcultaFormularioInternoEPublicoMasPreservaConsultaEDecisaoAnterior(): void
+    {
+        $interno = $this->renderizar('trifase/orcamento-resumo', ['pilotoOrcamentoEntregue' => true]);
+        $this->assertStringContainsString('Equipamento entregue', $interno);
+        $this->assertStringNotContainsString('Salvar resposta', $interno);
+        $this->assertStringContainsString('Consultar orçamento e versões', $interno);
+        $publico = $this->renderizar('trifase/orcamento-conteudo', ['orcamentoEntregue' => true]);
+        $this->assertStringContainsString('somente para consulta', $publico);
+        $this->assertStringNotContainsString('Registrar minha resposta', $publico);
+        $this->assertStringContainsString('Total do orçamento', $publico);
+        $anterior = $this->renderizar('trifase/orcamento-conteudo', ['orcamentoEntregue' => true, 'decisaoOrcamento' => $this->decisao()]);
+        $this->assertStringContainsString('Aprovado', $anterior);
+        $this->assertStringContainsString('por telefone', $anterior);
+    }
+
     private function decisao(): object
     {
         return (object) ['tipo' => 'aprovar', 'nome' => '<script>Pessoa</script>', 'usuario_id' => 7,

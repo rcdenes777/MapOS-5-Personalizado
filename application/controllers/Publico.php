@@ -67,6 +67,7 @@ class Publico extends CI_Controller
                     'versaoOrcamento' => $versao,
                     'retratoOrcamento' => json_decode($versao->conteudo, true, 32, JSON_THROW_ON_ERROR),
                     'decisaoOrcamento' => $this->orcamentos->decisao((int) $versao->id),
+                    'orcamentoEntregue' => $this->orcamentos->entregue((int) $os->idOs),
                     'erroOrcamento' => null,
                     'responderOrcamentoUrl' => $prefixo . 'orcamento_publico/responder/' . $token,
                 ];

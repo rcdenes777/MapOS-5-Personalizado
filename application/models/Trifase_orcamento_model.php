@@ -178,6 +178,23 @@ class Trifase_orcamento_model extends CI_Model
         $this->registrarResposta($id, null, $versao, $tipo, $nome, $confirmado, $chave, $usuario, $comunicacao);
     }
 
+    /** A trava por OS do chamador serializa esta leitura com registro/correção de entrega. */
+    public function entregue(int $id): bool
+    {
+        return $this->entregaAtiva($id) !== null;
+    }
+
+    private function entregaAtiva(int $id): ?object
+    {
+        if (! $this->db->table_exists('trifase_entregas_estado')) {
+            return null;
+        }
+        require_once APPPATH . 'models/Trifase_entrega_model.php';
+        $entregas = new Trifase_entrega_model();
+        $entregas->db = $this->db;
+        return $entregas->ativa($id);
+    }
+
     private function registrarResposta(int $id, mixed $token, int $versao, mixed $tipo, mixed $nome, mixed $confirmado, string $chave, ?int $usuario, array $comunicacao = []): void
     {
         $this->validarOperacao($chave);
@@ -198,6 +215,9 @@ class Trifase_orcamento_model extends CI_Model
             }
             if ($this->reenvio($id, $chave, $hash)) {
                 return;
+            }
+            if ($this->entregue($id)) {
+                throw new DomainException('Equipamento entregue. Este orçamento está disponível somente para consulta.');
             }
             if ($this->decisao($versao) !== null) {
                 throw new DomainException('Esta versão já recebeu uma decisão. Use uma nova versão para registrar outra resposta.');

@@ -40,6 +40,7 @@ class Trifase_orcamentos extends MY_Controller
             'garantia' => isset($os->garantia) && $os->garantia !== '' ? $os->garantia . ' dias' : '',
         ];
         $this->data['hashOrcamento'] = $this->orcamentos->hash($this->data['retratoOrcamento']);
+        $this->data['orcamentoEntregue'] = $this->orcamentos->entregue((int) $os->idOs);
         $this->data['orcamentoAtual'] = $this->orcamentos->atual((int) $os->idOs);
         if ($this->data['orcamentoAtual'] !== null) {
             $publicadoAnterior = json_decode($this->data['orcamentoAtual']->conteudo, true, 32, JSON_THROW_ON_ERROR);

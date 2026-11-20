@@ -1,6 +1,8 @@
 <?php
 
 require_once APPPATH . 'models/Trifase_orcamento_model.php';
+require_once APPPATH . 'models/Trifase_entrega_model.php';
+require_once APPPATH . 'database/migrations/20261102000000_trifase_entregas.php';
 require_once APPPATH . 'database/migrations/20261102020000_trifase_orcamentos.php';
 require_once APPPATH . 'database/migrations/20261119010000_trifase_orcamento_comunicacao.php';
 require_once BASEPATH . 'database/DB_forge.php';
@@ -46,6 +48,101 @@ final class TrifaseOrcamentoTest extends MaposTestCase
         }
         $this->modelo = new Trifase_orcamento_model();
         $this->modelo->db = $this->db;
+    }
+
+    private function entregar(): array
+    {
+        $m = new class() extends Migration_trifase_entregas {
+            public object $dbforge;
+        };
+        $m->db = $this->db;
+        $m->dbforge = new CI_DB_sqlite3_forge($this->db);
+        $m->up();
+        $entregas = new Trifase_entrega_model();
+        $entregas->db = $this->db;
+        $id = $entregas->registrar(1, ['recebedor' => 'Cliente QA', 'entregue_em' => date('Y-m-d\TH:i'),
+            'itens' => 'Equipamento sintético', 'terceiro' => '0', 'confirmou_condicoes' => '1'], 7, $this->chave('entrega'));
+        return [$entregas, $id];
+    }
+
+    public function testEntregaAtivaBloqueiaAmbosCanaisEDecisoesSemRevogarConsulta(): void
+    {
+        $versao = $this->publicar();
+        [$entregas, $entrega] = $this->entregar();
+        $antes = $this->db->get('os')->result_array();
+        foreach (['aprovar', 'recusar'] as $tipo) {
+            foreach (['publica', 'interna'] as $origem) {
+                try {
+                    if ($origem === 'publica') {
+                        $this->modelo->responder(1, $this->token, $versao, $tipo, 'Cliente QA', '1', $this->chave($origem . $tipo));
+                    } else {
+                        $this->modelo->registrarRespostaInterna(
+                            1,
+                            $versao,
+                            $tipo,
+                            'Cliente QA',
+                            '1',
+                            $this->chave($origem . $tipo),
+                            7,
+                            ['canal' => 'telefone', 'comunicado_em' => date('Y-m-d\TH:i')]
+                        );
+                    }
+                    $this->fail('Aceitou decisão após entrega ativa');
+                } catch (DomainException $e) {
+                    $this->assertStringContainsString('entregue', $e->getMessage());
+                    $this->assertNull($this->modelo->decisao($versao));
+                }
+            }
+        }
+        $this->assertSame($antes, $this->db->get('os')->result_array());
+        $this->assertSame($entrega, (int) $entregas->ativa(1)->id);
+        $this->assertNotNull($this->modelo->publicado(1, $this->token));
+        $this->assertCount(1, $this->modelo->eventos(1));
+    }
+
+    public function testReenvioDeDecisaoAnteriorAEntregaNaoDuplicaEConflitoPermaneceNegado(): void
+    {
+        $versao = $this->publicar();
+        $chave = $this->chave('antes-entrega');
+        $this->modelo->responder(1, $this->token, $versao, 'aprovar', 'Cliente QA', '1', $chave);
+        $decisao = (array) $this->modelo->decisao($versao);
+        $this->entregar();
+        $this->modelo->responder(1, $this->token, $versao, 'aprovar', 'Cliente QA', '1', $chave);
+        $this->assertSame($decisao, (array) $this->modelo->decisao($versao));
+        $this->assertCount(2, $this->modelo->eventos(1));
+        $this->expectException(DomainException::class);
+        $this->modelo->responder(1, $this->token, $versao, 'recusar', 'Cliente QA', '1', $chave);
+    }
+
+    public function testCorrecaoDeEntregaReavaliaVersaoETokenSemAceitarFormularioObsoleto(): void
+    {
+        $antiga = $this->publicar();
+        [$entregas, $entrega] = $this->entregar();
+        $nova = $this->publicar('nova-versao');
+        $entregas->cancelar(1, $entrega, 'Entrega registrada por engano', 7, $this->chave('corrigir-entrega'));
+        try {
+            $this->modelo->responder(1, $this->token, $antiga, 'aprovar', 'Cliente QA', '1', $this->chave('obsoleta'));
+            $this->fail('Aceitou versão obsoleta após correção');
+        } catch (DomainException $e) {
+            $this->assertNull($this->modelo->decisao($antiga));
+        }
+        $this->modelo->responder(1, $this->token, $nova, 'recusar', 'Cliente QA', '1', $this->chave('apos-correcao'));
+        $this->assertSame('recusar', $this->modelo->decisao($nova)->tipo);
+        $this->assertNull($entregas->ativa(1));
+    }
+
+    public function testEntregaPermaneceBloqueandoMesmoComFeatureFlagDesligada(): void
+    {
+        $versao = $this->publicar();
+        $this->entregar();
+        $env = $_ENV;
+        $_ENV['TRIFASE_ENTREGAS_ENABLED'] = 'false';
+        try {
+            $this->expectException(DomainException::class);
+            $this->modelo->responder(1, $this->token, $versao, 'aprovar', 'Cliente QA', '1', $this->chave('flag-desligada'));
+        } finally {
+            $_ENV = $env;
+        }
     }
 
     private function chave(string $id): string

@@ -84,6 +84,7 @@ class Orcamento_publico extends CI_Controller
         $prefixo = trifasePublicoBase(base_url()) . (config_item('index_page') ? config_item('index_page') . '/' : '');
         return $this->load->view('trifase/orcamento-publico', [
             'versaoOrcamento' => $versao, 'retratoOrcamento' => json_decode($versao->conteudo, true, 32, JSON_THROW_ON_ERROR),
+            'orcamentoEntregue' => $this->orcamentos->entregue((int) $os->idOs),
             'decisaoOrcamento' => $this->orcamentos->decisao((int) $versao->id), 'erroOrcamento' => $erro,
             'responderOrcamentoUrl' => $prefixo . 'orcamento_publico/responder/' . $token,
             'voltarOrcamentoUrl' => $prefixo . 'publico/os/' . $token, 'basePublica' => trifasePublicoBase(base_url()),

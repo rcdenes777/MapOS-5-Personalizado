@@ -6,7 +6,10 @@
     <?php if ($pilotoOrcamentoDecisao !== null) {
         $this->load->view('trifase/orcamento-decisao', ['respostaOrcamento' => $pilotoOrcamentoDecisao, 'respostaPrivada' => true]);
     } ?>
-    <?php if ($pilotoOrcamentoValido && $pilotoOrcamentoDecisao === null && ($pilotoPodeRegistrarResposta ?? false)) { ?>
+    <?php if ($pilotoOrcamentoEntregue ?? false) { ?>
+        <p class="mt-3 text-info-ink">Equipamento entregue. Este orçamento está disponível somente para consulta.</p>
+    <?php } ?>
+    <?php if ($pilotoOrcamentoValido && ! ($pilotoOrcamentoEntregue ?? false) && $pilotoOrcamentoDecisao === null && ($pilotoPodeRegistrarResposta ?? false)) { ?>
         <details class="trifase-os-adicionar mt-3">
             <summary>Registrar resposta do cliente</summary>
             <form method="post" action="<?= e(site_url('trifase_orcamentos/registrar_resposta/' . (int) $os->idOs)) ?>" class="grid gap-3 p-3" <?= js_module('formulario/padrao') ?>>

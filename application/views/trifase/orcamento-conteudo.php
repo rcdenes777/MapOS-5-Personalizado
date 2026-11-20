@@ -7,10 +7,13 @@
         </section>
         <section class="rounded-card border border-border bg-surface p-4" aria-labelledby="orcamento-resposta">
             <h2 id="orcamento-resposta" class="text-heading-sm">Sua resposta</h2>
+            <?php if ($orcamentoEntregue ?? false) { ?>
+                <p class="mt-3 text-info-ink">Equipamento entregue. Este orçamento está disponível somente para consulta.</p>
+            <?php } ?>
             <?php if ($decisaoOrcamento !== null) { ?>
                 <p class="mt-3 text-heading-sm"><?= e(trifaseOrcamentoSituacao($decisaoOrcamento)) ?></p>
                 <?php $this->load->view('trifase/orcamento-decisao', ['respostaOrcamento' => $decisaoOrcamento, 'respostaPrivada' => false]); ?>
-            <?php } else { ?>
+            <?php } elseif (! ($orcamentoEntregue ?? false)) { ?>
                 <form method="post" action="<?= e($responderOrcamentoUrl) ?>" class="mt-4 grid gap-4">
                     <input type="hidden" name="<?= e($this->security->get_csrf_token_name()) ?>" value="<?= e($this->security->get_csrf_hash()) ?>">
                     <input type="hidden" name="versao" value="<?= e((int) $versaoOrcamento->id) ?>">

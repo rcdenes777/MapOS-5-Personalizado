@@ -1,6 +1,9 @@
 <div class="mx-auto flex max-w-4xl flex-col gap-5 py-4">
     <header><h1 class="text-heading-xl text-text"><?= e('Orçamento da OS #' . (int) $ordemOrcamento->idOs) ?></h1><p class="mt-2 text-body-md text-muted">Confira a prévia antes de publicar. Somente a versão publicada estará disponível pelo link ativo desta OS.</p></header>
     <?= component('link', ['label' => 'Voltar à OS', 'href' => site_url('os/visualizar/' . (int) $ordemOrcamento->idOs)]) ?>
+    <?php if ($orcamentoEntregue ?? false) { ?>
+        <?= component('alert', ['variant' => 'info', 'message' => 'Equipamento entregue. Novas decisões normais estão bloqueadas; orçamento e histórico permanecem disponíveis para consulta.']) ?>
+    <?php } ?>
     <?php if ($orcamentoAtual !== null) { ?>
         <section class="rounded-card border border-border bg-surface p-4">
             <h2 class="text-heading-sm text-text"><?= e('Versão ' . (int) $orcamentoAtual->numero . ($orcamentoAtual->ativo ? ' publicada' : ' retirada do link')) ?></h2>

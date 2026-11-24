@@ -716,6 +716,13 @@ class Os extends MY_Controller
         $anotacoes = $this->os_model->getAnotacoes($idOs);
         $historico = $this->os_model->getHistorico($idOs);
 
+        $anexosOrigem = [];
+        if ($this->db->table_exists('trifase_garantia_retornos')) {
+            require_once APPPATH . 'models/Trifase_retorno_model.php';
+            $retornos = new Trifase_retorno_model();
+            $retornos->db = $this->db;
+            $anexosOrigem = $retornos->anexosOrigem($idOs);
+        }
         $pixPayload = $verValores ? $this->os_model->getPixPayload($idOs, $configuracao['pix_key'] ?? null, $emitente) : null;
         $telefone = osTelefoneWhatsApp($os->celular_cliente ?: $os->telefone_cliente);
 
@@ -736,6 +743,7 @@ class Os extends MY_Controller
         ];
 
         return [
+            'anexosOrigem' => $anexosOrigem,
             'os' => $os,
             'aba' => $aba,
             'totais' => $totais,

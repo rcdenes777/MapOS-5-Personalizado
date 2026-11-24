@@ -13,6 +13,40 @@ class Trifase_retorno_model extends CI_Model
         return trifaseRetornoDaOs($this->db, $id);
     }
 
+    /** Histórico privado por referência; não altera os anexos próprios nem a publicação. */
+    public function anexosOrigem(int $id): array
+    {
+        if ($id <= 0 || ! $this->db->table_exists('trifase_garantia_retornos')) {
+            return [];
+        }
+        // A relação guarda a raiz; uma origem que também seja retorno é inválida.
+        $origem = $this->db->select('origem.idOs, origem.dataInicial')->from('trifase_garantia_retornos r')
+            ->join('os filho', 'filho.idOs = r.os_id AND filho.clientes_id = r.cliente_id')
+            ->join('os origem', 'origem.idOs = r.origem_id AND origem.clientes_id = filho.clientes_id')
+            ->join('trifase_os_equipamentos ef', 'ef.os_id = filho.idOs AND ef.equipamento_id = r.equipamento_id')
+            ->join('trifase_os_equipamentos eo', 'eo.os_id = origem.idOs AND eo.equipamento_id = ef.equipamento_id')
+            ->join('trifase_equipamentos unidade', 'unidade.id = ef.equipamento_id AND unidade.cliente_id = filho.clientes_id')
+            ->join('trifase_garantia_retornos raiz', 'raiz.os_id = origem.idOs', 'left')
+            ->where('r.os_id', $id)->where('origem.idOs !=', $id)->where('raiz.os_id', null)->get()->row();
+        if (! $origem) {
+            return [];
+        }
+        $anexos = $this->db->select('idAnexos, anexo, thumb')->where('os_id', (int) $origem->idOs)
+            ->order_by('idAnexos')->get('anexos')->result();
+        if ($anexos === []) {
+            return [];
+        }
+        $metadados = [];
+        foreach ($anexos as $anexo) {
+            $nome = basename(str_replace('\\', '/', (string) $anexo->anexo));
+            $imagem = in_array(strtolower(pathinfo($nome, PATHINFO_EXTENSION)), ['jpg', 'jpeg', 'png', 'gif', 'webp'], true);
+            $metadados[] = (object) ['idAnexos' => (int) $anexo->idAnexos, 'nome' => $nome,
+                'imagem' => $imagem, 'tem_miniatura' => $imagem && ! empty($anexo->thumb),
+                'data_origem' => (string) $origem->dataInicial];
+        }
+        return ['origem_id' => (int) $origem->idOs, 'anexos' => $metadados];
+    }
+
     public function avaliacao(int $id): ?object
     {
         return $this->db->where('os_id', $id)->where('tipo', 'avaliar')->order_by('id', 'desc')->get('trifase_garantia_eventos', 1)->row() ?: null;

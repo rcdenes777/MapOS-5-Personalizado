@@ -154,6 +154,7 @@ if (($pilotoEquipamento ?? null) !== null
     <div id="os-secoes" class="grid min-w-0 scroll-mt-20 gap-4">
         <?= component('tabs', ['label' => 'Informações da ordem de serviço', 'items' => $abasComplementares]) ?>
         <?php if ($secao === 'anexos') { ?>
+            <?php $this->load->view('trifase/retorno-anexos-origem'); ?>
             <section class="trifase-os-painel" aria-labelledby="piloto-anexos" <?= js_module('trifase/anexos') ?>>
                 <div class="trifase-os-secao-titulo"><h2 id="piloto-anexos">Fotos, vídeos e documentos</h2></div>
                 <?php if ($editarTecnico) { ?>

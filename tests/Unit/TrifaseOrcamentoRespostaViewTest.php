@@ -2,15 +2,30 @@
 
 require_once APPPATH . 'helpers/trifase_orcamento_helper.php';
 
+if (! function_exists('site_url')) {
+    function site_url(string $caminho = ''): string
+    {
+        return '/index.php/' . ltrim($caminho, '/');
+    }
+}
+
+if (! function_exists('base_url')) {
+    function base_url(string $caminho = ''): string
+    {
+        return '/' . ltrim($caminho, '/');
+    }
+}
+
 final class TrifaseOrcamentoRespostaViewTest extends \PHPUnit\Framework\TestCase
 {
     public function testFormularioInternoExigeCanalDataENaoAtribuiAssinaturaAoCliente(): void
     {
         $html = $this->renderizar('trifase/orcamento-resumo');
-        foreach (['name="canal"', 'Telefone', 'WhatsApp', 'Presencial', 'name="comunicado_em"', 'type="datetime-local"', 'name="observacao"', 'name="confirmar"', 'name="versao"', 'name="operacao"'] as $campo) {
+        foreach (['name="canal"', 'Telefone', 'WhatsApp', 'Presencial', 'name="comunicado_em"', 'type="date"', 'name="observacao"', 'name="confirmar"', 'name="versao"', 'name="operacao"'] as $campo) {
             $this->assertStringContainsString($campo, $html);
         }
-        $this->assertStringContainsString('Data e hora informadas da comunicação', $html);
+        $this->assertStringContainsString('Data informada da comunicação', $html);
+        $this->assertStringContainsString('Somente a data', $html);
         $this->assertStringContainsString('registrada pela equipe', $html);
         $this->assertStringNotContainsString('assinatura eletrônica', $html);
     }
@@ -48,11 +63,23 @@ final class TrifaseOrcamentoRespostaViewTest extends \PHPUnit\Framework\TestCase
         $this->assertStringContainsString('Resposta enviada pelo link', $html);
     }
 
+    public function testFormularioApareceComVersaoNaoVigenteParaPermitirOSnapshot(): void
+    {
+        $html = $this->renderizar('trifase/orcamento-resumo', ['pilotoOrcamentoValido' => false]);
+        $this->assertStringContainsString('Salvar resposta', $html);
+        $this->assertStringContainsString('cria uma nova versão com os itens e valores atuais', $html);
+        $cancelada = $this->renderizar('trifase/orcamento-resumo', ['pilotoOrcamentoValido' => false,
+            'os' => (object) ['idOs' => 1, 'status' => 'Cancelado']]);
+        $this->assertStringNotContainsString('Salvar resposta', $cancelada);
+    }
+
     public function testEntregaOcultaFormularioInternoEPublicoMasPreservaConsultaEDecisaoAnterior(): void
     {
         $interno = $this->renderizar('trifase/orcamento-resumo', ['pilotoOrcamentoEntregue' => true]);
         $this->assertStringContainsString('Equipamento entregue', $interno);
-        $this->assertStringNotContainsString('Salvar resposta', $interno);
+        // A equipe ainda pode lançar a resposta depois da entrega.
+        $this->assertStringContainsString('Salvar resposta', $interno);
+        $this->assertStringContainsString('a equipe ainda pode registrar a resposta', $interno);
         $this->assertStringContainsString('Consultar orçamento e versões', $interno);
         $publico = $this->renderizar('trifase/orcamento-conteudo', ['orcamentoEntregue' => true]);
         $this->assertStringContainsString('somente para consulta', $publico);
@@ -63,19 +90,32 @@ final class TrifaseOrcamentoRespostaViewTest extends \PHPUnit\Framework\TestCase
         $this->assertStringContainsString('por telefone', $anterior);
     }
 
-    public function testRegularizacaoSoApareceComEntregaVersaoElegivelEPermissaoEspecifica(): void
+    public function testFluxoUnicoDispensaRegularizacaoSeparadaAposEntrega(): void
     {
         $dados = ['pilotoOrcamentoEntregue' => true, 'pilotoPodeRegularizarOrcamento' => true];
-        $permitido = $this->renderizar('trifase/orcamento-resumo', $dados);
-        foreach (['Regularização administrativa tardia', 'regularizar_resposta/1', 'name="justificativa"', 'name="comunicado_em"', 'name="canal"', 'name="confirmar"'] as $texto) {
-            $this->assertStringContainsString($texto, $permitido);
-        }
-        $negado = $this->renderizar('trifase/orcamento-resumo', array_replace($dados, ['pilotoPodeRegularizarOrcamento' => false]));
-        $this->assertStringNotContainsString('regularizar_resposta/1', $negado);
+        $html = $this->renderizar('trifase/orcamento-resumo', $dados);
+        // Um único caminho: registrar_resposta, sem o formulário administrativo paralelo.
+        $this->assertStringContainsString('registrar_resposta/1', $html);
+        $this->assertStringNotContainsString('regularizar_resposta/1', $html);
+        $this->assertStringNotContainsString('Regularização administrativa tardia', $html);
         $obsoleto = $this->renderizar('trifase/orcamento-resumo', array_replace($dados, ['pilotoOrcamentoValido' => false]));
-        $this->assertStringNotContainsString('regularizar_resposta/1', $obsoleto);
+        $this->assertStringContainsString('registrar_resposta/1', $obsoleto);
+        $this->assertStringContainsString('cria uma nova versão com os itens e valores atuais', $obsoleto);
         $jaDecidido = $this->renderizar('trifase/orcamento-resumo', array_replace($dados, ['pilotoOrcamentoDecisao' => $this->decisao()]));
-        $this->assertStringNotContainsString('regularizar_resposta/1', $jaDecidido);
+        $this->assertStringNotContainsString('registrar_resposta/1', $jaDecidido);
+    }
+
+    public function testRegistroAposEntregaSemJustificativaNaoExibeRotuloDeRegularizacaoNemCampoVazio(): void
+    {
+        $decisao = $this->decisao();
+        $decisao->regularizacao_tardia = 1;
+        $decisao->justificativa = null;
+        $decisao->entrega_id = 9;
+        $html = $this->renderizar('trifase/orcamento-resumo', ['pilotoOrcamentoDecisao' => $decisao]);
+        $this->assertStringContainsString('Registro após a entrega', $html);
+        $this->assertStringNotContainsString('Regularização administrativa tardia', $html);
+        $this->assertStringNotContainsString('Justificativa:', $html);
+        $this->assertStringContainsString('Entrega #9', $html);
     }
 
     public function testRegularizacaoExibeAvisoSemExporJustificativaOuOperadorAoPublico(): void
@@ -165,7 +205,7 @@ final class TrifaseOrcamentoRespostaViewTest extends \PHPUnit\Framework\TestCase
                 $this->dados = $antes;
             }
         };
-        $dados += ['os' => (object) ['idOs' => 1], 'pilotoOrcamento' => (object) ['id' => 1, 'numero' => 2],
+        $dados += ['os' => (object) ['idOs' => 1, 'status' => 'Aberto'], 'pilotoOrcamento' => (object) ['id' => 1, 'numero' => 2],
             'pilotoOrcamentoValido' => true, 'pilotoOrcamentoDecisao' => null, 'pilotoPodeRegistrarResposta' => true,
             'versaoOrcamento' => (object) ['id' => 1, 'numero' => 2], 'retratoOrcamento' => ['os' => 1, 'itens' => [], 'pecas_c' => 0, 'servicos_c' => 0, 'desconto_c' => 0, 'total_c' => 0],
             'decisaoOrcamento' => null, 'erroOrcamento' => null, 'responderOrcamentoUrl' => '/responder'];

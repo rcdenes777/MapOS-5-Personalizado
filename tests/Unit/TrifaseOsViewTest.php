@@ -79,6 +79,15 @@ final class TrifaseOsViewTest extends \PHPUnit\Framework\TestCase
         $this->assertStringNotContainsString('R$', $html);
     }
 
+    public function testPilotoIntegraImagensHistoricasSeparadasDosAnexosNovos(): void
+    {
+        $extras = ['anexosOrigem' => ['origem_id' => 7, 'anexos' => [(object) ['idAnexos' => 77, 'nome' => 'historico.jpg', 'imagem' => true, 'tem_miniatura' => true, 'data_origem' => '2026-11-01']]]];
+        $html = $this->renderizar(false, extras: $extras);
+        $this->assertStringContainsString('Imagens da OS de origem — histórico', $html);
+        $this->assertStringContainsString('os/anexo/77/thumb', $html);
+        $this->assertStringNotContainsString('anexo-publico-77', $html);
+    }
+
     public function testOsProtegidaNaoOfereceMutacaoDeItens(): void
     {
         $html = $this->renderizar(true, true);
@@ -86,7 +95,7 @@ final class TrifaseOsViewTest extends \PHPUnit\Framework\TestCase
         $this->assertStringNotContainsString('data-modal-abrir="excluir-produto"', $html);
     }
 
-    private function renderizar(bool $financeiro, bool $formalizada = true, bool $editavel = false, ?array $resposta = null, string $secao = 'anexos'): string
+    private function renderizar(bool $financeiro, bool $formalizada = true, bool $editavel = false, ?array $resposta = null, string $secao = 'anexos', array $extras = []): string
     {
         $env = $_ENV;
         $_ENV['TRIFASE_FINANCEIRO_ENABLED'] = 'false';
@@ -127,7 +136,7 @@ final class TrifaseOsViewTest extends \PHPUnit\Framework\TestCase
         $nivel = ob_get_level();
         ob_start();
         try {
-            $v->view('trifase/os', [
+            $v->view('trifase/os', $extras + [
                 'os' => (object) ['idOs' => 1, 'clientes_id' => 1, 'nomeCliente' => '<script>teste</script>', 'nome' => 'Técnico', 'dataInicial' => '2026-11-02', 'dataFinal' => '2026-11-06', 'descricaoProduto' => 'Placa inverter', 'defeito' => 'Não liga', 'observacoes' => '', 'laudoTecnico' => '', 'status' => 'Finalizado', 'faturado' => (int) $formalizada, 'celular_cliente' => '', 'telefone_cliente' => '', 'garantia' => 90],
                 'pode' => ['editar' => $editavel, 'editar_tecnico' => false, 'ver_cliente' => false, 'ver_financeiro' => $financeiro],
                 'produtos' => [(object) ['idProdutos_os' => 1, 'descricao' => 'Fusível', 'quantidade' => 1, 'preco' => 500, 'subTotal' => 500]],

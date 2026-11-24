@@ -545,6 +545,15 @@ final class OsTelaTest extends MaposTestCase
         $this->assertStringNotContainsString('data-modal-abrir="excluir-', $faturada);
     }
 
+    public function testAbaAnexosClassicaIntegraHistoricoPorReferencia(): void
+    {
+        $dados = ['aba' => 'anexos', 'anexosOrigem' => ['origem_id' => 7, 'anexos' => [(object) ['idAnexos' => 77, 'nome' => 'historico.jpg', 'imagem' => true, 'tem_miniatura' => true, 'data_origem' => '2026-11-01']]]] + $this->dadosDaTela(true);
+        $html = $this->renderizar('os/visualizar', $dados);
+        $this->assertStringContainsString('Imagens da OS de origem — histórico', $html);
+        $this->assertStringContainsString('os/anexo/77/thumb', $html);
+        $this->assertStringContainsString('os/downloadanexo/77', $html);
+    }
+
     public function testTelaMostraODescontoIndividualDosItens(): void
     {
         $xss = '<script>alert(1)</script>';

@@ -103,7 +103,6 @@ $textos = [
             <?php } ?>
         </div>
     </header>
-
     <?php if ($fechada && ! $pode['editar']) { ?>
         <?= component('alert', ['variant' => 'info', 'message' => (($pode['editar_tecnico'] ?? false) ? 'O faturamento protege produtos, serviços e descontos. Dados técnicos, anexos e anotações continuam editáveis com sua permissão.' : 'Esta OS está ' . ($os->status === 'Cancelado' ? 'cancelada' : 'faturada') . ': seus dados não podem mais ser alterados.')]) ?>
     <?php } ?>
@@ -161,6 +160,7 @@ $textos = [
                 <?php $this->load->view('os/partes/formulario-anexo', ['prefixoAnexo' => 'anexo']); ?>
             </section>
         <?php } ?>
+        <?php $this->load->view('trifase/retorno-anexos-origem'); ?>
         <div data-os-parte="anexos"><?php $this->load->view('os/partes/anexos'); ?></div>
     <?php } elseif ($aba === 'anotacoes') { ?>
         <?php if (($pode['editar_tecnico'] ?? $pode['editar'])) { ?>

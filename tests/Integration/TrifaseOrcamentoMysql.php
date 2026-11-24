@@ -126,6 +126,9 @@ function migrate(string $stamp, string $name): void
         'trifase_orcamento_regularizacao' => new class() extends Migration_trifase_orcamento_regularizacao {
             public object $dbforge;
         },
+        'trifase_orcamento_data_comunicacao' => new class() extends Migration_trifase_orcamento_data_comunicacao {
+            public object $dbforge;
+        },
         default => throw new LogicException('Unknown test migration.'),
     };
     $m->db = $db;
@@ -249,6 +252,7 @@ try {
     if ($late) {
         migrate('20261119020000', 'trifase_orcamento_regularizacao');
     }
+    migrate('20261124010000', 'trifase_orcamento_data_comunicacao');
     testCase('migration-reapply-legacy-index-fk', function () use ($legacyId, $legacy, $late) {
         $before = snapshot($legacyId);
         migrate('20261102000000', 'trifase_entregas');
@@ -257,6 +261,7 @@ try {
         if ($late) {
             migrate('20261119020000', 'trifase_orcamento_regularizacao');
         }
+        migrate('20261124010000', 'trifase_orcamento_data_comunicacao');
         insist(snapshot($legacyId) === $before, 'Reapply mutated legacy');
         insist($before[0] === $legacy[0] && $before[1] === $legacy[1], 'Legacy OS/history changed');
         foreach ($before[2] as $i=>$row) {
@@ -372,16 +377,24 @@ try {
                     $d = ['delivery',$id,$v,keyFor('delivery_'.$id)];
                     $r = [$channel === 'public' ? 'public_' . $decision : $decision,$id,$v,keyFor('decision_'.$id)];
                     $results = race($deliveryFirst?$d:$r, $deliveryFirst?$r:$d);
-                    insist($results === ($deliveryFirst?['ok','denied']:['ok','ok']), 'Unexpected race outcomes');
+                    // Após a entrega, o link público é negado, mas a equipe ainda pode registrar (tardia).
+                    $negado = $deliveryFirst && $channel === 'public';
+                    insist($results === ($negado?['ok','denied']:['ok','ok']), 'Unexpected race outcomes: ' . json_encode($results));
                     invariants($id);
                     insist((int) scalar('SELECT COUNT(*) FROM trifase_entregas_estado WHERE os_id=?', [$id])===1, 'Delivery missing');
-                    insist((int) scalar('SELECT COUNT(*) FROM trifase_orcamento_eventos WHERE os_id=? AND decisao_versao IS NOT NULL', [$id])===($deliveryFirst?0:1), 'Decision count');
+                    insist((int) scalar('SELECT COUNT(*) FROM trifase_orcamento_eventos WHERE os_id=? AND decisao_versao IS NOT NULL', [$id])===($negado?0:1), 'Decision count');
                     $after = snapshot($id);
-                    if ($deliveryFirst) {
-                        insist($before === $after, 'Delivery winner allowed normal decision or OS/history mutation');
+                    if ($negado) {
+                        insist($before === $after, 'Delivery winner allowed public decision or OS/history mutation');
                     } else {
-                        insist($after[0]['status'] === ($decision==='aprovar'?'Aprovado':'Orçamento recusado'), 'Wrong OS status');
-                        insist((int) scalar('SELECT COUNT(*) FROM os_historico h JOIN trifase_orcamento_eventos e ON e.os_id=h.os_id AND e.decisao_versao IS NOT NULL JOIN trifase_entregas_eventos d ON d.os_id=e.os_id WHERE e.os_id=? AND h.status_novo=? AND h.data_hora=e.criado_em AND e.criado_em<=d.registrado_em', [$id,$after[0]['status']])===1, 'Ordered timestamps/history');
+                        if (! $deliveryFirst) {
+                            insist($after[0]['status'] === ($decision==='aprovar'?'Aprovado':'Orçamento recusado'), 'Wrong OS status');
+                            insist((int) scalar('SELECT COUNT(*) FROM os_historico h JOIN trifase_orcamento_eventos e ON e.os_id=h.os_id AND e.decisao_versao IS NOT NULL JOIN trifase_entregas_eventos d ON d.os_id=e.os_id WHERE e.os_id=? AND h.status_novo=? AND h.data_hora=e.criado_em AND e.criado_em<=d.registrado_em', [$id,$after[0]['status']])===1, 'Ordered timestamps/history');
+                        } else {
+                            // Registro tardio preserva status/datas; apenas vincula a decisão à entrega.
+                            insist($after[0]['status'] === $before[0]['status'], 'Post-delivery decision changed OS status');
+                            insist((int) scalar('SELECT COUNT(*) FROM trifase_orcamento_eventos WHERE os_id=? AND decisao_versao IS NOT NULL AND regularizacao_tardia=1 AND entrega_id IS NOT NULL', [$id])===1, 'Late internal decision not linked to delivery');
+                        }
                     }
                 });
             }

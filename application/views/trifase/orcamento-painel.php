@@ -2,12 +2,12 @@
     <header><h1 class="text-heading-xl text-text"><?= e('Orçamento da OS #' . (int) $ordemOrcamento->idOs) ?></h1><p class="mt-2 text-body-md text-muted">Confira a prévia antes de publicar. Somente a versão publicada estará disponível pelo link ativo desta OS.</p></header>
     <?= component('link', ['label' => 'Voltar à OS', 'href' => site_url('os/visualizar/' . (int) $ordemOrcamento->idOs)]) ?>
     <?php if ($orcamentoEntregue ?? false) { ?>
-        <?= component('alert', ['variant' => 'info', 'message' => 'Equipamento entregue. Novas publicações e decisões normais estão bloqueadas; orçamento e histórico permanecem disponíveis para consulta.']) ?>
+        <?= component('alert', ['variant' => 'info', 'message' => 'Equipamento entregue. Novas publicações e a decisão pelo link estão bloqueadas; a equipe ainda pode registrar a resposta do cliente. Orçamento e histórico permanecem disponíveis para consulta.']) ?>
     <?php } ?>
     <?php if ($orcamentoAtual !== null) { ?>
         <section class="rounded-card border border-border bg-surface p-4">
             <h2 class="text-heading-sm text-text"><?= e('Versão ' . (int) $orcamentoAtual->numero . ($orcamentoAtual->ativo ? ' publicada' : ' retirada do link')) ?></h2>
-            <?php if ($orcamentoAtual->ativo && ! hash_equals($orcamentoAtual->conteudo_hash, $hashOrcamento)) { ?><p class="mt-3 text-danger-ink">Os dados da OS mudaram. Esta versão deixou de aparecer ao cliente; publique uma nova após conferir.</p><?php } ?>
+            <?php if ($orcamentoAtual->ativo && ! hash_equals($orcamentoAtual->conteudo_hash, $hashOrcamento)) { ?><p class="mt-3 text-danger-ink">Os dados da OS mudaram. Esta versão deixou de aparecer ao cliente; registre a resposta na tela da OS para criar uma versão com os itens atuais (antes da entrega, também é possível publicar uma nova versão).</p><?php } ?>
             <?php if ($orcamentoAtual->ativo && $podePublicarOrcamento) { ?>
                 <details class="mt-3"><summary>Retirar orçamento do link</summary>
                     <form method="post" action="<?= e(site_url('trifase_orcamentos/retirar/' . (int) $ordemOrcamento->idOs)) ?>" class="mt-3 grid gap-3">

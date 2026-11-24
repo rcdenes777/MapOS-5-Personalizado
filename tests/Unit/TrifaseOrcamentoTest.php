@@ -6,6 +6,7 @@ require_once APPPATH . 'database/migrations/20261102000000_trifase_entregas.php'
 require_once APPPATH . 'database/migrations/20261102020000_trifase_orcamentos.php';
 require_once APPPATH . 'database/migrations/20261119010000_trifase_orcamento_comunicacao.php';
 require_once APPPATH . 'database/migrations/20261119020000_trifase_orcamento_regularizacao.php';
+require_once APPPATH . 'database/migrations/20261124010000_trifase_orcamento_data_comunicacao.php';
 require_once BASEPATH . 'database/DB_forge.php';
 require_once BASEPATH . 'database/drivers/sqlite3/sqlite3_forge.php';
 
@@ -50,6 +51,13 @@ final class TrifaseOrcamentoTest extends MaposTestCase
         if (! in_array($this->name(), ['testMigracaoComunicacaoAditivaPreservaLegadoAoExecutarDuasVezes', 'testMigracaoRegularizacaoPreservaLegado'], true)) {
             $this->migrarRegularizacao();
         }
+        $m = new class() extends Migration_trifase_orcamento_data_comunicacao {
+            public object $dbforge;
+        };
+        $m->db = $this->db;
+        $m->dbforge = new CI_DB_sqlite3_forge($this->db);
+        $m->up();
+        $m->up();
         $this->modelo = new Trifase_orcamento_model();
         $this->modelo->db = $this->db;
     }
@@ -180,39 +188,34 @@ final class TrifaseOrcamentoTest extends MaposTestCase
         }
     }
 
-    public function testEntregaAtivaBloqueiaAmbosCanaisEDecisoesSemRevogarConsulta(): void
+    public function testEntregaAtivaBloqueiaLinkPublicoMasPermiteLancamentoDaEquipe(): void
     {
         $versao = $this->publicar();
         [$entregas, $entrega] = $this->entregar();
         $antes = $this->db->get('os')->result_array();
-        foreach (['aprovar', 'recusar'] as $tipo) {
-            foreach (['publica', 'interna'] as $origem) {
-                try {
-                    if ($origem === 'publica') {
-                        $this->modelo->responder(1, $this->token, $versao, $tipo, 'Cliente QA', '1', $this->chave($origem . $tipo));
-                    } else {
-                        $this->modelo->registrarRespostaInterna(
-                            1,
-                            $versao,
-                            $tipo,
-                            'Cliente QA',
-                            '1',
-                            $this->chave($origem . $tipo),
-                            7,
-                            ['canal' => 'telefone', 'comunicado_em' => date('Y-m-d\TH:i')]
-                        );
-                    }
-                    $this->fail('Aceitou decisão após entrega ativa');
-                } catch (DomainException $e) {
-                    $this->assertStringContainsString('entregue', $e->getMessage());
-                    $this->assertNull($this->modelo->decisao($versao));
-                }
-            }
+        try {
+            $this->modelo->responder(1, $this->token, $versao, 'aprovar', 'Cliente QA', '1', $this->chave('publica'));
+            $this->fail('Aceitou decisão pelo link após entrega ativa');
+        } catch (DomainException $e) {
+            $this->assertStringContainsString('entregue', $e->getMessage());
+            $this->assertNull($this->modelo->decisao($versao));
         }
+        // A equipe pode lançar o fato depois da entrega, preservando status e entrega.
+        $this->modelo->registrarRespostaInterna(
+            1,
+            $versao,
+            'aprovar',
+            'Cliente QA',
+            '1',
+            $this->chave('interna'),
+            7,
+            ['canal' => 'presencial', 'comunicado_em' => date('Y-m-d')]
+        );
+        $this->assertSame('aprovar', $this->modelo->decisao($versao)->tipo);
         $this->assertSame($antes, $this->db->get('os')->result_array());
         $this->assertSame($entrega, (int) $entregas->ativa(1)->id);
         $this->assertNotNull($this->modelo->publicado(1, $this->token));
-        $this->assertCount(1, $this->modelo->eventos(1));
+        $this->assertCount(2, $this->modelo->eventos(1));
     }
 
     public function testReenvioDeDecisaoAnteriorAEntregaNaoDuplicaEConflitoPermaneceNegado(): void
@@ -368,7 +371,7 @@ final class TrifaseOrcamentoTest extends MaposTestCase
         foreach ([null, [], 1, '', 'abcd', str_repeat('é', 2001), "motivo\0", "motivo\r", "\xff", "motivo\u{202e}"] as $valor) {
             $invalidos[] = array_replace($dados, ['justificativa' => $valor]);
         }
-        foreach (['2026-02-30T10:00', '2026-11-19 10:00', [], date('Y-m-d\TH:i', time() + 120), date('Y-m-d\TH:i', time() - 10800)] as $valor) {
+        foreach (['2026-02-30T10:00', '2026-11-19 10:00', [], date('Y-m-d\TH:i', time() + 120)] as $valor) {
             $invalidos[] = array_replace($dados, ['comunicado_em' => $valor]);
         }
         $invalidos[] = array_replace($dados, ['canal' => 'email']);
@@ -418,15 +421,16 @@ final class TrifaseOrcamentoTest extends MaposTestCase
         $versao = $this->publicar();
         $this->db->where('id', $versao)->update('trifase_orcamento_versoes', ['criado_em' => date('Y-m-d H:i:s', time() - 7200)]);
         [, $entrega] = $this->entregar();
-        $this->db->where('id', $entrega)->update('trifase_entregas_eventos', ['entregue_em' => date('Y-m-d H:i:00', time() - 3600)]);
-        $dados = ['canal' => 'presencial', 'comunicado_em' => date('Y-m-d\TH:i', time() - 1800), 'justificativa' => 'Registro atrasado'];
+        // Precisão de dia: a comparação é pela data, não pelo horário.
+        $this->db->where('id', $entrega)->update('trifase_entregas_eventos', ['entregue_em' => date('Y-m-d H:i:00', strtotime('-1 day'))]);
+        $dados = ['canal' => 'presencial', 'comunicado_em' => date('Y-m-d'), 'justificativa' => 'Registro atrasado'];
         try {
             $this->modelo->registrarRegularizacao(1, $versao, 'recusar', 'Cliente QA', '1', $this->chave('posterior'), 7, $dados);
             $this->fail('Aceitou comunicação posterior à entrega');
         } catch (DomainException $e) {
             $this->assertNull($this->modelo->decisao($versao));
         }
-        $dados['comunicado_em'] = date('Y-m-d\TH:i', time() - 3600);
+        $dados['comunicado_em'] = date('Y-m-d', strtotime('-1 day'));
         $this->modelo->registrarRegularizacao(1, $versao, 'recusar', 'Cliente QA', '1', $this->chave('mesmo-minuto'), 7, $dados);
         $this->assertSame($entrega, (int) $this->modelo->decisao($versao)->entrega_id);
     }
@@ -614,7 +618,7 @@ final class TrifaseOrcamentoTest extends MaposTestCase
             $invalidas[] = array_replace($valida, ['canal' => $canal]);
         }
         foreach (['', [], null, 1, '2026-02-30T10:00', '2026-11-19 10:00', '2026-11-19T25:00',
-            '2026-11-19T10:00:00', '2026-1-01T10:00', "2026-11-19T10:00\n", date('Y-m-d\TH:i', time() + 120)] as $data) {
+            '2026-11-19T10:00:00', '2026-1-01T10:00', "2026-11-19T10:00\n", date('Y-m-d\TH:i', time() + 120), '2026-02-30'] as $data) {
             $invalidas[] = array_replace($valida, ['comunicado_em' => $data]);
         }
         foreach ([[], null, 1, str_repeat('é', 2001), "nota\0", "nota\r", "nota\x7f", "\xff"] as $nota) {
@@ -632,22 +636,15 @@ final class TrifaseOrcamentoTest extends MaposTestCase
         }
     }
 
-    public function testComunicacaoNaoAntecedeVersaoMasAceitaInicioDoMesmoMinuto(): void
+    public function testComunicacaoAnteriorAVersaoEAceitaComoFatoDeclarado(): void
     {
         $versao = $this->publicar();
         $minuto = date('Y-m-d H:i:00', time() - 300);
         $this->db->where('id', $versao)->update('trifase_orcamento_versoes', ['criado_em' => substr($minuto, 0, 17) . '59']);
-        $dados = ['canal' => 'presencial', 'comunicado_em' => date('Y-m-d\TH:i', strtotime($minuto) - 60)];
-        try {
-            $this->modelo->registrarRespostaInterna(1, $versao, 'aprovar', 'Cliente QA', '1', $this->chave('data-antes'), 7, $dados);
-            $this->fail('Aceitou comunicação anterior à versão');
-        } catch (DomainException $e) {
-            $this->assertNull($this->modelo->decisao($versao));
-        }
-        $dados['comunicado_em'] = str_replace(' ', 'T', substr($minuto, 0, 16));
-        $this->modelo->registrarRespostaInterna(1, $versao, 'aprovar', 'Cliente QA', '1', $this->chave('data-mesmo'), 7, $dados);
-        $this->assertSame($minuto, $this->modelo->decisao($versao)->comunicado_em);
-        $this->assertNull($this->modelo->decisao($versao)->observacao);
+        $dados = ['canal' => 'presencial', 'comunicado_em' => date('Y-m-d\TH:i', strtotime($minuto) - 86400)];
+        $this->modelo->registrarRespostaInterna(1, $versao, 'aprovar', 'Cliente QA', '1', $this->chave('data-antes'), 7, $dados);
+        $this->assertSame('aprovar', $this->modelo->decisao($versao)->tipo);
+        $this->assertNull($this->modelo->decisao($versao)->comunicado_data);
     }
 
     public function testIdempotenciaInternaIncluiTodosOsMetadados(): void

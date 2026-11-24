@@ -175,12 +175,25 @@ class Trifase_orcamento_model extends CI_Model
             throw new DomainException('Informe o canal da comunicação: telefone, WhatsApp ou presencial.');
         }
         $data = $comunicacao['comunicado_em'] ?? null;
-        if (! is_string($data) || ! preg_match('/\A\d{4}-\d{2}-\d{2}T\d{2}:\d{2}\z/', $data)) {
-            throw new DomainException('Informe a data e hora da comunicação.');
+        $comunicadoData = null;
+        $comunicadoEm = null;
+        if (! is_string($data)) {
+            throw new DomainException('Informe a data da comunicação.');
         }
-        $instante = DateTimeImmutable::createFromFormat('!Y-m-d\TH:i', $data);
-        if ($instante === false || $instante->format('Y-m-d\TH:i') !== $data || $instante->getTimestamp() > time()) {
-            throw new DomainException('Informe uma data de comunicação válida, não futura.');
+        if (preg_match('/\A\d{4}-\d{2}-\d{2}\z/', $data)) {
+            $instante = DateTimeImmutable::createFromFormat('!Y-m-d', $data);
+            if ($instante === false || $instante->format('Y-m-d') !== $data || $instante->getTimestamp() > time()) {
+                throw new DomainException('Informe uma data de comunicação válida, não futura.');
+            }
+            $comunicadoData = $data;
+        } elseif (preg_match('/\A\d{4}-\d{2}-\d{2}T\d{2}:\d{2}\z/', $data)) {
+            $instante = DateTimeImmutable::createFromFormat('!Y-m-d\TH:i', $data);
+            if ($instante === false || $instante->format('Y-m-d\TH:i') !== $data || $instante->getTimestamp() > time()) {
+                throw new DomainException('Informe uma data de comunicação válida, não futura.');
+            }
+            $comunicadoEm = $instante->format('Y-m-d H:i:s');
+        } else {
+            throw new DomainException('Informe a data da comunicação.');
         }
         // Canonizar antes do limite, do hash idempotente e da persistência.
         foreach (['observacao', 'justificativa'] as $campo) {
@@ -200,7 +213,8 @@ class Trifase_orcamento_model extends CI_Model
             throw new DomainException('Informe uma justificativa válida de 5 a 2000 caracteres, sem controles.');
         }
         $comunicacao = ['canal' => $comunicacao['canal'],
-            'comunicado_em' => $instante->format('Y-m-d H:i:s'),
+            'comunicado_em' => $comunicadoEm,
+            'comunicado_data' => $comunicadoData,
             'observacao' => $comunicacao['observacao'] ?? null];
         return $regularizacao ? $comunicacao + ['regularizacao_tardia' => 1, 'justificativa' => trim($justificativa)] : $comunicacao;
     }
@@ -233,37 +247,83 @@ class Trifase_orcamento_model extends CI_Model
         $nome = trim($nome);
         $hash = $this->hash($usuario === null ? ['responder', $id, $versao, $tipo, $nome] : [$regularizacao ? 'regularizacao_tardia' : 'resposta_interna', $id, $versao, $tipo, $nome, $usuario, $comunicacao]);
         $this->transacao($id, function ($os) use ($id, $token, $versao, $tipo, $nome, $chave, $hash, $usuario, $comunicacao, $regularizacao) {
-            $atual = $usuario === null ? $this->publicadoSobTrava($os, $token) : $this->versaoVigente($os);
-            if ($atual === null || (int) $atual->id !== $versao) {
-                throw new DomainException('Orçamento indisponível ou atualizado. Reabra e confira a versão.');
-            }
-            if ($usuario !== null && $comunicacao['comunicado_em'] < substr($atual->criado_em, 0, 16) . ':00') {
-                throw new DomainException('A comunicação não pode ser anterior à criação desta versão.');
-            }
             if ($this->reenvio($id, $chave, $hash)) {
                 return;
             }
+            $atual = $usuario === null ? $this->publicadoSobTrava($os, $token) : $this->versaoVigente($os);
+            $registrada = $usuario !== null && ! $regularizacao && $atual === null ? $this->atual($id) : null;
+            if ($registrada !== null && (int) $registrada->id === $versao) {
+                // Itens/valores mudaram depois da publicação: a resposta da equipe cria, no mesmo ato,
+                // a versão correspondente ao estado atual, sem exigir publicação manual.
+                $versao = $this->snapshotParaResposta($os, $usuario, $hash);
+                $atual = $this->versaoVigente($os);
+            }
+            if ($atual === null || (int) $atual->id !== $versao) {
+                throw new DomainException('Orçamento indisponível ou atualizado. Reabra e confira a versão.');
+            }
             $entrega = $this->entregaAtiva($id);
-            if ($regularizacao) {
-                if ($entrega === null) {
-                    throw new DomainException('A regularização exige uma entrega ativa.');
+            if ($regularizacao && $entrega === null) {
+                throw new DomainException('A regularização exige uma entrega ativa.');
+            }
+            $dataInformada = $comunicacao['comunicado_data'] ?? substr((string) ($comunicacao['comunicado_em'] ?? ''), 0, 10);
+            if ($entrega !== null) {
+                // O cliente decide pelo link só até a entrega; a equipe pode lançar o fato depois.
+                if ($usuario === null) {
+                    throw new DomainException('Equipamento entregue. Este orçamento está disponível somente para consulta.');
                 }
-                // Ambos os formulários têm precisão de minuto; igualdade é permitida.
-                if ($comunicacao['comunicado_em'] > $entrega->entregue_em) {
-                    throw new DomainException('A comunicação não pode ser posterior à entrega ativa.');
+                if ($dataInformada > substr((string) $entrega->entregue_em, 0, 10)) {
+                    throw new DomainException('A data informada não pode ser posterior à entrega.');
                 }
                 $comunicacao['entrega_id'] = (int) $entrega->id;
-            } elseif ($entrega !== null) {
-                throw new DomainException('Equipamento entregue. Este orçamento está disponível somente para consulta.');
+                $comunicacao['regularizacao_tardia'] = 1;
             }
             if ($this->decisao($versao) !== null) {
                 throw new DomainException('Esta versão já recebeu uma decisão. Use uma nova versão para registrar outra resposta.');
             }
             $this->evento($id, $versao, $tipo, $nome, $usuario, $versao, $chave, $hash, $comunicacao);
-            if (! $regularizacao && in_array($os->status, self::ETAPAS_DE_ORCAMENTO, true)) {
+            if ($entrega === null && in_array($os->status, self::ETAPAS_DE_ORCAMENTO, true)) {
                 $this->registrarAndamento($os, $tipo === 'aprovar' ? 'Aprovado' : 'Orçamento recusado', $usuario, $this->decisao($versao)->criado_em);
             }
         });
+    }
+
+    private function snapshotParaResposta(object $os, int $usuario, string $hash): int
+    {
+        if ($os->status === 'Cancelado') {
+            throw new DomainException('Não registre resposta de orçamento em OS cancelada.');
+        }
+        $id = (int) $os->idOs;
+        $retrato = $this->retrato($os);
+        if ($retrato['itens'] === []) {
+            throw new DomainException('Orçamento indisponível ou atualizado. Reabra e confira a versão.');
+        }
+        $hashRetrato = $this->hash($retrato);
+        $anterior = $this->atual($id);
+        if ($anterior !== null) {
+            $linha = $this->db->select('conteudo')->where('id', (int) $anterior->id)->get('trifase_orcamento_versoes')->row();
+            $apresentacao = $linha !== null ? (json_decode((string) $linha->conteudo, true)['apresentacao'] ?? []) : [];
+            if (is_array($apresentacao) && $apresentacao !== []) {
+                $retrato['apresentacao'] = $apresentacao;
+            }
+        }
+        $json = json_encode($retrato, JSON_THROW_ON_ERROR);
+        if (strlen($json) > 60000) {
+            throw new DomainException('Orçamento muito extenso. Reduza os itens antes de registrar a resposta.');
+        }
+        $numero = $this->db->where('os_id', $id)->count_all_results('trifase_orcamento_versoes') + 1;
+        $this->inserir('trifase_orcamento_versoes', ['os_id' => $id, 'numero' => $numero,
+            'conteudo' => $json, 'conteudo_hash' => $hashRetrato,
+            'usuario_id' => $usuario, 'criado_em' => date('Y-m-d H:i:s')]);
+        $versao = (int) $this->db->insert_id();
+        $this->evento($id, $versao, 'publicar', '', $usuario, null, 'snap' . substr(hash('sha256', $id . '|' . $hash), 0, 24), $hash);
+        $dados = ['versao_id' => $versao, 'ativo' => 1];
+        $ok = $this->atual($id) !== null
+            ? $this->db->where('os_id', $id)->update('trifase_orcamento_estado', $dados)
+            : $this->db->insert('trifase_orcamento_estado', ['os_id' => $id] + $dados);
+        if (! $ok) {
+            throw new RuntimeException('Não foi possível registrar a resposta.');
+        }
+        return $versao;
     }
 
     private function registrarAndamento(object $os, string $status, ?int $usuario, string $data): void

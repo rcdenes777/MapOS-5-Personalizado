@@ -8,6 +8,16 @@ Este guia leva uma instalação da série 4 (4.55.x, a última) para a v5. Se vo
 
 A atualização de respostas por canal e regularização tardia requer as migrations aditivas `20261119010000` e `20261119020000`. Elas preservam decisões antigas e não concedem permissões. A nova ação `regularizarOrcamento` depende de concessão explícita aos grupos autorizados pelo proprietário. Consulte [Respostas de orçamento e entrega física](trifase-orcamento-comunicacao.md) antes de atualizar; validação e migrations devem ocorrer primeiro em banco descartável. A implementação desta extensão não autoriza deploy nem alteração do banco de produção.
 
+### Extensão Trifase: resposta do cliente e histórico do retorno
+
+A migration aditiva `20261124010000_trifase_orcamento_data_comunicacao` acrescenta `comunicado_data` (DATE) aos eventos de orçamento. Não converte registros antigos, que continuam exibindo o `comunicado_em` existente. Aplique primeiro em cópia isolada, com backup, antes de atualizar a instalação real.
+
+O formulário "Registrar resposta do cliente" passa a pedir **somente a data informada**. O horário real do lançamento continua sendo gravado automaticamente em `criado_em`, e a tela distingue data informada, data/hora do registro e operador. A comunicação **não precisa ser posterior à criação da versão** e **a equipe pode registrar a resposta depois da entrega** — o cliente continua sem decidir pelo link após a retirada, que permanece somente para consulta. Registros feitos após a entrega são marcados como tardios e guardam o vínculo com a entrega ativa; não alteram status, datas, valores, estoque ou pagamento. Se os itens ou valores forem editados depois da publicação, o registro pela equipe cria uma nova versão do estado atual no mesmo ato, sem exigir publicação manual; a decisão fica vinculada a ela e as versões anteriores permanecem no histórico.
+
+A decisão continua vinculada à versão publicada. Se peças, serviços ou valores mudarem depois, a versão antiga deixa de ser vigente no link e o histórico da resposta é preservado: a aprovação anterior **não** cobre automaticamente o novo valor. Não há trava nova de conclusão ou faturamento — a edição normal da OS continua como antes.
+
+Retornos exibem fotos e arquivos da origem em bloco privado identificado como histórico, por referência e somente com vínculo de cliente/equipamento válido. Não são copiados para o retorno nem publicados pelo link dele. As datas identificam a entrada da OS de origem, não uma data presumida da fotografia. Cobrança, conclusão e recebimento continuam independentes: uma obrigação nova não apaga a da origem nem significa pagamento.
+
 Resumo do que muda:
 
 | Área | Na 4.x | Na v5 |

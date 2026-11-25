@@ -90,3 +90,15 @@ body{overflow-wrap:anywhere}
 
 /* Keep the quote draft save action reachable on tall mobile forms. */
 #action-form[data-kind="quote"] .form-footer{position:sticky;bottom:-1px;background:white;border-top:1px solid var(--line);padding:10px 0;z-index:1}#modal:has(#action-form[data-kind="quote"]){scroll-padding-bottom:80px}
+
+/* R03: contraste do breadcrumb sobre o topo sticky translúcido. */
+.top-left{color:#5a6d68}
+
+/* R03: cabeçalho do modal em telas estreitas (320 px). */
+.modal-head{flex-wrap:nowrap}
+.modal-head h2{min-width:0}
+.modal-head button{flex:none;white-space:nowrap}
+@media(max-width:380px){
+  .modal-head h2{font-size:1.05rem}
+  .modal-head button{padding:8px 10px;font-size:.8rem}
+}

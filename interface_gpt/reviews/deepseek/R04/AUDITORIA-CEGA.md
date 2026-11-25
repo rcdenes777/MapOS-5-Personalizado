@@ -8,12 +8,12 @@
 A auditoria confirmou:
 
 - smoke 72, quote 29, portal 24 e portal-page 8, reexecutados;
-- browser **44/44** e edge **15/15** em cópia isolada;
+- browser **44/44** e edge **15/15** na versão inicial, em cópia isolada;
 - audit R03 **118 (116 PASS / 0 FAIL / 2 INFO)** e regressão R02 **37/37**;
 - axe **22 varreduras / 0 violações**, a11y 6/6 na versão inicial;
 - **81 PNG** em 45 desktop, 31 celular e 5 tablet, sem duplicatas;
 - **0 links relativos quebrados**;
-- diff de código `431c4282..df925de3` = **1 arquivo, +8/−1** (`portal.css`);
+- diff de código da versão inicial `431c4282..df925de3` = **1 arquivo, +8/−1** (`portal.css`); após as correções finais, **3 arquivos, +16/−9**;
 - R01–R03 preservadas, `v5-trifase` remota em `8c256cae`, nenhum arquivo fora de `interface_gpt`;
 - o contrato do portal no código: allowlist de projeção, nenhuma escolha inicial, decisão não cria cobrança, versão desatualizada/entrega/revogação bloqueiam resposta, sem vazamento de token ou dados privados.
 

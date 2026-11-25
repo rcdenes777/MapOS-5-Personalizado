@@ -1,0 +1,6 @@
+# Parecer GPT — R06-001
+NÃO APROVADO para avanço R07; laboratório concluído, correção necessária.
+DONE 26be24746b701ed3338759429009b8992b103bd3; código bb43e2ffbb9cd6e5ada7516370d2598999598239; referência v5-trifase confirmada 8c256cae4ddaeefad68922abddbb8addfe37c99d.
+Relatório e auditoria lidos: 656 PASS, 0 FAIL, 4 INFO reportados; quatro correções complementares de UI/permissão. Não reexecutei navegador. Diff não evidenciou alterações fora do escopo nos arquivos retornados.
+Bloqueante para avanço: revisão externa Sonnet F01 confirmada estaticamente no código corrigido: app.js handler tech permite Finalizado com BancadaCancel.pending(o); cancel.js blockers impede confirmar após conclusão. Original trifase_atendimento_helper.php:23-28 bloqueia. Corrigir guarda antes de mutação, testar handler real e estado intacto. F06 Sonnet: 11 mutantes relevantes sobreviventes reportados, exigir testes negativos isolados e específicos. F02 garantia na R07; F03 IDs antes R08; F04 matriz a auditar; F05 data futura herdada, não inventar regra; F07 dívida técnica.
+Proveniência JSON no caminho anunciado não foi localizada no SHA de código via conector (404); laboratório deve esclarecer caminho e hashes. Evidências anteriores intactas. Próxima tarefa corretiva R06-002; não iniciar R07.

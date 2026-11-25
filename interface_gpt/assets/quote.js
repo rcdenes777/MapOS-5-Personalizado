@@ -32,7 +32,7 @@ const BancadaQuote = (() => {
     o.quote=q;return q;
   }
   const validDay=v=>{if(typeof v!=='string'||!/^\d{4}-\d{2}-\d{2}$/.test(v))return false;const d=new Date(v+'T00:00:00Z');return !Number.isNaN(d.getTime())&&d.toISOString().slice(0,10)===v};
-  const snapshotKey=d=>JSON.stringify([d.items,d.discount]);
+  const snapshotKey=d=>JSON.stringify([d.items.map(i=>[i.type,i.name,i.quantity,i.unit]),d.discount]);
   function vigente(o){const v=active(o);return o.status!=='Cancelado'&&v&&snapshotKey(v)===snapshotKey(init(o).draft)?v:null}
   function label(o){const q=init(o),v=active(o);if(!v)return q.versions.length?'Publicação retirada':q.draft.items.length?'Rascunho':'Sem orçamento';if(!vigente(o))return 'Itens alterados';return v.decision?.answer||'Aguardando resposta'}
   function sync(o){o.approval=label(o);o.proposal=totals(init(o).draft.items,o.quote.draft.discount).total}

@@ -1,0 +1,76 @@
+{
+  "results": [
+    {
+      "id": "E1",
+      "desc": "Desconto acima do total é rejeitado no modal",
+      "status": "PASS",
+      "detail": "{\"open\":true,\"error\":\"Confira o total e o desconto.\",\"hidden\":false,\"draft\":1}"
+    },
+    {
+      "id": "E2",
+      "desc": "Item sem descrição não salva",
+      "status": "PASS",
+      "detail": "invalid=3"
+    },
+    {
+      "id": "E3",
+      "desc": "Item com 500 caracteres sem overflow em 390",
+      "status": "PASS",
+      "detail": "overflow=0"
+    },
+    {
+      "id": "E4",
+      "desc": "Cobrança explícita antes da decisão é permitida (não condicionada)",
+      "status": "PASS",
+      "detail": "{\"total\":24000,\"status\":\"Orçamento\",\"approval\":\"Aguardando resposta\"}"
+    },
+    {
+      "id": "E5",
+      "desc": "Cobrança após recusa é oferecida pelo protótipo",
+      "status": "INFO",
+      "detail": "{\"billingBtn\":1,\"total\":24000,\"status\":\"Orçamento recusado\"}"
+    },
+    {
+      "id": "E6",
+      "desc": "Após cobrança ainda há publicar/retirar",
+      "status": "INFO",
+      "detail": "{\"publishBtn\":1,\"withdrawBtn\":1,\"total\":24000}"
+    },
+    {
+      "id": "E7",
+      "desc": "Após entrega, retirada de publicação permanece disponível",
+      "status": "INFO",
+      "detail": "botão=1"
+    },
+    {
+      "id": "E8",
+      "desc": "Resposta pública em versão desatualizada é rejeitada",
+      "status": "PASS",
+      "detail": "Versão indisponível ou já respondida."
+    },
+    {
+      "id": "E9",
+      "desc": "Editor em 320 sem overflow e com salvar no viewport",
+      "status": "PASS",
+      "detail": "{\"open\":true,\"left\":40,\"right\":280,\"submitBottom\":526,\"vh\":568,\"overflow\":0}"
+    },
+    {
+      "id": "E10",
+      "desc": "Teto de R$ 9.999.999,99 é aceito e formatado",
+      "status": "PASS",
+      "detail": "{\"total\":999999999,\"open\":false}"
+    },
+    {
+      "id": "E11",
+      "desc": "Total acima de R$ 9.999.999,99 é rejeitado no modal",
+      "status": "PASS",
+      "detail": "{\"open\":true,\"error\":\"Valor de item fora do limite.\",\"hidden\":false,\"total\":0}"
+    },
+    {
+      "id": "E12",
+      "desc": "Formalização usa o rascunho atual, mesmo sem publicar",
+      "status": "INFO",
+      "detail": "{\"offered\":true,\"total\":30000,\"active\":24000,\"label\":\"Itens alterados\"}"
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+PASS Q1-01 — OS #023 abre orçamento v1 de R$ 240,00 :: {"number":1,"items":[{"type":"Serviço","name":"Serviço de reparo (demonstração inicial)","quantity":1,"unit":24000}],"discount":0,"terms":{"payment":"","deadline":"","warranty":"","diagnosis":""},"total":24000,"created":"2026-11-20","decision":null,"source":"seed"}
+PASS Q1-02 — Rascunho calcula R$ 300,00 com duas peças, serviço e desconto :: {"items":[{"name":"IGBT 650 V","type":"Peça","quantity":1,"unit":5000},{"name":"Optoacoplador PC817","type":"Peça","quantity":1,"unit":5000},{"name":"Reparo em bancada","type":"Serviço","quantity":1,"unit":22000}],"discount":2000,"terms":{"payment":"Pix","deadline":"5 dias","warranty":"90 dias","diagnosis":"Fonte e IGBT."}}
+PASS Q1-03 — Versão 1 continua R$ 240,00 após editar o rascunho :: v1=24000
+PASS Q1-04 — Rascunho não é publicado automaticamente :: current=1, versions=1
+PASS Q2-01 — Publicar cria v2 com R$ 300,00 e status Negociação :: {"versions":2,"current":2,"total":30000,"status":"Negociação"}
+PASS Q2-02 — Aprovação do link não cria cobrança :: {"status":"Aprovado","total":0,"paid":0,"approval":"Aprovado"}
+PASS Q2-03 — Cobrança continua “Sem cobrança” após aprovar :: total=0
+PASS Q2-04 — Formalizar cobrança é ação explícita :: modal=true
+PASS Q2-05 — Formalização cria R$ 300,00 em aberto e preserva o andamento :: {"status":"Aprovado","total":30000,"paid":0,"billing":{"due":"2026-11-30","items":[{"name":"IGBT 650 V","type":"Peça","quantity":1,"unit":5000},{"name":"Optoacoplador PC817","type":"Peça","quantity":1,"unit":5000},{"name":"Reparo em bancada","type":"Serviço","quantity":1,"unit":22000}],"discount":2000}}
+PASS Q2-06 — Pagamento parcial após cobrança :: {"status":"Aprovado","total":30000,"paid":10000}
+PASS Q2-07 — Andamento segue independente da cobrança :: {"status":"Finalizado","total":30000,"paid":10000,"delivery":false}
+PASS Q2-08 — Entrega e quitação independentes da cobrança :: {"status":"Finalizado","total":30000,"paid":30000,"delivery":true,"billing":true}
+PASS Q2-09 — Sem requisições externas na operação :: []
+PASS Q2-10 — Sem exceções JavaScript :: []
+PASS Q2-11 — Sem erros de console :: []
+PASS Q2-12 — Versões, cobrança e pagamento persistem após reload :: {"total":30000,"paid":30000,"delivery":true,"versions":2,"current":2}
+PASS Q3-01 — Recusa pública registra decisão e não cobra :: {"status":"Orçamento recusado","total":0,"approval":"Recusado","decision":"Recusado"}
+PASS Q3-02 — Retirar publicação preserva a versão e desativa o compartilhamento :: {"active":false,"versions":1}
+PASS Q3-03 — Nova versão após retirada reabre o compartilhamento :: {"versions":2,"current":2,"status":"Negociação"}
+PASS Q3-04 — Mudança de itens sem publicação deixa a versão anterior indisponível :: {"label":true}
+PASS Q3-05 — Resposta interna continua disponível no rascunho alterado :: approval button
+PASS Q3-06 — Resposta interna cria novo retrato com os itens atuais :: {"versions":3,"v2":24000,"v3":33000,"v3decision":"Aprovado","status":"Aprovado","total":0}
+PASS Q4-01 — Após entrega não há publicar nem resposta pelo link :: publish=0, public=0
+PASS Q4-02 — Após entrega o registro interno continua oferecido :: approval button
+INFO Q4-03 — Retirada de publicação após entrega :: botão presente=1
+PASS Q4-04 — Comunicação interna após entrega preserva andamento e não cobra :: {"status":"Orçamento","total":0,"decision":{"answer":"Aprovado","name":"Marina Alves (fictícia)","channel":"telefone","date":"2026-11-25","note":"","registered":"2026-11-25T19:02:26.712Z","afterDelivery":true},"afterDelivery":true}
+PASS Q4-05 — Data futura de comunicação é recusada :: {"open":true,"decision":null,"status":"Orçamento"}
+PASS Q4-06 — Comunicação anterior à entrega é aceita e preserva andamento :: {"open":false,"status":"Orçamento","total":0,"answer":"Aprovado","date":"2026-11-24","afterDelivery":true}
+PASS Q4-07 — Guards de domínio bloqueiam publicação e resposta pública após entrega :: {"publish":"Publicação indisponível neste atendimento.","publicResponse":"Equipamento entregue: somente consulta."}
+PASS Q5-01 — Orçamento mobile sem overflow horizontal :: overflow=0
+PASS Q5-02 — Editor mobile abre sem overflow e com salvar acessível :: {"left":40,"right":350,"submitBottom":802,"navTop":783,"scrollW":0}
+PASS Q5-03 — Técnico vê orçamento restrito e não abre editor :: {"restricted":true,"btn":0,"modal":false}
+PASS Q5-04 — Atendente vê orçamento restrito :: restricted
+PASS Q5-05 — Financeiro vê itens e não vê ação técnica :: quote=true
+
+TOTAL 34 · PASS 33 · FAIL 0

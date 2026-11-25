@@ -1,0 +1,66 @@
+{
+  "generatedAt": "2026-11-25T19:02:59.932Z",
+  "engine": "axe-core 4.14.1",
+  "scans": [
+    {
+      "label": "orcamento-inicial",
+      "viewport": "1440x900",
+      "violations": []
+    },
+    {
+      "label": "modal-editor",
+      "viewport": "1440x900",
+      "violations": []
+    },
+    {
+      "label": "modal-publicar",
+      "viewport": "1440x900",
+      "violations": []
+    },
+    {
+      "label": "modal-resposta-interna",
+      "viewport": "1440x900",
+      "violations": []
+    },
+    {
+      "label": "modal-cobranca",
+      "viewport": "1440x900",
+      "violations": []
+    },
+    {
+      "label": "orcamento-decidido-historico",
+      "viewport": "1440x900",
+      "violations": []
+    },
+    {
+      "label": "orcamento-inicial",
+      "viewport": "390x844",
+      "violations": []
+    },
+    {
+      "label": "modal-editor",
+      "viewport": "390x844",
+      "violations": []
+    },
+    {
+      "label": "modal-publicar",
+      "viewport": "390x844",
+      "violations": []
+    },
+    {
+      "label": "modal-resposta-interna",
+      "viewport": "390x844",
+      "violations": []
+    },
+    {
+      "label": "modal-cobranca",
+      "viewport": "390x844",
+      "violations": []
+    },
+    {
+      "label": "orcamento-decidido-historico",
+      "viewport": "390x844",
+      "violations": []
+    }
+  ]
+}

@@ -1,0 +1,209 @@
+{
+  "generatedAt": "2026-11-25T19:02:33.606Z",
+  "results": [
+    {
+      "id": "Q1-01",
+      "desc": "OS #023 abre orçamento v1 de R$ 240,00",
+      "status": "PASS",
+      "detail": "{\"number\":1,\"items\":[{\"type\":\"Serviço\",\"name\":\"Serviço de reparo (demonstração inicial)\",\"quantity\":1,\"unit\":24000}],\"discount\":0,\"terms\":{\"payment\":\"\",\"deadline\":\"\",\"warranty\":\"\",\"diagnosis\":\"\"},\"total\":24000,\"created\":\"2026-11-20\",\"decision\":null,\"source\":\"seed\"}"
+    },
+    {
+      "id": "Q1-02",
+      "desc": "Rascunho calcula R$ 300,00 com duas peças, serviço e desconto",
+      "status": "PASS",
+      "detail": "{\"items\":[{\"name\":\"IGBT 650 V\",\"type\":\"Peça\",\"quantity\":1,\"unit\":5000},{\"name\":\"Optoacoplador PC817\",\"type\":\"Peça\",\"quantity\":1,\"unit\":5000},{\"name\":\"Reparo em bancada\",\"type\":\"Serviço\",\"quantity\":1,\"unit\":22000}],\"discount\":2000,\"terms\":{\"payment\":\"Pix\",\"deadline\":\"5 dias\",\"warranty\":\"90 dias\",\"diagnosis\":\"Fonte e IGBT.\"}}"
+    },
+    {
+      "id": "Q1-03",
+      "desc": "Versão 1 continua R$ 240,00 após editar o rascunho",
+      "status": "PASS",
+      "detail": "v1=24000"
+    },
+    {
+      "id": "Q1-04",
+      "desc": "Rascunho não é publicado automaticamente",
+      "status": "PASS",
+      "detail": "current=1, versions=1"
+    },
+    {
+      "id": "Q2-01",
+      "desc": "Publicar cria v2 com R$ 300,00 e status Negociação",
+      "status": "PASS",
+      "detail": "{\"versions\":2,\"current\":2,\"total\":30000,\"status\":\"Negociação\"}"
+    },
+    {
+      "id": "Q2-02",
+      "desc": "Aprovação do link não cria cobrança",
+      "status": "PASS",
+      "detail": "{\"status\":\"Aprovado\",\"total\":0,\"paid\":0,\"approval\":\"Aprovado\"}"
+    },
+    {
+      "id": "Q2-03",
+      "desc": "Cobrança continua “Sem cobrança” após aprovar",
+      "status": "PASS",
+      "detail": "total=0"
+    },
+    {
+      "id": "Q2-04",
+      "desc": "Formalizar cobrança é ação explícita",
+      "status": "PASS",
+      "detail": "modal=true"
+    },
+    {
+      "id": "Q2-05",
+      "desc": "Formalização cria R$ 300,00 em aberto e preserva o andamento",
+      "status": "PASS",
+      "detail": "{\"status\":\"Aprovado\",\"total\":30000,\"paid\":0,\"billing\":{\"due\":\"2026-11-30\",\"items\":[{\"name\":\"IGBT 650 V\",\"type\":\"Peça\",\"quantity\":1,\"unit\":5000},{\"name\":\"Optoacoplador PC817\",\"type\":\"Peça\",\"quantity\":1,\"unit\":5000},{\"name\":\"Reparo em bancada\",\"type\":\"Serviço\",\"quantity\":1,\"unit\":22000}],\"discount\":2000}}"
+    },
+    {
+      "id": "Q2-06",
+      "desc": "Pagamento parcial após cobrança",
+      "status": "PASS",
+      "detail": "{\"status\":\"Aprovado\",\"total\":30000,\"paid\":10000}"
+    },
+    {
+      "id": "Q2-07",
+      "desc": "Andamento segue independente da cobrança",
+      "status": "PASS",
+      "detail": "{\"status\":\"Finalizado\",\"total\":30000,\"paid\":10000,\"delivery\":false}"
+    },
+    {
+      "id": "Q2-08",
+      "desc": "Entrega e quitação independentes da cobrança",
+      "status": "PASS",
+      "detail": "{\"status\":\"Finalizado\",\"total\":30000,\"paid\":30000,\"delivery\":true,\"billing\":true}"
+    },
+    {
+      "id": "Q2-09",
+      "desc": "Sem requisições externas na operação",
+      "status": "PASS",
+      "detail": "[]"
+    },
+    {
+      "id": "Q2-10",
+      "desc": "Sem exceções JavaScript",
+      "status": "PASS",
+      "detail": "[]"
+    },
+    {
+      "id": "Q2-11",
+      "desc": "Sem erros de console",
+      "status": "PASS",
+      "detail": "[]"
+    },
+    {
+      "id": "Q2-12",
+      "desc": "Versões, cobrança e pagamento persistem após reload",
+      "status": "PASS",
+      "detail": "{\"total\":30000,\"paid\":30000,\"delivery\":true,\"versions\":2,\"current\":2}"
+    },
+    {
+      "id": "Q3-01",
+      "desc": "Recusa pública registra decisão e não cobra",
+      "status": "PASS",
+      "detail": "{\"status\":\"Orçamento recusado\",\"total\":0,\"approval\":\"Recusado\",\"decision\":\"Recusado\"}"
+    },
+    {
+      "id": "Q3-02",
+      "desc": "Retirar publicação preserva a versão e desativa o compartilhamento",
+      "status": "PASS",
+      "detail": "{\"active\":false,\"versions\":1}"
+    },
+    {
+      "id": "Q3-03",
+      "desc": "Nova versão após retirada reabre o compartilhamento",
+      "status": "PASS",
+      "detail": "{\"versions\":2,\"current\":2,\"status\":\"Negociação\"}"
+    },
+    {
+      "id": "Q3-04",
+      "desc": "Mudança de itens sem publicação deixa a versão anterior indisponível",
+      "status": "PASS",
+      "detail": "{\"label\":true}"
+    },
+    {
+      "id": "Q3-05",
+      "desc": "Resposta interna continua disponível no rascunho alterado",
+      "status": "PASS",
+      "detail": "approval button"
+    },
+    {
+      "id": "Q3-06",
+      "desc": "Resposta interna cria novo retrato com os itens atuais",
+      "status": "PASS",
+      "detail": "{\"versions\":3,\"v2\":24000,\"v3\":33000,\"v3decision\":\"Aprovado\",\"status\":\"Aprovado\",\"total\":0}"
+    },
+    {
+      "id": "Q4-01",
+      "desc": "Após entrega não há publicar nem resposta pelo link",
+      "status": "PASS",
+      "detail": "publish=0, public=0"
+    },
+    {
+      "id": "Q4-02",
+      "desc": "Após entrega o registro interno continua oferecido",
+      "status": "PASS",
+      "detail": "approval button"
+    },
+    {
+      "id": "Q4-03",
+      "desc": "Retirada de publicação após entrega",
+      "status": "INFO",
+      "detail": "botão presente=1"
+    },
+    {
+      "id": "Q4-04",
+      "desc": "Comunicação interna após entrega preserva andamento e não cobra",
+      "status": "PASS",
+      "detail": "{\"status\":\"Orçamento\",\"total\":0,\"decision\":{\"answer\":\"Aprovado\",\"name\":\"Marina Alves (fictícia)\",\"channel\":\"telefone\",\"date\":\"2026-11-25\",\"note\":\"\",\"registered\":\"2026-11-25T19:02:26.712Z\",\"afterDelivery\":true},\"afterDelivery\":true}"
+    },
+    {
+      "id": "Q4-05",
+      "desc": "Data futura de comunicação é recusada",
+      "status": "PASS",
+      "detail": "{\"open\":true,\"decision\":null,\"status\":\"Orçamento\"}"
+    },
+    {
+      "id": "Q4-06",
+      "desc": "Comunicação anterior à entrega é aceita e preserva andamento",
+      "status": "PASS",
+      "detail": "{\"open\":false,\"status\":\"Orçamento\",\"total\":0,\"answer\":\"Aprovado\",\"date\":\"2026-11-24\",\"afterDelivery\":true}"
+    },
+    {
+      "id": "Q4-07",
+      "desc": "Guards de domínio bloqueiam publicação e resposta pública após entrega",
+      "status": "PASS",
+      "detail": "{\"publish\":\"Publicação indisponível neste atendimento.\",\"publicResponse\":\"Equipamento entregue: somente consulta.\"}"
+    },
+    {
+      "id": "Q5-01",
+      "desc": "Orçamento mobile sem overflow horizontal",
+      "status": "PASS",
+      "detail": "overflow=0"
+    },
+    {
+      "id": "Q5-02",
+      "desc": "Editor mobile abre sem overflow e com salvar acessível",
+      "status": "PASS",
+      "detail": "{\"left\":40,\"right\":350,\"submitBottom\":802,\"navTop\":783,\"scrollW\":0}"
+    },
+    {
+      "id": "Q5-03",
+      "desc": "Técnico vê orçamento restrito e não abre editor",
+      "status": "PASS",
+      "detail": "{\"restricted\":true,\"btn\":0,\"modal\":false}"
+    },
+    {
+      "id": "Q5-04",
+      "desc": "Atendente vê orçamento restrito",
+      "status": "PASS",
+      "detail": "restricted"
+    },
+    {
+      "id": "Q5-05",
+      "desc": "Financeiro vê itens e não vê ação técnica",
+      "status": "PASS",
+      "detail": "quote=true"
+    }
+  ]
+}

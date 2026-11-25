@@ -1,0 +1,13 @@
+PASS E1 — Desconto acima do total é rejeitado no modal :: {"open":true,"error":"Confira o total e o desconto.","hidden":false,"draft":1}
+PASS E2 — Item sem descrição não salva :: invalid=3
+PASS E3 — Item com 500 caracteres sem overflow em 390 :: overflow=0
+PASS E4 — Cobrança explícita antes da decisão é permitida (não condicionada) :: {"total":24000,"status":"Orçamento","approval":"Aguardando resposta"}
+INFO E5 — Cobrança após recusa é oferecida pelo protótipo :: {"billingBtn":1,"total":24000,"status":"Orçamento recusado"}
+INFO E6 — Após cobrança ainda há publicar/retirar :: {"publishBtn":1,"withdrawBtn":1,"total":24000}
+INFO E7 — Após entrega, retirada de publicação permanece disponível :: botão=1
+PASS E8 — Resposta pública em versão desatualizada é rejeitada :: Versão indisponível ou já respondida.
+PASS E9 — Editor em 320 sem overflow e com salvar no viewport :: {"open":true,"left":40,"right":280,"submitBottom":526,"vh":568,"overflow":0}
+PASS E10 — Teto de R$ 9.999.999,99 é aceito e formatado :: {"total":999999999,"open":false}
+PASS E11 — Total acima de R$ 9.999.999,99 é rejeitado no modal :: {"open":true,"error":"Valor de item fora do limite.","hidden":false,"total":0}
+INFO E12 — Formalização usa o rascunho atual, mesmo sem publicar :: {"offered":true,"total":30000,"active":24000,"label":"Itens alterados"}
+TOTAL 12 · PASS 8 · FAIL 0 · INFO 4

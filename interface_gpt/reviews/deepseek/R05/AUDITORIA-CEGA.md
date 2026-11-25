@@ -24,7 +24,7 @@
 | O teste `R05-F04` fixava a data `24/11/2026`; só passaria no dia 25/11/2026. | A data exibida passou a ser calculada por `date(ds(y))` a partir de “hoje − 1”; a suíte reexecuta em outra data sem edição. |
 | Os dois PDFs em `recibos/` eram da OS #020/1 (R$ 50,00, Pix), não da OS #023/1/#2 citada no cenário principal. | Foram gerados PDFs da **OS #023/1** normal e estornado (`recibo-normal.pdf`, `recibo-estornado.pdf`); os PDFs #020 foram preservados como `recibo-normal-os20.pdf` e `recibo-estornado-os20.pdf` e o teste de borda passou a gravá-los com nomes próprios. |
 | O pacote contém 45 PNG: 37 capturas R05 + 8 da regressão R03; o índice declarava apenas 37. | O índice agora distingue **37 capturas do delta R05** e **8 capturas auxiliares da regressão R03** em `testes/regressao-r03/`; a contagem de 37 do delta continua correta. |
-| No momento da auditoria, o remoto `interface-gpt` (`ffa8c9ca`) não continha o commit local `0d0b4e74`. | O commit de correção e o pacote final serão publicados no `interface-gpt`; o remoto passa a conter a árvore corrigida e as evidências. |
+| No momento da auditoria, o remoto `interface-gpt` (`ffa8c9ca`) não continha o commit local `0d0b4e74`. | O commit de correção e o pacote foram publicados no `interface-gpt`; a branch final `208b8428` contém a árvore corrigida, as evidências e o merge de coordenação. |
 
 ## Confirmação final
 

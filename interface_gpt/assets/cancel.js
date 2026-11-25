@@ -15,7 +15,7 @@ const BancadaCancel=(()=>{
  const requestId=o=>{const p=state(o);ensure(p?.type==='request','Não há pedido pendente.');return p.id};
  const add=(o,type,data,when)=>{const e={id:events(o).length+1,type,when,...copy(data)};events(o).push(e);return e};
  const technicalKey=o=>JSON.stringify([o.status,lines(o).map(i=>[i.type,i.name,i.quantity,i.unit])]);
- const financialKey=o=>JSON.stringify([technicalKey(o),o.total,o.paid,o.billing?.due||'',BancadaFinance.events(o),!!o.delivery,o.conclusion||null]);
+ const financialKey=o=>JSON.stringify([technicalKey(o),BancadaQuote.init(o).draft.discount,o.total,o.paid,o.billing?.due||'',BancadaFinance.events(o),!!o.delivery,o.conclusion||null]);
  const technical=o=>pending(o)&&!lines(o).some(i=>i.type==='Peça')&&events(o).filter(e=>e.type==='technical'&&e.request===state(o).id).at(-1)?.key===technicalKey(o);
  function request(o,origin,reason,when,orders=[]){
    guard(o,orders);ensure(!pending(o),'Já existe pedido pendente.');ensure(['cliente','assistencia'].includes(origin),'Selecione quem solicitou.');
@@ -59,7 +59,7 @@ const BancadaCancel=(()=>{
      ensure(!BancadaFinance.events(o).some(e=>e.date>d.date),'Data anterior aos registros financeiros.');
      refund={amount:a.refund,date:d.date,method:d.method,reference:ref,registered:when};
    }
-   const before={total:o.total,paid:o.paid,billing:o.billing||null};
+   const before=copy({total:o.total,paid:o.paid,billing:o.billing||null});
    BancadaFinance.settle(o,a,refund,day);
    const e=add(o,'confirm',{request,reason,settlement:a,before,refund,day},when);
    o.status='Cancelado';o.cancelRequested=false;return e;

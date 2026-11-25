@@ -25,7 +25,7 @@ O armazenamento local do navegador contém apenas dados de demonstração; use C
 
 No SHA de referência: application/views/trifase/os.php, nova-os-unidade.php, entrega.php, retorno-novo.php, andamento-tecnico.php; application/libraries/Trifase_os_fila.php; application/models/Trifase_entrega_model.php, Trifase_retorno_model.php, Trifase_financeiro_model.php; application/controllers/Mapos.php.
 
-## Entrega inicial
+## Módulos disponíveis
 
 | Área | Estado |
 | --- | --- |
@@ -35,7 +35,7 @@ No SHA de referência: application/views/trifase/os.php, nova-os-unidade.php, en
 | Retorno | Cria novo atendimento separado, itens/estado opcionais |
 | Detalhes da OS | Resumo, atendimento, orçamento, entrega, anexos e histórico |
 | Andamento e laudo | Simulação parcial |
-| Orçamento/aprovação | Simulação simplificada; não equivale ao versionamento ou faturamento do backend |
+| Orçamento/aprovação | Rascunho por peças/serviços, versões, publicação/retirada, decisão interna e pública simulada; cobrança explícita |
 | Pagamento | Simulação de recebimento parcial/integral |
 | Retirada | Data, recebedor, próprio/terceiro, autorização, itens e conferência |
 | Clientes | Consulta, cadastro simulado |
@@ -47,13 +47,19 @@ No SHA de referência: application/views/trifase/os.php, nova-os-unidade.php, en
 ## Pendências para refinamento
 
 - Auditoria funcional completa das rotas, estados, permissões, testes e documentação do sistema.
-- Paridade de orçamento por itens, versões, link público, recusa, regularização, cancelamento, estornos, garantia (avaliação, solução, custos), consumo de estoque, vendas, anexos, edição da identificação, gestão de equipamentos, cadastros, relatórios e configurações.
+- Paridade completa de orçamento (catálogo de itens, estoque, condições, quantidades fracionárias, edição após cobrança, link e portal público, regularização de casos legados), cancelamento, estornos, garantia (avaliação, solução, custos), consumo de estoque, vendas, anexos, edição da identificação, gestão de equipamentos, cadastros, relatórios e configurações.
 - Impressão em duas vias e demais documentos reais.
 - Validação visual em navegador: 320, 360, 390, 768, 1024 e 1440 px; teclado, leitor de tela, toque, orientação, foco, contraste e ausência de overflow.
 - Testes de interação reais e comparação dos fluxos com o sistema atual.
 
 ## Limites
 
-A primeira versão não é um substituto do sistema real. Não possui autenticação, APIs, acesso a produção ou garantia de paridade das regras de negócio. Nenhum dado da oficina é copiado. Nenhum arquivo fora de interface_gpt deve ser modificado na branch experimental. Não integrar à v5-trifase sem autorização.
+O protótipo não é um substituto do sistema real. Não possui autenticação, APIs, acesso a produção ou garantia de paridade das regras de negócio. Nenhum dado da oficina é copiado. Nenhum arquivo fora de interface_gpt deve ser modificado na branch experimental. Não integrar à v5-trifase sem autorização.
 
 Verificação inicial: JavaScript compilado; geração de 18 rotas por quatro perfis (72 combinações) sem erros com DOM simulado e sem valores monetários nos perfis demonstrativos não financeiros. Não equivale a teste de navegador ou validação funcional integral.
+
+## Incremento R03 — orçamento
+
+Consulte [R03-ORCAMENTO.md](R03-ORCAMENTO.md) para os cenários novos, decisões e divergências restantes. A R02 é a referência visual; o incremento R03 ainda precisa de revisão real em navegador.
+
+Testes locais sem dependências: `node tests/smoke.cjs` e `node tests/quote.cjs`.

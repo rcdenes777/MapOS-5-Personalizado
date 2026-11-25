@@ -28,7 +28,7 @@
 
 ## Achados baixos
 
-Favicon 404; alvos de toque abaixo de 44 px (marca e `summary`); textos de 11,2–11,8 px; impressão sem `@page`/margens (800 px vs. A4 794 px); "1 atendimentos"; datas em formatos misturados; fila de cancelamentos sempre zero; placeholder da busca omite "defeito"; troca de perfil volta ao início.
+Favicon 404; alvos de toque abaixo de 44 px (marca e `summary`); textos de 11,2–11,8 px; impressão sem `@page`/margens (800 px vs. A4 794 px); "1 atendimentos"; datas em formatos misturados; fila de cancelamentos sempre zero; placeholder da busca omite "defeito"; troca de perfil volta ao início; nome acessível da marca mobile (`m.` vs. `aria-label="Início"`).
 
 ## Notas
 

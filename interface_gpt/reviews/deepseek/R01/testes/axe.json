@@ -1,0 +1,328 @@
+{
+  "generatedAt": "2026-11-25T18:00:19.786Z",
+  "engine": "axe-core 4.14.1",
+  "scans": [
+    {
+      "label": "painel",
+      "viewport": "1440x900",
+      "violations": []
+    },
+    {
+      "label": "ordens",
+      "viewport": "1440x900",
+      "violations": []
+    },
+    {
+      "label": "nova-os",
+      "viewport": "1440x900",
+      "violations": []
+    },
+    {
+      "label": "os-detalhe",
+      "viewport": "1440x900",
+      "violations": []
+    },
+    {
+      "label": "os-orcamento",
+      "viewport": "1440x900",
+      "violations": []
+    },
+    {
+      "label": "clientes",
+      "viewport": "1440x900",
+      "violations": []
+    },
+    {
+      "label": "estoque",
+      "viewport": "1440x900",
+      "violations": []
+    },
+    {
+      "label": "financeiro",
+      "viewport": "1440x900",
+      "violations": []
+    },
+    {
+      "label": "relatorios",
+      "viewport": "1440x900",
+      "violations": []
+    },
+    {
+      "label": "configuracoes",
+      "viewport": "1440x900",
+      "violations": []
+    },
+    {
+      "label": "impressao-a4",
+      "viewport": "1440x900",
+      "violations": []
+    },
+    {
+      "label": "mais",
+      "viewport": "1440x900",
+      "violations": []
+    },
+    {
+      "label": "modal-andamento",
+      "viewport": "1440x900",
+      "violations": []
+    },
+    {
+      "label": "painel",
+      "viewport": "390x844",
+      "violations": [
+        {
+          "id": "label-content-name-mismatch",
+          "impact": "serious",
+          "help": "Elements must have their visible text as part of their accessible name",
+          "description": "Ensure that elements labelled through their content must have their visible text as part of their accessible name",
+          "nodes": [
+            {
+              "target": [
+                ".mobile-brand"
+              ],
+              "html": "<a class=\"mobile-brand\" href=\"#inicio\" aria-label=\"Início\">m<span>.</span></a>",
+              "summary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "label": "ordens",
+      "viewport": "390x844",
+      "violations": [
+        {
+          "id": "label-content-name-mismatch",
+          "impact": "serious",
+          "help": "Elements must have their visible text as part of their accessible name",
+          "description": "Ensure that elements labelled through their content must have their visible text as part of their accessible name",
+          "nodes": [
+            {
+              "target": [
+                ".mobile-brand"
+              ],
+              "html": "<a class=\"mobile-brand\" href=\"#inicio\" aria-label=\"Início\">m<span>.</span></a>",
+              "summary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "label": "nova-os",
+      "viewport": "390x844",
+      "violations": [
+        {
+          "id": "label-content-name-mismatch",
+          "impact": "serious",
+          "help": "Elements must have their visible text as part of their accessible name",
+          "description": "Ensure that elements labelled through their content must have their visible text as part of their accessible name",
+          "nodes": [
+            {
+              "target": [
+                ".mobile-brand"
+              ],
+              "html": "<a class=\"mobile-brand\" href=\"#inicio\" aria-label=\"Início\">m<span>.</span></a>",
+              "summary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "label": "os-detalhe",
+      "viewport": "390x844",
+      "violations": [
+        {
+          "id": "label-content-name-mismatch",
+          "impact": "serious",
+          "help": "Elements must have their visible text as part of their accessible name",
+          "description": "Ensure that elements labelled through their content must have their visible text as part of their accessible name",
+          "nodes": [
+            {
+              "target": [
+                ".mobile-brand"
+              ],
+              "html": "<a class=\"mobile-brand\" href=\"#inicio\" aria-label=\"Início\">m<span>.</span></a>",
+              "summary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "label": "os-orcamento",
+      "viewport": "390x844",
+      "violations": [
+        {
+          "id": "label-content-name-mismatch",
+          "impact": "serious",
+          "help": "Elements must have their visible text as part of their accessible name",
+          "description": "Ensure that elements labelled through their content must have their visible text as part of their accessible name",
+          "nodes": [
+            {
+              "target": [
+                ".mobile-brand"
+              ],
+              "html": "<a class=\"mobile-brand\" href=\"#inicio\" aria-label=\"Início\">m<span>.</span></a>",
+              "summary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "label": "clientes",
+      "viewport": "390x844",
+      "violations": [
+        {
+          "id": "label-content-name-mismatch",
+          "impact": "serious",
+          "help": "Elements must have their visible text as part of their accessible name",
+          "description": "Ensure that elements labelled through their content must have their visible text as part of their accessible name",
+          "nodes": [
+            {
+              "target": [
+                ".mobile-brand"
+              ],
+              "html": "<a class=\"mobile-brand\" href=\"#inicio\" aria-label=\"Início\">m<span>.</span></a>",
+              "summary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "label": "estoque",
+      "viewport": "390x844",
+      "violations": [
+        {
+          "id": "label-content-name-mismatch",
+          "impact": "serious",
+          "help": "Elements must have their visible text as part of their accessible name",
+          "description": "Ensure that elements labelled through their content must have their visible text as part of their accessible name",
+          "nodes": [
+            {
+              "target": [
+                ".mobile-brand"
+              ],
+              "html": "<a class=\"mobile-brand\" href=\"#inicio\" aria-label=\"Início\">m<span>.</span></a>",
+              "summary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "label": "financeiro",
+      "viewport": "390x844",
+      "violations": [
+        {
+          "id": "label-content-name-mismatch",
+          "impact": "serious",
+          "help": "Elements must have their visible text as part of their accessible name",
+          "description": "Ensure that elements labelled through their content must have their visible text as part of their accessible name",
+          "nodes": [
+            {
+              "target": [
+                ".mobile-brand"
+              ],
+              "html": "<a class=\"mobile-brand\" href=\"#inicio\" aria-label=\"Início\">m<span>.</span></a>",
+              "summary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "label": "relatorios",
+      "viewport": "390x844",
+      "violations": [
+        {
+          "id": "label-content-name-mismatch",
+          "impact": "serious",
+          "help": "Elements must have their visible text as part of their accessible name",
+          "description": "Ensure that elements labelled through their content must have their visible text as part of their accessible name",
+          "nodes": [
+            {
+              "target": [
+                ".mobile-brand"
+              ],
+              "html": "<a class=\"mobile-brand\" href=\"#inicio\" aria-label=\"Início\">m<span>.</span></a>",
+              "summary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "label": "configuracoes",
+      "viewport": "390x844",
+      "violations": [
+        {
+          "id": "label-content-name-mismatch",
+          "impact": "serious",
+          "help": "Elements must have their visible text as part of their accessible name",
+          "description": "Ensure that elements labelled through their content must have their visible text as part of their accessible name",
+          "nodes": [
+            {
+              "target": [
+                ".mobile-brand"
+              ],
+              "html": "<a class=\"mobile-brand\" href=\"#inicio\" aria-label=\"Início\">m<span>.</span></a>",
+              "summary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "label": "impressao-a4",
+      "viewport": "390x844",
+      "violations": [
+        {
+          "id": "label-content-name-mismatch",
+          "impact": "serious",
+          "help": "Elements must have their visible text as part of their accessible name",
+          "description": "Ensure that elements labelled through their content must have their visible text as part of their accessible name",
+          "nodes": [
+            {
+              "target": [
+                ".mobile-brand"
+              ],
+              "html": "<a class=\"mobile-brand\" href=\"#inicio\" aria-label=\"Início\">m<span>.</span></a>",
+              "summary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "label": "mais",
+      "viewport": "390x844",
+      "violations": [
+        {
+          "id": "label-content-name-mismatch",
+          "impact": "serious",
+          "help": "Elements must have their visible text as part of their accessible name",
+          "description": "Ensure that elements labelled through their content must have their visible text as part of their accessible name",
+          "nodes": [
+            {
+              "target": [
+                ".mobile-brand"
+              ],
+              "html": "<a class=\"mobile-brand\" href=\"#inicio\" aria-label=\"Início\">m<span>.</span></a>",
+              "summary": "Fix any of the following:\n  Text inside the element is not included in the accessible name"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "label": "modal-andamento",
+      "viewport": "390x844",
+      "violations": []
+    }
+  ]
+}

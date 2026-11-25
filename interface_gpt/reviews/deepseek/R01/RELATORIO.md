@@ -110,6 +110,7 @@ Ressalva de escopo: a troca de perfil é apenas visual; não há autenticação,
 - Nenhum controle visível sem nome acessível.
 - `nav` com `aria-label` ("Módulos", "Seções da OS", "Navegação rápida") e diálogo com `aria-labelledby`.
 - Contraste AA calculado em painel, ordens, detalhe da OS e financeiro: **0 falhas** nos pares texto/fundo medidos.
+- Varredura axe-core 4.14 (WCAG 2.2 A/AA) em 12 telas nas duas resoluções + modal (26 varreduras): **0 violações de contraste, landmark, rótulo ou estrutura**; a única regra acionada foi `label-content-name-mismatch`, no link da marca mobile (L-10). Detalhe em `testes/axe.md`.
 
 **Falha:**
 
@@ -269,6 +270,7 @@ Classificação: **Alta** = quebra requisito central ou bloqueia usuário; **Mé
 | L-07 | Fila "Cancelamentos pendentes" sempre zero | Código e tela; nenhuma ação de cancelamento | Fila morta; remover ou implementar o fluxo. |
 | L-08 | Placeholder da busca omite "defeito" | [`desktop/03-listagem-os-1440x900.png`](desktop/03-listagem-os-1440x900.png) vs. descrição da tela | A busca cobre defeito, mas o placeholder não; alinhar a cópia. |
 | L-09 | Troca de perfil descarta o contexto | `extras.json` (`#os/20` → `#inicio`) | Perda de contexto; preservar a rota se o novo perfil permitir. |
+| L-10 | Nome acessível da marca mobile não contém o texto visível | `testes/axe.md`: 12 ocorrências de `label-content-name-mismatch` em `.mobile-brand` (`m.` visível, `aria-label="Início"`) | WCAG 2.5.3 (Label in Name); incluir "m." no nome acessível ou trocar o rótulo visível. |
 
 ---
 
@@ -335,6 +337,7 @@ Síntese: a direção de produto é boa e a execução visual é acima da média
 14. **Estoque acionável**: mostrar o mínimo (3 de 10) e permitir consumo/entrada; hoje "Estoque baixo" não diz o alvo.
 15. **Rótulo "Saldo"** nas linhas do financeiro e distinção visual entre proposta e total cobrado.
 16. **Paginação/ordenação** na listagem; o seed de 8 esconde o problema de escala.
+17. **Nome acessível da marca mobile**: o `aria-label="Início"` não contém o "m." visível; alinhar os dois (L-10).
 
 ---
 

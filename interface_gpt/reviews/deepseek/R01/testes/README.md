@@ -13,6 +13,7 @@ Esta pasta contém os scripts, logs e resultados da revisão independente. Nada 
 | `resultados.md` | Mesma tabela em Markdown, para leitura rápida. |
 | `extras.cjs` | Evidências complementares: proposta sobrescrita, `@page`, troca de perfil e overflow com texto longo. |
 | `extras.log` / `extras.json` | Saída das evidências complementares. |
+| `axe.cjs` / `axe.json` / `axe.md` | Varredura axe-core 4.14 (WCAG 2.2 A/AA) em 12 telas × 2 resoluções + modal. |
 | `capturas.cjs` | Geração das 95 capturas de referência e dos estados de fluxo. |
 | `capturas-achados.cjs` | Capturas dedicadas dos achados visuais. |
 | `ambiente.txt` | Versões, host, SHA, URL e comando do servidor. |

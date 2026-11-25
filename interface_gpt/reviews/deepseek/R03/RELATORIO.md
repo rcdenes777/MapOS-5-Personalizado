@@ -7,6 +7,7 @@
 **Branch:** `interface-gpt` (nenhuma alteração em `v5-trifase` ou na produção)
 **Incremento avaliado:** `798b8075b597dcc7bb72335b617594b37f08547e`
 **Correções técnicas desta revisão:** `b180ab6ca10910c23d77b686af1a2b9da8d771d7`
+**Commit das evidências:** `48be2aec97393c76656bc2dc8358d4adea995de5`
 **Baseline funcional:** `8c256cae4ddaeefad68922abddbb8addfe37c99d`
 **Baseline visual:** R02, head `89332827cad2c73fad180a005e4e2501cba2f22a`
 **Pasta no GitHub:** https://github.com/rcdenes777/MapOS-5-Personalizado/tree/interface-gpt/interface_gpt/reviews/deepseek/R03

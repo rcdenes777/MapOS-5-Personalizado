@@ -9,6 +9,7 @@
 **Commit das correções técnicas:** `fe27e12a280859e585dfb2f7a8c6d3ba18718106`
 **Commit dos refinamentos visuais:** `789d86229bb48aa3b53f5bfe59cff483d2a46689`
 **SHA final do código antes das evidências:** `789d8622`
+**Commit das evidências (92 capturas, testes e logs):** `fbea8b01f92fb4da3ae6927294d0eb020f206a6f`
 **Baseline funcional do MapOS:** `8c256cae4ddaeefad68922abddbb8addfe37c99d`
 **Pasta no GitHub:** https://github.com/rcdenes777/MapOS-5-Personalizado/tree/interface-gpt/interface_gpt/reviews/deepseek/R02
 

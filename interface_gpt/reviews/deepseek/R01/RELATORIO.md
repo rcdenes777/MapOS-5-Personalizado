@@ -6,9 +6,11 @@
 **Repositório:** `rcdenes777/MapOS-5-Personalizado`
 **Branch:** `interface-gpt`
 **SHA testado:** `82c167b1d4ddc8f9939ff58123eec611199452eb`
+**Commit das evidências (capturas, scripts e logs):** `317348bff596a2bd0fcd7e2ad9175ce49ac02ef3`
 **Baseline funcional do MapOS:** `8c256cae4ddaeefad68922abddbb8addfe37c99d`
 **Último commit de desenvolvimento citado no briefing:** `f55182df6e048a3f3a9bd34e0a37be813fed7320` — o HEAD testado está dois commits à frente (o commit `82c167b1` apenas reserva o diretório de evidências).
 **Ambiente:** clone isolado em `/home/dragonblue/workspace/interface-gpt-lab/repo`, servido por `python3 -m http.server 8130`; nenhuma conexão com a produção, nenhum dado real.
+**Pasta R01 no GitHub:** https://github.com/rcdenes777/MapOS-5-Personalizado/tree/interface-gpt/interface_gpt/reviews/deepseek/R01
 **Resultado geral:** 118 verificações automatizadas — **109 PASS, 6 FAIL, 3 INFO**; suíte existente `tests/smoke.cjs` aprovada (72 combinações perfil×rota); **95 capturas** (50 desktop, 37 celular, 8 tablet); nota média **7,3/10**.
 
 O protótipo não foi alterado. Todas as escritas desta rodada estão exclusivamente em `interface_gpt/reviews/deepseek/R01/`.

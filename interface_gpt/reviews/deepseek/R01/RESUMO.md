@@ -1,9 +1,11 @@
 # Resumo R01 — MapOS Bancada
 
 **SHA testado:** `82c167b1d4ddc8f9939ff58123eec611199452eb` (branch `interface-gpt`)
+**Commit das evidências:** `317348bff596a2bd0fcd7e2ad9175ce49ac02ef3`
 **Ambiente:** estático, sem produção, dados fictícios; Chromium 156 + Playwright.
 **Execução:** 118 verificações — **109 PASS, 6 FAIL, 3 INFO**; suíte existente (72 combinações perfil×rota) aprovada; **95 capturas** (50 desktop, 37 celular, 8 tablet).
 **Nota média:** **7,3/10**.
+**Pasta R01 no GitHub:** https://github.com/rcdenes777/MapOS-5-Personalizado/tree/interface-gpt/interface_gpt/reviews/deepseek/R01
 
 ## O que está bom
 

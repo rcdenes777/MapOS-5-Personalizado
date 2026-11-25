@@ -4,6 +4,8 @@
 **Correções técnicas:** `b180ab6ca10910c23d77b686af1a2b9da8d771d7`
 **Árvore de código testada:** `b180ab6ca10910c23d77b686af1a2b9da8d771d7`
 **Commit das evidências:** `48be2aec97393c76656bc2dc8358d4adea995de5`
+**Ajustes pós-auditoria cega:** `43cef2e47c0aa211ee0208fd7200b7b49bb9e48c`
+**Auditoria cega:** [`AUDITORIA-CEGA.md`](AUDITORIA-CEGA.md)
 **Branch:** `interface-gpt`
 **Relatório completo:** [`RELATORIO.md`](RELATORIO.md)
 **Achados e riscos:** [`ACHADOS.md`](ACHADOS.md)

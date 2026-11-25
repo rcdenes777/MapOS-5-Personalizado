@@ -9,6 +9,8 @@
 **Correções técnicas desta revisão:** `b180ab6ca10910c23d77b686af1a2b9da8d771d7`
 **Árvore de código efetivamente testada:** `b180ab6ca10910c23d77b686af1a2b9da8d771d7` (incremento + CSS; docs posteriores não alteram assets)
 **Commit das evidências:** `48be2aec97393c76656bc2dc8358d4adea995de5`
+**Ajustes pós-auditoria cega:** `43cef2e47c0aa211ee0208fd7200b7b49bb9e48c`
+**Auditoria cega:** [`AUDITORIA-CEGA.md`](AUDITORIA-CEGA.md)
 **Baseline funcional:** `8c256cae4ddaeefad68922abddbb8addfe37c99d`
 **Baseline visual:** R02, head `89332827cad2c73fad180a005e4e2501cba2f22a`
 **Pasta no GitHub:** https://github.com/rcdenes777/MapOS-5-Personalizado/tree/interface-gpt/interface_gpt/reviews/deepseek/R03

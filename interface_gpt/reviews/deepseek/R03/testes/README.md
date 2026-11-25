@@ -57,6 +57,7 @@ node tests/quote.cjs
 - `responsivo.json` / `responsivo.md` — medidas de coluna, overflow, cabeçalho e barra de ação.
 - `axe.json` / `axe.md` — 14 varreduras axe e 0 violações; `axe-antes-798.json` preserva a violação anterior no checkout puro 798b8075.
 - `proveniencia.json` — `incrementSha=798b8075`, `codeTreeSha=b180ab6c` e hashes dos assets; explica por que `SHA_TESTED` e `codeSha` são campos distintos.
+- `../AUDITORIA-CEGA.md` — revisão independente e resolução das ressalvas.
 - `console.log` / `rede.log` — 0 exceções/erros e 0 requisições externas na auditoria.
 - `smoke.log` / `quote.log` — saídas dos testes do GPT.
 

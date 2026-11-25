@@ -1,7 +1,7 @@
 {
   "incrementSha": "798b8075b597dcc7bb72335b617594b37f08547e",
   "codeTreeSha": "b180ab6ca10910c23d77b686af1a2b9da8d771d7",
-  "docsHeadAtGeneration": "a1b7932bc5a053946c2a1335c088e6ce887495fd",
+  "docsHeadAtGeneration": "43cef2e47c0aa211ee0208fd7200b7b49bb9e48c",
   "generatedAt": "2026-11-25T16:22:54-03:00",
   "assets": {
     "interface_gpt/assets/style.css": {
@@ -34,5 +34,6 @@
     }
   },
   "codeDiffFromIncrement": "1 file changed, 12 insertions(+) in interface_gpt/assets/style.css",
-  "note": "SHA_TESTED nos JSONs identifica o incremento; codeSha identifica a arvore de codigo efetivamente servida. O CSS corrigido foi aplicado antes dos testes; os docs foram commitados depois e nao alteram assets."
+  "note": "SHA_TESTED nos JSONs identifica o incremento; codeSha identifica a arvore de codigo efetivamente servida. O CSS corrigido foi aplicado antes dos testes; os docs foram commitados depois e nao alteram assets.",
+  "auditCorrectionCommit": "43cef2e47c0aa211ee0208fd7200b7b49bb9e48c"
 }

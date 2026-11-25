@@ -31,6 +31,7 @@ const BancadaQuote = (() => {
     }
     o.quote=q;return q;
   }
+  const validDay=v=>{if(typeof v!=='string'||!/^\d{4}-\d{2}-\d{2}$/.test(v))return false;const d=new Date(v+'T00:00:00Z');return !Number.isNaN(d.getTime())&&d.toISOString().slice(0,10)===v};
   const snapshotKey=d=>JSON.stringify([d.items,d.discount]);
   function vigente(o){const v=active(o);return o.status!=='Cancelado'&&v&&snapshotKey(v)===snapshotKey(init(o).draft)?v:null}
   function label(o){const q=init(o),v=active(o);if(!v)return q.versions.length?'Publicação retirada':q.draft.items.length?'Rascunho':'Sem orçamento';if(!vigente(o))return 'Itens alterados';return v.decision?.answer||'Aguardando resposta'}
@@ -54,25 +55,25 @@ const BancadaQuote = (() => {
     const v=active(o);assert(v&&v.number===number,'A versão publicada mudou.');
     o.quote.active=false;if(o.status==='Orçamento recusado')o.status='Orçamento';sync(o);
   }
-  function respond(o,number,data,now,internal=true){
+  function respond(o,number,data,now,internal=true,localDay=now.slice(0,10)){
     const v=active(o);
     assert(v&&v.number===number&&o.status!=='Cancelado','Orçamento indisponível ou atualizado.');
     assert(['Aprovado','Recusado'].includes(data.answer)&&String(data.name||'').trim()&&data.name.length<=150&&data.confirm,'Confirme o nome e a decisão.');
     if(internal){
-      assert(['telefone','whatsapp','presencial'].includes(data.channel)&&/^\d{4}-\d{2}-\d{2}$/.test(data.date)&&data.date<=now.slice(0,10),'Confira canal e data da comunicação.');
+      assert(['telefone','whatsapp','presencial'].includes(data.channel)&&validDay(data.date)&&data.date<=localDay,'Confira canal e data da comunicação.');
       assert(!o.delivery||data.date<=o.delivery.date,'A comunicação não pode ser posterior à entrega.');
     }else{assert(!o.delivery,'Equipamento entregue: somente consulta.')}
     assert(String(data.note||'').length<=2000,'Observação muito longa.');
     let target=vigente(o);
     if(!target&&internal)target=publish(o,now,{source:'resposta interna',internal:true});
     assert(target&&!target.decision,'Versão indisponível ou já respondida.');
-    target.decision={answer:data.answer,name:String(data.name).trim(),channel:internal?data.channel:'link simulado',date:internal?data.date:now.slice(0,10),note:String(data.note||''),registered:now,afterDelivery:!!o.delivery};
+    target.decision={answer:data.answer,name:String(data.name).trim(),channel:internal?data.channel:'link simulado',date:internal?data.date:localDay,note:String(data.note||''),registered:now,afterDelivery:!!o.delivery};
     if(!o.delivery&&stages.includes(o.status))o.status=data.answer==='Aprovado'?'Aprovado':'Orçamento recusado';
     sync(o);return target;
   }
   function formalize(o,due){
     const q=init(o),t=totals(q.draft.items,q.draft.discount);
-    assert(!o.total&&!o.origin&&!['Cancelado','Faturado'].includes(o.status)&&t.total>0&&/^\d{4}-\d{2}-\d{2}$/.test(due),'Confira os itens e o vencimento da cobrança.');
+    assert(!o.total&&!o.origin&&!['Cancelado','Faturado'].includes(o.status)&&t.total>0&&validDay(due),'Confira os itens e o vencimento da cobrança.');
     o.total=t.total;o.paid=0;o.billing={due,items:copy(q.draft.items),discount:q.draft.discount};
     return t.total;
   }

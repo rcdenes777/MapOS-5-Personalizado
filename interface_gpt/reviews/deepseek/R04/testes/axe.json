@@ -1,0 +1,118 @@
+{
+  "generatedAt": "2026-11-25T19:59:50.643Z",
+  "engine": "axe-core 4.14.1",
+  "codeSha": "df925de31c09b2cc116abb025e9fdca5d39f5183",
+  "incrementSha": "431c428270e2ca98fece34c8ebc58624320b8628",
+  "scans": [
+    {
+      "label": "admin-orcamento-inicial",
+      "viewport": "1440x900",
+      "violations": []
+    },
+    {
+      "label": "admin-link-gerenciar",
+      "viewport": "1440x900",
+      "violations": []
+    },
+    {
+      "label": "portal-decisao-pendente",
+      "viewport": "1440x900",
+      "violations": []
+    },
+    {
+      "label": "portal-aprovado",
+      "viewport": "1440x900",
+      "violations": []
+    },
+    {
+      "label": "portal-pagamento",
+      "viewport": "1440x900",
+      "violations": []
+    },
+    {
+      "label": "portal-apos-entrega",
+      "viewport": "1440x900",
+      "violations": []
+    },
+    {
+      "label": "portal-link-indisponivel",
+      "viewport": "1440x900",
+      "violations": []
+    },
+    {
+      "label": "admin-orcamento-inicial",
+      "viewport": "390x844",
+      "violations": []
+    },
+    {
+      "label": "admin-link-gerenciar",
+      "viewport": "390x844",
+      "violations": []
+    },
+    {
+      "label": "portal-decisao-pendente",
+      "viewport": "390x844",
+      "violations": []
+    },
+    {
+      "label": "portal-aprovado",
+      "viewport": "390x844",
+      "violations": []
+    },
+    {
+      "label": "portal-pagamento",
+      "viewport": "390x844",
+      "violations": []
+    },
+    {
+      "label": "portal-apos-entrega",
+      "viewport": "390x844",
+      "violations": []
+    },
+    {
+      "label": "portal-link-indisponivel",
+      "viewport": "390x844",
+      "violations": []
+    },
+    {
+      "label": "admin-orcamento-inicial",
+      "viewport": "320x568",
+      "violations": []
+    },
+    {
+      "label": "admin-link-gerenciar",
+      "viewport": "320x568",
+      "violations": []
+    },
+    {
+      "label": "portal-decisao-pendente",
+      "viewport": "320x568",
+      "violations": []
+    },
+    {
+      "label": "portal-aprovado",
+      "viewport": "320x568",
+      "violations": []
+    },
+    {
+      "label": "portal-pagamento",
+      "viewport": "320x568",
+      "violations": []
+    },
+    {
+      "label": "portal-apos-entrega",
+      "viewport": "320x568",
+      "violations": []
+    },
+    {
+      "label": "portal-link-indisponivel",
+      "viewport": "320x568",
+      "violations": []
+    },
+    {
+      "label": "admin-cobranca-com-aviso",
+      "viewport": "1440x900",
+      "violations": []
+    }
+  ]
+}

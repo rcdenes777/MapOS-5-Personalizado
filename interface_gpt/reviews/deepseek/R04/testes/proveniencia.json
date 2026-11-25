@@ -1,0 +1,66 @@
+{
+  "incrementSha": "431c428270e2ca98fece34c8ebc58624320b8628",
+  "codeTreeSha": "df925de31c09b2cc116abb025e9fdca5d39f5183",
+  "docsHeadAtGeneration": "df925de31c09b2cc116abb025e9fdca5d39f5183",
+  "generatedAt": "2026-11-25T17:09:32-03:00",
+  "assets": {
+    "interface_gpt/assets/app.js": {
+      "working": "9fbdc6b3a9175d0f0ed81b382dae5d25ed4f98568df5d2ea11b67714e414667b",
+      "codeTree": "9fbdc6b3a9175d0f0ed81b382dae5d25ed4f98568df5d2ea11b67714e414667b",
+      "increment": "9fbdc6b3a9175d0f0ed81b382dae5d25ed4f98568df5d2ea11b67714e414667b",
+      "equal_codeTree": true,
+      "changed_since_increment": false
+    },
+    "interface_gpt/assets/quote.js": {
+      "working": "f2a7ba38f3d21dd8ee161370ee3986a8b89fe56059032dcd04fd2babc3575a84",
+      "codeTree": "f2a7ba38f3d21dd8ee161370ee3986a8b89fe56059032dcd04fd2babc3575a84",
+      "increment": "f2a7ba38f3d21dd8ee161370ee3986a8b89fe56059032dcd04fd2babc3575a84",
+      "equal_codeTree": true,
+      "changed_since_increment": false
+    },
+    "interface_gpt/assets/quote-ui.js": {
+      "working": "e4aa2654775cc5a2e586a9952c9d5f28363f738321287b162cef2d1b72b9c879",
+      "codeTree": "e4aa2654775cc5a2e586a9952c9d5f28363f738321287b162cef2d1b72b9c879",
+      "increment": "e4aa2654775cc5a2e586a9952c9d5f28363f738321287b162cef2d1b72b9c879",
+      "equal_codeTree": true,
+      "changed_since_increment": false
+    },
+    "interface_gpt/assets/portal.js": {
+      "working": "7f66eff7917d48c5d83d2d1d94c253d7246af00b4c39b37a3de416984efc6bd4",
+      "codeTree": "7f66eff7917d48c5d83d2d1d94c253d7246af00b4c39b37a3de416984efc6bd4",
+      "increment": "7f66eff7917d48c5d83d2d1d94c253d7246af00b4c39b37a3de416984efc6bd4",
+      "equal_codeTree": true,
+      "changed_since_increment": false
+    },
+    "interface_gpt/assets/portal-page.js": {
+      "working": "dd10bdd6534622dff286d1f00694626e5819b946bc2c6920bb8654bcf3b09245",
+      "codeTree": "dd10bdd6534622dff286d1f00694626e5819b946bc2c6920bb8654bcf3b09245",
+      "increment": "dd10bdd6534622dff286d1f00694626e5819b946bc2c6920bb8654bcf3b09245",
+      "equal_codeTree": true,
+      "changed_since_increment": false
+    },
+    "interface_gpt/assets/portal.css": {
+      "working": "55a44eea59d4a8f495edf7f5a69dc39317b996059db429e26748a2649714cf43",
+      "codeTree": "55a44eea59d4a8f495edf7f5a69dc39317b996059db429e26748a2649714cf43",
+      "increment": "3901ddc94d316a2308e69911e2bc298f55222746e7cfafce05642c080d6b5196",
+      "equal_codeTree": true,
+      "changed_since_increment": true
+    },
+    "interface_gpt/index.html": {
+      "working": "f3a26e26661e17451d4a4b604473eb8641c91d0dd498c9a1aa4fab60bb962241",
+      "codeTree": "f3a26e26661e17451d4a4b604473eb8641c91d0dd498c9a1aa4fab60bb962241",
+      "increment": "f3a26e26661e17451d4a4b604473eb8641c91d0dd498c9a1aa4fab60bb962241",
+      "equal_codeTree": true,
+      "changed_since_increment": false
+    },
+    "interface_gpt/portal.html": {
+      "working": "62e8f849ce99448b33fd88fc824940bcfc7e4384990fd038ecb1e516506b9aea",
+      "codeTree": "62e8f849ce99448b33fd88fc824940bcfc7e4384990fd038ecb1e516506b9aea",
+      "increment": "62e8f849ce99448b33fd88fc824940bcfc7e4384990fd038ecb1e516506b9aea",
+      "equal_codeTree": true,
+      "changed_since_increment": false
+    }
+  },
+  "codeDiffFromIncrement": "interface_gpt/assets/portal.css | 9 ++++++++-\n 1 file changed, 8 insertions(+), 1 deletion(-)",
+  "note": "SHA_TESTED/incrementSha identifica o incremento R04; codeTreeSha identifica a arvore servida, incluindo a correcao CSS do selo em 320. Docs foram commitados depois e nao alteram assets."
+}

@@ -1,0 +1,103 @@
+# Índice de evidências — R04
+
+**Incremento:** `431c428270e2ca98fece34c8ebc58624320b8628`
+**Árvore de código testada:** `df925de31c09b2cc116abb025e9fdca5d39f5183` (incremento + correção CSS do selo em 320)
+**Relatório:** [`RELATORIO.md`](RELATORIO.md) · **Resumo:** [`RESUMO.md`](RESUMO.md) · **Achados:** [`ACHADOS.md`](ACHADOS.md) · **Correções:** [`CORRECOES.md`](CORRECOES.md)
+**Testes:** [`testes/README.md`](testes/README.md) · [`responsivo.md`](testes/responsivo.md) · [`axe.md`](testes/axe.md) · [`resultados.md`](testes/resultados.md) · [`proveniencia.json`](testes/proveniencia.json)
+**Comparativo R03:** [`../R03/desktop/01-orcamento-v1-desktop-1440x900.png`](../R03/desktop/01-orcamento-v1-desktop-1440x900.png) · [`../R03/desktop/06-aprovacao-link-desktop-1440x900.png`](../R03/desktop/06-aprovacao-link-desktop-1440x900.png)
+
+## Desktop — 45 capturas
+
+- [`40-fluxo-a-nova-os-criada-1440x900.png`](desktop/40-fluxo-a-nova-os-criada-1440x900.png) — R03 adaptada: fluxo A, nova OS (1440×900)
+- [`41-fluxo-c-catalogo-manual-1440x900.png`](desktop/41-fluxo-c-catalogo-manual-1440x900.png) — R03 adaptada: fluxo C, catálogo (1440×900)
+- [`42-fluxo-d-finalizado-1440x900.png`](desktop/42-fluxo-d-finalizado-1440x900.png) — R03 adaptada: fluxo D, OS finalizada (1440×900)
+- [`43-fluxo-d-cobranca-1440x900.png`](desktop/43-fluxo-d-cobranca-1440x900.png) — R03 adaptada: fluxo D, cobrança separada (1440×900)
+- [`43-fluxo-e-entrega-saldo-quitado-1440x900.png`](desktop/43-fluxo-e-entrega-saldo-quitado-1440x900.png) — R03 adaptada: fluxo E, entrega quitada (1440×900)
+- [`44-fluxo-g-retorno-sem-itens-1440x900.png`](desktop/44-fluxo-g-retorno-sem-itens-1440x900.png) — R03 adaptada: fluxo G, retorno sem itens (1440×900)
+- [`45-fluxo-i-persistencia-1440x900.png`](desktop/45-fluxo-i-persistencia-1440x900.png) — R03 adaptada: fluxo I, persistência (1440×900)
+- [`46-configuracoes-restaurado-1440x900.png`](desktop/46-configuracoes-restaurado-1440x900.png) — R03 adaptada: configurações restauradas (1440×900)
+- [`admin-cobranca-aviso-1440-1440x900.png`](desktop/admin-cobranca-aviso-1440-1440x900.png) — Admin: modal de cobrança com aviso de divergência (1440×900)
+- [`admin-copiar-endereco-1440-1440x900.png`](desktop/admin-copiar-endereco-1440-1440x900.png) — Admin: endereço local para copiar (1440×900)
+- [`admin-inicial-1024-1024x900.png`](desktop/admin-inicial-1024-1024x900.png) — Admin: orçamento sem link ativo (1024×900)
+- [`admin-inicial-1366-1366x768.png`](desktop/admin-inicial-1366-1366x768.png) — Admin: orçamento sem link ativo (1366×768)
+- [`admin-inicial-1440-1440x900.png`](desktop/admin-inicial-1440-1440x900.png) — Admin: orçamento sem link ativo (1440×900)
+- [`admin-inicial-1920-1920x1080.png`](desktop/admin-inicial-1920-1920x1080.png) — Admin: orçamento sem link ativo (1920×1080)
+- [`admin-link-ativo-1024-1024x900.png`](desktop/admin-link-ativo-1024-1024x900.png) — Admin: link ativo e gerenciamento (1024×900)
+- [`admin-link-ativo-1366-1366x768.png`](desktop/admin-link-ativo-1366-1366x768.png) — Admin: link ativo e gerenciamento (1366×768)
+- [`admin-link-ativo-1440-1440x900.png`](desktop/admin-link-ativo-1440-1440x900.png) — Admin: link ativo e gerenciamento (1440×900)
+- [`admin-link-ativo-1920-1920x1080.png`](desktop/admin-link-ativo-1920-1920x1080.png) — Admin: link ativo e gerenciamento (1920×1080)
+- [`admin-perfil-atendente-1440-1440x900.png`](desktop/admin-perfil-atendente-1440-1440x900.png) — Admin: perfil Atendente, valores restritos (1440×900)
+- [`admin-perfil-financeiro-1440-1440x900.png`](desktop/admin-perfil-financeiro-1440-1440x900.png) — Admin: perfil Financeiro, orçamento e link (1440×900)
+- [`admin-perfil-tecnico-1440-1440x900.png`](desktop/admin-perfil-tecnico-1440-1440x900.png) — Admin: perfil Técnico, valores restritos (1440×900)
+- [`admin-rascunho-divergente-1440-1440x900.png`](desktop/admin-rascunho-divergente-1440-1440x900.png) — Admin: rascunho divergente e aviso de valores (1440×900)
+- [`admin-recusa-aviso-1440-1440x900.png`](desktop/admin-recusa-aviso-1440-1440x900.png) — Admin: aviso de cobrança após recusa (1440×900)
+- [`admin-renovar-link-1440-1440x900.png`](desktop/admin-renovar-link-1440-1440x900.png) — Admin: modal de renovação do link (1440×900)
+- [`admin-revogar-link-1440-1440x900.png`](desktop/admin-revogar-link-1440-1440x900.png) — Admin: modal de revogação do link (1440×900)
+- [`portal-apos-entrega-1440-1440x900.png`](desktop/portal-apos-entrega-1440-1440x900.png) — Portal: após entrega, somente consulta (1440×900)
+- [`portal-apos-entrega-inteira-1440-1440x900-full.png`](desktop/portal-apos-entrega-inteira-1440-1440x900-full.png) — Portal: após entrega, página inteira (1440×900)
+- [`portal-aprovado-1440-1440x900.png`](desktop/portal-aprovado-1440-1440x900.png) — Portal: resposta aprovada no topo (1440×900)
+- [`portal-aprovado-pagina-inteira-1440-1440x900-full.png`](desktop/portal-aprovado-pagina-inteira-1440-1440x900-full.png) — Portal: resposta aprovada, página inteira (1440×900)
+- [`portal-cobranca-1440-1440x900.png`](desktop/portal-cobranca-1440-1440x900.png) — Portal: cobrança formalizada em aberto (1440×900)
+- [`portal-cobranca-parcial-1440-1440x900.png`](desktop/portal-cobranca-parcial-1440-1440x900.png) — Portal: cobrança parcialmente paga (1440×900)
+- [`portal-decisao-1024-1024x900.png`](desktop/portal-decisao-1024-1024x900.png) — Portal: formulário de decisão sem escolha pré-selecionada (1024×900)
+- [`portal-decisao-1366-1366x768.png`](desktop/portal-decisao-1366-1366x768.png) — Portal: formulário de decisão sem escolha pré-selecionada (1366×768)
+- [`portal-decisao-1440-1440x900.png`](desktop/portal-decisao-1440-1440x900.png) — Portal: formulário de decisão sem escolha pré-selecionada (1440×900)
+- [`portal-decisao-1920-1920x1080.png`](desktop/portal-decisao-1920-1920x1080.png) — Portal: formulário de decisão sem escolha pré-selecionada (1920×1080)
+- [`portal-inicial-1024-1024x900.png`](desktop/portal-inicial-1024-1024x900.png) — Portal: estado inicial com orçamento pendente (1024×900)
+- [`portal-inicial-1366-1366x768.png`](desktop/portal-inicial-1366-1366x768.png) — Portal: estado inicial com orçamento pendente (1366×768)
+- [`portal-inicial-1440-1440x900.png`](desktop/portal-inicial-1440-1440x900.png) — Portal: estado inicial com orçamento pendente (1440×900)
+- [`portal-inicial-1920-1920x1080.png`](desktop/portal-inicial-1920-1920x1080.png) — Portal: estado inicial com orçamento pendente (1920×1080)
+- [`portal-pagina-inteira-1024-1024x900-full.png`](desktop/portal-pagina-inteira-1024-1024x900-full.png) — Portal: página inteira no estado inicial (1024×900)
+- [`portal-pagina-inteira-1366-1366x768-full.png`](desktop/portal-pagina-inteira-1366-1366x768-full.png) — Portal: página inteira no estado inicial (1366×768)
+- [`portal-pagina-inteira-1440-1440x900-full.png`](desktop/portal-pagina-inteira-1440-1440x900-full.png) — Portal: página inteira no estado inicial (1440×900)
+- [`portal-pagina-inteira-1920-1920x1080-full.png`](desktop/portal-pagina-inteira-1920-1920x1080-full.png) — Portal: página inteira no estado inicial (1920×1080)
+- [`portal-recusado-1440-1440x900.png`](desktop/portal-recusado-1440-1440x900.png) — Portal: resposta recusada (1440×900)
+- [`portal-sem-orcamento-1440-1440x900.png`](desktop/portal-sem-orcamento-1440-1440x900.png) — Portal: link ativo sem orçamento publicado (1440×900)
+
+## Celular — 31 capturas
+
+- [`00-antes-fix-demo-320.png`](mobile/00-antes-fix-demo-320.png) — ANTES da correção: selo Demonstração quebrado em 320
+- [`admin-inicial-320-320x568-full.png`](mobile/admin-inicial-320-320x568-full.png) — Admin: orçamento sem link ativo (320×568)
+- [`admin-inicial-360-360x800-full.png`](mobile/admin-inicial-360-360x800-full.png) — Admin: orçamento sem link ativo (360×800)
+- [`admin-inicial-390-390x844-full.png`](mobile/admin-inicial-390-390x844-full.png) — Admin: orçamento sem link ativo (390×844)
+- [`admin-inicial-412-412x915.png`](mobile/admin-inicial-412-412x915.png) — Admin: orçamento sem link ativo (412×915)
+- [`admin-link-ativo-320-320x568-full.png`](mobile/admin-link-ativo-320-320x568-full.png) — Admin: link ativo e gerenciamento (320×568)
+- [`admin-link-ativo-360-360x800-full.png`](mobile/admin-link-ativo-360-360x800-full.png) — Admin: link ativo e gerenciamento (360×800)
+- [`admin-link-ativo-390-390x844-full.png`](mobile/admin-link-ativo-390-390x844-full.png) — Admin: link ativo e gerenciamento (390×844)
+- [`admin-link-ativo-412-412x915.png`](mobile/admin-link-ativo-412-412x915.png) — Admin: link ativo e gerenciamento (412×915)
+- [`admin-recusa-aviso-390-390x844.png`](mobile/admin-recusa-aviso-390-390x844.png) — Admin: aviso de cobrança após recusa (390×844)
+- [`portal-apos-entrega-390-390x844.png`](mobile/portal-apos-entrega-390-390x844.png) — Portal: após entrega, somente consulta (390×844)
+- [`portal-apos-entrega-inteira-390-390x844-full.png`](mobile/portal-apos-entrega-inteira-390-390x844-full.png) — Portal: após entrega, página inteira (390×844)
+- [`portal-aprovado-390-390x844.png`](mobile/portal-aprovado-390-390x844.png) — Portal: resposta aprovada no topo (390×844)
+- [`portal-aprovado-pagina-inteira-390-390x844-full.png`](mobile/portal-aprovado-pagina-inteira-390-390x844-full.png) — Portal: resposta aprovada, página inteira (390×844)
+- [`portal-cobranca-390-390x844.png`](mobile/portal-cobranca-390-390x844.png) — Portal: cobrança formalizada em aberto (390×844)
+- [`portal-cobranca-parcial-390-390x844.png`](mobile/portal-cobranca-parcial-390-390x844.png) — Portal: cobrança parcialmente paga (390×844)
+- [`portal-decisao-320-320x568.png`](mobile/portal-decisao-320-320x568.png) — Portal: formulário de decisão sem escolha pré-selecionada (320×568)
+- [`portal-decisao-360-360x800.png`](mobile/portal-decisao-360-360x800.png) — Portal: formulário de decisão sem escolha pré-selecionada (360×800)
+- [`portal-decisao-390-390x844.png`](mobile/portal-decisao-390-390x844.png) — Portal: formulário de decisão sem escolha pré-selecionada (390×844)
+- [`portal-decisao-412-412x915.png`](mobile/portal-decisao-412-412x915.png) — Portal: formulário de decisão sem escolha pré-selecionada (412×915)
+- [`portal-inicial-320-320x568.png`](mobile/portal-inicial-320-320x568.png) — Portal: estado inicial com orçamento pendente (320×568)
+- [`portal-inicial-360-360x800.png`](mobile/portal-inicial-360-360x800.png) — Portal: estado inicial com orçamento pendente (360×800)
+- [`portal-inicial-390-390x844.png`](mobile/portal-inicial-390-390x844.png) — Portal: estado inicial com orçamento pendente (390×844)
+- [`portal-inicial-412-412x915.png`](mobile/portal-inicial-412-412x915.png) — Portal: estado inicial com orçamento pendente (412×915)
+- [`portal-link-invalido-390-390x844.png`](mobile/portal-link-invalido-390-390x844.png) — Portal: link indisponível (390×844)
+- [`portal-pagina-inteira-320-320x568-full.png`](mobile/portal-pagina-inteira-320-320x568-full.png) — Portal: página inteira no estado inicial (320×568)
+- [`portal-pagina-inteira-360-360x800-full.png`](mobile/portal-pagina-inteira-360-360x800-full.png) — Portal: página inteira no estado inicial (360×800)
+- [`portal-pagina-inteira-390-390x844-full.png`](mobile/portal-pagina-inteira-390-390x844-full.png) — Portal: página inteira no estado inicial (390×844)
+- [`portal-pagina-inteira-412-412x915-full.png`](mobile/portal-pagina-inteira-412-412x915-full.png) — Portal: página inteira no estado inicial (412×915)
+- [`portal-recusado-390-390x844.png`](mobile/portal-recusado-390-390x844.png) — Portal: resposta recusada (390×844)
+- [`portal-sem-orcamento-390-390x844.png`](mobile/portal-sem-orcamento-390-390x844.png) — Portal: link ativo sem orçamento publicado (390×844)
+
+## Tablet — 5 capturas
+
+- [`admin-inicial-768-768x1024.png`](tablet/admin-inicial-768-768x1024.png) — Admin: orçamento sem link ativo (768×1024)
+- [`admin-link-ativo-768-768x1024.png`](tablet/admin-link-ativo-768-768x1024.png) — Admin: link ativo e gerenciamento (768×1024)
+- [`portal-decisao-768-768x1024.png`](tablet/portal-decisao-768-768x1024.png) — Portal: formulário de decisão sem escolha pré-selecionada (768×1024)
+- [`portal-inicial-768-768x1024.png`](tablet/portal-inicial-768-768x1024.png) — Portal: estado inicial com orçamento pendente (768×1024)
+- [`portal-pagina-inteira-768-768x1024-full.png`](tablet/portal-pagina-inteira-768-768x1024-full.png) — Portal: página inteira no estado inicial (768×1024)
+
+## Totais
+
+- **81 PNG**: 45 desktop, 31 celular, 5 tablet; 0 duplicados por SHA-256.
+- 72 capturas do roteiro R04, 8 do fluxo R03 adaptado e 1 antes/depois do selo em 320.
+- 0 links relativos quebrados.

@@ -21,3 +21,6 @@ Toda entrega deve ser testada e revisada; commits não equivalem a aprovação. 
 Plano: R05 financeiro; R06 cancelamentos e acertos; R07 garantia; R08 estoque e equipamentos; R09 demais módulos/documentos; R10 consolidação e homologação.
 Encerrar ciclo automático na conclusão da R10 ou diante de decisão de negócio que dependa do proprietário, divergência crítica, perda de acesso, conflito não resolvido, ou comando de pausa. Não avançar para integração/produção.
 O agendador GPT suporta no mínimo 60 min; Hermes informou 20 min. Acesso do agendador GPT ao GitHub ainda não verificado. Nenhuma execução automática está ativada por este documento.
+
+## Encerramento dos agendadores
+Após validação satisfatória da R10, GPT publica parecer final e `gpt-para-deepseek/ENCERRAMENTO.md`, marca controle.md como CONCLUÍDO e desativa sua própria automação MapOS — Ciclo GPT. DeepSeek deve verificar CONCLUÍDO antes de qualquer tarefa, ler a mensagem de encerramento e desativar seu agendador Hermes exclusivo deste ciclo; não iniciar novas tarefas. Não desativar outros agendadores. Se a desativação falhar, informar o proprietário e não realizar mais alterações. Autorização explícita do proprietário em 25/11/2026. A ausência temporária do proprietário não reduz os critérios de validação. Homologação final humana e produção intocada.

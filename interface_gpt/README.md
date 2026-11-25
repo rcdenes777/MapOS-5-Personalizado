@@ -48,7 +48,7 @@ No SHA de referência: application/views/trifase/os.php, nova-os-unidade.php, en
 ## Pendências para refinamento
 
 - Auditoria funcional completa das rotas, estados, permissões, testes e documentação do sistema.
-- Paridade completa de orçamento (catálogo de itens, estoque, condições, quantidades fracionárias, edição após cobrança, integração real do link e portal público, regularização de casos legados), cancelamento, retificação de canceladas, conciliação e projeções nativas, garantia (avaliação, solução, custos), consumo de estoque, vendas, anexos, edição da identificação, gestão de equipamentos, cadastros, relatórios e configurações.
+- Paridade completa de orçamento (catálogo de itens, estoque, condições, quantidades fracionárias, edição após cobrança, integração real do link e portal público, regularização de casos legados), validação especial de saldo anterior, conciliação e projeções nativas, garantia (avaliação, solução, custos), consumo de estoque, vendas, anexos, edição da identificação, gestão de equipamentos, cadastros, relatórios e configurações.
 - Impressão em duas vias e demais documentos reais.
 - Validação visual em navegador: 320, 360, 390, 768, 1024 e 1440 px; teclado, leitor de tela, toque, orientação, foco, contraste e ausência de overflow.
 - Testes de interação reais e comparação dos fluxos com o sistema atual.
@@ -71,4 +71,8 @@ Consulte [R04-PORTAL.md](R04-PORTAL.md). No orçamento de uma OS, gere o link de
 
 ## Incremento R05 — financeiro
 
-Consulte [R05-FINANCEIRO.md](R05-FINANCEIRO.md). Abra Financeiro no menu ou na aba da OS. Estorno corrige registro, não devolve dinheiro. Testes: `node tests/finance.cjs` e `node tests/finance-ui.cjs`, além das suítes anteriores. Revisão em navegador pendente.
+Consulte [R05-FINANCEIRO.md](R05-FINANCEIRO.md). Abra Financeiro no menu ou na aba da OS. Estorno corrige registro, não devolve dinheiro. Testes: `node tests/finance.cjs` e `node tests/finance-ui.cjs`, além das suítes anteriores. R05 validada pelo DeepSeek; consulte reviews/deepseek/R05.
+
+## Incremento R06 — cancelamentos
+
+Consulte [R06-CANCELAMENTOS.md](R06-CANCELAMENTOS.md). Abra a aba Cancelamento de uma OS elegível. Pedido, conferência técnica e acerto financeiro são independentes. Registre perda sem retorno ao estoque, devolução como evento separado, saldo a receber e retificação nos casos simulados. Testes: `node tests/cancel.cjs` e `node tests/cancel-ui.cjs` além das seis suítes anteriores. Revisão de navegador pendente.

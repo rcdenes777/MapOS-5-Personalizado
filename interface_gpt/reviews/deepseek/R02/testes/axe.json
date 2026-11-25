@@ -1,0 +1,136 @@
+{
+  "generatedAt": "2026-11-25T18:27:37.871Z",
+  "engine": "axe-core 4.14.1",
+  "scans": [
+    {
+      "label": "painel",
+      "viewport": "1440x900",
+      "violations": []
+    },
+    {
+      "label": "ordens",
+      "viewport": "1440x900",
+      "violations": []
+    },
+    {
+      "label": "nova-os",
+      "viewport": "1440x900",
+      "violations": []
+    },
+    {
+      "label": "os-detalhe",
+      "viewport": "1440x900",
+      "violations": []
+    },
+    {
+      "label": "os-orcamento",
+      "viewport": "1440x900",
+      "violations": []
+    },
+    {
+      "label": "clientes",
+      "viewport": "1440x900",
+      "violations": []
+    },
+    {
+      "label": "estoque",
+      "viewport": "1440x900",
+      "violations": []
+    },
+    {
+      "label": "financeiro",
+      "viewport": "1440x900",
+      "violations": []
+    },
+    {
+      "label": "relatorios",
+      "viewport": "1440x900",
+      "violations": []
+    },
+    {
+      "label": "configuracoes",
+      "viewport": "1440x900",
+      "violations": []
+    },
+    {
+      "label": "impressao-a4",
+      "viewport": "1440x900",
+      "violations": []
+    },
+    {
+      "label": "mais",
+      "viewport": "1440x900",
+      "violations": []
+    },
+    {
+      "label": "modal-andamento",
+      "viewport": "1440x900",
+      "violations": []
+    },
+    {
+      "label": "painel",
+      "viewport": "390x844",
+      "violations": []
+    },
+    {
+      "label": "ordens",
+      "viewport": "390x844",
+      "violations": []
+    },
+    {
+      "label": "nova-os",
+      "viewport": "390x844",
+      "violations": []
+    },
+    {
+      "label": "os-detalhe",
+      "viewport": "390x844",
+      "violations": []
+    },
+    {
+      "label": "os-orcamento",
+      "viewport": "390x844",
+      "violations": []
+    },
+    {
+      "label": "clientes",
+      "viewport": "390x844",
+      "violations": []
+    },
+    {
+      "label": "estoque",
+      "viewport": "390x844",
+      "violations": []
+    },
+    {
+      "label": "financeiro",
+      "viewport": "390x844",
+      "violations": []
+    },
+    {
+      "label": "relatorios",
+      "viewport": "390x844",
+      "violations": []
+    },
+    {
+      "label": "configuracoes",
+      "viewport": "390x844",
+      "violations": []
+    },
+    {
+      "label": "impressao-a4",
+      "viewport": "390x844",
+      "violations": []
+    },
+    {
+      "label": "mais",
+      "viewport": "390x844",
+      "violations": []
+    },
+    {
+      "label": "modal-andamento",
+      "viewport": "390x844",
+      "violations": []
+    }
+  ]
+}

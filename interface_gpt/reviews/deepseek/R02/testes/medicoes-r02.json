@@ -1,0 +1,124 @@
+{
+  "capturedAt": "2026-11-25T18:28:05.979Z",
+  "sha": "",
+  "viewports": {
+    "1440x900": {
+      "dashboard": {
+        "hero": 137,
+        "metrics": 132,
+        "firstTop": 622,
+        "firstAboveNav": null,
+        "navTop": null
+      },
+      "orders": {
+        "firstTop": 372,
+        "selectVisible": false,
+        "chipsVisible": true,
+        "filterHeight": 0
+      },
+      "os": {
+        "statsHeight": 157,
+        "tabsTop": 389,
+        "firstInfoTop": 99
+      },
+      "nova": {
+        "submitVisible": true,
+        "submitTop": 827,
+        "footerTop": 818,
+        "footerBottom": 880,
+        "navTop": 0,
+        "position": "fixed"
+      },
+      "cards": {
+        "narrowWidth": 387,
+        "narrowHeight": 139,
+        "narrowCols": 1,
+        "fullCols": 3
+      }
+    },
+    "768x1024": {
+      "dashboard": {
+        "hero": 137,
+        "metrics": 236,
+        "firstTop": 707,
+        "firstAboveNav": true,
+        "navTop": 963
+      },
+      "orders": {
+        "firstTop": 350,
+        "selectVisible": true,
+        "chipsVisible": false,
+        "filterHeight": 44
+      },
+      "os": {
+        "statsHeight": 176,
+        "tabsTop": 394,
+        "firstInfoTop": 90
+      },
+      "nova": {
+        "submitVisible": true,
+        "submitTop": 906,
+        "footerTop": 895,
+        "footerBottom": 960,
+        "navTop": 963,
+        "position": "fixed"
+      }
+    },
+    "390x844": {
+      "dashboard": {
+        "hero": 130,
+        "metrics": 230,
+        "firstTop": 659,
+        "firstAboveNav": true,
+        "navTop": 783
+      },
+      "orders": {
+        "firstTop": 392,
+        "selectVisible": true,
+        "chipsVisible": false,
+        "filterHeight": 44
+      },
+      "os": {
+        "statsHeight": 277,
+        "tabsTop": 516,
+        "firstInfoTop": 132
+      },
+      "nova": {
+        "submitVisible": true,
+        "submitTop": 726,
+        "footerTop": 715,
+        "footerBottom": 780,
+        "navTop": 783,
+        "position": "fixed"
+      }
+    },
+    "320x568": {
+      "dashboard": {
+        "hero": 41,
+        "metrics": 113,
+        "firstTop": 461,
+        "firstAboveNav": true,
+        "navTop": 507
+      },
+      "orders": {
+        "firstTop": 389,
+        "selectVisible": true,
+        "chipsVisible": false,
+        "filterHeight": 44
+      },
+      "os": {
+        "statsHeight": 255,
+        "tabsTop": 487,
+        "firstInfoTop": 132
+      },
+      "nova": {
+        "submitVisible": true,
+        "submitTop": 450,
+        "footerTop": 439,
+        "footerBottom": 504,
+        "navTop": 507,
+        "position": "fixed"
+      }
+    }
+  }
+}

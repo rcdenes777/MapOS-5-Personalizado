@@ -1,0 +1,17 @@
+R02 — ambiente de execução
+Data: 2026-11-25T15:30:22-03:00
+Host: Linux 6.18.63-3-MANJARO x86_64
+Node: v26.12.1
+Python: Python 3.14.9
+Chromium: Google Chrome for Testing 156.0.8078.4 
+playwright-core: 1.65.1
+axe-core: 4.14.1
+Repositório: https://github.com/rcdenes777/MapOS-5-Personalizado.git
+Branch: interface-gpt
+SHA inicial R02: da3fa68dab9c3d0fd90499ee8b7079abb754ae74
+Commit técnico: fe27e12a280859e585dfb2f7a8c6d3ba18718106
+Commit visual: 789d86229bb48aa3b53f5bfe59cff483d2a46689
+Servidor: python3 -m http.server 8130 --bind 0.0.0.0 (diretório interface_gpt)
+URL: http://127.0.0.1:8130
+Dados: somente seed fictício; localStorage limpo antes das capturas.
+Firefox/WebKit: não disponíveis no cache local; não testados.

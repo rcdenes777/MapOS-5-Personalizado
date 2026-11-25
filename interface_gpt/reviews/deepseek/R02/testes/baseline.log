@@ -1,0 +1,335 @@
+{
+  "capturedAt": "2026-11-25T18:05:50.042Z",
+  "sha": "da3fa68dab9c3d0fd90499ee8b7079abb754ae74",
+  "viewports": {
+    "1920x1080": {
+      "dashboard": {
+        "heroHeight": 157,
+        "metricsHeight": 113,
+        "firstOrderTop": 624,
+        "firstOrderHeight": 73,
+        "ordersInFirstViewport": 6
+      },
+      "orders": {
+        "firstOrderTop": 371,
+        "filtersHeight": 44,
+        "chips": 7,
+        "queueSelect": false,
+        "placeholder": "Buscar por número, cliente ou equipamento"
+      },
+      "osDetail": {
+        "statsHeight": 157,
+        "tabsTop": 387,
+        "headHeight": 98,
+        "activeMobileNav": [
+          "#ordens"
+        ]
+      },
+      "newOrder": {
+        "docHeight": 1259,
+        "submitTop": 1165,
+        "footerTop": 1159,
+        "navTop": null,
+        "activeMobileNav": [
+          "#ordens",
+          "#nova"
+        ]
+      }
+    },
+    "1440x900": {
+      "dashboard": {
+        "heroHeight": 157,
+        "metricsHeight": 132,
+        "firstOrderTop": 643,
+        "firstOrderHeight": 87,
+        "ordersInFirstViewport": 4
+      },
+      "orders": {
+        "firstOrderTop": 371,
+        "filtersHeight": 44,
+        "chips": 7,
+        "queueSelect": false,
+        "placeholder": "Buscar por número, cliente ou equipamento"
+      },
+      "osDetail": {
+        "statsHeight": 157,
+        "tabsTop": 387,
+        "headHeight": 98,
+        "activeMobileNav": [
+          "#ordens"
+        ]
+      },
+      "newOrder": {
+        "docHeight": 1259,
+        "submitTop": 1165,
+        "footerTop": 1159,
+        "navTop": null,
+        "activeMobileNav": [
+          "#ordens",
+          "#nova"
+        ]
+      }
+    },
+    "1366x768": {
+      "dashboard": {
+        "heroHeight": 157,
+        "metricsHeight": 132,
+        "firstOrderTop": 643,
+        "firstOrderHeight": 87,
+        "ordersInFirstViewport": 3
+      },
+      "orders": {
+        "firstOrderTop": 421,
+        "filtersHeight": 94,
+        "chips": 7,
+        "queueSelect": false,
+        "placeholder": "Buscar por número, cliente ou equipamento"
+      },
+      "osDetail": {
+        "statsHeight": 157,
+        "tabsTop": 387,
+        "headHeight": 98,
+        "activeMobileNav": [
+          "#ordens"
+        ]
+      },
+      "newOrder": {
+        "docHeight": 1259,
+        "submitTop": 1165,
+        "footerTop": 1159,
+        "navTop": null,
+        "activeMobileNav": [
+          "#ordens",
+          "#nova"
+        ]
+      }
+    },
+    "768x1024": {
+      "dashboard": {
+        "heroHeight": 149,
+        "metricsHeight": 236,
+        "firstOrderTop": 719,
+        "firstOrderHeight": 138,
+        "ordersInFirstViewport": 3
+      },
+      "orders": {
+        "firstOrderTop": 402,
+        "filtersHeight": 94,
+        "chips": 7,
+        "queueSelect": false,
+        "placeholder": "Buscar por número, cliente ou equipamento"
+      },
+      "osDetail": {
+        "statsHeight": 176,
+        "tabsTop": 392,
+        "headHeight": 89,
+        "activeMobileNav": [
+          "#ordens"
+        ]
+      },
+      "newOrder": {
+        "docHeight": 1275,
+        "submitTop": 1135,
+        "footerTop": 1129,
+        "navTop": 963,
+        "activeMobileNav": [
+          "#ordens",
+          "#nova"
+        ]
+      }
+    },
+    "412x915": {
+      "dashboard": {
+        "heroHeight": 209,
+        "metricsHeight": 377,
+        "firstOrderTop": 974,
+        "firstOrderHeight": 138,
+        "ordersInFirstViewport": 0
+      },
+      "orders": {
+        "firstOrderTop": 630,
+        "filtersHeight": 244,
+        "chips": 7,
+        "queueSelect": false,
+        "placeholder": "Buscar por número, cliente ou equipamento"
+      },
+      "osDetail": {
+        "statsHeight": 500,
+        "tabsTop": 769,
+        "headHeight": 142,
+        "activeMobileNav": [
+          "#ordens"
+        ]
+      },
+      "newOrder": {
+        "docHeight": 1586,
+        "submitTop": 1446,
+        "footerTop": 1440,
+        "navTop": 854,
+        "activeMobileNav": [
+          "#ordens",
+          "#nova"
+        ]
+      }
+    },
+    "390x844": {
+      "dashboard": {
+        "heroHeight": 230,
+        "metricsHeight": 377,
+        "firstOrderTop": 995,
+        "firstOrderHeight": 169,
+        "ordersInFirstViewport": 0
+      },
+      "orders": {
+        "firstOrderTop": 680,
+        "filtersHeight": 294,
+        "chips": 7,
+        "queueSelect": false,
+        "placeholder": "Buscar por número, cliente ou equipamento"
+      },
+      "osDetail": {
+        "statsHeight": 500,
+        "tabsTop": 769,
+        "headHeight": 142,
+        "activeMobileNav": [
+          "#ordens"
+        ]
+      },
+      "newOrder": {
+        "docHeight": 1610,
+        "submitTop": 1470,
+        "footerTop": 1464,
+        "navTop": 783,
+        "activeMobileNav": [
+          "#ordens",
+          "#nova"
+        ]
+      }
+    },
+    "360x800": {
+      "dashboard": {
+        "heroHeight": 230,
+        "metricsHeight": 383,
+        "firstOrderTop": 999,
+        "firstOrderHeight": 169,
+        "ordersInFirstViewport": 0
+      },
+      "orders": {
+        "firstOrderTop": 677,
+        "filtersHeight": 294,
+        "chips": 7,
+        "queueSelect": false,
+        "placeholder": "Buscar por número, cliente ou equipamento"
+      },
+      "osDetail": {
+        "statsHeight": 500,
+        "tabsTop": 766,
+        "headHeight": 142,
+        "activeMobileNav": [
+          "#ordens"
+        ]
+      },
+      "newOrder": {
+        "docHeight": 1607,
+        "submitTop": 1467,
+        "footerTop": 1461,
+        "navTop": 739,
+        "activeMobileNav": [
+          "#ordens",
+          "#nova"
+        ]
+      }
+    },
+    "320x568": {
+      "dashboard": {
+        "heroHeight": 260,
+        "metricsHeight": 402,
+        "firstOrderTop": 1139,
+        "firstOrderHeight": 169,
+        "ordersInFirstViewport": 0
+      },
+      "orders": {
+        "firstOrderTop": 677,
+        "filtersHeight": 294,
+        "chips": 7,
+        "queueSelect": false,
+        "placeholder": "Buscar por número, cliente ou equipamento"
+      },
+      "osDetail": {
+        "statsHeight": 500,
+        "tabsTop": 790,
+        "headHeight": 166,
+        "activeMobileNav": [
+          "#ordens"
+        ]
+      },
+      "newOrder": {
+        "docHeight": 1631,
+        "submitTop": 1491,
+        "footerTop": 1485,
+        "navTop": 507,
+        "activeMobileNav": [
+          "#ordens",
+          "#nova"
+        ]
+      }
+    }
+  },
+  "narrowCard": {
+    "cardWidth": 387,
+    "cardHeight": 208,
+    "titleLines": 5,
+    "gridColumns": 3
+  },
+  "longText": {
+    "1920x1080": {
+      "detail": 3981,
+      "list": 0
+    },
+    "1440x900": {
+      "detail": 4338,
+      "list": 0
+    },
+    "1366x768": {
+      "detail": 4412,
+      "list": 34
+    },
+    "768x1024": {
+      "detail": 3937,
+      "list": 366
+    },
+    "412x915": {
+      "detail": 4293,
+      "list": 722
+    },
+    "390x844": {
+      "detail": 4315,
+      "list": 744
+    },
+    "360x800": {
+      "detail": 4339,
+      "list": 768
+    },
+    "320x568": {
+      "detail": 4379,
+      "list": 808
+    }
+  },
+  "print": {
+    "pageRules": [],
+    "sheetWidth": 800
+  },
+  "skipLink": {
+    "href": "#main",
+    "cls": "skip",
+    "after": "Ação indisponível",
+    "hash": "#main"
+  },
+  "modalFocus": {
+    "escapeAt": {
+      "i": 4,
+      "inside": false,
+      "tag": "BODY"
+    }
+  }
+}

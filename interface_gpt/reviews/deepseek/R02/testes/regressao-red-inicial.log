@@ -1,0 +1,37 @@
+FAIL G1-01 — Atalho de conteúdo não altera a rota e mantém a tela :: {"before":{"hash":"","href":"#main","cls":"skip"},"after":{"hash":"#main","h1":"Ação indisponível","focused":"main"}}
+FAIL G1-02-1920 — Texto longo sem overflow em 1920x1080 :: detalhe=3981, lista=0
+FAIL G1-02-1440 — Texto longo sem overflow em 1440x900 :: detalhe=4338, lista=0
+FAIL G1-02-1366 — Texto longo sem overflow em 1366x768 :: detalhe=4412, lista=34
+FAIL G1-02-768 — Texto longo sem overflow em 768x1024 :: detalhe=3937, lista=366
+FAIL G1-02-412 — Texto longo sem overflow em 412x915 :: detalhe=4293, lista=722
+FAIL G1-02-390 — Texto longo sem overflow em 390x844 :: detalhe=4315, lista=744
+FAIL G1-02-360 — Texto longo sem overflow em 360x800 :: detalhe=4339, lista=768
+FAIL G1-02-320 — Texto longo sem overflow em 320x568 :: detalhe=4379, lista=808
+FAIL G1-03 — Cartão estreito usa uma coluna e não quebra o título :: {"width":387,"height":208,"cols":3,"titleLines":5,"fullCols":3}
+PASS G1-03b — Cartão em contêiner largo mantém três colunas :: fullCols=3
+FAIL G1-04 — Tab permanece dentro do modal :: {"i":4,"inside":false,"tag":"BODY","text":"Pular para o conteúd"}
+PASS G1-04b — Escape fecha e devolve o foco ao gatilho :: {"open":false,"active":"modal:tech:20"}
+FAIL G1-04c — Shift+Tab no primeiro focável volta ao último :: {"inside":false,"text":"Pular para o conteúdo\nM\n"}
+FAIL G1-05 — Favicon declarado e sem 404 :: []
+FAIL G1-06 — Alvos de toque ≥44 px :: [{"tag":"A","text":"m.","w":34,"h":26},{"tag":"SUMMARY","text":"Itens, acessórios e ","w":324,"h":24}]
+FAIL G1-07 — Texto auxiliar ≥12 px :: [{"tag":"DIV","cls":"eyebrow","size":11.2,"text":"Recepção"},{"tag":"A","cls":"","size":11.7,"text":"Hoje"},{"tag":"A","cls":"active","size":11.7,"text":"OS"},{"tag":"A","cls":"active","size":11.7,"text":"Nova OS"},{"tag":"A","cls":"","size":11.7,"text":"Mais"}]
+FAIL G1-08 — Pluralização "1 atendimento" :: Contatos e atendimentos vinculados. | 2 atendimentos | 2 atendimentos | 3 atendimentos | 1 atendimentos
+FAIL G1-08b — Consulta com um resultado usa "1 ordem encontrada" :: 1 ordens encontradas
+FAIL G1-09 — Placeholder da busca menciona defeito :: Buscar por número, cliente ou equipamento
+FAIL G1-10 — Datas do histórico padronizadas (sem ISO) :: Entrada registrada | 2026-11-20
+FAIL G1-11 — Nome acessível da marca contém o texto visível :: aria-label=Início
+FAIL G1-12 — Impressão define @page A4 e cupom 80 mm :: {"a4":{"rules":[],"sheet":800},"cupom":{"rules":[],"sheet":302,"page":"auto"}}
+FAIL G1-13 — Troca de perfil preserva rota acessível :: {"hash":"#inicio","h1":"O que precisa de atenção?"}
+PASS G1-13b — Troca de perfil sai da rota quando o novo perfil não acessa :: {"hash":"#inicio","h1":"O que precisa de atenção?"}
+FAIL G2-01 — Painel mobile compacto mostra a primeira OS :: {"hero":230,"metrics":377,"firstTop":995,"firstVisible":false,"queues":6}
+FAIL G2-02 — Celular usa seletor de fila e mostra a primeira OS :: {"selectVisible":false,"chipsVisible":true,"firstTop":680,"activeLabel":null}
+FAIL G2-03 — Detalhe mobile compacta os três estados e aproxima as abas :: {"stats":500,"tabsTop":769,"labels":["ANDAMENTO TÉCNICO","FINANCEIRO","RETIRADA"],"actions":["Atualizar andamento","Registrar pagamento","Registrar entrega"]}
+FAIL G2-04 — Barra de ações da Nova OS visível e acima do menu :: {"submitVisible":false,"submitTop":1470,"footerBottom":1514,"navTop":783,"position":"static","optional":[{"summary":"Itens, acessórios e estado (opcionais)","open":false}],"requiredVisible":true}
+PASS G2-05 — Opcionais (selo/série/IMEI) recolhidos e disponíveis :: [{"summary":"Itens, acessórios e estado (opcionais)","open":false}]
+PASS G2-05b — Campos obrigatórios continuam disponíveis :: brand/defect=true
+FAIL G2-06 — Somente a aba atual fica ativa (Nova OS) :: ["#ordens","#nova"]
+PASS G2-06b — Somente a aba atual fica ativa (OS) :: ["#ordens"]
+FAIL G3-01 — Entrega não impede finalizar a OS :: {"status":"Em Andamento","delivered":true,"conclusion":null}
+FAIL G3-02 — Finalizada e entregue não pode ser reaberta :: {"status":"Em Andamento","toast":"Confira a autorização de execução e a situação da OS."}
+
+TOTAL 35 · PASS 6 · FAIL 29

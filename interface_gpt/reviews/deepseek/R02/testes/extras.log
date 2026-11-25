@@ -1,0 +1,46 @@
+{
+  "propostaAntes": {
+    "proposal": 24000,
+    "approval": "Aguardando resposta",
+    "total": 0
+  },
+  "propostaDepois": {
+    "proposal": 30000,
+    "approval": "Aguardando resposta",
+    "total": 0,
+    "historico": [
+      "Entrada registrada",
+      "Orçamento preparado"
+    ]
+  },
+  "impressao": {
+    "pageRule": "@page cupom { size: 80mm 150mm; margin: 3mm; }",
+    "larguraFolhaPx": 800,
+    "larguraA4ConteudoPx": 794,
+    "larguraCupomPx": 302
+  },
+  "trocaPerfil": {
+    "antes": "#os/20",
+    "depois": {
+      "hash": "#os/20",
+      "h1": "Midea · Xtreme Save"
+    }
+  },
+  "textoLongo": [
+    {
+      "viewport": "1440x900",
+      "overflowDetalhePx": 0,
+      "overflowListaPx": 0
+    },
+    {
+      "viewport": "390x844",
+      "overflowDetalhePx": 0,
+      "overflowListaPx": 0
+    },
+    {
+      "viewport": "320x568",
+      "overflowDetalhePx": 0,
+      "overflowListaPx": 0
+    }
+  ]
+}

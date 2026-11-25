@@ -10,3 +10,10 @@
 .customer-decision{border-top:1px solid var(--line);padding-top:14px;display:grid;gap:12px}.customer-choice{display:grid;gap:8px;border:0;margin:0;padding:0}.customer-choice legend{font-weight:700;font-size:.88rem;margin-bottom:8px}.customer-choice label{display:flex;align-items:center;gap:10px;border:1px solid var(--line);border-radius:12px;padding:12px;min-height:48px;cursor:pointer;font-weight:650}.customer-choice label:has(input:checked){border-color:var(--accent);background:var(--soft)}.customer-choice input{width:20px;height:20px;accent-color:var(--accent);flex:none}.customer-decision .btn{width:100%;min-height:48px}.customer-foot{max-width:760px;margin:0 auto;padding:0 18px 25px;font-size:.8rem;color:var(--muted)}.customer-card .quote-line{gap:8px}.customer-card .quote-line .money{font-size:.9rem}.customer-empty{text-align:center;padding:32px 18px}.customer-card details summary{cursor:pointer;min-height:44px;padding:9px 0}.customer-card details[open] summary{margin-bottom:12px}
 @media(min-width:600px){.customer-header{padding:28px 24px 12px}#customer-main{padding:16px 24px 32px}.customer-hero{padding:28px}.customer-card{padding:24px}.customer-choice{grid-template-columns:1fr 1fr}.customer-foot{padding-left:24px;padding-right:24px}}
 @media(max-width:359px){.customer-header{padding:14px 10px 8px}.customer-demo{padding:4px 6px;font-size:.75rem}#customer-main{padding:10px;gap:10px}.customer-card,.customer-hero{padding:14px}.customer-finance{grid-template-columns:1fr 1fr}.customer-finance>div:last-child{grid-column:1/-1}.customer-foot{padding:10px}.customer-card .quote-line{grid-template-columns:minmax(0,1fr) auto}}
+
+/* R04: selo de demonstração em uma linha no cabeçalho de 320 px. */
+.customer-demo{white-space:nowrap}
+@media(max-width:359px){
+  .customer-header{gap:8px}
+  .customer-demo{flex:none;font-size:.7rem;padding:4px 5px}
+}

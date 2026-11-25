@@ -14,7 +14,7 @@
 | R05-A01 | Alta (fora do escopo) | **LIMITE** | O protótipo usa `localStorage`; não há autenticação, CSRF, idempotência transacional, isolamento entre usuários ou contabilidade real. | Declarado em `R05-FINANCEIRO.md`; não é tratado como falha da demonstração. |
 | R05-A02 | Baixa | **LIMITE** | Cancelamentos, acertos, retificação de canceladas e abatimentos por garantia ficam para etapa posterior; OS cancelada bloqueia recebimento e estorno. | `edge.cjs` X11; contrato R05. |
 | R05-A03 | Informativo | **CONTRATO** | Estorno corrige o lançamento e recompõe o saldo; não devolve dinheiro nem executa transferência bancária. | `browser.cjs` B11–B21; recibos normal e estornado. |
-| R05-A04 | Baixa (UX) | **OBSERVAÇÃO** | A rota direta `#os/<id>/financeiro` de Técnico/Atendente permanece na OS e mostra “Acesso restrito”, em vez de redirecionar. Nenhum valor ou ação é exposto. | `browser.cjs` P07; `edge.cjs` X12–X13. |
+| R05-A04 | Baixa (UX) | **OBSERVAÇÃO** | `#financeiro` e `#recibo` de Técnico/Atendente mostram “Ação indisponível”; `#os/<id>/financeiro` permanece na OS e mostra “Acesso restrito”. Nenhum valor ou ação é exposto. | `browser.cjs` P07; `edge.cjs` X12–X13. |
 | R05-A05 | Baixa | **LIMITE** | Recibos são prévias de demonstração sem validade comercial; PDFs não comprovam movimentação bancária. | Rodapé do recibo; `recibos/*.pdf`. |
 | R05-A06 | Baixa (histórico) | **HISTÓRICO** | Scripts antigos da R03 que usavam `publicresponse` permanecem como evidência daquela árvore; a R04/R05 usam `portal.html`. | `R03/testes/`; R05 `testes/README.md`. |
 

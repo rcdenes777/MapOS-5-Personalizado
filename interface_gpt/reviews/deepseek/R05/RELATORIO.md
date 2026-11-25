@@ -87,7 +87,7 @@ A OS #020 iniciou com **R$ 200,00 recebidos anteriormente** e nenhum recibo indi
 
 - **Administrador:** recebe, consulta e estorna.
 - **Financeiro:** acessa central, recebe e consulta recibo; não vê nem abre estorno, inclusive por chamada direta.
-- **Técnico e Atendente:** não veem valores em `#financeiro`, `#os/20/financeiro` ou `#recibo/20/1`; a rota direta mostra **Acesso restrito**.
+- **Técnico e Atendente:** não veem valores em `#financeiro`, `#os/20/financeiro` ou `#recibo/20/1`. `#financeiro` e `#recibo` mostram **Ação indisponível**; a aba financeira da OS mostra **Acesso restrito**. Nenhum valor é exposto.
 - A troca de perfil em uma rota financeira remove os valores e as ações; a URL pode permanecer na OS, mas o conteúdo financeiro fica bloqueado.
 
 ### 3.5 Persistência e duas abas
@@ -134,7 +134,7 @@ Nenhuma regra de negócio, texto criativo, identidade visual, backend, banco, pr
 - **R05-A01 (limite):** `localStorage` não é autenticação, segurança, banco transacional ou contabilidade. O identificador do portal é uma simulação local.
 - **R05-A02 (limite):** cancelamentos, acertos e retificação de OS cancelada ficam para etapa posterior; recebimento e estorno em OS cancelada são bloqueados.
 - **R05-A03 (contrato):** estorno **não devolve dinheiro**; apenas corrige o lançamento e recompõe o saldo.
-- **R05-A04 (observação de UX):** a rota direta `#os/<id>/financeiro` de Técnico/Atendente permanece na OS e mostra “Acesso restrito”, em vez de redirecionar. Não há valores nem ações; não é uma exposição.
+- **R05-A04 (observação de UX):** a rota direta `#financeiro`/`#recibo` de Técnico/Atendente mostra **Ação indisponível**; `#os/<id>/financeiro` permanece na OS e mostra **Acesso restrito**, em vez de redirecionar. Não há valores nem ações; não é uma exposição.
 - **R05-A05 (limite):** recibos são prévias de demonstração sem validade comercial.
 - **R05-A06 (histórico):** os scripts R03 que usavam a simulação `publicresponse` ficam como evidência histórica; o fluxo atual usa `portal.html`.
 

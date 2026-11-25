@@ -26,6 +26,7 @@
             <h2 id="equipamento" class="text-heading-sm">Equipamento</h2>
             <p class="mt-3 whitespace-pre-wrap break-words text-body-md"><?= e($os['equipamento']) ?></p>
         </section>
+        <?php $this->load->view('trifase/publico-financeiro', ['financeiro' => $financeiro ?? null]); ?>
         <?php if (($versaoOrcamento ?? null) !== null) { ?>
             <div id="orcamento" class="flex flex-col gap-4">
                 <?php $this->load->view('trifase/orcamento-conteudo'); ?>

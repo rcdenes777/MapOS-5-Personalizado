@@ -33,7 +33,7 @@ $verTodas = static fn (string $rotulo, string $url) => component('link', ['label
             <?php } ?>
         </div>
         <?= component('data-table', [
-            'columns' => conecteColunasOs(false),
+            'columns' => conecteColunasOs(false, $financeiroVisivel ?? false),
             'rows' => $os,
             'caption' => 'Últimas ordens de serviço',
             'empty' => component('empty-state', [

@@ -29,7 +29,7 @@ class Mine extends CI_Controller
     {
         parent::__construct();
         $this->load->model('Conecte_model');
-        $this->load->helper(['Security_helper', 'os', 'vendas', 'financeiro', 'clientes', 'conecte']);
+        $this->load->helper(['Security_helper', 'os', 'vendas', 'financeiro', 'clientes', 'conecte', 'trifase_financeiro']);
     }
 
     public function index()
@@ -289,7 +289,8 @@ class Mine extends CI_Controller
         $idCliente = $this->clienteLogado();
 
         return $this->tela('conecte/painel', 'painel', [
-            'os' => $this->Conecte_model->getLastOs($idCliente, self::RECENTES),
+            'financeiroVisivel' => $this->financeiroVisivel(),
+            'os' => $this->comFinanceiro($this->Conecte_model->getLastOs($idCliente, self::RECENTES)),
             'compras' => $this->Conecte_model->getLastCompras($idCliente, self::RECENTES),
             'resumo' => [
                 'os_em_andamento' => $this->Conecte_model->contarOsEmAndamento($idCliente),
@@ -355,9 +356,11 @@ class Mine extends CI_Controller
         $idCliente = $this->clienteLogado();
         $offset = max(0, (int) $this->uri->segment(3));
         $total = $this->Conecte_model->count('os', $idCliente);
+        $resultados = $this->Conecte_model->getOs('os', '*', '', self::POR_PAGINA, $offset, '', '', $idCliente);
 
         return $this->tela('conecte/os', 'os', [
-            'results' => $this->Conecte_model->getOs('os', '*', '', self::POR_PAGINA, $offset, '', '', $idCliente),
+            'financeiroVisivel' => $this->financeiroVisivel(),
+            'results' => $this->comFinanceiro($resultados),
             'total' => $total,
             'paginacao' => $this->paginacao(site_url('mine/os'), $total, $offset),
         ], $this->acaoAbrirOs());
@@ -381,10 +384,16 @@ class Mine extends CI_Controller
         $pixKey = $this->configuracao('pix_key');
         $totais = $this->os_model->totais($os);
         $pixPayload = $this->os_model->getPixPayload($idOs, $pixKey, $emitente);
+        $financeiro = null;
+        if ($this->financeiroVisivel()) {
+            $this->load->model('Trifase_financeiro_model', 'financeiro_cliente');
+            $financeiro = $this->financeiro_cliente->resumoCliente($idOs);
+        }
 
         return $this->tela('conecte/visualizar_os', 'os', [
             'os' => $os,
             'totais' => $totais,
+            'financeiro' => $financeiro,
             'produtos' => $this->os_model->getProdutos($idOs),
             'servicos' => $this->os_model->getServicos($idOs),
             'anexos' => $this->anexos_cliente->anexos($idOs, true),
@@ -729,6 +738,32 @@ class Mine extends CI_Controller
         }
 
         return (int) $this->session->userdata('cliente_id');
+    }
+
+    private function financeiroVisivel(): bool
+    {
+        return trifaseFinanceiroHabilitado() && $this->db->table_exists('trifase_financeiro_obrigacoes');
+    }
+
+    /**
+     * Enriquece as OS do cliente com a projeção financeira (total/pago/saldo/situação).
+     * Uma consulta em lote; OS sem obrigação ficam com null e a view mostra "—".
+     *
+     * @param list<object> $linhas
+     * @return list<object>
+     */
+    private function comFinanceiro(array $linhas): array
+    {
+        if ($linhas === [] || ! $this->financeiroVisivel()) {
+            return $linhas;
+        }
+        $this->load->model('Trifase_financeiro_model', 'financeiro_cliente');
+        $mapa = $this->financeiro_cliente->resumosCliente(array_map(static fn ($o) => (int) $o->idOs, $linhas));
+        foreach ($linhas as $o) {
+            $o->financeiro = $mapa[(int) $o->idOs] ?? null;
+        }
+
+        return $linhas;
     }
 
     /**

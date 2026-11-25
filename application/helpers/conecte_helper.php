@@ -153,7 +153,7 @@ if (! function_exists('conecteColunasOs')) {
      * Colunas do data-table das OS do cliente (início e listagem). A completa
      * mostra também a previsão, a garantia e o botão de imprimir.
      */
-    function conecteColunasOs(bool $completa): array
+    function conecteColunasOs(bool $completa, bool $financeiro = false): array
     {
         $colunas = [
             ['label' => 'OS', 'nowrap' => true, 'render' => fn ($o) => component('link', ['label' => 'OS #' . (int) $o->idOs, 'href' => site_url('mine/visualizarOs/' . (int) $o->idOs), 'class' => 'font-medium'])],
@@ -170,6 +170,18 @@ if (! function_exists('conecteColunasOs')) {
             }];
         }
 
+        if ($financeiro) {
+            $colunas[] = ['label' => 'Pagamento', 'nowrap' => true, 'render' => function ($o) {
+                $f = $o->financeiro ?? null;
+
+                return $f === null ? '—' : component('pill-status', ['label' => $f['situacao'], 'variant' => $f['situacao_variant']]);
+            }];
+            $colunas[] = ['label' => 'Saldo a pagar', 'align' => 'right', 'nowrap' => true, 'hide_until' => 'lg', 'render' => function ($o) {
+                $f = $o->financeiro ?? null;
+
+                return $f === null ? '—' : dinheiro($f['saldo_c'] / 100);
+            }];
+        }
         $colunas[] = ['label' => 'Status', 'nowrap' => true, 'render' => fn ($o) => component('pill-status', osStatusPill($o->status))];
         $colunas[] = ['label' => 'Ações', 'align' => 'right', 'nowrap' => true, 'render' => function ($o) use ($completa) {
             $acoes = [component('button', ['label' => 'Ver OS #' . (int) $o->idOs, 'icon' => 'eye', 'icon_only' => true, 'variant' => 'ghost', 'size' => 'sm', 'href' => site_url('mine/visualizarOs/' . (int) $o->idOs)])];

@@ -3,6 +3,7 @@
 defined('BASEPATH') or exit('No direct script access allowed');
 
 require_once APPPATH . 'libraries/Trifase_os_lock.php';
+require_once APPPATH . 'helpers/trifase_financeiro_helper.php';
 require_once APPPATH . 'helpers/trifase_atendimento_helper.php';
 require_once APPPATH . 'helpers/trifase_retorno_helper.php';
 require_once APPPATH . 'helpers/trifase_garantia_helper.php';
@@ -308,6 +309,61 @@ class Trifase_financeiro_model extends CI_Model
             $resumos[$id] = trifaseGarantiaResumo($this->db, $id, $total, $recebido, $cred);
         }
         return $resumos;
+    }
+
+    /**
+     * Projeção para o cliente: somente total, pago, saldo e situação.
+     * Não inclui bruto, desconto interno, custos, margens ou histórico.
+     */
+    public function resumoCliente(int $osId): ?array
+    {
+        if ($osId <= 0 || ! trifaseFinanceiroOsGerida($this->db, $osId)) {
+            return null;
+        }
+
+        return $this->projecaoCliente($this->resumo($osId));
+    }
+
+    /** Versão em lote para listagens; OS sem obrigação ficam fora do mapa. */
+    public function resumosCliente(array $ids): array
+    {
+        $projecoes = [];
+        foreach ($this->resumos($ids) as $id => $resumo) {
+            $projecoes[(int) $id] = $this->projecaoCliente($resumo);
+        }
+
+        return $projecoes;
+    }
+
+    /** @return array{total_c:int,pago_c:int,saldo_c:int,situacao:string,situacao_variant:string} */
+    private function projecaoCliente(array $resumo): array
+    {
+        $total = (int) $resumo['total_c'];
+        $pago = (int) $resumo['recebido_c'];
+        $situacao = (string) $resumo['situacao'];
+        $variant = 'neutral';
+
+        if ($situacao === 'Quitado' && $total === 0) {
+            $situacao = 'Sem cobrança';
+        } elseif ($situacao === 'Pendente') {
+            $situacao = 'Em aberto';
+            $variant = 'warning';
+        } elseif ($situacao === 'Parcialmente pago') {
+            $situacao = 'Parcialmente paga';
+            $variant = 'warning';
+        } elseif ($situacao === 'Quitado') {
+            $situacao = 'Quitada';
+            $variant = 'success';
+        } elseif ($situacao === 'Reembolsado') {
+            $situacao = 'Reembolsada';
+            $variant = 'info';
+        } elseif ($situacao === 'Encerrado por garantia') {
+            $situacao = 'Encerrada por garantia';
+            $variant = 'info';
+        }
+
+        return ['total_c' => $total, 'pago_c' => $pago, 'saldo_c' => (int) $resumo['saldo_c'],
+            'situacao' => $situacao, 'situacao_variant' => $variant];
     }
 
     /** Documento de um evento específico: não expõe chave, hash ou notas privadas. */

@@ -20,10 +20,14 @@ usam POST com o CSRF padrão da v5. Não cria uma permissão administrativa para
 - A tela oferece abrir o link e compartilhar pelo WhatsApp. Nenhuma mensagem
   é enviada automaticamente. O link é uma credencial de leitura: quem o tiver
   poderá acompanhar aquela OS até expirar ou ser revogado.
-- A página pública mostra número, andamento, entrada, previsão e descrição
-  do equipamento em texto. Não mostra cliente, endereço, técnico, anotações,
-  laudo interno ou valores financeiros. Imagens embutidas no editor não são
-  transportadas para a área pública.
+- A página pública mostra número, andamento, entrada, previsão, descrição
+  do equipamento e, quando o módulo financeiro está habilitado e existe cobrança
+  formalizada, a situação de pagamento (total cobrado, pago, saldo e situação).
+  Não mostra cliente, endereço, técnico, anotações, laudo interno, custos,
+  margens, descontos internos ou histórico financeiro. Imagens embutidas no
+  editor não são transportadas para a área pública.
+- O link é uma credencial de leitura: quem o possuir vê também a situação
+  financeira daquela OS enquanto o token for válido.
 - Anexos começam privados. Marque explicitamente os que deseja disponibilizar. A seleção também limita a listagem e o download no portal autenticado e na API do cliente. Anexos antigos sem marca de publicação ficam disponíveis para a equipe.
 - Para retirar um anexo de todos os canais do cliente, desmarque a publicação. Revogar o link encerra o acesso pelo endereço público. O titular autenticado ainda pode consultar anexos que continuam marcados como publicados. Com o módulo de link público desativado, a seleção existente continua valendo no portal; reative o módulo para alterar a seleção no painel.
   Desmarcar e salvar remove o acesso sem precisar trocar o link. Todo download
@@ -110,9 +114,14 @@ um gerenciador de plugins ou alterações no framework/vendor.
 2. Uma inclusão de `trifase/atalho` em `views/os/visualizar.php`.
 
 Além disso são versionados o CSS recompilado e a documentação de migração.
-Nenhuma alteração em `Os.php`, `Os_model.php`, login, API, estoque, financeiro,
-`banco.sql`, dependências ou arquivos Docker do upstream. Novas tabelas são
-aditivas; não criam campos nas tabelas originais.
+Nenhuma alteração em `Os.php`, `Os_model.php`, login, API, estoque, `banco.sql`,
+dependências ou arquivos Docker do upstream. Novas tabelas são aditivas; não
+criam campos nas tabelas originais.
+
+A situação financeira do cliente reutiliza `Trifase_financeiro_model::resumo()`/
+`resumos()`; a apresentação toca `Publico.php`, `Mine.php`, `conecte_helper.php`
+e as views do link e da área do cliente, sem alterar regras financeiras,
+tabelas ou permissões.
 
 Isso reduz conflitos, mas não torna a extensão independente de qualquer versão:
 ela depende dos contratos da v5 de permissões, storage, componentes e schema.

@@ -55,6 +55,8 @@ $textos = $campos([
         <?= component('kpi-card', ['label' => 'Total', 'value' => dinheiro($totais['total']), 'icon' => 'circle-dollar-sign', 'caption' => $totais['desconto'] > 0 ? 'Com ' . dinheiro($totais['desconto']) . ' de desconto' : null]) ?>
     </div>
 
+    <?php $this->load->view('conecte/partes/financeiro', ['financeiro' => $financeiro ?? null]); ?>
+
     <div class="grid gap-4 lg:grid-cols-3">
         <section class="<?= e($caixa) ?>" aria-labelledby="secao-dados">
             <h2 id="secao-dados" class="text-heading-sm text-text">Dados da OS</h2>

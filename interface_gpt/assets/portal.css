@@ -17,3 +17,5 @@
   .customer-header{gap:8px}
   .customer-demo{flex:none;font-size:.7rem;padding:4px 5px}
 }
+
+.customer-finance .customer-balance{background:var(--soft);border-radius:10px;padding:9px}.customer-finance .customer-balance dd{color:var(--accent);font-size:1.12rem}.customer-finance{align-items:center}

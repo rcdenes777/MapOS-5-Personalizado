@@ -1,7 +1,7 @@
 'use strict';
 // Standalone customer UI. Reads only the local projection and responds to a current version.
 const root=document.getElementById('customer-main');
-const token=location.hash.slice(1);
+const currentToken=()=>location.hash.slice(1);
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const money=v=>new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL'}).format(v/100);
 const day=v=>v?String(v).slice(0,10).split('-').reverse().join('/'):'Não informada';
@@ -17,14 +17,15 @@ function quoteCard(q){
 function view(p){
  if(!p)return '<section class="customer-card customer-empty"><h1>Link indisponível</h1><p>Este endereço não está ativo neste navegador. Solicite um link atualizado à assistência.</p><p class="small">Esta demonstração funciona apenas no mesmo navegador e endereço em que o link foi criado.</p></section>';
  const fin=p.finance?'<section class="customer-card" aria-labelledby="customer-payment"><div class="section-head"><h2 id="customer-payment">Pagamento</h2>'+pill(p.finance.status,p.finance.balance?'amber':'green')+'</div><dl class="customer-finance"><div><dt>Total cobrado</dt><dd>'+money(p.finance.total)+'</dd></div><div><dt>Pago</dt><dd>'+money(p.finance.paid)+'</dd></div><div><dt>Saldo a pagar</dt><dd>'+money(p.finance.balance)+'</dd></div></dl></section>':'';
- return '<section class="customer-hero"><div class="eyebrow">Seu atendimento · OS #'+esc(String(p.id).padStart(3,'0'))+'</div><h1>'+esc(p.equipment)+'</h1>'+pill(p.status)+'<dl class="customer-dates"><div><dt>Entrada</dt><dd>'+day(p.entry)+'</dd></div><div><dt>Previsão</dt><dd>'+day(p.forecast)+'</dd></div></dl></section>'+(p.quote?quoteCard(p.quote):'<section class="customer-card"><h2>Orçamento</h2><p>Não há orçamento publicado disponível para consulta neste momento.</p></section>')+fin+'<section class="customer-card"><h2>Arquivos compartilhados</h2><p class="muted">Nenhum arquivo compartilhado nesta demonstração.</p></section><p class="small">Este é um link de demonstração. Na versão real, compartilhe o endereço privado apenas com pessoas autorizadas.</p>';
+ return '<section class="customer-hero"><div class="eyebrow">Seu atendimento · OS #'+esc(String(p.id).padStart(3,'0'))+'</div><h1>'+esc(p.equipment)+'</h1>'+pill(p.status)+'<dl class="customer-dates"><div><dt>Entrada</dt><dd>'+esc(day(p.entry))+'</dd></div><div><dt>Previsão</dt><dd>'+esc(day(p.forecast))+'</dd></div></dl></section>'+(p.quote?quoteCard(p.quote):'<section class="customer-card"><h2>Orçamento</h2><p>Não há orçamento publicado disponível para consulta neste momento.</p></section>')+fin+'<section class="customer-card"><h2>Arquivos compartilhados</h2><p class="muted">Nenhum arquivo compartilhado nesta demonstração.</p></section><p class="small">Este é um link de demonstração. Na versão real, compartilhe o endereço privado apenas com pessoas autorizadas.</p>';
 }
-function render(){const db=BancadaPortal.read(localStorage),o=BancadaPortal.resolve(db,token);root.innerHTML=view(o?BancadaPortal.projection(o):null)}
+function render(){const db=BancadaPortal.read(localStorage),o=BancadaPortal.resolve(db,currentToken());root.innerHTML=view(o?BancadaPortal.projection(o):null)}
 root.addEventListener('submit',e=>{
  if(e.target.id!=='customer-response')return;e.preventDefault();
  const f=e.target,d=Object.fromEntries(new FormData(f));
- try{const db=BancadaPortal.read(localStorage);BancadaPortal.respond(db,token,Number(f.dataset.version),d,Date.now(),localDay());localStorage.setItem(BancadaPortal.key,JSON.stringify(db));render();root.focus()}catch(err){const error=document.getElementById('customer-error');if(error){error.textContent=err.message;error.hidden=false;error.scrollIntoView({block:'nearest'})}}
+ try{const db=BancadaPortal.read(localStorage);BancadaPortal.respond(db,currentToken(),Number(f.dataset.version),d,Date.now(),localDay());localStorage.setItem(BancadaPortal.key,JSON.stringify(db));render();root.focus()}catch(err){const error=document.getElementById('customer-error');if(error){error.textContent=err.message;error.hidden=false;error.scrollIntoView({block:'nearest'})}}
 });
 window.addEventListener('storage',e=>{if(e.key===BancadaPortal.key||e.key===null){render()}});
-window.addEventListener('focus',()=>{const db=BancadaPortal.read(localStorage);if(!BancadaPortal.resolve(db,token))render()});
+window.addEventListener('hashchange',render);
+window.addEventListener('focus',()=>{const db=BancadaPortal.read(localStorage);if(!BancadaPortal.resolve(db,currentToken()))render()});
 render();

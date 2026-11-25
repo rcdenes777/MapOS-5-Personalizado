@@ -37,18 +37,18 @@ No SHA de referência: application/views/trifase/os.php, nova-os-unidade.php, en
 | Andamento e laudo | Simulação parcial |
 | Orçamento/aprovação | Rascunho por peças/serviços, versões, publicação/retirada, decisão interna e pública simulada; cobrança explícita |
 | Portal do cliente | Página independente, link local com validade e revogação, resposta à versão vigente e resumo financeiro limitado |
-| Pagamento | Simulação de recebimento parcial/integral |
+| Pagamento | Recebimento parcial/integral, estorno de registro, recibo e histórico local |
 | Retirada | Data, recebedor, próprio/terceiro, autorização, itens e conferência |
 | Clientes | Consulta, cadastro simulado |
 | Estoque | Consulta demonstrativa |
-| Financeiro e relatórios | Visões de demonstração |
+| Financeiro e relatórios | Contas de OS, vencimentos, filtros e busca; relatórios de demonstração |
 | Impressão | Prévia A4 e 80 mm, não documento oficial |
 | Perfis | Simulação conservadora de visibilidade; matriz real de permissões ainda não auditada |
 
 ## Pendências para refinamento
 
 - Auditoria funcional completa das rotas, estados, permissões, testes e documentação do sistema.
-- Paridade completa de orçamento (catálogo de itens, estoque, condições, quantidades fracionárias, edição após cobrança, integração real do link e portal público, regularização de casos legados), cancelamento, estornos, garantia (avaliação, solução, custos), consumo de estoque, vendas, anexos, edição da identificação, gestão de equipamentos, cadastros, relatórios e configurações.
+- Paridade completa de orçamento (catálogo de itens, estoque, condições, quantidades fracionárias, edição após cobrança, integração real do link e portal público, regularização de casos legados), cancelamento, retificação de canceladas, conciliação e projeções nativas, garantia (avaliação, solução, custos), consumo de estoque, vendas, anexos, edição da identificação, gestão de equipamentos, cadastros, relatórios e configurações.
 - Impressão em duas vias e demais documentos reais.
 - Validação visual em navegador: 320, 360, 390, 768, 1024 e 1440 px; teclado, leitor de tela, toque, orientação, foco, contraste e ausência de overflow.
 - Testes de interação reais e comparação dos fluxos com o sistema atual.
@@ -67,4 +67,8 @@ Testes locais sem dependências: `node tests/smoke.cjs` e `node tests/quote.cjs`
 
 ## Incremento R04 — portal do cliente
 
-Consulte [R04-PORTAL.md](R04-PORTAL.md). No orçamento de uma OS, gere o link de demonstração e abra a visão do cliente. A página `portal.html` usa os mesmos dados fictícios do navegador; não compartilha dados entre dispositivos. Não enviar a clientes reais. Rodar `node tests/portal.cjs` e `node tests/portal-page.cjs`, além dos testes anteriores. A revisão em navegador da R04 permanece pendente.
+Consulte [R04-PORTAL.md](R04-PORTAL.md). No orçamento de uma OS, gere o link de demonstração e abra a visão do cliente. A página `portal.html` usa os mesmos dados fictícios do navegador; não compartilha dados entre dispositivos. Não enviar a clientes reais. Rodar `node tests/portal.cjs` e `node tests/portal-page.cjs`, além dos testes anteriores. A R04 foi validada pelo DeepSeek; consulte reviews/deepseek/R04.
+
+## Incremento R05 — financeiro
+
+Consulte [R05-FINANCEIRO.md](R05-FINANCEIRO.md). Abra Financeiro no menu ou na aba da OS. Estorno corrige registro, não devolve dinheiro. Testes: `node tests/finance.cjs` e `node tests/finance-ui.cjs`, além das suítes anteriores. Revisão em navegador pendente.

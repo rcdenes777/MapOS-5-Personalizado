@@ -7,6 +7,7 @@
 **Branch:** `interface-gpt`
 **Incremento avaliado:** `431c428270e2ca98fece34c8ebc58624320b8628`
 **Árvore de código testada:** `df925de31c09b2cc116abb025e9fdca5d39f5183` (incremento + correção CSS do selo em 320)
+**Auditoria cega:** [`AUDITORIA-CEGA.md`](AUDITORIA-CEGA.md)
 **Baseline R03:** evidências `0fa965b3`; árvore validada `b180ab6c`
 **Referência funcional:** `8c256cae4ddaeefad68922abddbb8addfe37c99d`
 **Pasta no GitHub:** https://github.com/rcdenes777/MapOS-5-Personalizado/tree/interface-gpt/interface_gpt/reviews/deepseek/R04
@@ -29,7 +30,7 @@ Nenhum arquivo fora de `interface_gpt/` foi alterado. Não houve merge, deploy, 
 | Regressão R02 (`regressao-r02.cjs`) | **37/37 PASS** |
 | Responsividade e capturas (`capture.cjs`) | **27/27 PASS** |
 | axe-core 4.14.1 (WCAG 2.2 A/AA) | **22 varreduras, 0 violações** |
-| Teclado / escolha inicial / submit do portal | **6/6 PASS** |
+| Teclado / escolha inicial / submit do portal | **9/9 PASS** |
 | Capturas | **81 PNG** (45 desktop, 31 celular, 5 tablet), 0 duplicadas |
 | Exceções JavaScript / requisições externas | **0 / 0** |
 
@@ -178,7 +179,7 @@ Textos publicados com HTML (`<img onerror…>`) são escapados; o diagnóstico l
 - Decisão em **uma coluna** até 412 e **duas** a partir de 768.
 - Administração em **uma coluna** até 1024 e **duas** em 1366/1440/1920; sem overflow.
 - axe-core: **22 varreduras, 0 violações** (WCAG 2.2 A/AA), incluindo portal pendente, aprovado, pagamento, entrega, link indisponível e modal de cobrança.
-- Teclado: os dois rádios, nome, confirmação e submit são alcançáveis; nenhuma escolha inicial; Escape devolve foco nos modais administrativos testados.
+- Teclado: os dois rádios, nome, confirmação e submit são alcançáveis; nenhuma escolha inicial; Escape devolve foco no modal de renovação de link testado.
 - A atualização entre abas substitui conteúdo sem `aria-live` dedicado; isso é uma limitação de anúncio para leitor de tela, não uma violação axe detectada.
 
 **Evidências:** `testes/responsivo.md`, `testes/axe.md`, `testes/a11y-resultados.json`; capturas de 320 a 1920.
@@ -222,6 +223,7 @@ Os itens abaixo não foram corrigidos por serem decisões de produto, limites de
 - **R04-A03:** atualização entre abas troca o DOM sem anúncio `aria-live` dedicado; axe não encontrou violação, mas leitores de tela podem não anunciar a mudança.
 - **R04-A04:** “Ver endereço para copiar” exibe e seleciona o endereço; não usa a Clipboard API. O rótulo foi escolhido para não prometer cópia automática.
 - **R04-A05:** sem publicação, o link continua ativo e o portal mostra “Não há orçamento publicado”, conforme a decisão do R04; retirar publicação não revoga o link.
+- **R04-A06:** a simulação antiga de resposta pública ainda permanece como branch interna `publicresponse`; nenhum botão a expõe, mas chamada direta pelo console abre o modal antigo. Recomenda-se remover numa limpeza técnica, sem mudar o fluxo do portal agora.
 
 Nenhum desses itens é uma regra operacional nova. O GPT deve decidir se quer tratá-los na próxima rodada.
 

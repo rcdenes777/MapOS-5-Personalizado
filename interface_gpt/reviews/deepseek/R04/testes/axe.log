@@ -1,8 +1,11 @@
 PASS R04-A11Y-PORTAL-1440x900 — Formulário do portal tem controles e nenhuma escolha inicial :: {"controls":["answer","answer","name","confirm","submit"],"checked":0}
 PASS R04-A11Y-SUBMIT-1440x900 — Tab alcança o botão de resposta do portal :: true
+PASS R04-A11Y-TAB-1440x900 — Ordem de Tab passa por nome, confirmação e submit :: ["name","confirm","submit"]
 PASS R04-A11Y-PORTAL-390x844 — Formulário do portal tem controles e nenhuma escolha inicial :: {"controls":["answer","answer","name","confirm","submit"],"checked":0}
 PASS R04-A11Y-SUBMIT-390x844 — Tab alcança o botão de resposta do portal :: true
+PASS R04-A11Y-TAB-390x844 — Ordem de Tab passa por nome, confirmação e submit :: ["name","confirm","submit"]
 PASS R04-A11Y-PORTAL-320x568 — Formulário do portal tem controles e nenhuma escolha inicial :: {"controls":["answer","answer","name","confirm","submit"],"checked":0}
 PASS R04-A11Y-SUBMIT-320x568 — Tab alcança o botão de resposta do portal :: true
+PASS R04-A11Y-TAB-320x568 — Ordem de Tab passa por nome, confirmação e submit :: ["name","confirm","submit"]
 scans 22 violations 0 rules []
 {}

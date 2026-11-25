@@ -3,6 +3,7 @@
 **Incremento:** `431c428270e2ca98fece34c8ebc58624320b8628`
 **Árvore de código testada:** `df925de31c09b2cc116abb025e9fdca5d39f5183` (incremento + correção CSS do selo em 320)
 **Relatório:** [`RELATORIO.md`](RELATORIO.md) · **Resumo:** [`RESUMO.md`](RESUMO.md) · **Achados:** [`ACHADOS.md`](ACHADOS.md) · **Correções:** [`CORRECOES.md`](CORRECOES.md)
+**Auditoria cega:** [`AUDITORIA-CEGA.md`](AUDITORIA-CEGA.md)
 **Testes:** [`testes/README.md`](testes/README.md) · [`responsivo.md`](testes/responsivo.md) · [`axe.md`](testes/axe.md) · [`resultados.md`](testes/resultados.md) · [`proveniencia.json`](testes/proveniencia.json)
 **Comparativo R03:** [`../R03/desktop/01-orcamento-v1-desktop-1440x900.png`](../R03/desktop/01-orcamento-v1-desktop-1440x900.png) · [`../R03/desktop/06-aprovacao-link-desktop-1440x900.png`](../R03/desktop/06-aprovacao-link-desktop-1440x900.png)
 

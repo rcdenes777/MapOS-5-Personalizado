@@ -15,6 +15,7 @@
 | R04-A03 | Baixa (a11y) | **OBSERVAÇÃO** | A atualização entre abas troca o conteúdo sem `aria-live` dedicado; leitores de tela podem não anunciar mudanças. | axe 22/0 não detecta; não foi tratado como bloqueio. |
 | R04-A04 | Baixa | **OBSERVAÇÃO** | “Ver endereço para copiar” exibe e seleciona o endereço, mas não usa Clipboard API. | Rótulo deliberadamente não promete cópia automática; `browser.cjs`/X08 verifica o endereço. |
 | R04-A05 | Baixa | **INTENCIONAL** | Sem orçamento publicado, o link permanece ativo e o portal mostra “Não há orçamento publicado”; retirar a publicação não revoga o link. | R04 decisão explícita; `browser.cjs` C06/C07. |
+| R04-A06 | Baixa (código) | **RESÍDUO** | O caminho legado `openModal('publicresponse')` ainda existe no código e, por chamada direta, abre o antigo modal “Simular resposta pelo link”; não há botão na UI. | `browser.cjs` X09 confirma que a UI não oferece; inspeção de `app.js`/`quote-ui.js`. Recomenda-se remover na limpeza, sem alterar o fluxo do portal agora. |
 
 ## O que não foi tratado como falha
 

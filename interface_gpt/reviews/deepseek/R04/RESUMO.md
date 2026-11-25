@@ -1,6 +1,7 @@
 # Resumo R04 — Portal do cliente
 
 **Incremento:** `431c428270e2ca98fece34c8ebc58624320b8628`
+**Auditoria cega:** [`AUDITORIA-CEGA.md`](AUDITORIA-CEGA.md)
 **Árvore de código testada:** `df925de31c09b2cc116abb025e9fdca5d39f5183` (incremento + correção CSS do selo em 320)
 **Branch:** `interface-gpt`
 **Relatório:** [`RELATORIO.md`](RELATORIO.md) · **Achados:** [`ACHADOS.md`](ACHADOS.md) · **Correções:** [`CORRECOES.md`](CORRECOES.md)
@@ -20,7 +21,7 @@
 | Regressão R02 | **37/37 PASS** |
 | Responsividade | **27/27 PASS** |
 | axe-core | **22 varreduras, 0 violações** |
-| Teclado / portal | **6/6 PASS** |
+| Teclado / portal | **9/9 PASS** |
 | Capturas | **81** (45 desktop, 31 celular, 5 tablet), 0 duplicadas |
 
 ## Contrato confirmado
@@ -41,4 +42,4 @@
 
 ## Limitações
 
-O identificador é uma simulação local; não há autenticação, CSRF, isolamento entre usuários, token seguro, expiração contínua nem garantia transacional. O portal não deve ser enviado a clientes reais. A atualização entre abas não tem `aria-live` dedicado. A R01–R03 permanecem preservadas; `v5-trifase` e produção não foram tocadas. O R04 **não autoriza merge ou deploy**.
+O identificador é uma simulação local; não há autenticação, CSRF, isolamento entre usuários, token seguro, expiração contínua nem garantia transacional. O portal não deve ser enviado a clientes reais. A atualização entre abas não tem `aria-live` dedicado. Há ainda um resíduo de código `publicresponse` sem botão na UI, que deve ser removido em limpeza técnica. A R01–R03 permanecem preservadas; `v5-trifase` e produção não foram tocadas. O R04 **não autoriza merge ou deploy**.

@@ -66,12 +66,18 @@ async function approve(p) { await p.check('input[name=answer][value="Aprovado"]'
     rec('R04-A11Y-PORTAL-' + vp, 'Formulário do portal tem controles e nenhuma escolha inicial', formFocus.controls.length >= 5 && formFocus.checked === 0, JSON.stringify(formFocus));
     await p.focus('input[name=answer][value="Aprovado"]');
     let submitReached = false;
+    const tabSequence = [];
     for (let i = 0; i < 8; i++) {
       await p.keyboard.press('Tab');
-      submitReached = await p.evaluate(() => document.activeElement?.closest('#customer-response')?.querySelector('button[type=submit]') === document.activeElement);
-      if (submitReached) break;
+      const active = await p.evaluate(() => {
+        const el = document.activeElement;
+        return { name: el?.name || '', type: el?.type || '', text: el?.textContent?.trim() || '', submit: el?.closest('#customer-response')?.querySelector('button[type=submit]') === el };
+      });
+      if (!tabSequence.includes(active.name || active.type)) tabSequence.push(active.name || active.type);
+      if (active.submit) { submitReached = true; break; }
     }
     rec('R04-A11Y-SUBMIT-' + vp, 'Tab alcança o botão de resposta do portal', submitReached, String(submitReached));
+    rec('R04-A11Y-TAB-' + vp, 'Ordem de Tab passa por nome, confirmação e submit', ['name', 'confirm', 'submit'].every(x => tabSequence.includes(x)), JSON.stringify(tabSequence));
 
     await approve(p);
     await p.evaluate(() => { const h = [...document.querySelectorAll('h2')].find(x => x.textContent.includes('Resposta registrada')); if (h) { h.scrollIntoView({ block: 'start' }); window.scrollBy(0, -20); } });

@@ -24,7 +24,7 @@ export CODE_SHA=df925de31c09b2cc116abb025e9fdca5d39f5183
 | `audit-r03.cjs` (cópia) | **118: 116 PASS, 0 FAIL, 2 INFO** | Regressão R03 adaptada; não modifica a pasta R03. |
 | `regressao-r02.cjs` (cópia) | **37/37 PASS** | Regressão R02; não modifica a pasta R02. |
 | `capture.cjs` | **27/27 PASS; 72 capturas** | 320 a 1920, estados do portal e painel. |
-| `axe.cjs` | **22 varreduras, 0 violações; 6/6 foco** | WCAG 2.2 A/AA e teclado. |
+| `axe.cjs` | **22 varreduras, 0 violações; 9/9 foco** | WCAG 2.2 A/AA e teclado; ordem de Tab do formulário do portal. |
 
 ## Comandos
 
@@ -56,6 +56,7 @@ node tests/portal-page.cjs
 - `responsivo.json` / `responsivo.md` — medidas e 72 capturas.
 - `axe.json` / `axe.md` — 22 varreduras axe e 0 violações.
 - `a11y-resultados.json` — 6 verificações de controles/teclado.
+- `../AUDITORIA-CEGA.md` — veredito independente e resolução das ressalvas.
 - `proveniencia.json` — `incrementSha=431c4282`, `codeTreeSha=df925de3` e hashes dos assets.
 - `smoke.log`, `quote.log`, `portal.log`, `portal-page.log` — saídas do GPT.
 - Capturas adicionais: `00-antes-fix-demo-320.png` (antes da correção) e as 8 capturas da bateria R03 adaptada.

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-25T20:00:59.848Z",
+  "generatedAt": "2026-11-25T20:22:58.851Z",
   "codeSha": "df925de31c09b2cc116abb025e9fdca5d39f5183",
   "incrementSha": "431c428270e2ca98fece34c8ebc58624320b8628",
   "results": [
@@ -16,6 +16,12 @@
       "detail": "true"
     },
     {
+      "id": "R04-A11Y-TAB-1440x900",
+      "desc": "Ordem de Tab passa por nome, confirmação e submit",
+      "status": "PASS",
+      "detail": "[\"name\",\"confirm\",\"submit\"]"
+    },
+    {
       "id": "R04-A11Y-PORTAL-390x844",
       "desc": "Formulário do portal tem controles e nenhuma escolha inicial",
       "status": "PASS",
@@ -28,6 +34,12 @@
       "detail": "true"
     },
     {
+      "id": "R04-A11Y-TAB-390x844",
+      "desc": "Ordem de Tab passa por nome, confirmação e submit",
+      "status": "PASS",
+      "detail": "[\"name\",\"confirm\",\"submit\"]"
+    },
+    {
       "id": "R04-A11Y-PORTAL-320x568",
       "desc": "Formulário do portal tem controles e nenhuma escolha inicial",
       "status": "PASS",
@@ -38,6 +50,12 @@
       "desc": "Tab alcança o botão de resposta do portal",
       "status": "PASS",
       "detail": "true"
+    },
+    {
+      "id": "R04-A11Y-TAB-320x568",
+      "desc": "Ordem de Tab passa por nome, confirmação e submit",
+      "status": "PASS",
+      "detail": "[\"name\",\"confirm\",\"submit\"]"
     }
   ],
   "scans": 22,

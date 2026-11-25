@@ -234,12 +234,16 @@ const primaryTexts = a => a.evaluate(() => [...document.querySelectorAll('#main 
     const p = (await portal(ctx, token)).p;
     await portalDecision(p, 'Aprovado');
     await a.waitForTimeout(250);
-    await deliver(a);
+    await open(a, 'delivery');
+    await a.fill('#action-form input[name=receiver]', 'RECEBEDOR_PRIVADO');
+    await a.check('#action-form input[name=confirm]');
+    await submit(a);
     await a.waitForTimeout(300);
     const t = norm(await p.locator('#customer-main').innerText());
+    const htmlAfterDelivery = await p.locator('body').innerHTML();
     const state = await dbOrder(a);
     rec('R04-D01', 'Após entrega o portal fica somente consulta, sem formulário', state.delivery && /Equipamento entregue\. Orçamento disponível somente para consulta\./.test(t) && !(await p.locator('#customer-response').count()), JSON.stringify(state));
-    rec('R04-D02', 'Entrega não expõe recebedor nem data de retirada', !/RECEBEDOR_PRIVADO|Data da retirada/i.test(t), t.slice(-220));
+    rec('R04-D02', 'Entrega não expõe recebedor nem data de retirada', !/RECEBEDOR_PRIVADO|Data da retirada/i.test(t) && !htmlAfterDelivery.includes('RECEBEDOR_PRIVADO'), t.slice(-220));
     rec('R04-D03', 'Resposta após entrega é rejeitada', /entregue|disponível|versão/i.test(await p.evaluate(() => { const db = BancadaPortal.read(localStorage); const o = db.orders.find(x => x.id === 23); try { BancadaPortal.respond(db, o.publicLink.token, 1, { answer: 'Aprovado', name: 'Cliente Fictício', confirm: true }); return 'aceitou'; } catch (e) { return e.message; } })), 'delivery guard');
     await ctx.close();
   }
@@ -286,10 +290,12 @@ const primaryTexts = a => a.evaluate(() => [...document.querySelectorAll('#main 
     await p.reload({ waitUntil: 'networkidle' }); await p.waitForTimeout(250);
     const body = await p.locator('body').innerText();
     const html = await p.locator('body').innerHTML();
-    const privateHits = ['CLIENTE_PRIVADO', '11999999999', 'DEFEITO_PRIVADO', 'LAUDO_PRIVADO', 'SERIE_PRIVADA', 'IMEI_PRIVADO', 'ITENS_PRIVADOS', 'HISTORICO_PRIVADO', 'OBSERVACAO_PRIVADA', token].filter(x => body.includes(x));
-    rec('R04-F01', 'Projeção pública não expõe dados internos nem o token', privateHits.length === 0, JSON.stringify(privateHits));
+    const privateHits = ['CLIENTE_PRIVADO', '11999999999', 'DEFEITO_PRIVADO', 'LAUDO_PRIVADO', 'SERIE_PRIVADA', 'IMEI_PRIVADO', 'ITENS_PRIVADOS', 'HISTORICO_PRIVADO', 'OBSERVACAO_PRIVADA', token].filter(x => body.includes(x) || html.includes(x));
+    const attrs = await p.evaluate(() => [...document.querySelectorAll('*')].flatMap(e => [...e.attributes].map(a => a.name + '=' + a.value)));
+    const attrHits = [token, 'CLIENTE_PRIVADO', 'OBSERVACAO_PRIVADA'].filter(x => attrs.some(a => a.includes(x)));
+    rec('R04-F01', 'Projeção pública não expõe dados internos nem o token', privateHits.length === 0 && attrHits.length === 0, JSON.stringify({ privateHits, attrHits }));
     rec('R04-F02', 'Conteúdo publicado é escapado no portal', html.includes('&lt;img') && !html.includes('<img src=x') && (await p.evaluate(() => window.__xss || 0)) === 0, 'xss');
-    rec('R04-F03', 'Decisão interna não aparece como decisão pública se o portal não a autoriza', body.includes('Resposta registrada') || body.includes('Sua decisão'), 'decision visibility');
+    rec('R04-F03', 'Decisão autorizada aparece sem observação interna', /Resposta registrada/.test(body) && !body.includes('OBSERVACAO_PRIVADA') && !html.includes('OBSERVACAO_PRIVADA'), 'decision visibility');
     await ctx.close();
   }
 

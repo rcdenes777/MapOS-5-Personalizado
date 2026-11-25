@@ -20,7 +20,7 @@ Evidência: [`mobile/00-antes-correcao-fechar-320x568.png`](mobile/00-antes-corr
 
 O cabeçalho não quebra, o título pode encolher e o botão não encolhe; abaixo de 380 px o título e o botão recebem ajuste de fonte/padding.
 
-Evidência: [`mobile/02-editor-320-antes-de-preencher-320x568.png`](mobile/02-editor-320-antes-de-preencher-320x568.png) (é o editor **depois** da correção, antes de preencher) e [`mobile/e9-editor-320.png`](mobile/e9-editor-320.png). O teste R03-RESP-EDITOR-narrow registra `closeOneLine=true`, `closeH=44`, `overflow=0` e `submitBottom=526`.
+Evidência: [`mobile/02-editor-320-antes-de-preencher-320x568.png`](mobile/02-editor-320-antes-de-preencher-320x568.png) (é o editor **depois** da correção, antes de preencher) e [`mobile/e9-editor-320-erro-desconto.png`](mobile/e9-editor-320-erro-desconto.png). O teste R03-RESP-EDITOR-narrow registra `closeOneLine=true`, `closeH=44`, `overflow=0` e `submitBottom=526`.
 
 ```css
 .modal-head{flex-wrap:nowrap}
@@ -44,7 +44,7 @@ O axe-core 4.14.1 registrava **1 violação `color-contrast` (serious)** em `390
 
 A cor do bloco do topo passou de `var(--muted)` para `#5a6d68`. O contraste calculado passou a **4,74:1** sobre `#e8f0ec` (e **5,24:1** sobre `#f8faf7` opaco). A varredura final tem **12 telas/estados × 0 violações**.
 
-Evidência: [`testes/axe.md`](testes/axe.md).
+Evidência: [`testes/axe.md`](testes/axe.md) e [`testes/axe-antes-798.json`](testes/axe-antes-798.json).
 
 ```css
 .top-left{color:#5a6d68}

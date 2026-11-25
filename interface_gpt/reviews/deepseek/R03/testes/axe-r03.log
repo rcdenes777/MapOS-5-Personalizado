@@ -1,6 +1,10 @@
+PASS A11Y-LINK-FOCO-1440x900 — Botão de ação do modal do link é alcançável por Tab :: {"foundSubmit":true}
+PASS A11Y-LINK-RETORNO-1440x900 — Escape no modal do link devolve foco ao gatilho :: {"open":false,"active":"modal:publicresponse:23"}
 PASS A11Y-FOCO-1440x900 — Foco permanece no modal do editor :: {"escaped":[]}
 PASS A11Y-RETORNO-1440x900 — Escape fecha e devolve foco ao gatilho :: {"open":false,"active":"modal:quote:23"}
+PASS A11Y-LINK-FOCO-390x844 — Botão de ação do modal do link é alcançável por Tab :: {"foundSubmit":true}
+PASS A11Y-LINK-RETORNO-390x844 — Escape no modal do link devolve foco ao gatilho :: {"open":false,"active":"modal:publicresponse:23"}
 PASS A11Y-FOCO-390x844 — Foco permanece no modal do editor :: {"escaped":[]}
 PASS A11Y-RETORNO-390x844 — Escape fecha e devolve foco ao gatilho :: {"open":false,"active":"modal:quote:23"}
-scans 12 violations 0 rules []
+scans 14 violations 0 rules []
 {}

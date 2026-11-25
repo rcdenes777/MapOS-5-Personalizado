@@ -1,5 +1,7 @@
 {
-  "generatedAt": "2026-11-25T19:02:33.606Z",
+  "generatedAt": "2026-11-25T19:20:21.773Z",
+  "codeSha": "b180ab6ca10910c23d77b686af1a2b9da8d771d7",
+  "incrementSha": "798b8075b597dcc7bb72335b617594b37f08547e",
   "results": [
     {
       "id": "Q1-01",
@@ -155,7 +157,7 @@
       "id": "Q4-04",
       "desc": "Comunicação interna após entrega preserva andamento e não cobra",
       "status": "PASS",
-      "detail": "{\"status\":\"Orçamento\",\"total\":0,\"decision\":{\"answer\":\"Aprovado\",\"name\":\"Marina Alves (fictícia)\",\"channel\":\"telefone\",\"date\":\"2026-11-25\",\"note\":\"\",\"registered\":\"2026-11-25T19:02:26.712Z\",\"afterDelivery\":true},\"afterDelivery\":true}"
+      "detail": "{\"status\":\"Orçamento\",\"total\":0,\"decision\":{\"answer\":\"Aprovado\",\"name\":\"Marina Alves (fictícia)\",\"channel\":\"telefone\",\"date\":\"2026-11-25\",\"note\":\"\",\"registered\":\"2026-11-25T19:20:14.847Z\",\"afterDelivery\":true},\"afterDelivery\":true}"
     },
     {
       "id": "Q4-05",

@@ -315,7 +315,7 @@ async function respond(p, kind, answer, { name = 'Cliente fictício', channel = 
     await ctx.close();
   }
 
-  fs.writeFileSync(path.join(OUT, 'testes', 'quote-browser-resultados.json'), JSON.stringify({ generatedAt: new Date().toISOString(), results }, null, 2));
+  fs.writeFileSync(path.join(OUT, 'testes', 'quote-browser-resultados.json'), JSON.stringify({ generatedAt: new Date().toISOString(), codeSha: process.env.CODE_SHA || '', incrementSha: process.env.INCREMENT_SHA || '', results }, null, 2));
   const pass = results.filter(r => r.status === 'PASS').length, fail = results.filter(r => r.status === 'FAIL').length;
   console.log(`\nTOTAL ${results.length} · PASS ${pass} · FAIL ${fail}`);
   await browser.close();

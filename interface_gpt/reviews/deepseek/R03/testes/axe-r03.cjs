@@ -66,7 +66,7 @@ async function setupState(page) {
 
 (async () => {
   const browser = await chromium.launch({ executablePath: CHROME, headless: true });
-  const out = { generatedAt: new Date().toISOString(), engine: 'axe-core ' + require('axe-core/package.json').version, scans: [] };
+  const out = { generatedAt: new Date().toISOString(), engine: 'axe-core ' + require('axe-core/package.json').version, codeSha: process.env.CODE_SHA || '', incrementSha: process.env.INCREMENT_SHA || '', scans: [] };
   for (const [w, h] of [[1440, 900], [390, 844]]) {
     const ctx = await browser.newContext({ viewport: { width: w, height: h }, deviceScaleFactor: 1, locale: 'pt-BR' });
     const page = await ctx.newPage();
@@ -83,6 +83,23 @@ async function setupState(page) {
     if (await open(page, 'publish')) { out.scans.push(await scan(page, 'modal-publicar', vp)); await page.keyboard.press('Escape'); }
     if (await open(page, 'approval')) { out.scans.push(await scan(page, 'modal-resposta-interna', vp)); await page.keyboard.press('Escape'); }
     if (await open(page, 'billing')) { out.scans.push(await scan(page, 'modal-cobranca', vp)); await page.keyboard.press('Escape'); }
+    if (await open(page, 'publicresponse')) {
+      out.scans.push(await scan(page, 'modal-resposta-link', vp));
+      // Teclado: percorre o modal do link até o submit e confirma o retorno do foco.
+      let foundSubmit = false;
+      for (let i = 0; i < 24; i++) {
+        await page.keyboard.press('Tab');
+        const a = await page.evaluate(() => {
+          const m = document.querySelector('#modal'), el = document.activeElement;
+          return { inside: m.contains(el), text: el.textContent?.trim() || '', tag: el.tagName };
+        });
+        if (a.inside && a.tag === 'BUTTON' && /Registrar resposta/.test(a.text)) foundSubmit = true;
+      }
+      rec('A11Y-LINK-FOCO-' + vp, 'Botão de ação do modal do link é alcançável por Tab', foundSubmit, JSON.stringify({ foundSubmit }));
+      await page.keyboard.press('Escape');
+      const linkRestored = await page.evaluate(() => ({ open: document.querySelector('#modal').open, active: document.activeElement?.getAttribute('data-action') || document.activeElement?.tagName }));
+      rec('A11Y-LINK-RETORNO-' + vp, 'Escape no modal do link devolve foco ao gatilho', !linkRestored.open && /modal:publicresponse:23/.test(linkRestored.active || ''), JSON.stringify(linkRestored));
+    }
 
     // Foco: Tab real não deve escapar do dialog do editor.
     await open(page, 'quote');

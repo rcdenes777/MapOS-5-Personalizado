@@ -56,7 +56,7 @@ async function setOne(p, name, unit, discount = 0) {
   // 3. texto longo de item em 390
   {
     const { ctx, p, go } = await session(browser, 390, 844); await go('#os/23/orcamento');
-    await setOne(p, 'Peça ' + 'X'.repeat(490), 100); await submit(p);
+    await setOne(p, 'Peça ' + 'X'.repeat(495), 100); await submit(p);
     const over = await p.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
     rec('E3', 'Item com 500 caracteres sem overflow em 390', over <= 1, `overflow=${over}`);
     await p.screenshot({ path: path.join(OUT, 'mobile', 'e3-item-longo-390.png'), animations: 'disabled' });
@@ -114,7 +114,13 @@ async function setOne(p, name, unit, discount = 0) {
     const ok = await open(p, 'quote');
     const m = await p.evaluate(() => { const f = document.querySelector('#action-form').getBoundingClientRect(), sub = document.querySelector('#action-form button[type=submit]').getBoundingClientRect(); return { open: document.querySelector('#modal').open, left: Math.round(f.left), right: Math.round(f.right), submitBottom: Math.round(sub.bottom), vh: innerHeight, overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth }; });
     rec('E9', 'Editor em 320 sem overflow e com salvar no viewport', ok && m.left >= 0 && m.right <= 320 && m.submitBottom <= 568 && m.overflow <= 1, JSON.stringify(m));
-    await p.screenshot({ path: path.join(OUT, 'mobile', 'e9-editor-320.png'), animations: 'disabled' });
+    const r0 = p.locator('.quote-edit-row').first();
+    await r0.locator('input[name=itemName]').fill('Peça teste de 320');
+    await r0.locator('input[name=itemQty]').fill('1');
+    await r0.locator('input[name=itemUnit]').fill('100.00');
+    await p.fill('input[name=discount]', '200.00');
+    await submit(p);
+    await p.screenshot({ path: path.join(OUT, 'mobile', 'e9-editor-320-erro-desconto.png'), animations: 'disabled' });
     await ctx.close();
   }
   // 10. teto exato e valor acima do limite
@@ -143,7 +149,7 @@ async function setOne(p, name, unit, discount = 0) {
     rec('E12', 'Formalização usa o rascunho atual, mesmo sem publicar', 'INFO', JSON.stringify({ offered: ok, ...st }));
     await ctx.close();
   }
-  fs.writeFileSync(path.join(OUT, 'testes', 'edge-resultados.json'), JSON.stringify({ results }, null, 2));
+  fs.writeFileSync(path.join(OUT, 'testes', 'edge-resultados.json'), JSON.stringify({ generatedAt: new Date().toISOString(), codeSha: process.env.CODE_SHA || '', incrementSha: process.env.INCREMENT_SHA || '', results }, null, 2));
   console.log(`TOTAL ${results.length} · PASS ${results.filter(r => r.status === 'PASS').length} · FAIL ${results.filter(r => r.status === 'FAIL').length} · INFO ${results.filter(r => r.status === 'INFO').length}`);
   await browser.close();
 })().catch(e => { console.error('FATAL', e); process.exit(1); });

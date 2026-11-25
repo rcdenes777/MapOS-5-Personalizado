@@ -2,6 +2,7 @@
 
 **Incremento avaliado:** `798b8075b597dcc7bb72335b617594b37f08547e`
 **Correções técnicas:** `b180ab6ca10910c23d77b686af1a2b9da8d771d7`
+**Árvore de código testada:** `b180ab6ca10910c23d77b686af1a2b9da8d771d7`
 **Commit das evidências:** `48be2aec97393c76656bc2dc8358d4adea995de5`
 **Branch:** `interface-gpt`
 **Relatório completo:** [`RELATORIO.md`](RELATORIO.md)
@@ -20,8 +21,8 @@
 | Auditoria R02 adaptada | **118: 116 PASS, 0 FAIL, 2 INFO** |
 | Regressão R02 | **37/37 PASS** |
 | Responsividade | **32/32 PASS** |
-| axe-core | **12 varreduras, 0 violações** |
-| Foco no modal | **4/4 PASS** |
+| axe-core | **14 varreduras, 0 violações** |
+| Foco no modal | **8/8 PASS** |
 | Capturas | **60** (24 desktop, 26 celular, 10 tablet) |
 
 ## Contrato confirmado
@@ -47,6 +48,7 @@ Nenhuma regra de negócio foi alterada; as duas correções são CSS.
 - **R03-A03** — após cobrar, ainda é possível publicar/retirar; paridade com `publicar`/`retirar` do Trifase.
 - **R03-A04** — após entrega, “Retirar publicação” continua disponível; paridade com `retirar`.
 - **R03-A05** — formalização usa o rascunho atual, não necessariamente a versão publicada (INFO E12). Decidir se isso é intencional.
+- **R03-A06** — modal de resposta pelo link exige rolagem no desktop; teclado verificado, sem barreira de acesso.
 
 ## Limites
 

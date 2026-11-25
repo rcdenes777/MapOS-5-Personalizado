@@ -1,10 +1,10 @@
 # Índice de evidências — R03
 
 **Incremento:** `798b8075b597dcc7bb72335b617594b37f08547e`
-**Correção técnica:** `b180ab6ca10910c23d77b686af1a2b9da8d771d7`
+**Árvore de código testada:** `b180ab6ca10910c23d77b686af1a2b9da8d771d7` (incremento + correção CSS)
 **Commit das evidências:** `48be2aec97393c76656bc2dc8358d4adea995de5`
 **Relatório:** [`RELATORIO.md`](RELATORIO.md) · **Resumo:** [`RESUMO.md`](RESUMO.md) · **Achados:** [`ACHADOS.md`](ACHADOS.md) · **Correções:** [`CORRECOES.md`](CORRECOES.md)
-**Testes:** [`testes/README.md`](testes/README.md) · [`resultados.md`](testes/resultados.md) · [`axe.md`](testes/axe.md) · [`responsivo.md`](testes/responsivo.md)
+**Testes:** [`testes/README.md`](testes/README.md) · [`resultados.md`](testes/resultados.md) · [`axe.md`](testes/axe.md) · [`axe-antes-798.json`](testes/axe-antes-798.json) · [`responsivo.md`](testes/responsivo.md) · [`proveniencia.json`](testes/proveniencia.json)
 
 ## Desktop — 24 capturas
 
@@ -60,7 +60,7 @@
 - [`11-recusa-mobile-390x844.png`](mobile/11-recusa-mobile-390x844.png) — Recusa no celular
 - [`12-publicacao-retirada-mobile-390x844.png`](mobile/12-publicacao-retirada-mobile-390x844.png) — Publicação retirada no celular
 - [`e3-item-longo-390.png`](mobile/e3-item-longo-390.png) — Item de 500 caracteres sem overflow em 390
-- [`e9-editor-320.png`](mobile/e9-editor-320.png) — Editor validado em 320
+- [`e9-editor-320-erro-desconto.png`](mobile/e9-editor-320-erro-desconto.png) — Editor em 320 com erro de desconto visível
 
 ## Tablet — 10 capturas
 

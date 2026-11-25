@@ -7,6 +7,7 @@
 **Branch:** `interface-gpt` (nenhuma alteração em `v5-trifase` ou na produção)
 **Incremento avaliado:** `798b8075b597dcc7bb72335b617594b37f08547e`
 **Correções técnicas desta revisão:** `b180ab6ca10910c23d77b686af1a2b9da8d771d7`
+**Árvore de código efetivamente testada:** `b180ab6ca10910c23d77b686af1a2b9da8d771d7` (incremento + CSS; docs posteriores não alteram assets)
 **Commit das evidências:** `48be2aec97393c76656bc2dc8358d4adea995de5`
 **Baseline funcional:** `8c256cae4ddaeefad68922abddbb8addfe37c99d`
 **Baseline visual:** R02, head `89332827cad2c73fad180a005e4e2501cba2f22a`
@@ -27,8 +28,8 @@ Nenhum arquivo fora de `interface_gpt/` foi alterado. Não houve merge, deploy o
 | Bateria R02 adaptada (`audit-r03.cjs`) | **118 verificações: 116 PASS, 0 FAIL, 2 INFO** |
 | Regressão R02 (`regressao-r02.cjs`) | **37/37 PASS** |
 | Responsividade e capturas (`capture-r03.cjs`) | **32/32 PASS** |
-| axe-core 4.14 (WCAG 2.2 A/AA) | **12 varreduras, 0 violações** |
-| Foco no modal / retorno do foco | **4 verificações, 4 PASS** |
+| axe-core 4.14 (WCAG 2.2 A/AA) | **14 varreduras, 0 violações** |
+| Foco no modal / retorno do foco | **8 verificações, 8 PASS** |
 | Capturas | **60 PNG** (24 desktop, 26 celular, 10 tablet) |
 | Exceções JavaScript / erros de console | **0** na bateria auditada |
 | Requisições externas | **0** |
@@ -112,7 +113,7 @@ O anexo `R03-ORCAMENTO.md` foi tratado como contrato criativo e funcional. Não 
 - **Inválidos:** desconto acima do total, item sem descrição, item acima do limite e data futura foram rejeitados sem gravar estado parcial.
 - **Textos longos:** item de 500 caracteres sem overflow em 390 px.
 - **Totais extremos:** **R$ 9.999.999,99** aceito e formatado; valor acima do limite rejeitado com “Valor de item fora do limite.”
-- **Foco:** 40 Tabs permaneceram dentro do modal do editor em 1440 e 390; Escape fechou e devolveu o foco ao gatilho.
+- **Foco:** 40 Tabs permaneceram dentro do modal do editor em 1440 e 390; Escape fechou e devolveu o foco ao gatilho. No modal do link, 24 Tabs alcançaram o botão “Registrar resposta” nos dois tamanhos; Escape também devolveu o foco.
 - **Barra de ações:** editor com salvamento persistente em 320/390; uma coluna no celular e duas colunas em 768/1440.
 - **Colunas do orçamento:** uma coluna em 320/390/768/1024; duas colunas em 1440; sem overflow horizontal em nenhuma das cinco larguras.
 
@@ -148,7 +149,7 @@ Também foram reexecutados, sem alteração, os testes do GPT: **smoke 72** e **
 
 **Antes:** `#breadcrumb` tinha contraste **4,46:1** sobre o fundo composto do topo translúcido, abaixo de 4,5:1 para texto normal de 12,8 px; o axe registrava **1 violação `color-contrast`** em 390 px.
 **Depois:** `.top-left` recebeu a cor **#5a6d68**; o contraste passou a **4,74:1** sobre o fundo composto que antes dava 4,46:1 (**5,24:1** sobre `#f8faf7` opaco) e o axe fechou em **0 violações**.
-**Evidência:** `testes/axe.md` (12 varreduras, 0 violações).
+**Evidência:** `testes/axe.md` (14 varreduras, 0 violações); artefato anterior em `testes/axe-antes-798.json` (1 violação).
 
 Essas são as **únicas** alterações de código desta revisão: `git diff 798b8075..b180ab6c` = **1 arquivo, +12 linhas**. Nenhuma regra de negócio, texto criativo, componente de domínio ou layout estrutural foi alterado.
 
@@ -165,6 +166,7 @@ Os itens abaixo **não foram corrigidos** por serem decisões de produto/regra o
 | R03-A03 | Média | Aberto (herdado) | Após a cobrança, “Publicar nova versão” e “Retirar publicação” continuam disponíveis; o `publicar`/`retirar` do Trifase não bloqueiam `faturado`. |
 | R03-A04 | Baixa | Aberto (herdado) | Após a entrega, “Retirar publicação” continua disponível; `retirar` do Trifase não bloqueia entrega. |
 | R03-A05 | Média | Decisão pendente | A formalização usa o **rascunho atual**, não necessariamente a versão publicada: rascunho de R$ 300,00 com v1 de R$ 240,00 permite formalizar R$ 300,00 (INFO E12). O documento diz que a formalização não é condicionada à aprovação, mas não define se ela exige versão vigente. |
+| R03-A06 | Baixa | Verificado | O modal “Simular resposta pelo link” exige rolagem no desktop; o teste de teclado agora confirma que o botão “Registrar resposta” é alcançável por Tab em 1440 e 390. Permanece como observação de UX, não como barreira de acesso. |
 
 Não tratei esses pontos como falha da implementação: o contrato da R03 não os define, e alterá-los introduziria regra operacional nova. Se o GPT quiser fechá-los, a recomendação é decidir primeiro o comportamento e depois criar testes RED.
 
@@ -189,7 +191,8 @@ O que o protótipo **não** prova: portal público real, token, autenticação, 
 - Servidor estático: `python3 -m http.server 8130 --bind 0.0.0.0`, a partir de `interface_gpt/`.
 - Navegador: Chromium local `chromium-1248/chrome-linux64/chrome`.
 - `playwright-core` e `axe-core 4.14.1` em `interface-gpt-lab/tools/node_modules`.
-- `BASE_URL=http://127.0.0.1:8130`; `SHA_TESTED=798b8075...` nos logs.
+- `BASE_URL=http://127.0.0.1:8130`; **`SHA_TESTED=798b8075` identifica o incremento** e **`codeSha=b180ab6c` identifica a árvore de código testada**. A proveniência e os hashes dos assets estão em `testes/proveniencia.json`.
+- A produção não é uma ref Git deste repositório; a afirmação de “produção intocada” é limitada ao fato de que nenhuma alteração foi feita no checkout, no servidor de produção ou na branch `v5-trifase`.
 - Comandos e descrição de cada script: [`testes/README.md`](testes/README.md).
 - Todos os dados são fictícios e vivem em `localStorage`; não há login, token, rede ou banco.
 
@@ -197,8 +200,8 @@ O que o protótipo **não** prova: portal público real, token, autenticação, 
 
 ## 9. Conclusão
 
-O incremento R03 cumpre o contrato funcional central e a mudança intencional de desvincular aprovação de cobrança. As duas correções técnicas são pequenas, reproduzíveis e comprovadas por antes/depois. A bateria final não tem falhas; as ressalvas são de produto e de escopo, não de execução.
+O incremento R03 cumpre o contrato funcional central e a mudança intencional de desvincular aprovação de cobrança. As duas correções técnicas são pequenas, reproduzíveis e comprovadas por antes/depois. A bateria final não tem falhas; as ressalvas são de produto, escopo e proveniência/evidência, não de comportamento funcional.
 
-**Recomendação:** o GPT pode seguir para a próxima rodada de decisão usando este pacote. Antes de integrar, decidir os cinco pontos de `ACHADOS.md` e substituir a simulação local por portal/token e permissões reais.
+**Recomendação:** o GPT pode seguir para a próxima rodada de decisão usando este pacote. Antes de integrar, decidir os seis pontos de `ACHADOS.md` e substituir a simulação local por portal/token e permissões reais.
 
 A R02 permanece como baseline publicado; a R01 permanece preservada; a `v5-trifase` e a produção não foram tocadas.

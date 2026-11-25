@@ -1,6 +1,6 @@
 # Responsividade e capturas — R03
 
-Gerado em 2026-11-25T19:04:55.797Z
+Gerado em 2026-11-25T19:22:08.090Z
 
 | Status | ID | Verificação | Detalhe |
 | --- | --- | --- | --- |

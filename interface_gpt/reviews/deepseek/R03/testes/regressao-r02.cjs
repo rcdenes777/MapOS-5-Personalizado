@@ -357,7 +357,7 @@ async function session(browser, w, h) {
     await ctx.close();
   }
 
-  fs.writeFileSync(path.join(OUT, 'testes', 'regressao-resultados.json'), JSON.stringify({ generatedAt: new Date().toISOString(), results }, null, 2));
+  fs.writeFileSync(path.join(OUT, 'testes', 'regressao-resultados.json'), JSON.stringify({ generatedAt: new Date().toISOString(), codeSha: process.env.CODE_SHA || '', incrementSha: process.env.INCREMENT_SHA || '', results }, null, 2));
   const pass = results.filter(r => r.status === 'PASS').length;
   const fail = results.filter(r => r.status === 'FAIL').length;
   console.log(`\nTOTAL ${results.length} · PASS ${pass} · FAIL ${fail}`);

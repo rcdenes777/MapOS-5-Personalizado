@@ -1,0 +1,96 @@
+{
+  "generatedAt": "2026-11-25T19:23:32.209Z",
+  "engine": "axe-core 4.14.1",
+  "codeSha": "",
+  "incrementSha": "",
+  "scans": [
+    {
+      "label": "orcamento-inicial",
+      "viewport": "1440x900",
+      "violations": []
+    },
+    {
+      "label": "modal-editor",
+      "viewport": "1440x900",
+      "violations": []
+    },
+    {
+      "label": "modal-publicar",
+      "viewport": "1440x900",
+      "violations": []
+    },
+    {
+      "label": "modal-resposta-interna",
+      "viewport": "1440x900",
+      "violations": []
+    },
+    {
+      "label": "modal-cobranca",
+      "viewport": "1440x900",
+      "violations": []
+    },
+    {
+      "label": "modal-resposta-link",
+      "viewport": "1440x900",
+      "violations": []
+    },
+    {
+      "label": "orcamento-decidido-historico",
+      "viewport": "1440x900",
+      "violations": []
+    },
+    {
+      "label": "orcamento-inicial",
+      "viewport": "390x844",
+      "violations": []
+    },
+    {
+      "label": "modal-editor",
+      "viewport": "390x844",
+      "violations": []
+    },
+    {
+      "label": "modal-publicar",
+      "viewport": "390x844",
+      "violations": []
+    },
+    {
+      "label": "modal-resposta-interna",
+      "viewport": "390x844",
+      "violations": []
+    },
+    {
+      "label": "modal-cobranca",
+      "viewport": "390x844",
+      "violations": []
+    },
+    {
+      "label": "modal-resposta-link",
+      "viewport": "390x844",
+      "violations": []
+    },
+    {
+      "label": "orcamento-decidido-historico",
+      "viewport": "390x844",
+      "violations": [
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "help": "Elements must meet minimum color contrast ratio thresholds",
+          "description": "Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds",
+          "nodes": [
+            {
+              "target": [
+                "#breadcrumb"
+              ],
+              "html": "<span id=\"breadcrumb\">Oficina / Detalhes da OS</span>",
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 4.46 (foreground color: #5e716d, background color: #e8f0ec, font size: 9.6pt (12.8px), font weight: normal). Expected contrast ratio of 4.5:1"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "checkout": "798b8075b597dcc7bb72335b617594b37f08547e",
+  "note": "Varredura completa (14 estados) no checkout puro 798b8075, servida em 8131; 1 violacao color-contrast em orcamento-decidido-historico/390x844, #breadcrumb."
+}

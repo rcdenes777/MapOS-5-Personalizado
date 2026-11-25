@@ -1,7 +1,7 @@
 # axe-core — R03
 
 Engine: axe-core 4.14.1
-Varreduras: 12
+Varreduras: 14
 
 ## Ocorrências por regra
 
@@ -30,6 +30,10 @@ Sem violações WCAG A/AA.
 
 Sem violações WCAG A/AA.
 
+### 1440x900 — modal-resposta-link
+
+Sem violações WCAG A/AA.
+
 ### 1440x900 — orcamento-decidido-historico
 
 Sem violações WCAG A/AA.
@@ -51,6 +55,10 @@ Sem violações WCAG A/AA.
 Sem violações WCAG A/AA.
 
 ### 390x844 — modal-cobranca
+
+Sem violações WCAG A/AA.
+
+### 390x844 — modal-resposta-link
 
 Sem violações WCAG A/AA.
 

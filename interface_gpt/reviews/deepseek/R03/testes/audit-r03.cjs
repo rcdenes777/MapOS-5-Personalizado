@@ -608,6 +608,8 @@ async function ordersDb(page) {
     generatedAt: new Date().toISOString(),
     base: BASE,
     sha: process.env.SHA_TESTED || '',
+    codeSha: process.env.CODE_SHA || '',
+    incrementSha: process.env.INCREMENT_SHA || '',
     totals: {
       pass: results.filter(r => r.status === 'PASS').length,
       fail: results.filter(r => r.status === 'FAIL').length,

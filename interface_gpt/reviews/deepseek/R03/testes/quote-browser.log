@@ -23,7 +23,7 @@ PASS Q3-06 — Resposta interna cria novo retrato com os itens atuais :: {"versi
 PASS Q4-01 — Após entrega não há publicar nem resposta pelo link :: publish=0, public=0
 PASS Q4-02 — Após entrega o registro interno continua oferecido :: approval button
 INFO Q4-03 — Retirada de publicação após entrega :: botão presente=1
-PASS Q4-04 — Comunicação interna após entrega preserva andamento e não cobra :: {"status":"Orçamento","total":0,"decision":{"answer":"Aprovado","name":"Marina Alves (fictícia)","channel":"telefone","date":"2026-11-25","note":"","registered":"2026-11-25T19:02:26.712Z","afterDelivery":true},"afterDelivery":true}
+PASS Q4-04 — Comunicação interna após entrega preserva andamento e não cobra :: {"status":"Orçamento","total":0,"decision":{"answer":"Aprovado","name":"Marina Alves (fictícia)","channel":"telefone","date":"2026-11-25","note":"","registered":"2026-11-25T19:20:14.847Z","afterDelivery":true},"afterDelivery":true}
 PASS Q4-05 — Data futura de comunicação é recusada :: {"open":true,"decision":null,"status":"Orçamento"}
 PASS Q4-06 — Comunicação anterior à entrega é aceita e preserva andamento :: {"open":false,"status":"Orçamento","total":0,"answer":"Aprovado","date":"2026-11-24","afterDelivery":true}
 PASS Q4-07 — Guards de domínio bloqueiam publicação e resposta pública após entrega :: {"publish":"Publicação indisponível neste atendimento.","publicResponse":"Equipamento entregue: somente consulta."}

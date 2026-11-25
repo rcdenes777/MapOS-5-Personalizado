@@ -1,6 +1,8 @@
 {
-  "generatedAt": "2026-11-25T19:02:59.932Z",
+  "generatedAt": "2026-11-25T19:25:59.329Z",
   "engine": "axe-core 4.14.1",
+  "codeSha": "b180ab6ca10910c23d77b686af1a2b9da8d771d7",
+  "incrementSha": "798b8075b597dcc7bb72335b617594b37f08547e",
   "scans": [
     {
       "label": "orcamento-inicial",
@@ -24,6 +26,11 @@
     },
     {
       "label": "modal-cobranca",
+      "viewport": "1440x900",
+      "violations": []
+    },
+    {
+      "label": "modal-resposta-link",
       "viewport": "1440x900",
       "violations": []
     },
@@ -54,6 +61,11 @@
     },
     {
       "label": "modal-cobranca",
+      "viewport": "390x844",
+      "violations": []
+    },
+    {
+      "label": "modal-resposta-link",
       "viewport": "390x844",
       "violations": []
     },

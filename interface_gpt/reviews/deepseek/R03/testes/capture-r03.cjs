@@ -161,7 +161,7 @@ async function measureQuote(p) {
     await ctx.close();
   }
 
-  fs.writeFileSync(path.join(OUT, 'testes', 'responsivo.json'), JSON.stringify({ generatedAt: new Date().toISOString(), results, shots }, null, 2));
+  fs.writeFileSync(path.join(OUT, 'testes', 'responsivo.json'), JSON.stringify({ generatedAt: new Date().toISOString(), codeSha: process.env.CODE_SHA || '', incrementSha: process.env.INCREMENT_SHA || '', results, shots }, null, 2));
   const md = ['# Responsividade e capturas — R03', '', `Gerado em ${new Date().toISOString()}`, '', '| Status | ID | Verificação | Detalhe |', '| --- | --- | --- | --- |', ...results.map(r => `| ${r.status} | ${r.id} | ${r.desc.replace(/\|/g, '\\|')} | ${String(r.detail).replace(/\|/g, '\\|').replace(/\n/g, ' ')} |`), '', `Capturas: ${shots.length}`, ...shots.map(s => `- ${s}`)].join('\n');
   fs.writeFileSync(path.join(OUT, 'testes', 'responsivo.md'), md);
   console.log(`RESP TOTAL ${results.length} · PASS ${results.filter(r => r.status === 'PASS').length} · FAIL ${results.filter(r => r.status === 'FAIL').length} · INFO ${results.filter(r => r.status === 'INFO').length} · SHOTS ${shots.length}`);

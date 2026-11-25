@@ -20,6 +20,7 @@ const BancadaPortal = (() => {
     return db.orders.find(o=>active(o,now)&&o.publicLink.token===token)||null;
   }
   function projection(o){
+    BancadaQuote.init(o);
     const v=BancadaQuote.vigente(o);
     const eq=[o.brand,o.model].filter(Boolean).join(' · ')||o.description||'Identificação pendente';
     const finance=o.total>0?{total:o.total,paid:o.paid,balance:o.total-o.paid,status:o.paid===o.total?'Quitada':o.paid>0?'Parcialmente paga':'Em aberto'}:null;
@@ -30,7 +31,7 @@ const BancadaPortal = (() => {
   function respond(db,token,version,data,now=Date.now(),localDay=new Date(now).toISOString().slice(0,10)){
     const o=resolve(db,token,now);
     if(!o)throw Error('Link indisponível. Solicite um endereço atualizado à assistência.');
-    if(String(data.name||'').trim().length<3)throw Error('Informe seu nome completo.');
+    if(typeof data.name!=='string'||data.name.trim().length<3)throw Error('Informe seu nome completo.');
     const v=BancadaQuote.vigente(o);
     if(!v||v.number!==version||v.decision||o.delivery)throw Error('Este orçamento não está mais disponível para resposta. Confira a versão atual.');
     const result=BancadaQuote.respond(o,version,data,new Date(now).toISOString(),false,localDay);

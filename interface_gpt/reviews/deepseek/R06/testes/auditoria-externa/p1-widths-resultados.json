@@ -1,0 +1,23 @@
+{
+  "generatedAt": "2026-11-25T22:56:59.476Z",
+  "results": [
+    {
+      "id": "VFW-01",
+      "desc": "Sem devolução: hidden/display none/altura 0 em 320/390/768/1440",
+      "status": "PASS",
+      "detail": "[{\"w\":320,\"hidden\":true,\"display\":\"none\",\"height\":0,\"disabled\":[{\"name\":\"refund\",\"disabled\":true,\"visible\":false},{\"name\":\"date\",\"disabled\":true,\"visible\":false},{\"name\":\"method\",\"disabled\":true,\"visible\":false},{\"name\":\"ref\",\"disabled\":true,\"visible\":false}]},{\"w\":390,\"hidden\":true,\"display\":\"none\",\"height\":0,\"disabled\":[{\"name\":\"refund\",\"disabled\":true,\"visible\":false},{\"name\":\"date\",\"disabled\":true,\"visible\":false},{\"name\":\"method\",\"disabled\":true,\"visible\":false},{\"name\":\"ref\",\"disabled\":true,\"visible\":false}]},{\"w\":768,\"hidden\":true,\"display\":\"none\",\"height\":0,\"disabled\":[{\"name\":\"refund\",\"disabled\":true,\"visible\":false},{\"name\":\"date\",\"disabled\":true,\"visible\":false},{\"name\":\"method\",\"disabled\":true,\"visible\":false},{\"name\":\"ref\",\"disabled\":true,\"visible\":false}]},{\"w\":1440,\"hidden\":true,\"display\":\"none\",\"height\":0,\"disabled\":[{\"name\":\"refund\",\"disabled\":true,\"visible\":false},{\"name\":\"date\",\"disabled\":true,\"visible\":false},{\"name\":\"method\",\"disabled\":true,\"visible\":false},{\"name\":\"ref\",\"disabled\":true,\"visible\":false}]}]"
+    },
+    {
+      "id": "VFW-02",
+      "desc": "Painel concluído sem devolução, em 4 larguras, não anuncia Devolução registrada",
+      "status": "PASS",
+      "detail": "[{\"w\":320,\"noRefundRow\":true,\"hasFinal\":true,\"tech\":0},{\"w\":390,\"noRefundRow\":true,\"hasFinal\":true,\"tech\":0},{\"w\":768,\"noRefundRow\":true,\"hasFinal\":true,\"tech\":0},{\"w\":1440,\"noRefundRow\":true,\"hasFinal\":true,\"tech\":0}]"
+    },
+    {
+      "id": "VFW-03",
+      "desc": "Com devolução: bloco visível/grid e campos habilitados em 4 larguras",
+      "status": "PASS",
+      "detail": "[{\"w\":320,\"hidden\":false,\"display\":\"grid\",\"height\":452,\"disabled\":[{\"name\":\"refund\",\"disabled\":false,\"visible\":true},{\"name\":\"date\",\"disabled\":false,\"visible\":true},{\"name\":\"method\",\"disabled\":false,\"visible\":true},{\"name\":\"ref\",\"disabled\":false,\"visible\":true}]},{\"w\":390,\"hidden\":false,\"display\":\"grid\",\"height\":431.609375,\"disabled\":[{\"name\":\"refund\",\"disabled\":false,\"visible\":true},{\"name\":\"date\",\"disabled\":false,\"visible\":true},{\"name\":\"method\",\"disabled\":false,\"visible\":true},{\"name\":\"ref\",\"disabled\":false,\"visible\":true}]},{\"w\":768,\"hidden\":false,\"display\":\"grid\",\"height\":411.21875,\"disabled\":[{\"name\":\"refund\",\"disabled\":false,\"visible\":true},{\"name\":\"date\",\"disabled\":false,\"visible\":true},{\"name\":\"method\",\"disabled\":false,\"visible\":true},{\"name\":\"ref\",\"disabled\":false,\"visible\":true}]},{\"w\":1440,\"hidden\":false,\"display\":\"grid\",\"height\":411.21875,\"disabled\":[{\"name\":\"refund\",\"disabled\":false,\"visible\":true},{\"name\":\"date\",\"disabled\":false,\"visible\":true},{\"name\":\"method\",\"disabled\":false,\"visible\":true},{\"name\":\"ref\",\"disabled\":false,\"visible\":true}]}]"
+    }
+  ]
+}

@@ -1,0 +1,73 @@
+PASS R06-E01 — Pedido rejeita origem inválida e motivo acima de 2000 :: {"origin":"Selecione quem solicitou.","reason2001":"Confira o motivo ou as observações.","qty0":"Quantidade inválida.","qty-1":"Quantidade inválida.","qty1.5":"Quantidade inválida.","qty3":"Quantidade inválida.","qty9999":"Quantidade inváli
+PASS R06-E02 — Quantidade inválida e destino inválido são rejeitados :: {"origin":"Selecione quem solicitou.","reason2001":"Confira o motivo ou as observações.","qty0":"Quantidade inválida.","qty-1":"Quantidade inválida.","qty1.5":"Quantidade inválida.","qty3":"Quantidade inválida.","qty9999":"Quantidade inváli
+PASS R06-E03 — Motivo de perda acima de 2000 é rejeitado :: {"lost":"Confira o motivo ou as observações."}
+PASS R06-E04 — Observação técnica acima de 2000 é rejeitada e a conferência válida é concluída :: {"notes2001":{"err":"Confira o motivo ou as observações.","before":3,"after":3},"tech":true}
+PASS R06-E05 — Cálculo rejeita desconto negativo/maior e valor fora do limite :: {"negativeDiscount":"Valor devido ou desconto inválido.","discountAboveGross":"Valor devido ou desconto inválido.","fraction":"Valor devido ou desconto inválido.","tooLarge":"Valor devido ou desconto inválido.","zero":{"gross":0,"discount":
+PASS R06-E06 — Confirmação exige justificativa e rejeita valor/desconto fora do limite :: {"out":{"noReason":"Confira o motivo ou as observações.","reason2001":"Confira o motivo ou as observações.","grossTooLarge":"Valor devido ou desconto inválido.","discountAboveGross":"Valor devido ou desconto inválido."},"status":"Negociação
+PASS R06-E07 — Motivo de 2000 caracteres não cria overflow em 320 px :: {"doc":320,"win":320,"main":320,"mainClient":320}
+PASS R06-E08 — Motivo é escapado e não executa HTML :: {"escaped":true}
+PASS R06-E09 — Cancelamento e detalhe não têm overflow horizontal em 320/390/768/1440 :: []
+PASS R06-E10 — Sem exceções ou erros de console nas bordas E1 :: {"errors":[],"consoleErrors":[]}
+PASS R06-E11 — Bordas E1 não fizeram requisições externas :: []
+PASS R06-E12 — Cancelamento sem pendência confirmado para a prova de privacidade :: {"status":"Cancelado","total":10000,"paid":10000}
+PASS R06-E13 — Técnico não vê justificativa financeira nem valores do acerto :: ATENDIMENTO / #025
+Privacidade · R06
+
+Clima Sul Serviços · Entrada em 25/11/2026
+
+Voltar
+Imprimir
+ANDAMENTO TÉCNICO
+Cancelado
+Conclusão não registrada
+FINANCEIRO
+Acesso restrito
+Valores ocultos neste perfil
+RETIRADA
+Não 
+PASS R06-E14 — Financeiro vê a justificativa e os valores do acerto :: ATENDIMENTO / #025
+Privacidade · R06
+
+Clima Sul Serviços · Entrada em 25/11/2026
+
+Voltar
+Imprimir
+ANDAMENTO TÉCNICO
+Cancelado
+Conclusão não registrada
+FINANCEIRO
+Sem pendência
+Saldo: R$ 0,00
+RETIRADA
+Não entregue
+Registro independente do pa
+PASS R06-E15 — Estorno normal é bloqueado em acerto sem pendência; só a retificação é oferecida :: {"normalReverse":{"err":"Confirme a correção autorizada.","before":1,"after":1},"legacyReverse":{"err":"Use retificação financeira autorizada.","before":1,"after":1}}
+PASS R06-E15-B — Recebimento direto é bloqueado para Técnico e Atendente :: {"payTech":{"err":"Operação não autorizada ou confirmação ausente.","before":1,"after":1,"modal":false},"payAtt":{"err":"Operação não autorizada ou confirmação ausente.","before":1,"after":1}}
+PASS R06-E16 — Caso legado não oferece retificação nem estorno sem recibos individuais :: {"status":"Finalizado","ledger":{"opening":20000,"events":[]},"rectify":0,"reverse":0}
+PASS R06-E17 — Sem exceções ou erros de console na E2 :: {"errors":[],"consoleErrors":[]}
+PASS R06-E18 — Acerto aceita o teto de R$ 9.999.999,99 sem overflow de cálculo :: {"ok":true,"total":999999999,"paid":0,"status":"Cancelado"}
+PASS R06-E19 — Valor extremo não cria overflow em 320 px :: {"doc":320,"win":320,"has":true}
+PASS R06-E20 — Portal mostra o total extremo sem orçamento disponível :: SEU ATENDIMENTO · OS #025
+Extremo · R06
+Cancelado
+Entrada
+25/11/2026
+Previsão
+Não informada
+Orçamento
+
+Não há orçamento publicado disponível para consulta neste momento.
+
+Pagamento
+Em aberto
+Total cobrado
+R$ 9.999.999,99
+Pago
+R$ 0,00
+Saldo 
+PASS R06-E21 — Portal sem exceções :: {"pErrors":[],"errors":[],"consoleErrors":[]}
+PASS R06-E22 — Motivo com exatamente 2000 caracteres é aceito e persistido :: {"open":false,"len":2000}
+PASS R06-E23 — Pedido e motivo persistem após recarregar :: reload
+PASS R06-E24 — Pedido duplicado após recarregar continua bloqueado :: {"err":"Já existe pedido pendente.","before":1,"after":1}
+
+TOTAL 25 · PASS 25 · FAIL 0

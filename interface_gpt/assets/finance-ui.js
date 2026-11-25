@@ -42,6 +42,7 @@ function financialModal(kind,o,eventId){
 function financialSubmit(kind,o,d){
  const now=new Date().toISOString();
  if(kind==='pay'){
+ if(!can('finance'))throw Error('Operação não autorizada ou confirmação ausente.');
  if(!/^\d+(?:\.\d{1,2})?$/.test(String(d.amount)))throw Error('Informe um valor com até duas casas decimais.');
  const e=BancadaFinance.receive(o,Math.round(Number(d.amount)*100),d.date,d.method,now);
  event(o,'Pagamento registrado · '+e.method+' · registro #'+e.id);

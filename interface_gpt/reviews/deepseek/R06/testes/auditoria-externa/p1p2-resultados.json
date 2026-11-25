@@ -1,0 +1,95 @@
+{
+  "generatedAt": "2026-11-25T22:48:19.446Z",
+  "results": [
+    {
+      "id": "VF-P1-00",
+      "desc": "OS ativa ainda oferece Atualizar andamento",
+      "status": "PASS",
+      "detail": "active"
+    },
+    {
+      "id": "VF-P1-01",
+      "desc": "Sem devolução: bloco #cancel-refund oculto (display none, altura 0) em 320/390/768/1440",
+      "status": "PASS",
+      "detail": "[{\"w\":320,\"opened\":true,\"hidden\":true,\"display\":\"none\",\"height\":0,\"disabled\":[{\"name\":\"refund\",\"disabled\":true,\"visible\":false},{\"name\":\"date\",\"disabled\":true,\"visible\":false},{\"name\":\"method\",\"disabled\":true,\"visible\":false},{\"name\":\"ref\",\"disabled\":true,\"visible\":false}],\"modalH\":544,\"docW\":320,\"win\":320},{\"w\":390,\"opened\":true,\"hidden\":true,\"display\":\"none\",\"height\":0,\"disabled\":[{\"name\":\"refund\",\"disabled\":true,\"visible\":false},{\"name\":\"date\",\"disabled\":true,\"visible\":false},{\"name\":\"method\",\"disabled\":true,\"visible\":false},{\"name\":\"ref\",\"disabled\":true,\"visible\":false}],\"modalH\":815.484375,\"docW\":390,\"win\":390},{\"w\":768,\"opened\":true,\"hidden\":true,\"display\":\"none\",\"height\":0,\"disabled\":[{\"name\":\"refund\",\"disabled\":true,\"visible\":false},{\"name\":\"date\",\"disabled\":true,\"visible\":false},{\"name\":\"method\",\"disabled\":true,\"visible\":false},{\"name\":\"ref\",\"disabled\":true,\"visible\":false}],\"modalH\":766.9375,\"docW\":768,\"win\":768},{\"w\":1440,\"opened\":true,\"hidden\":true,\"display\":\"none\",\"height\""
+    },
+    {
+      "id": "VF-P1-02",
+      "desc": "Sem devolução: campos de devolução desabilitados e invisíveis",
+      "status": "PASS",
+      "detail": "[{\"w\":320,\"disabled\":[{\"name\":\"refund\",\"disabled\":true,\"visible\":false},{\"name\":\"date\",\"disabled\":true,\"visible\":false},{\"name\":\"method\",\"disabled\":true,\"visible\":false},{\"name\":\"ref\",\"disabled\":true,\"visible\":false}]},{\"w\":390,\"disabled\":[{\"name\":\"refund\",\"disabled\":true,\"visible\":false},{\"name\":\"date\",\"disabled\":true,\"visible\":false},{\"name\":\"method\",\"disabled\":true,\"visible\":false},{\"name\":\"ref\",\"disabled\":true,\"visible\":false}]},{\"w\":768,\"disabled\":[{\"name\":\"refund\",\"disabled\":true,\"visible\":false},{\"name\":\"date\",\"disabled\":true,\"visible\":false},{\"name\":\"method\",\"disabled\":true,\"visible\":false},{\"name\":\"ref\",\"disabled\":true,\"visible\":false}]},{\"w\":1440,\"disabled\":[{\"name\":\"refund\",\"disabled\":true,\"visible\":false},{\"name\":\"date\",\"disabled\":true,\"visible\":false},{\"name\":\"method\",\"disabled\":true,\"visible\":false},{\"name\":\"ref\",\"disabled\":true,\"visible\":false}]}]"
+    },
+    {
+      "id": "VF-P1-03",
+      "desc": "Acerto sem devolução conclui e não anuncia \"Devolução registrada\"",
+      "status": "PASS",
+      "detail": "ATENDIMENTO / #023 Samsung · Digital Inverter Marina Alves · Entrada em 20/11/2026 Voltar Imprimir ANDAMENTO TÉCNICO Cancelado Conclusão não registrada FINANCEIRO Sem pendência Saldo: R$ 0,00 RETIRADA Não entregue Registro independente do pagamento Registrar entrega Visão geral Atendimento Orçamento e link Entrega Anexos Histórico Cancelamento Financeiro ✓ Pedido ✓ Conferência ✓ Acerto Pedido de"
+    },
+    {
+      "id": "VF-P1-04",
+      "desc": "OS cancelada não oferece Atualizar andamento",
+      "status": "PASS",
+      "detail": "cancelled"
+    },
+    {
+      "id": "VF-P1-05",
+      "desc": "Sem erros de console na P1",
+      "status": "PASS",
+      "detail": "{\"errors\":[],\"consoleErrors\":[]}"
+    },
+    {
+      "id": "VF-P1-06",
+      "desc": "Com devolução: bloco visível, display grid, altura >0",
+      "status": "PASS",
+      "detail": "{\"hidden\":false,\"display\":\"grid\",\"height\":411.21875,\"disabled\":[{\"name\":\"refund\",\"disabled\":false,\"visible\":true},{\"name\":\"date\",\"disabled\":false,\"visible\":true},{\"name\":\"method\",\"disabled\":false,\"visible\":true},{\"name\":\"ref\",\"disabled\":false,\"visible\":true}],\"modalH\":876,\"docW\":1440,\"win\":1440}"
+    },
+    {
+      "id": "VF-P1-07",
+      "desc": "Com devolução: campos habilitados e visíveis",
+      "status": "PASS",
+      "detail": "[{\"name\":\"refund\",\"disabled\":false,\"visible\":true},{\"name\":\"date\",\"disabled\":false,\"visible\":true},{\"name\":\"method\",\"disabled\":false,\"visible\":true},{\"name\":\"ref\",\"disabled\":false,\"visible\":true}]"
+    },
+    {
+      "id": "VF-P1-08",
+      "desc": "Com devolução: painel anuncia Devolução registrada R$ 160,00",
+      "status": "PASS",
+      "detail": "{\"st\":{\"open\":false,\"error\":\"\"},\"total\":8000,\"paid\":8000,\"events\":[\"receive\",\"receive\",\"refund\"],\"done\":\"ATENDIMENTO / #025\\nVF · Devolução\\n\\nClima Sul Serviços · Entrada em 25/11/2026\\n\\nVoltar\\nImprimir\\nANDAMENTO TÉCNICO\\nCancelado\\nConclusão não registrada\\nFINANCEIRO\\nSem pendência\\nSaldo: R$ 0,00\\nRETIRADA\\nNão entregue\\nRegistro independente do pagamento\\nRegistrar entrega\\nVisão geral\\nAtendimento\\nOrçamento e l\"}"
+    },
+    {
+      "id": "VF-P1-09",
+      "desc": "Sem erros de console na P1R",
+      "status": "PASS",
+      "detail": "{\"errors\":[],\"consoleErrors\":[]}"
+    },
+    {
+      "id": "VF-P2-01",
+      "desc": "Financeiro recebe via UI normalmente",
+      "status": "PASS",
+      "detail": "{\"uiOpenFinance\":2,\"stFinance\":{\"open\":false,\"error\":\"\"},\"paid\":21000}"
+    },
+    {
+      "id": "VF-P2-02",
+      "desc": "Administrador recebe por chamada direta",
+      "status": "PASS",
+      "detail": "{\"before\":21000,\"ok\":true,\"err\":\"\",\"after\":22000,\"events\":2}"
+    },
+    {
+      "id": "VF-P2-03",
+      "desc": "Técnico: chamada direta de pagamento é rejeitada e ledger não muda",
+      "status": "PASS",
+      "detail": "{\"before\":{\"paid\":22000,\"events\":2},\"ok\":false,\"err\":\"Operação não autorizada ou confirmação ausente.\",\"ui\":false,\"after\":{\"paid\":22000,\"events\":2}}"
+    },
+    {
+      "id": "VF-P2-04",
+      "desc": "Atendente: chamada direta de pagamento é rejeitada e ledger não muda",
+      "status": "PASS",
+      "detail": "{\"before\":{\"paid\":22000,\"events\":2},\"ok\":false,\"err\":\"Operação não autorizada ou confirmação ausente.\",\"ui\":false,\"after\":{\"paid\":22000,\"events\":2}}"
+    },
+    {
+      "id": "VF-P2-05",
+      "desc": "Sem erros de console na P2",
+      "status": "PASS",
+      "detail": "{\"errors\":[],\"consoleErrors\":[]}"
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+# R06 — oito suítes Node do protótipo (GPT)
+# árvore: f65305f31c5d6d61a69c7729a7c0634199704797 + correções R06 não commitadas
+# data: 2026-11-25T19:41:17-03:00
+=== tests/smoke.cjs ===
+72 profile/route combinations; queue, financial display and escaping checks passed.
+
+=== tests/quote.cjs ===
+29 quote domain checks passed.
+
+=== tests/portal.cjs ===
+24 portal domain checks passed.
+
+=== tests/portal-page.cjs ===
+8 portal page render checks passed.
+
+=== tests/finance.cjs ===
+24 financial domain checks passed.
+
+=== tests/finance-ui.cjs ===
+12 finance integration checks passed.
+
+=== tests/cancel.cjs ===
+30 cancellation domain checks passed.
+
+=== tests/cancel-ui.cjs ===
+11 cancellation UI checks passed.
+

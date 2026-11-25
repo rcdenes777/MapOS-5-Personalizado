@@ -1,0 +1,2062 @@
+[
+  {
+    "url": "http://127.0.0.1:8130/",
+    "type": "document"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/style.css",
+    "type": "stylesheet"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/quote.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/portal.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/quote-ui.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/finance.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/finance-ui.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/cancel.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/cancel-ui.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/app.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/",
+    "type": "document"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/style.css",
+    "type": "stylesheet"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/quote.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/portal.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/quote-ui.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/finance.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/finance-ui.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/cancel.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/cancel-ui.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/app.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/",
+    "type": "document"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/style.css",
+    "type": "stylesheet"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/quote.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/portal.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/quote-ui.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/finance.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/finance-ui.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/cancel.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/cancel-ui.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/app.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/",
+    "type": "document"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/style.css",
+    "type": "stylesheet"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/quote.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/portal.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/quote-ui.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/finance.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/finance-ui.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/cancel.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/cancel-ui.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/app.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/",
+    "type": "document"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/style.css",
+    "type": "stylesheet"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/quote.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/portal.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/quote-ui.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/finance.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/finance-ui.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/cancel.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/cancel-ui.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/app.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/",
+    "type": "document"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/style.css",
+    "type": "stylesheet"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/quote.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/portal.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/quote-ui.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/finance.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/finance-ui.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/cancel.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/cancel-ui.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/app.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/",
+    "type": "document"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/style.css",
+    "type": "stylesheet"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/quote.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/portal.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/quote-ui.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/finance.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/finance-ui.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/cancel.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/cancel-ui.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/app.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/",
+    "type": "document"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/style.css",
+    "type": "stylesheet"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/quote.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/portal.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/quote-ui.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/finance.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/finance-ui.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/cancel.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/cancel-ui.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/app.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/?focus-check=1795646736263",
+    "type": "document"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/style.css",
+    "type": "stylesheet"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/quote.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/portal.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/quote-ui.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/finance.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/finance-ui.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/cancel.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/cancel-ui.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/app.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/",
+    "type": "document"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/style.css",
+    "type": "stylesheet"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/quote.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/portal.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/quote-ui.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/finance.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/finance-ui.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/cancel.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/cancel-ui.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/app.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/",
+    "type": "document"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/style.css",
+    "type": "stylesheet"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/quote.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/portal.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/quote-ui.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/finance.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/finance-ui.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/cancel.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/cancel-ui.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/app.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/",
+    "type": "document"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/style.css",
+    "type": "stylesheet"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/quote.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/portal.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/quote-ui.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/finance.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/finance-ui.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/cancel.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/cancel-ui.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/app.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/",
+    "type": "document"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/style.css",
+    "type": "stylesheet"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/quote.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/portal.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/quote-ui.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/finance.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/finance-ui.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/cancel.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/cancel-ui.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/app.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/",
+    "type": "document"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/style.css",
+    "type": "stylesheet"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/quote.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/portal.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/quote-ui.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/finance.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/finance-ui.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/cancel.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/cancel-ui.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/app.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/",
+    "type": "document"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/style.css",
+    "type": "stylesheet"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/quote.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/portal.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/quote-ui.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/finance.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/finance-ui.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/cancel.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/cancel-ui.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/app.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/",
+    "type": "document"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/style.css",
+    "type": "stylesheet"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/quote.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/portal.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/quote-ui.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/finance.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/finance-ui.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/cancel.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/cancel-ui.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/app.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/",
+    "type": "document"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/style.css",
+    "type": "stylesheet"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/quote.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/portal.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/quote-ui.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/finance.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/finance-ui.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/cancel.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/cancel-ui.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/app.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/",
+    "type": "document"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/style.css",
+    "type": "stylesheet"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/quote.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/portal.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/quote-ui.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/finance.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/finance-ui.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/cancel.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/cancel-ui.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/app.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/",
+    "type": "document"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/style.css",
+    "type": "stylesheet"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/quote.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/portal.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/quote-ui.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/finance.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/finance-ui.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/cancel.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/cancel-ui.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/app.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/",
+    "type": "document"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/style.css",
+    "type": "stylesheet"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/quote.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/portal.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/quote-ui.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/finance.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/finance-ui.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/cancel.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/cancel-ui.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/app.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/",
+    "type": "document"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/style.css",
+    "type": "stylesheet"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/quote.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/portal.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/quote-ui.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/finance.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/finance-ui.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/cancel.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/cancel-ui.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/app.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/",
+    "type": "document"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/style.css",
+    "type": "stylesheet"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/quote.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/portal.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/quote-ui.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/finance.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/finance-ui.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/cancel.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/cancel-ui.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/app.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/",
+    "type": "document"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/style.css",
+    "type": "stylesheet"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/quote.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/portal.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/quote-ui.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/finance.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/finance-ui.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/cancel.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/cancel-ui.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/app.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/",
+    "type": "document"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/style.css",
+    "type": "stylesheet"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/quote.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/portal.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/quote-ui.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/finance.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/finance-ui.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/cancel.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/cancel-ui.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/app.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/",
+    "type": "document"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/style.css",
+    "type": "stylesheet"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/quote.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/portal.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/quote-ui.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/finance.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/finance-ui.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/cancel.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/cancel-ui.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/app.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/",
+    "type": "document"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/style.css",
+    "type": "stylesheet"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/quote.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/portal.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/quote-ui.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/finance.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/finance-ui.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/cancel.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/cancel-ui.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/app.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/",
+    "type": "document"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/style.css",
+    "type": "stylesheet"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/quote.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/portal.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/quote-ui.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/finance.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/finance-ui.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/cancel.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/cancel-ui.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/app.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/",
+    "type": "document"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/style.css",
+    "type": "stylesheet"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/quote.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/portal.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/quote-ui.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/finance.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/finance-ui.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/cancel.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/cancel-ui.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/app.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/",
+    "type": "document"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/style.css",
+    "type": "stylesheet"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/quote.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/portal.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/quote-ui.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/finance.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/finance-ui.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/cancel.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/cancel-ui.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/app.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/",
+    "type": "document"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/style.css",
+    "type": "stylesheet"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/quote.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/portal.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/quote-ui.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/finance.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/finance-ui.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/cancel.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/cancel-ui.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/app.js",
+    "type": "script"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  },
+  {
+    "url": "http://127.0.0.1:8130/assets/favicon.svg",
+    "type": "other"
+  }
+]

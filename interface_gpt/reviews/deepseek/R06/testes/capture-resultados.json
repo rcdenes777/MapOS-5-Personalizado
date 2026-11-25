@@ -1,0 +1,26 @@
+{
+  "generatedAt": "2026-11-25T22:40:59.508Z",
+  "codeSha": "f65305f31c5d6d61a69c7729a7c0634199704797",
+  "results": [
+    {
+      "id": "R06-CAP-01",
+      "desc": "Capturas do delta geradas com hashes únicos",
+      "status": "PASS",
+      "detail": "{\"total\":33,\"unique\":33,\"duplicates\":[]}"
+    },
+    {
+      "id": "R06-CAP-02",
+      "desc": "Capturas sem exceções de página",
+      "status": "PASS",
+      "detail": "{\"errors\":[],\"consoleErrors\":[]}"
+    },
+    {
+      "id": "R06-CAP-03",
+      "desc": "Capturas sem requisições externas",
+      "status": "PASS",
+      "detail": "[]"
+    }
+  ],
+  "total": 33,
+  "unique": 33
+}

@@ -75,4 +75,4 @@ Consulte [R05-FINANCEIRO.md](R05-FINANCEIRO.md). Abra Financeiro no menu ou na a
 
 ## Incremento R06 — cancelamentos
 
-Consulte [R06-CANCELAMENTOS.md](R06-CANCELAMENTOS.md). Abra a aba Cancelamento de uma OS elegível. Pedido, conferência técnica e acerto financeiro são independentes. Registre perda sem retorno ao estoque, devolução como evento separado, saldo a receber e retificação nos casos simulados. Testes: `node tests/cancel.cjs` e `node tests/cancel-ui.cjs` além das seis suítes anteriores. Revisão de navegador pendente.
+Consulte [R06-CANCELAMENTOS.md](R06-CANCELAMENTOS.md). Abra a aba Cancelamento de uma OS elegível. Pedido, conferência técnica e acerto financeiro são independentes. Registre perda sem retorno ao estoque, devolução como evento separado, saldo a receber e retificação nos casos simulados. Testes: `node tests/cancel.cjs` e `node tests/cancel-ui.cjs` além das seis suítes anteriores. R06 validada pelo DeepSeek em navegador real; consulte [reviews/deepseek/R06](reviews/deepseek/R06/RELATORIO.md).

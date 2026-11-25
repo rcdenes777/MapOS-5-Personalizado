@@ -1,0 +1,252 @@
+{
+  "generatedAt": "2026-11-25T22:39:42.828Z",
+  "codeSha": "f65305f31c5d6d61a69c7729a7c0634199704797",
+  "incrementSha": "a8639c6dd3d0048d3f77a5d88761f9a664f998de",
+  "results": [
+    {
+      "id": "R06-AXE-inicio-1440x900",
+      "desc": "axe sem violações: inicio",
+      "status": "PASS",
+      "detail": "[]"
+    },
+    {
+      "id": "R06-AXE-pedido-vazio-1440x900",
+      "desc": "axe sem violações: pedido-vazio",
+      "status": "PASS",
+      "detail": "[]"
+    },
+    {
+      "id": "R06-KB-01",
+      "desc": "Modal de pedido prende o foco, fecha com Escape e devolve o foco ao acionador",
+      "status": "PASS",
+      "detail": "{\"opened\":true,\"initial\":{\"tag\":\"BUTTON\",\"name\":null,\"inDialog\":true,\"labelled\":\"modal-title\"},\"inside\":true,\"escaped\":{\"open\":false,\"active\":\"modal:cancelrequest:23\"}}"
+    },
+    {
+      "id": "R06-KB-02",
+      "desc": "Campos de devolução ficam habilitados e alcançáveis por teclado",
+      "status": "PASS",
+      "detail": "{\"reachable\":[{\"n\":\"gross\",\"exists\":true,\"disabled\":false,\"visible\":true},{\"n\":\"discount\",\"exists\":true,\"disabled\":false,\"visible\":true},{\"n\":\"refund\",\"exists\":true,\"disabled\":false,\"visible\":true},{\"n\":\"date\",\"exists\":true,\"disabled\":false,\"visible\":true},{\"n\":\"method\",\"exists\":true,\"disabled\":false,\"visible\":true},{\"n\":\"ref\",\"exists\":true,\"disabled\":false,\"visible\":true},{\"n\":\"reason\",\"exists\":true,\"disabled\":false,\"visible\":true},{\"n\":\"settlementConfirmed\",\"exists\":true,\"disabled\":false,\"visible\":true},{\"n\":\"financialConfirmed\",\"exists\":true,\"disabled\":false,\"visible\":true},{\"n\":\"confirm\",\"exists\":true,\"disabled\":false,\"visible\":true}],\"focusedRefund\":true}"
+    },
+    {
+      "id": "R06-AXE-pedido-pendente-1440x900",
+      "desc": "axe sem violações: pedido-pendente",
+      "status": "PASS",
+      "detail": "[]"
+    },
+    {
+      "id": "R06-AXE-conferencia-tecnica-modal-1440x900",
+      "desc": "axe sem violações: conferencia-tecnica-modal",
+      "status": "PASS",
+      "detail": "[]"
+    },
+    {
+      "id": "R06-AXE-item-peca-modal-1440x900",
+      "desc": "axe sem violações: item-peca-modal",
+      "status": "PASS",
+      "detail": "[]"
+    },
+    {
+      "id": "R06-AXE-acerto-devolucao-modal-1440x900",
+      "desc": "axe sem violações: acerto-devolucao-modal",
+      "status": "PASS",
+      "detail": "[]"
+    },
+    {
+      "id": "R06-AXE-cancelado-concluido-historico-1440x900",
+      "desc": "axe sem violações: cancelado-concluido-historico",
+      "status": "PASS",
+      "detail": "[]"
+    },
+    {
+      "id": "R06-AXE-financeiro-cancelado-1440x900",
+      "desc": "axe sem violações: financeiro-cancelado",
+      "status": "PASS",
+      "detail": "[]"
+    },
+    {
+      "id": "R06-AXE-entrega-modal-1440x900",
+      "desc": "axe sem violações: entrega-modal",
+      "status": "PASS",
+      "detail": "[]"
+    },
+    {
+      "id": "R06-AXE-portal-cancelado-1440x900",
+      "desc": "axe sem violações: portal-cancelado",
+      "status": "PASS",
+      "detail": "[]"
+    },
+    {
+      "id": "R06-AXE-portal-cancelado-390x844",
+      "desc": "axe sem violações: portal-cancelado",
+      "status": "PASS",
+      "detail": "[]"
+    },
+    {
+      "id": "R06-AXE-pedido-pendente-pecas-320x568",
+      "desc": "axe sem violações: pedido-pendente-pecas",
+      "status": "PASS",
+      "detail": "[]"
+    },
+    {
+      "id": "R06-AXE-item-peca-modal-320x568",
+      "desc": "axe sem violações: item-peca-modal",
+      "status": "PASS",
+      "detail": "[]"
+    },
+    {
+      "id": "R06-AXE-cancelado-concluido-320x568",
+      "desc": "axe sem violações: cancelado-concluido",
+      "status": "PASS",
+      "detail": "[]"
+    },
+    {
+      "id": "R06-AXE-pedido-pendente-pecas-390x844",
+      "desc": "axe sem violações: pedido-pendente-pecas",
+      "status": "PASS",
+      "detail": "[]"
+    },
+    {
+      "id": "R06-AXE-item-peca-modal-390x844",
+      "desc": "axe sem violações: item-peca-modal",
+      "status": "PASS",
+      "detail": "[]"
+    },
+    {
+      "id": "R06-AXE-cancelado-concluido-390x844",
+      "desc": "axe sem violações: cancelado-concluido",
+      "status": "PASS",
+      "detail": "[]"
+    },
+    {
+      "id": "R06-AXE-pedido-pendente-pecas-768x1024",
+      "desc": "axe sem violações: pedido-pendente-pecas",
+      "status": "PASS",
+      "detail": "[]"
+    },
+    {
+      "id": "R06-AXE-item-peca-modal-768x1024",
+      "desc": "axe sem violações: item-peca-modal",
+      "status": "PASS",
+      "detail": "[]"
+    },
+    {
+      "id": "R06-AXE-cancelado-concluido-768x1024",
+      "desc": "axe sem violações: cancelado-concluido",
+      "status": "PASS",
+      "detail": "[]"
+    },
+    {
+      "id": "R06-AXE-impressao-cancelada-1440x900",
+      "desc": "axe sem violações: impressao-cancelada",
+      "status": "PASS",
+      "detail": "[]"
+    }
+  ],
+  "scans": [
+    {
+      "viewport": "1440x900",
+      "label": "inicio",
+      "violations": []
+    },
+    {
+      "viewport": "1440x900",
+      "label": "pedido-vazio",
+      "violations": []
+    },
+    {
+      "viewport": "1440x900",
+      "label": "pedido-pendente",
+      "violations": []
+    },
+    {
+      "viewport": "1440x900",
+      "label": "conferencia-tecnica-modal",
+      "violations": []
+    },
+    {
+      "viewport": "1440x900",
+      "label": "item-peca-modal",
+      "violations": []
+    },
+    {
+      "viewport": "1440x900",
+      "label": "acerto-devolucao-modal",
+      "violations": []
+    },
+    {
+      "viewport": "1440x900",
+      "label": "cancelado-concluido-historico",
+      "violations": []
+    },
+    {
+      "viewport": "1440x900",
+      "label": "financeiro-cancelado",
+      "violations": []
+    },
+    {
+      "viewport": "1440x900",
+      "label": "entrega-modal",
+      "violations": []
+    },
+    {
+      "viewport": "1440x900",
+      "label": "portal-cancelado",
+      "violations": []
+    },
+    {
+      "viewport": "390x844",
+      "label": "portal-cancelado",
+      "violations": []
+    },
+    {
+      "viewport": "320x568",
+      "label": "pedido-pendente-pecas",
+      "violations": []
+    },
+    {
+      "viewport": "320x568",
+      "label": "item-peca-modal",
+      "violations": []
+    },
+    {
+      "viewport": "320x568",
+      "label": "cancelado-concluido",
+      "violations": []
+    },
+    {
+      "viewport": "390x844",
+      "label": "pedido-pendente-pecas",
+      "violations": []
+    },
+    {
+      "viewport": "390x844",
+      "label": "item-peca-modal",
+      "violations": []
+    },
+    {
+      "viewport": "390x844",
+      "label": "cancelado-concluido",
+      "violations": []
+    },
+    {
+      "viewport": "768x1024",
+      "label": "pedido-pendente-pecas",
+      "violations": []
+    },
+    {
+      "viewport": "768x1024",
+      "label": "item-peca-modal",
+      "violations": []
+    },
+    {
+      "viewport": "768x1024",
+      "label": "cancelado-concluido",
+      "violations": []
+    },
+    {
+      "viewport": "1440x900",
+      "label": "impressao-cancelada",
+      "violations": []
+    }
+  ]
+}

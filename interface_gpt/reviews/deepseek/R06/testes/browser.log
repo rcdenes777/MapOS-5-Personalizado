@@ -1,0 +1,326 @@
+PASS R06-S1-01 — OS #023 começa sem pedido, sem cobrança e com ação disponível :: {"status":"Orçamento","total":0,"paid":0,"delivery":null,"cancel":{"events":[]}}
+PASS R06-S1-02 — Pedido sem solicitante é bloqueado e não grava evento :: {"open":true,"error":"","toast":""}
+PASS R06-S1-03 — Pedido sem motivo é bloqueado e não grava evento :: {"open":true,"error":"","toast":""}
+PASS R06-S1-04 — Pedido preserva andamento, cobrança e entrega :: {"status":"Orçamento","total":0,"paid":0,"delivery":null,"events":[{"id":1,"type":"request","when":"2026-11-25T22:36:00.519Z","origin":"cliente","reason":"Cliente solicitou o cancelamento na bancada R06.","status":"Orçamento"}]}
+PASS R06-S1-05 — Pedido guarda origem, motivo e registro imutável :: {"id":1,"type":"request","when":"2026-11-25T22:36:00.519Z","origin":"cliente","reason":"Cliente solicitou o cancelamento na bancada R06.","status":"Orçamento"}
+PASS R06-S1-06 — Fila de cancelamentos pendentes conta o pedido :: Cancelamentos pendentes | 1 | Resolver →
+PASS R06-S1-07 — Cartão da OS mostra “Cancelamento pendente” na fila :: cards=1 Samsung · Digital Inverter | Marina Alves | #023 | Orçamento | Cancelamento pendente | Não entregue | Sem cobrança | 20/11/2026
+PASS R06-S1-08 — Pedido pendente oculta nova solicitação e oferece retirada :: actions
+PASS R06-S1-09 — Pedido duplicado é rejeitado sem novo evento :: {"err":"Já existe pedido pendente.","before":1,"after":1}
+PASS R06-S1-10 — Retirada encerra a pendência sem desfazer o pedido anterior :: {"open":false,"error":"","toast":"Registro atualizado na demonstração."}
+PASS R06-S1-11 — Retirada devolve a ação de solicitar :: request visible
+PASS R06-S1-12 — Novo pedido após retirada registra nova origem :: [["request","cliente"],["withdraw",null],["request","assistencia"]]
+PASS R06-S1-13-20 — OS #020 bloqueada (concluído, cancelado ou ) :: {"btn":0,"blocked":true,"err":"Atendimento concluído, cancelado ou faturado legado. Concilie antes."}
+PASS R06-S1-13-19 — OS #019 bloqueada (entrega física registrad) :: {"btn":0,"blocked":true,"err":"Atendimento concluído, cancelado ou faturado legado. Concilie antes. Há entrega física registrada."}
+PASS R06-S1-13-18 — OS #018 bloqueada (vínculo de garantia) :: {"btn":0,"blocked":true,"err":"Há vínculo de garantia; conciliação de garantia será tratada na R07."}
+PASS R06-S1-13-16 — OS #016 bloqueada (vínculo de garantia) :: {"btn":0,"blocked":true,"err":"Atendimento concluído, cancelado ou faturado legado. Concilie antes. Há entrega física registrada. Há vínculo de garantia; conciliação de garantia será tratada na R07."}
+PASS R06-S1-14 — Técnico solicita/retira/conferem e não vê valores :: ATENDIMENTO / #023
+Samsung · Digital Inverter
+
+Marina Alves · Entrada em 20/11/2026
+
+Voltar
+Imprimir
+ANDAMENTO TÉCNICO
+Orçamento
+Conclusão não registrada
+Atualizar andamento
+FINANC
+PASS R06-S1-15 — Atendente apenas consulta o cancelamento :: ATENDIMENTO / #023
+Samsung · Digital Inverter
+
+Marina Alves · Entrada em 20/11/2026
+
+Voltar
+Imprimir
+ANDAMENTO TÉCNICO
+Orçamento
+Conclusão não registrada
+FINANCEIRO
+Acesso restrito
+PASS R06-S1-16 — Financeiro não solicita/retira/conferem e aguarda conferência :: ATENDIMENTO / #023
+Samsung · Digital Inverter
+
+Marina Alves · Entrada em 20/11/2026
+
+Voltar
+Imprimir
+ANDAMENTO TÉCNICO
+Orçamento
+Conclusão não registrada
+FINANCEIRO
+Sem cobrança
+Saldo: R$ 0,00
+RETIRAD
+PASS R06-S1-17 — Administrador recupera todas as ações de cancelamento :: admin
+PASS R06-S1-18 — Sem exceções, erros de console ou requisições externas na S1 :: {"errors":[],"consoleErrors":[],"external":[]}
+PASS R06-S2-01 — Orçamento publicado com 3 peças, 2 serviços e desconto :: {"status":"Negociação","version":{"total":23500,"items":5,"discount":1000}}
+PASS R06-S2-02 — Pedido mantém orçamento, andamento e entrega :: {"open":false,"error":"","toast":"Registro atualizado na demonstração."}
+PASS R06-S2-03 — Peça não utilizada conciliada em quantidade parcial sem entrada em estoque :: {"e1":{"id":2,"type":"item","when":"2026-11-25T22:36:11.294Z","request":1,"item":{"name":"IGBT 650 V","type":"Peça","quantity":1,"unit":3000},"disposition":"unused","reason":"","stockReturned":0,"stockNote":"Baixa não comprovada; sem entrad
+PASS R06-S2-04 — Consumo/perda exige motivo :: {"open":true,"error":"Confira o motivo ou as observações.","toast":"Registro atualizado na demonstração."}
+PASS R06-S2-05 — Peça consumida é registrada sem retorno ao estoque :: {"e2":{"id":3,"type":"item","when":"2026-11-25T22:36:13.110Z","request":1,"item":{"name":"IGBT 650 V","type":"Peça","quantity":2,"unit":3000},"disposition":"lost","reason":"Peça consumida em teste de bancada R06.","stockReturned":0,"stockNo
+PASS R06-S2-06 — Segunda peça consumida também não movimenta estoque :: {"items":["Capacitor 450 V","Diagnóstico","Reparo"],"st":{"open":false,"error":"","toast":"Registro atualizado na demonstração."}}
+PASS R06-S2-07 — Conferência bloqueada enquanto há peça pendente :: {"techBtn":0,"directTech":{"err":"Concilie todas as peças antes.","before":4,"after":4}}
+PASS R06-S2-08 — Quantidade acima do saldo é rejeitada no modelo :: {"err":"Quantidade inválida.","before":4,"after":4}
+PASS R06-S2-09 — Peças restantes conciliadas sem movimentar estoque :: ["Diagnóstico","Reparo"]
+PASS R06-S2-10 — Serviço não executado é retirado e o realizado permanece :: ["Reparo"]
+PASS R06-S2-11 — Desconto do rascunho é zerado sem obrigação formalizada :: discount=0
+PASS R06-S2-12 — Conferência técnica concluída com peças zeradas e serviço executado :: {"open":false,"error":"","toast":"Registro atualizado na demonstração."}
+PASS R06-S2-13 — Mudança de andamento invalida a conferência técnica :: {"st":{"open":false,"error":"","toast":"Registro atualizado na demonstração."},"invalidByStatus":false}
+PASS R06-S2-14 — Reconferência restabelece a conferência :: technical again
+PASS R06-S2-15 — Alteração de item invalida a conferência e bloqueia o acerto :: {"invalidByItem":false}
+PASS R06-S2-16 — Remover o item acrescentado restabelece o estado conferido :: {"open":false,"error":"","toast":"Registro atualizado na demonstração."}
+INFO R06-S2-17 — Limitação registrada: a conferência é uma chave do estado atual; voltar ao estado idêntico reativa a chave (INFO) :: technicalKey compara status+itens; não há evento de revogação. Encaminhado ao GPT como limite, sem alteração de regra.
+PASS R06-S2-18 — Retirar o pedido não restaura os itens removidos :: {"items":["Reparo"],"versions":5}
+PASS R06-S2-19 — Nenhuma entrada em estoque durante toda a conferência :: {"before":[{"name":"IGBT 650 V","quantity":8},{"name":"Optoacoplador PC817","quantity":3},{"name":"Capacitor 450 V","quantity":16}],"after":[{"name":"IGBT 650 V","quantity":8},{"name":"Optoacoplador PC817","quantity":3},{"name":"Capacitor 4
+PASS R06-S2-20 — Sem exceções ou erros de console na S2 :: {"errors":[],"consoleErrors":[]}
+PASS R06-S3-01 — Técnico solicita e não vê valores :: ATENDIMENTO / #024
+LG · Dual Inverter
+
+Clima Sul Serviços · Entrada em 25/11/2026
+
+Voltar
+Imprimir
+ANDAMENTO TÉCNICO
+Aberto
+Conclusão não registrada
+Atualizar a
+PASS R06-S3-02 — Pedido não altera andamento nem cria cobrança :: {"status":"Aberto","total":0,"billing":null}
+PASS R06-S3-03 — Técnico conclui a conferência sem valores :: {"open":false,"error":"","toast":"Registro atualizado na demonstração."}
+PASS R06-S3-04 — Técnico não confirma acerto nem por chamada direta :: {"err":"Operação não autorizada ou confirmação ausente.","before":2,"after":2}
+PASS R06-S3-05 — Financeiro vê o acerto após a conferência :: ATENDIMENTO / #024
+LG · Dual Inverter
+
+Clima Sul Serviços · Entrada em 25/11/2026
+
+Voltar
+Imprimir
+ANDAMENTO TÉCNICO
+Aberto
+Conclusão não registrada
+FINANCEIRO
+Sem cobrança
+Saldo: R$ 0,00
+RETIRADA
+Não entregue
+Registro i
+PASS R06-S3-06 — Acerto sem cobrança cria obrigação de R$ 70,00 e cancela :: {"status":"Cancelado","total":7000,"paid":0,"billing":{"due":"2026-11-25","items":[],"settlement":{"gross":8000,"discount":1000}},"delivery":null}
+PASS R06-S3-07 — Fila de cancelamentos fica vazia após confirmar :: queue=0
+PASS R06-S3-08 — Recebimento após cancelado é permitido no saldo a receber :: {"paid":7000,"status":"Cancelado","events":1}
+PASS R06-S3-09 — Estorno corrige o recebimento e preserva o valor devido :: {"paid":0,"total":7000,"events":["receive","reverse"]}
+PASS R06-S3-10 — Novo recebimento quita o saldo recomposto :: {"paid":7000,"events":3,"status":"Cancelado"}
+PASS R06-S3-11 — Portal do cancelado oculta o orçamento e mostra a projeção financeira :: SEU ATENDIMENTO · OS #024
+LG · Dual Inverter
+Cancelado
+Entrada
+25/11/2026
+Previsão
+Não informada
+Orçamento
+
+Não há orçamento publicado disponível para consulta neste momento.
+
+Pagamento
+Quitada
+Total cobrado
+R$ 70,00
+Pago
+R$ 70,00
+Saldo a p
+PASS R06-S3-12 — Portal não expõe motivos internos do cancelamento :: privacy
+PASS R06-S3-13 — Atendente consulta e pode registrar a entrega sem valores :: ATENDIMENTO / #024
+LG · Dual Inverter
+
+Clima Sul Serviços · Entrada em 25/11/2026
+
+Voltar
+Imprimir
+ANDAMENTO TÉCNICO
+Cancelado
+Conclusão não registrada
+FINANCEIRO
+Acesso restrito
+V
+PASS R06-S3-14 — Entrega é operação independente e não altera o cancelamento :: {"status":"Cancelado","delivery":{"date":"2026-11-25","receiver":"Clima Sul Serviços","third":false,"items":"Equipamento e itens fictícios R06","authorization":"","registered":"2026-11-25T22:36:36.278Z"}}
+PASS R06-S3-15 — OS cancelada e entregue sai da fila de retirada :: retirada
+PASS R06-S3-16 — Sem exceções, erros de console ou páginas externas na S3 :: {"errors":[],"consoleErrors":[],"portal":[[],[]]}
+PASS R06-S4-01 — Duas entradas somam R$ 240,00 antes do cancelamento :: {"total":24000,"paid":24000}
+PASS R06-S4-02 — Conferência técnica pronta para o acerto :: ["request","technical"]
+PASS R06-S4-03 — Devolução com valor divergente é rejeitada :: {"open":true,"error":"O valor devolvido deve ser exatamente o valor calculado.","toast":"Registro atualizado na demonstração."}
+PASS R06-S4-04 — Devolução sem comprovante/referência é bloqueada no formulário :: {"st":{"open":true,"error":"","toast":"Registro atualizado na demonstração."},"refInvalid":{"message":"Preencha este campo.","valid":false}}
+PASS R06-S4-05 — Data da devolução anterior aos recebimentos é rejeitada :: {"open":true,"error":"Data anterior aos registros financeiros.","toast":"Registro atualizado na demonstração."}
+PASS R06-S4-06 — Data inválida e forma inválida são rejeitadas no modelo :: {"err":"Informe data e forma da devolução.","before":2,"after":2}
+PASS R06-S4-07 — Confirmação calcula total devido de R$ 80,00 e devolução de R$ 160,00 :: {"status":"Cancelado","total":8000,"paid":8000,"settle":{"gross":10000,"discount":2000,"total":8000,"paid":24000,"refund":16000,"balance":0,"result":"a_devolver"}}
+PASS R06-S4-08 — Devolução é evento separado com valor, data, forma e referência :: {"id":3,"type":"refund","amount":16000,"date":"2026-11-25","method":"Pix","reference":"Comprovante fictício R06 S4","registered":"2026-11-25T22:36:49.792Z"}
+PASS R06-S4-09 — Recibos originais permanecem e não são marcados como estornados :: {"events":["receive","receive","refund"]}
+PASS R06-S4-10 — Recibo original continua acessível e sem ESTORNADO :: DOCUMENTO
+Recibo de recebimento
+
+Prévia de demonstração, sem validade comercial.
+
+Voltar
+Imprimir
+
+MINHA OFICINA · DEMONSTRAÇÃO
+
+Recibo #25 / 1
+
+Recebimento registrado
+
+R$ 100,00
+
+
+PASS R06-S4-11 — Financeiro mostra a devolução e bloqueia correções posteriores :: ATENDIMENTO / #025
+Midea · Bancada R06 S4
+
+Clima Sul Serviços · Entrada em 25/11/2026
+
+Voltar
+Imprimir
+ANDAMENTO TÉCNICO
+Cancelado
+Conclusão não registrada
+FINANCEIRO
+Sem pendência
+Saldo: R$ 0,00
+RETIRADA
+Não entregue
+Registro independente 
+PASS R06-S4-12 — Correção após devolução é bloqueada no modelo :: {"err":"Há devolução registrada ou não há obrigação; confira o histórico.","before":3,"after":3}
+PASS R06-S4-13 — Projeção do portal reflete o líquido de R$ 80,00 e não contém referência privada :: {"id":25,"status":"Cancelado","entry":"2026-11-25","forecast":"","equipment":"Midea · Bancada R06 S4","finance":{"total":8000,"paid":8000,"balance":0,"status":"Quitada"},"quote":null,"attachments":[]}
+PASS R06-S4-14 — Portal cancelado não mostra orçamento nem comprovante interno :: SEU ATENDIMENTO · OS #025
+Midea · Bancada R06 S4
+Cancelado
+Entrada
+25/11/2026
+Previsão
+Não informada
+Orçamento
+
+Não há orçamento publicado disponível para consulta neste momento.
+
+Pagamento
+Quitada
+Total cobrado
+R$ 80,00
+Pago
+R$ 80,00
+Saldo
+PASS R06-S4-15 — Impressão da OS cancelada não expõe a referência privada :: DOCUMENTO
+Impressão da OS #025
+
+Prévia fictícia para avaliação do formato.
+
+Voltar
+Cupom 80 mm
+Imprimir
+Minha oficina · Demonstração
+Ordem de serviço #025
+Cliente
+Clima Sul Serviços
+Equipamento
+Midea · Bancada R06 S4
+Entrada
+25/11/2026
+Anda
+PASS R06-S4-16 — Sem exceções, erros de console ou páginas externas na S4 :: {"errors":[],"consoleErrors":[],"portal":[[],[]],"external":[]}
+PASS R06-S5-01 — Acerto sem pendência mantém total igual ao pago :: {"status":"Cancelado","total":10000,"paid":10000,"settle":{"gross":10000,"discount":0,"total":10000,"paid":10000,"refund":0,"balance":0,"result":"sem_pendencias"}}
+PASS R06-S5-01-B — Cancelamento sem devolução não anuncia “Devolução registrada” :: ATENDIMENTO / #025
+LG · Bancada R06 S5
+
+Clima Sul Serviços · Entrada em 25/11/2026
+
+Voltar
+Imprimir
+ANDAMENTO TÉCNICO
+Cancelado
+Conclusão não registrada
+FINANCEIRO
+Sem pendência
+Saldo: R$ 0,00
+RETIRADA
+Não entregue
+Registro independente do 
+PASS R06-S5-02 — Financeiro não recebe ação de retificação :: ATENDIMENTO / #025
+LG · Bancada R06 S5
+
+Clima Sul Serviços · Entrada em 25/11/2026
+
+Voltar
+Imprimir
+ANDAMENTO TÉCNICO
+Cancelado
+Conclusão não registrada
+FINANCEIRO
+Sem pendência
+Saldo: R$ 0,00
+RETIRAD
+PASS R06-S5-03 — Retificação sem permissão é bloqueada :: {"err":"Confirme a correção autorizada.","before":1,"after":1}
+PASS R06-S5-04 — Administrador vê a retificação autorizada :: rectify button
+PASS R06-S5-05 — Retificação exige tipo explícito :: Corrige um recebimento registrado indevidamente. Não realiza reembolso, transferência ou devolução.
+
+Recebimento #1
+R$ 100,00
+Data
+24/11/2026
+Forma
+Pix
+Saldo após correção
+R$ 100,00
+Data da correção
+Tipo de retificação
+Selecione
+Lançamento 
+PASS R06-S5-06 — Data anterior à confirmação do acerto é rejeitada :: {"open":true,"error":"Data fora do período de retificação.","toast":"Registro atualizado na demonstração."}
+PASS R06-S5-07 — Retificação autorizada recompõe o saldo e registra o tipo :: {"id":2,"type":"reverse","reference":1,"amount":10000,"date":"2026-11-25","method":"Pix","reason":"Retificação autorizada após conferência R06.","registered":"2026-11-25T22:37:02.029Z","rectification":"lancamento_incorreto"}
+PASS R06-S5-08 — Recibo retificado permanece e é marcado ESTORNADO :: receipt marked
+PASS R06-S5-09 — Retificação duplicada não oferece ação :: no duplicate
+PASS R06-S5-10 — Retificação duplicada é rejeitada no modelo :: {"err":"Recebimento inexistente ou já estornado.","before":2,"after":2}
+PASS R06-S5-11 — Saldo recomposto autoriza novo recebimento :: {"paid":10000,"events":3}
+PASS R06-S5-12 — Financeiro não abre retificação do novo recebimento :: direct modal
+PASS R06-S5-13 — Total zero com obrigação registra devolução integral :: {"status":"Cancelado","total":0,"paid":0,"billing":{"due":"2026-11-25","items":[{"name":"Reparo zerado","type":"Serviço","quantity":1,"unit":10000}],"discount":0,"settlement":{"gross":0,"discount":0}}}
+PASS R06-S5-14 — Portal do total zero com obrigação mostra Sem cobrança :: {"total":0,"paid":0,"balance":0,"status":"Sem cobrança"}
+PASS R06-S5-15-A — Bloco de devolução fica oculto quando não há valor a devolver :: {"hidden":true,"display":"none","height":0}
+PASS R06-S5-15 — Total zero sem obrigação cancela sem criar cobrança :: {"status":"Cancelado","total":0,"billing":null}
+PASS R06-S5-15-B — Concluído sem devolução não exibe a linha “Devolução registrada” :: ATENDIMENTO / #027
+Philco · Bancada R06 S5 livre
+
+Clima Sul Serviços · Entrada em 25/11/2026
+
+Voltar
+Imprimir
+ANDAMENTO TÉCNICO
+Cancelado
+Conclusão não registrada
+FINANCEIRO
+Sem pendência
+Saldo: R$ 0,
+PASS R06-S5-16 — Portal sem obrigação não exibe bloco financeiro :: {"id":27,"status":"Cancelado","entry":"2026-11-25","forecast":"","equipment":"Philco · Bancada R06 S5 livre","finance":null,"quote":null,"attachments":[]}
+PASS R06-S5-17 — Sem exceções, erros de console ou páginas externas na S5 :: {"errors":[],"consoleErrors":[]}
+PASS R06-S6-01 — Segunda aba altera o saldo e a primeira anuncia o conflito :: {"toastA":"Dados alterados em outra aba. Confira antes de salvar.","stillOpen":true}
+PASS R06-S6-02 — Confirmação obsoleta é abortada e não grava cancelamento :: {"st":{"open":false,"error":"","toast":"Dados alterados em outra aba. Reabra a operação para evitar sobrescrever a atualização."},"status":"Negociação","paid":15000,"events":["request","technical"]}
+PASS R06-S6-03 — Acerto recalculado confirma o cancelamento com devolução de R$ 70,00 :: {"status":"Cancelado","total":8000,"paid":8000,"events":["receive","receive","refund"]}
+PASS R06-S6-04 — Segunda aba atualiza para o cancelamento confirmado :: ATENDIMENTO / #025
+Daikin · Bancada R06 S6
+
+Clima Sul Serviços · Entrada em 25/11/2026
+
+Voltar
+Imprimir
+ANDAMENTO TÉCNICO
+Cancelado
+Conclusão não registrada
+FINANCEIRO
+Sem pendência
+Saldo: R$ 0,00
+RETIRADA
+Não entregue
+R
+PASS R06-S6-05 — Cancelamento e devolução persistem após recarregar :: {"status":"Cancelado","events":3,"hist":"ATENDIMENTO / #025\nDaikin · Bancada R06 S6\n\nClima Sul Serviços · Entrada em 25/11/2026\n\nVoltar\nImprimir\nANDAMENTO TÉCNICO\nCancelado\nConclusão não registrada\nFINANCEIRO\nSem pendência\nSaldo
+PASS R06-S6-06 — Chave financeira obsoleta é rejeitada no modelo :: {"err":"A OS mudou. Reabra o acerto.","key":true,"confirmed":false}
+PASS R06-S6-07 — Técnico não abre nem executa o acerto :: {"modal":false,"err":"Operação não autorizada ou confirmação ausente."}
+PASS R06-S6-08 — Financeiro não solicita cancelamento nem por chamada direta :: {"modal":false,"err":"Operação não autorizada ou confirmação ausente."}
+PASS R06-S6-09 — Atendente não confere itens nem por chamada direta :: {"modal":false,"err":"Operação não autorizada ou confirmação ausente."}
+PASS R06-S6-10 — Sem exceções, erros de console ou requisições externas na S6 :: {"errors":[],"consoleErrors":[],"external":[]}
+
+TOTAL 103 · PASS 102 · FAIL 0 · INFO 1

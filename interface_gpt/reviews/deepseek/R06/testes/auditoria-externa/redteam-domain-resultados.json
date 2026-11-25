@@ -1,0 +1,515 @@
+{
+  "generatedAt": "2026-11-25T22:27:25.268Z",
+  "results": [
+    {
+      "id": "RT-P1-01",
+      "desc": "OS #023 inicia sem pedido e sem cobrança",
+      "status": "PASS",
+      "detail": "{\"status\":\"Orçamento\",\"total\":0,\"paid\":0,\"events\":0}"
+    },
+    {
+      "id": "RT-P1-02",
+      "desc": "Motivo vazio e origem vazia são rejeitados no modelo",
+      "status": "PASS",
+      "detail": "direct model"
+    },
+    {
+      "id": "RT-P1-03",
+      "desc": "Pedido preserva status, total, pago e entrega",
+      "status": "PASS",
+      "detail": "{\"st\":{\"open\":false,\"error\":\"\",\"toast\":\"Registro atualizado na demonstração.\"},\"status\":\"Orçamento\",\"total\":0,\"paid\":0,\"events\":[\"request\"]}"
+    },
+    {
+      "id": "RT-P1-04",
+      "desc": "Pedido entra na fila e no cartão da OS",
+      "status": "PASS",
+      "detail": "queue/card"
+    },
+    {
+      "id": "RT-P1-05",
+      "desc": "Pedido duplicado é rejeitado",
+      "status": "PASS",
+      "detail": "direct duplicate"
+    },
+    {
+      "id": "RT-P1-06",
+      "desc": "Retirada encerra a pendência sem mudar a OS",
+      "status": "PASS",
+      "detail": "{\"st\":{\"open\":false,\"error\":\"\",\"toast\":\"Registro atualizado na demonstração.\"},\"events\":[\"request\",\"withdraw\"]}"
+    },
+    {
+      "id": "RT-P1-07",
+      "desc": "Novo pedido após retirada registra nova origem",
+      "status": "PASS",
+      "detail": "[[\"request\",\"cliente\"],[\"withdraw\",null],[\"request\",\"assistencia\"]]"
+    },
+    {
+      "id": "RT-P1-08",
+      "desc": "Finalizada, entregue e garantia ficam bloqueadas (UI e modelo)",
+      "status": "PASS",
+      "detail": "[{\"id\":20,\"btn\":0,\"blocked\":true,\"err\":\"Atendimento concluído, cancelado ou faturado legado. Concilie antes.\",\"same\":true},{\"id\":19,\"btn\":0,\"blocked\":true,\"err\":\"Atendimento concluído, cancelado ou faturado legado. Concilie antes. Há entrega física registrada.\",\"same\":true},{\"id\":18,\"btn\":0,\"blocked\":true,\"err\":\"Há vínculo de garantia; conciliação de garantia será tratada na R07.\",\"same\":true},{\"id\":16,\"btn\":0,\"blocked\":true,\"err\":\"Atendimento concluído, cancelado ou faturado legado. Concilie antes. Há entrega física registrada. Há vínculo de garantia; conciliação de garantia será tratada na R07.\",\"same\":true}]"
+    },
+    {
+      "id": "RT-P1-09",
+      "desc": "Técnico solicita/retira/conferem e não vê valores",
+      "status": "PASS",
+      "detail": "ATENDIMENTO / #023 Samsung · Digital Inverter Marina Alves · Entrada em 20/11/2026 Voltar Imprimir ANDAMENTO TÉCNICO Orçamento Conclusão não registrada Atuali"
+    },
+    {
+      "id": "RT-P1-10",
+      "desc": "Atendente apenas consulta o cancelamento",
+      "status": "PASS",
+      "detail": "ATENDIMENTO / #023 Samsung · Digital Inverter Marina Alves · Entrada em 20/11/2026 Voltar Imprimir ANDAMENTO TÉCNICO Orçamento Conclusão não registrada FINANC"
+    },
+    {
+      "id": "RT-P1-11",
+      "desc": "Financeiro não solicita/retira/conferem e aguarda conferência",
+      "status": "PASS",
+      "detail": "ATENDIMENTO / #023 Samsung · Digital Inverter Marina Alves · Entrada em 20/11/2026 Voltar Imprimir ANDAMENTO TÉCNICO Orçamento Conclusão não registrada FINANC"
+    },
+    {
+      "id": "RT-P1-12",
+      "desc": "Administrador recupera as ações",
+      "status": "PASS",
+      "detail": "admin"
+    },
+    {
+      "id": "RT-P1-13",
+      "desc": "Perfis não autorizados falham em chamadas diretas de cancelamento",
+      "status": "PASS",
+      "detail": "{\"tech\":\"Operação não autorizada ou confirmação ausente.\",\"fin\":\"Operação não autorizada ou confirmação ausente.\",\"att\":\"Operação não autorizada ou confirmação ausente.\"}"
+    },
+    {
+      "id": "RT-P1-14",
+      "desc": "Motivo no limite de 2000 é aceito; 2001 é rejeitado",
+      "status": "PASS",
+      "detail": "{\"wd\":\"ok\",\"long\":\"Confira o motivo ou as observações.\",\"exact\":\"accepted\"}"
+    },
+    {
+      "id": "RT-P1-15",
+      "desc": "Sem exceções, erros de console ou requisições externas na P1",
+      "status": "PASS",
+      "detail": "{\"errors\":[],\"consoleErrors\":[],\"external\":[]}"
+    },
+    {
+      "id": "RT-P2-01",
+      "desc": "Rascunho de 3 peças, 2 serviços e desconto salvo (total R$235)",
+      "status": "PASS",
+      "detail": "{\"st\":{\"open\":false,\"error\":\"\",\"toast\":\"Registro atualizado na demonstração.\"},\"draft\":{\"items\":5,\"discount\":1000,\"proposal\":23500}}"
+    },
+    {
+      "id": "RT-P2-02",
+      "desc": "Publicação cria versão com 5 itens, total R$235 e status Negociação",
+      "status": "PASS",
+      "detail": "{\"st\":{\"open\":false,\"error\":\"\",\"toast\":\"Registro atualizado na demonstração.\"},\"status\":\"Negociação\",\"version\":{\"total\":23500,\"items\":5}}"
+    },
+    {
+      "id": "RT-P2-03",
+      "desc": "Pedido não altera orçamento nem entrega",
+      "status": "PASS",
+      "detail": "{\"st\":{\"open\":false,\"error\":\"\",\"toast\":\"Registro atualizado na demonstração.\"},\"status\":\"Negociação\",\"total\":0}"
+    },
+    {
+      "id": "RT-P2-04",
+      "desc": "Peça não utilizada parcial: sem entrada em estoque",
+      "status": "PASS",
+      "detail": "{\"id\":2,\"type\":\"item\",\"when\":\"2026-11-25T22:25:05.170Z\",\"request\":1,\"item\":{\"name\":\"IGBT RT\",\"type\":\"Peça\",\"quantity\":1,\"unit\":3000},\"disposition\":\"unused\",\"reason\":\"\",\"stockReturned\":0,\"stockNote\":\"Baixa não comprovada; sem entrada no estoque.\"}"
+    },
+    {
+      "id": "RT-P2-05",
+      "desc": "Consumo/perda sem motivo é rejeitado e não grava",
+      "status": "PASS",
+      "detail": "{\"open\":true,\"error\":\"Confira o motivo ou as observações.\",\"toast\":\"Registro atualizado na demonstração.\"}"
+    },
+    {
+      "id": "RT-P2-06",
+      "desc": "Peça consumida é registrada sem retorno ao estoque",
+      "status": "PASS",
+      "detail": "{\"id\":3,\"type\":\"item\",\"when\":\"2026-11-25T22:25:07.169Z\",\"request\":1,\"item\":{\"name\":\"IGBT RT\",\"type\":\"Peça\",\"quantity\":2,\"unit\":3000},\"disposition\":\"lost\",\"reason\":\"Peça consumida em teste RT R06.\",\"stockReturned\":0,\"stockNote\":\"Consumo/perda registrado; não retorna ao estoque.\"}"
+    },
+    {
+      "id": "RT-P2-07",
+      "desc": "Segunda peça consumida também não movimenta estoque",
+      "status": "PASS",
+      "detail": "[\"Capacitor RT\",\"Diagnóstico RT\",\"Reparo RT\"]"
+    },
+    {
+      "id": "RT-P2-08",
+      "desc": "Conferência bloqueada enquanto há peça pendente",
+      "status": "PASS",
+      "detail": "{\"err\":\"Concilie todas as peças antes.\",\"before\":4,\"after\":4}"
+    },
+    {
+      "id": "RT-P2-09",
+      "desc": "Última peça conciliada sem estoque; itens 2",
+      "status": "PASS",
+      "detail": "[\"Diagnóstico RT\",\"Reparo RT\"]"
+    },
+    {
+      "id": "RT-P2-10",
+      "desc": "Serviço não executado sai; executado permanece; versão preservada",
+      "status": "PASS",
+      "detail": "{\"items\":[\"Reparo RT\"],\"version\":5,\"discount\":0}"
+    },
+    {
+      "id": "RT-P2-11",
+      "desc": "Conferência técnica concluída",
+      "status": "PASS",
+      "detail": "{\"open\":false,\"error\":\"\",\"toast\":\"Registro atualizado na demonstração.\"}"
+    },
+    {
+      "id": "RT-P2-12",
+      "desc": "Mudança de andamento invalida a conferência e o acerto",
+      "status": "PASS",
+      "detail": "{\"st\":{\"open\":false,\"error\":\"\",\"toast\":\"Registro atualizado na demonstração.\"},\"invalidByStatus\":false}"
+    },
+    {
+      "id": "RT-P2-13",
+      "desc": "Limitação declarada: voltar ao estado idêntico reativa a conferência (INFO)",
+      "status": "INFO",
+      "detail": "{\"technicalAfterReturn\":true,\"note\":\"technicalKey é hash do estado atual; não há evento de revogação\"}"
+    },
+    {
+      "id": "RT-P2-14",
+      "desc": "Alteração de item invalida a conferência e bloqueia o acerto",
+      "status": "PASS",
+      "detail": "{\"st\":{\"open\":false,\"error\":\"\",\"toast\":\"Registro atualizado na demonstração.\"},\"invalidByItem\":false}"
+    },
+    {
+      "id": "RT-P2-15",
+      "desc": "Limitação declarada: remover o item restaura a chave anterior (INFO)",
+      "status": "INFO",
+      "detail": "{\"restored\":true,\"note\":\"mesmo limite da P2-13\"}"
+    },
+    {
+      "id": "RT-P2-16",
+      "desc": "Retirada não restaura itens e preserva versão",
+      "status": "PASS",
+      "detail": "{\"items\":[\"Reparo RT\"],\"versions\":5}"
+    },
+    {
+      "id": "RT-P2-17",
+      "desc": "Estoque permanece intocado durante todo o fluxo",
+      "status": "PASS",
+      "detail": "{\"before\":[{\"name\":\"IGBT 650 V\",\"quantity\":8},{\"name\":\"Optoacoplador PC817\",\"quantity\":3},{\"name\":\"Capacitor 450 V\",\"quantity\":16}],\"after\":[{\"name\":\"IGBT 650 V\",\"quantity\":8},{\"name\":\"Optoacoplador PC817\",\"quantity\":3},{\"name\":\"Capacitor 450 V\",\"quantity\":16}]}"
+    },
+    {
+      "id": "RT-P2-18",
+      "desc": "Sem exceções ou erros de console na P2",
+      "status": "PASS",
+      "detail": "{\"errors\":[],\"consoleErrors\":[]}"
+    },
+    {
+      "id": "RT-P3-01",
+      "desc": "Acerto sem cobrança prévia cria obrigação de R$70 e cancela",
+      "status": "PASS",
+      "detail": "{\"st\":{\"open\":false,\"error\":\"\",\"toast\":\"Registro atualizado na demonstração.\"},\"status\":\"Cancelado\",\"total\":7000,\"paid\":0,\"settlement\":{\"gross\":8000,\"discount\":1000,\"total\":7000,\"paid\":0,\"refund\":0,\"balance\":7000,\"result\":\"a_receber\"}}"
+    },
+    {
+      "id": "RT-P3-02",
+      "desc": "Fila de cancelamentos fica vazia após confirmar",
+      "status": "PASS",
+      "detail": "queue=0"
+    },
+    {
+      "id": "RT-P3-03",
+      "desc": "Técnico/Atendente não veem valores; Financeiro vê saldo",
+      "status": "PASS",
+      "detail": "profile visibility"
+    },
+    {
+      "id": "RT-P3-04",
+      "desc": "Recebimento posterior quita o saldo e preserva status cancelado",
+      "status": "PASS",
+      "detail": "{\"st\":{\"open\":false,\"error\":\"\",\"toast\":\"Registro atualizado na demonstração.\"},\"paid\":7000,\"events\":[\"receive\"]}"
+    },
+    {
+      "id": "RT-P3-05",
+      "desc": "Pagamento em saldo zero é bloqueado (UI e modelo)",
+      "status": "PASS",
+      "detail": "Recebimento excede o saldo ou tem valor inválido."
+    },
+    {
+      "id": "RT-P3-06",
+      "desc": "Estorno normal reabre saldo sem alterar total e marca recibo",
+      "status": "PASS",
+      "detail": "{\"st\":{\"open\":false,\"error\":\"\",\"toast\":\"Registro atualizado na demonstração.\"},\"paid\":0,\"events\":[\"receive\",\"reverse\"]}"
+    },
+    {
+      "id": "RT-P3-07",
+      "desc": "Saldo recomposto aceita novo recebimento",
+      "status": "PASS",
+      "detail": "{\"st\":{\"open\":false,\"error\":\"\",\"toast\":\"Registro atualizado na demonstração.\"},\"paid\":7000}"
+    },
+    {
+      "id": "RT-P3-08",
+      "desc": "Entrega é operação independente do cancelamento",
+      "status": "PASS",
+      "detail": "{\"st\":{\"open\":false,\"error\":\"\",\"toast\":\"Registro atualizado na demonstração.\"},\"delivery\":{\"date\":\"2026-11-25\",\"receiver\":\"Marina Alves\",\"third\":false,\"items\":\"Equipamento e itens fictícios RT R06\",\"authorization\":\"\",\"registered\":\"2026-11-25T22:25:26.418Z\"},\"status\":\"Cancelado\"}"
+    },
+    {
+      "id": "RT-P3-09",
+      "desc": "Portal do cancelado oculta orçamento e mostra projeção financeira",
+      "status": "PASS",
+      "detail": "SEU ATENDIMENTO · OS #023 Samsung · Digital Inverter Cancelado Entrada 20/11/2026 Previsão Não informada Orçamento Não há orçamento publicado disponível para consulta neste momento. Pagamento Quitada Total cobrado R$ 70,00 Pago R$ 70,00 Saldo a pagar R$ 0,00 Arquivos compartilhados Nenhum arquivo compartilhado nesta demonstração. Este é um link de demonstração. Na versão real, compartilhe o endereço privado apenas com pessoas autorizadas."
+    },
+    {
+      "id": "RT-P3-10",
+      "desc": "Portal não expõe motivo, histórico, token ou referência privada",
+      "status": "PASS",
+      "detail": "{\"keys\":[\"attachments\",\"entry\",\"equipment\",\"finance\",\"forecast\",\"id\",\"quote\",\"status\"],\"quote\":null,\"finance\":{\"total\":7000,\"paid\":7000,\"balance\":0,\"status\":\"Quitada\"}}"
+    },
+    {
+      "id": "RT-P3-11",
+      "desc": "Escaping do motivo injetado no painel/histórico",
+      "status": "PASS",
+      "detail": "injected request reason"
+    },
+    {
+      "id": "RT-P3-12",
+      "desc": "Sem exceções, console errors ou páginas externas na P3",
+      "status": "PASS",
+      "detail": "{\"errors\":[],\"consoleErrors\":[],\"pErr\":[],\"external\":[]}"
+    },
+    {
+      "id": "RT-P4-01",
+      "desc": "Duas entradas somam R$240 antes do cancelamento",
+      "status": "PASS",
+      "detail": "{\"total\":24000,\"paid\":24000}"
+    },
+    {
+      "id": "RT-P4-02",
+      "desc": "Conferência técnica pronta para o acerto",
+      "status": "PASS",
+      "detail": "[\"request\",\"technical\"]"
+    },
+    {
+      "id": "RT-P4-03",
+      "desc": "Devolução com valor divergente é rejeitada",
+      "status": "PASS",
+      "detail": "{\"open\":true,\"error\":\"O valor devolvido deve ser exatamente o valor calculado.\",\"toast\":\"Registro atualizado na demonstração.\"}"
+    },
+    {
+      "id": "RT-P4-04",
+      "desc": "Devolução sem comprovante é bloqueada no formulário",
+      "status": "PASS",
+      "detail": "{\"st\":{\"open\":true,\"error\":\"\",\"toast\":\"Registro atualizado na demonstração.\"},\"refValid\":{\"message\":\"Preencha este campo.\",\"valid\":false}}"
+    },
+    {
+      "id": "RT-P4-05",
+      "desc": "Data da devolução anterior aos recebimentos é rejeitada",
+      "status": "PASS",
+      "detail": "{\"open\":true,\"error\":\"Data anterior aos registros financeiros.\",\"toast\":\"\"}"
+    },
+    {
+      "id": "RT-P4-06",
+      "desc": "Data inválida e forma inválida são rejeitadas",
+      "status": "PASS",
+      "detail": "{\"badDate\":{\"err\":\"Informe data e forma da devolução.\",\"before\":2,\"after\":2},\"badMethod\":\"Informe data e forma da devolução.\"}"
+    },
+    {
+      "id": "RT-P4-07",
+      "desc": "Confirmação calcula total R$80 e devolução R$160",
+      "status": "PASS",
+      "detail": "{\"st\":{\"open\":false,\"error\":\"\",\"toast\":\"Registro atualizado na demonstração.\"},\"status\":\"Cancelado\",\"total\":8000,\"paid\":8000,\"settle\":{\"gross\":10000,\"discount\":2000,\"total\":8000,\"paid\":24000,\"refund\":16000,\"balance\":0,\"result\":\"a_devolver\"}}"
+    },
+    {
+      "id": "RT-P4-08",
+      "desc": "Devolução é evento separado; recibos originais não são estornados",
+      "status": "PASS",
+      "detail": "{\"events\":[\"receive\",\"receive\",\"refund\"],\"refundEvent\":{\"id\":3,\"type\":\"refund\",\"amount\":16000,\"date\":\"2026-11-25\",\"method\":\"Pix\",\"reference\":\"REF-PRIVADA-RT-R06 <img src=x onerror=\\\"window.__rty=1\\\">\",\"registered\":\"2026-11-25T22:25:41.554Z\"}}"
+    },
+    {
+      "id": "RT-P4-09",
+      "desc": "Recibo original continua normal e sem ESTORNADO",
+      "status": "PASS",
+      "detail": "DOCUMENTO Recibo de recebimento Prévia de demonstração, sem validade comercial. Voltar Imprimir MINHA OFICINA · DEMONSTRAÇÃO Recibo #25 / 1 Recebimento registrado R$ 100,00 "
+    },
+    {
+      "id": "RT-P4-10",
+      "desc": "Financeiro mostra devolução e bloqueia correções",
+      "status": "PASS",
+      "detail": "ATENDIMENTO / #025 RT · Devolução Clima Sul Serviços · Entrada em 25/11/2026 Voltar Imprimir ANDAMENTO TÉCNICO Cancelado Conclusão não registrada FINANCEIRO Sem pendência Saldo: R$ 0,00 RETIRADA Não entregue Registro independente do pagamento Visão geral Atendimento Orçamento e link Entrega Anexos Histórico Cancelamento Financeiro Recebimentos e correções Devolução registrada − R$ 160,00 25/11/2026 · Pix · Registro #3 Comprovante: REF-PRIVADA-RT-R06 <img src=x onerror=\"window.__rty=1\"> Rece"
+    },
+    {
+      "id": "RT-P4-11",
+      "desc": "Correção após devolução é bloqueada no modelo",
+      "status": "PASS",
+      "detail": "{\"e1\":\"Há devolução registrada ou não há obrigação; confira o histórico.\",\"e2\":\"Há devolução registrada ou não há obrigação; confira o histórico.\",\"same\":true,\"status\":\"Cancelado\"}"
+    },
+    {
+      "id": "RT-P4-12",
+      "desc": "Pagamento em acerto com devolução/saldo zero é bloqueado",
+      "status": "PASS",
+      "detail": "Cobrança indisponível. Acerto de cancelamento não autoriza recebimento."
+    },
+    {
+      "id": "RT-P4-13",
+      "desc": "Portal reflete líquido R$80 e não contém referência privada",
+      "status": "PASS",
+      "detail": "{\"total\":8000,\"paid\":8000,\"balance\":0,\"status\":\"Quitada\"}"
+    },
+    {
+      "id": "RT-P4-14",
+      "desc": "Portal cancelado não mostra orçamento nem comprovante interno",
+      "status": "PASS",
+      "detail": "SEU ATENDIMENTO · OS #025 RT · Devolução Cancelado Entrada 25/11/2026 Previsão Não informada Orçamento Não há orçamento publicado disponível para consulta neste momento. Pagamento Quitada Total cobrado R$ 80,00 Pago R$ 80,00 Saldo a pagar R$ 0,00 Arquivos compartilhados Nenhum arquivo compartilhado nesta demonstração. Este é um link de demonstração. Na versão real, compartilhe o endereço privado apenas com pessoas autorizadas."
+    },
+    {
+      "id": "RT-P4-15",
+      "desc": "Impressão da OS cancelada não expõe referência privada",
+      "status": "PASS",
+      "detail": "DOCUMENTO Impressão da OS #025 Prévia fictícia para avaliação do formato. Voltar Cupom 80 mm Imprimir Minha oficina · Demonstração Ordem de serviço #025 Cliente Clima Sul Serviços Equipamento RT · Devolução Entrada 25/"
+    },
+    {
+      "id": "RT-P4-16",
+      "desc": "Referência privada é escapada no financeiro",
+      "status": "PASS",
+      "detail": "finance escaping"
+    },
+    {
+      "id": "RT-P4-17",
+      "desc": "Sem exceções ou console errors na P4",
+      "status": "PASS",
+      "detail": "{\"errors\":[],\"consoleErrors\":[]}"
+    },
+    {
+      "id": "RT-P5-01",
+      "desc": "Total zero com obrigação anterior: sem devolução e billing preservado",
+      "status": "PASS",
+      "detail": "{\"st\":{\"open\":false,\"error\":\"\",\"toast\":\"Registro atualizado na demonstração.\"},\"status\":\"Cancelado\",\"total\":0,\"paid\":0,\"billing\":{\"due\":\"2026-11-25\",\"items\":[{\"name\":\"Serviço zero RT\",\"type\":\"Serviço\",\"quantity\":1,\"unit\":10000}],\"discount\":0,\"settlement\":{\"gross\":0,\"discount\":0}},\"settle\":{\"gross\":0,\"discount\":0,\"total\":0,\"paid\":0,\"refund\":0,\"balance\":0,\"result\":\"sem_pendencias\"}}"
+    },
+    {
+      "id": "RT-P5-02",
+      "desc": "Portal do total zero com obrigação mostra Sem cobrança",
+      "status": "PASS",
+      "detail": "portal finance"
+    },
+    {
+      "id": "RT-P5-03",
+      "desc": "Total zero com obrigação e devolução integral",
+      "status": "PASS",
+      "detail": "{\"st\":{\"open\":false,\"error\":\"\",\"toast\":\"Registro atualizado na demonstração.\"},\"total\":0,\"paid\":0,\"events\":[\"receive\",\"refund\"]}"
+    },
+    {
+      "id": "RT-P5-04",
+      "desc": "Total zero sem obrigação não cria cobrança",
+      "status": "PASS",
+      "detail": "{\"st\":{\"open\":false,\"error\":\"\",\"toast\":\"Registro atualizado na demonstração.\"},\"status\":\"Cancelado\",\"total\":0,\"billing\":null}"
+    },
+    {
+      "id": "RT-P5-05",
+      "desc": "Portal sem obrigação não exibe bloco financeiro",
+      "status": "PASS",
+      "detail": "portal null"
+    },
+    {
+      "id": "RT-P5-06",
+      "desc": "Acerto sem pendência mantém total igual ao pago",
+      "status": "PASS",
+      "detail": "{\"st\":{\"open\":false,\"error\":\"\",\"toast\":\"Registro atualizado na demonstração.\"},\"total\":10000,\"paid\":10000}"
+    },
+    {
+      "id": "RT-P5-07",
+      "desc": "Financeiro não vê estorno nem retificação",
+      "status": "PASS",
+      "detail": "ATENDIMENTO / #028 RT · Retificação Clima Sul Serviços · Entrada em 25/11/2026 Voltar Imprimir ANDAMENTO TÉCNICO Cancelado Conclusão não registrada FINANCEIRO Sem pendência Saldo: R$ 0,00 RETIRADA Não entregue Registro"
+    },
+    {
+      "id": "RT-P5-08",
+      "desc": "Administrador vê retificação (não estorno normal)",
+      "status": "PASS",
+      "detail": "ATENDIMENTO / #028 RT · Retificação Clima Sul Serviços · Entrada em 25/11/2026 Voltar Imprimir ANDAMENTO TÉCNICO Cancelado Conclusão não registrada Atualizar andamento FINANCEIRO Sem pendência Saldo: R$ 0,00 RETIRADA Não entregue Registro independente do pag"
+    },
+    {
+      "id": "RT-P5-09",
+      "desc": "Data anterior à confirmação do acerto é rejeitada",
+      "status": "PASS",
+      "detail": "{\"open\":true,\"error\":\"Data fora do período de retificação.\",\"toast\":\"Registro atualizado na demonstração.\"}"
+    },
+    {
+      "id": "RT-P5-10",
+      "desc": "Retificação autorizada recompõe saldo e registra tipo",
+      "status": "PASS",
+      "detail": "{\"id\":2,\"type\":\"reverse\",\"reference\":1,\"amount\":10000,\"date\":\"2026-11-25\",\"method\":\"Pix\",\"reason\":\"Retificação autorizada RT.\",\"registered\":\"2026-11-25T22:26:24.684Z\",\"rectification\":\"nao_compensado\"}"
+    },
+    {
+      "id": "RT-P5-11",
+      "desc": "Recibo retificado é marcado ESTORNADO",
+      "status": "PASS",
+      "detail": "receipt"
+    },
+    {
+      "id": "RT-P5-12",
+      "desc": "Retificação duplicada não é oferecida nem aceita",
+      "status": "PASS",
+      "detail": "duplicate"
+    },
+    {
+      "id": "RT-P5-13",
+      "desc": "Saldo recomposto autoriza novo recebimento",
+      "status": "PASS",
+      "detail": "{\"st\":{\"open\":false,\"error\":\"\",\"toast\":\"Registro atualizado na demonstração.\"},\"paid\":10000}"
+    },
+    {
+      "id": "RT-P5-14",
+      "desc": "Financeiro não abre retificação do novo recebimento",
+      "status": "PASS",
+      "detail": "direct modal"
+    },
+    {
+      "id": "RT-P5-15",
+      "desc": "Sem exceções ou console errors na P5",
+      "status": "PASS",
+      "detail": "{\"errors\":[],\"consoleErrors\":[]}"
+    },
+    {
+      "id": "RT-P6-01",
+      "desc": "Segunda aba altera o saldo e a primeira anuncia conflito",
+      "status": "PASS",
+      "detail": "{\"bst\":{\"open\":false,\"error\":\"\",\"toast\":\"Registro atualizado na demonstração.\"},\"toastA\":\"Dados alterados em outra aba. Confira antes de salvar.\"}"
+    },
+    {
+      "id": "RT-P6-02",
+      "desc": "Confirmação obsoleta é abortada e não grava cancelamento",
+      "status": "PASS",
+      "detail": "{\"st\":{\"open\":false,\"error\":\"\",\"toast\":\"Dados alterados em outra aba. Reabra a operação para evitar sobrescrever a atualização.\"},\"status\":\"Negociação\",\"paid\":15000,\"events\":[\"request\",\"technical\"]}"
+    },
+    {
+      "id": "RT-P6-03",
+      "desc": "Acerto recalculado confirma com devolução R$70",
+      "status": "PASS",
+      "detail": "{\"st\":{\"open\":false,\"error\":\"\",\"toast\":\"Registro atualizado na demonstração.\"},\"total\":8000,\"paid\":8000,\"events\":[\"receive\",\"receive\",\"refund\"]}"
+    },
+    {
+      "id": "RT-P6-04",
+      "desc": "Segunda aba atualiza para o cancelamento",
+      "status": "PASS",
+      "detail": "ATENDIMENTO / #025 RT · Abas Clima Sul Serviços · Entrada em 25/11/2026 Voltar Imprimir ANDAMENTO TÉCNICO Cancelado Conclusão não registrada Atualizar andamento FINANCEIRO Sem pe"
+    },
+    {
+      "id": "RT-P6-05",
+      "desc": "Cancelamento e devolução persistem após recarregar",
+      "status": "PASS",
+      "detail": "{\"status\":\"Cancelado\",\"events\":3}"
+    },
+    {
+      "id": "RT-P6-06",
+      "desc": "Chave financeira obsoleta é rejeitada no modelo",
+      "status": "PASS",
+      "detail": "{\"err\":\"A OS mudou. Reabra o acerto.\",\"confirmed\":false,\"paid\":5000}"
+    },
+    {
+      "id": "RT-P6-07",
+      "desc": "AÇÃO DIRETA: perfil sem financeiro não deveria registrar pagamento",
+      "status": "FAIL",
+      "detail": "{\"Técnico\":{\"before\":{\"paid\":20000,\"events\":0,\"canFinance\":false},\"ok\":true,\"err\":\"\",\"uiModal\":false,\"after\":{\"paid\":21000,\"events\":1}},\"Atendente\":{\"before\":{\"paid\":21000,\"events\":1,\"canFinance\":false},\"ok\":true,\"err\":\"\",\"uiModal\":false,\"after\":{\"paid\":22000,\"events\":2}}}"
+    },
+    {
+      "id": "RT-P6-08",
+      "desc": "Sem exceções ou console errors na P6",
+      "status": "PASS",
+      "detail": "{\"errors\":[],\"consoleErrors\":[],\"bErr\":[]}"
+    }
+  ]
+}

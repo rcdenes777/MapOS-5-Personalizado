@@ -1,0 +1,5 @@
+PASS R06-CAP-01 — Capturas do delta geradas com hashes únicos :: {"total":33,"unique":33,"duplicates":[]}
+PASS R06-CAP-02 — Capturas sem exceções de página :: {"errors":[],"consoleErrors":[]}
+PASS R06-CAP-03 — Capturas sem requisições externas :: []
+
+TOTAL 3 · PASS 3 · FAIL 0 · SHOTS 33 · UNIQUE 33

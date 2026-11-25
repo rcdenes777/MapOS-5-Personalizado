@@ -1,0 +1,1055 @@
+{
+  "generatedAt": "2026-11-25T22:30:05.980Z",
+  "measures": [
+    {
+      "w": 320,
+      "page": {
+        "label": "pending-320",
+        "docW": 320,
+        "win": 320,
+        "mainW": 320,
+        "mainC": 320,
+        "modalOpen": false,
+        "modalW": 0,
+        "modalSW": 0,
+        "modalCW": 0,
+        "formSW": 0,
+        "formCW": 0,
+        "footerPos": "static",
+        "refundHidden": null,
+        "refundDisplay": null,
+        "refundH": null,
+        "checkRect": {
+          "top": 0,
+          "bottom": 0,
+          "left": 0,
+          "right": 0,
+          "w": 0,
+          "h": 0
+        },
+        "footerRect": {
+          "top": 0,
+          "bottom": 0,
+          "left": 0,
+          "right": 0
+        },
+        "overlap": false,
+        "checkAtPoint": "HEADER||",
+        "checks": [
+          {
+            "name": "confirm",
+            "disabled": false,
+            "visible": false
+          }
+        ]
+      },
+      "item": {
+        "label": "cancelitem-320",
+        "docW": 320,
+        "win": 320,
+        "mainW": 320,
+        "mainC": 320,
+        "modalOpen": true,
+        "modalW": 282,
+        "modalSW": 280,
+        "modalCW": 280,
+        "formSW": 240,
+        "formCW": 240,
+        "footerPos": "static",
+        "refundHidden": null,
+        "refundDisplay": null,
+        "refundH": null,
+        "checkRect": {
+          "top": 409,
+          "bottom": 429,
+          "left": 44,
+          "right": 64,
+          "w": 20,
+          "h": 20
+        },
+        "footerRect": {
+          "top": 470.21875,
+          "bottom": 535.21875,
+          "left": 40,
+          "right": 280
+        },
+        "overlap": false,
+        "checkAtPoint": "INPUT|confirm|label",
+        "checks": [
+          {
+            "name": "confirm",
+            "disabled": false,
+            "visible": true
+          }
+        ]
+      },
+      "wd": {
+        "label": "cancelwithdraw-320",
+        "docW": 320,
+        "win": 320,
+        "mainW": 320,
+        "mainC": 320,
+        "modalOpen": true,
+        "modalW": 282,
+        "modalSW": 280,
+        "modalCW": 280,
+        "formSW": 240,
+        "formCW": 240,
+        "footerPos": "sticky",
+        "refundHidden": null,
+        "refundDisplay": null,
+        "refundH": null,
+        "checkRect": {
+          "top": 377.140625,
+          "bottom": 397.140625,
+          "left": 44,
+          "right": 64,
+          "w": 20,
+          "h": 20
+        },
+        "footerRect": {
+          "top": 422.140625,
+          "bottom": 487.140625,
+          "left": 40,
+          "right": 280
+        },
+        "overlap": false,
+        "checkAtPoint": "INPUT|confirm|label",
+        "checks": [
+          {
+            "name": "confirm",
+            "disabled": false,
+            "visible": true
+          }
+        ]
+      },
+      "noRefund": {
+        "label": "cancelconfirm-norefund-320",
+        "docW": 320,
+        "win": 320,
+        "mainW": 320,
+        "mainC": 320,
+        "modalOpen": true,
+        "modalW": 282,
+        "modalSW": 280,
+        "modalCW": 280,
+        "formSW": 240,
+        "formCW": 240,
+        "footerPos": "static",
+        "refundHidden": true,
+        "refundDisplay": "grid",
+        "refundH": 452,
+        "checkRect": {
+          "top": 408.859375,
+          "bottom": 428.859375,
+          "left": 44,
+          "right": 64,
+          "w": 20,
+          "h": 20
+        },
+        "footerRect": {
+          "top": 470.078125,
+          "bottom": 535.078125,
+          "left": 40,
+          "right": 280
+        },
+        "overlap": false,
+        "checkAtPoint": "INPUT|confirm|label",
+        "checks": [
+          {
+            "name": "settlementConfirmed",
+            "disabled": false,
+            "visible": true
+          },
+          {
+            "name": "financialConfirmed",
+            "disabled": false,
+            "visible": true
+          },
+          {
+            "name": "confirm",
+            "disabled": false,
+            "visible": true
+          }
+        ]
+      },
+      "refund": {
+        "label": "cancelconfirm-refund-320",
+        "docW": 320,
+        "win": 320,
+        "mainW": 320,
+        "mainC": 320,
+        "modalOpen": true,
+        "modalW": 282,
+        "modalSW": 280,
+        "modalCW": 280,
+        "formSW": 240,
+        "formCW": 240,
+        "footerPos": "static",
+        "refundHidden": false,
+        "refundDisplay": "grid",
+        "refundH": 452,
+        "checkRect": {
+          "top": 408.859375,
+          "bottom": 428.859375,
+          "left": 44,
+          "right": 64,
+          "w": 20,
+          "h": 20
+        },
+        "footerRect": {
+          "top": 470.078125,
+          "bottom": 535.078125,
+          "left": 40,
+          "right": 280
+        },
+        "overlap": false,
+        "checkAtPoint": "INPUT|confirm|label",
+        "checks": [
+          {
+            "name": "settlementConfirmed",
+            "disabled": false,
+            "visible": true
+          },
+          {
+            "name": "financialConfirmed",
+            "disabled": false,
+            "visible": true
+          },
+          {
+            "name": "confirm",
+            "disabled": false,
+            "visible": true
+          }
+        ]
+      }
+    },
+    {
+      "w": 390,
+      "page": {
+        "label": "pending-390",
+        "docW": 390,
+        "win": 390,
+        "mainW": 390,
+        "mainC": 390,
+        "modalOpen": false,
+        "modalW": 0,
+        "modalSW": 0,
+        "modalCW": 0,
+        "formSW": 0,
+        "formCW": 0,
+        "footerPos": "static",
+        "refundHidden": false,
+        "refundDisplay": "grid",
+        "refundH": 0,
+        "checkRect": {
+          "top": 0,
+          "bottom": 0,
+          "left": 0,
+          "right": 0,
+          "w": 0,
+          "h": 0
+        },
+        "footerRect": {
+          "top": 0,
+          "bottom": 0,
+          "left": 0,
+          "right": 0
+        },
+        "overlap": false,
+        "checkAtPoint": "HEADER||",
+        "checks": [
+          {
+            "name": "settlementConfirmed",
+            "disabled": false,
+            "visible": false
+          },
+          {
+            "name": "financialConfirmed",
+            "disabled": false,
+            "visible": false
+          },
+          {
+            "name": "confirm",
+            "disabled": false,
+            "visible": false
+          }
+        ]
+      },
+      "item": {
+        "label": "cancelitem-390",
+        "docW": 390,
+        "win": 390,
+        "mainW": 390,
+        "mainC": 390,
+        "modalOpen": true,
+        "modalW": 352,
+        "modalSW": 350,
+        "modalCW": 350,
+        "formSW": 310,
+        "formCW": 310,
+        "footerPos": "static",
+        "refundHidden": null,
+        "refundDisplay": null,
+        "refundH": null,
+        "checkRect": {
+          "top": 609.140625,
+          "bottom": 629.140625,
+          "left": 44,
+          "right": 64,
+          "w": 20,
+          "h": 20
+        },
+        "footerRect": {
+          "top": 670.359375,
+          "bottom": 735.359375,
+          "left": 40,
+          "right": 350
+        },
+        "overlap": false,
+        "checkAtPoint": "INPUT|confirm|label",
+        "checks": [
+          {
+            "name": "confirm",
+            "disabled": false,
+            "visible": true
+          }
+        ]
+      },
+      "wd": {
+        "label": "cancelwithdraw-390",
+        "docW": 390,
+        "win": 390,
+        "mainW": 390,
+        "mainC": 390,
+        "modalOpen": true,
+        "modalW": 352,
+        "modalSW": 350,
+        "modalCW": 350,
+        "formSW": 310,
+        "formCW": 310,
+        "footerPos": "sticky",
+        "refundHidden": null,
+        "refundDisplay": null,
+        "refundH": null,
+        "checkRect": {
+          "top": 504.9375,
+          "bottom": 524.9375,
+          "left": 44,
+          "right": 64,
+          "w": 20,
+          "h": 20
+        },
+        "footerRect": {
+          "top": 549.9375,
+          "bottom": 614.9375,
+          "left": 40,
+          "right": 350
+        },
+        "overlap": false,
+        "checkAtPoint": "INPUT|confirm|label",
+        "checks": [
+          {
+            "name": "confirm",
+            "disabled": false,
+            "visible": true
+          }
+        ]
+      },
+      "noRefund": {
+        "label": "cancelconfirm-norefund-390",
+        "docW": 390,
+        "win": 390,
+        "mainW": 390,
+        "mainC": 390,
+        "modalOpen": true,
+        "modalW": 352,
+        "modalSW": 350,
+        "modalCW": 350,
+        "formSW": 310,
+        "formCW": 310,
+        "footerPos": "static",
+        "refundHidden": true,
+        "refundDisplay": "grid",
+        "refundH": 432,
+        "checkRect": {
+          "top": 684.875,
+          "bottom": 704.875,
+          "left": 44,
+          "right": 64,
+          "w": 20,
+          "h": 20
+        },
+        "footerRect": {
+          "top": 746.09375,
+          "bottom": 811.09375,
+          "left": 40,
+          "right": 350
+        },
+        "overlap": false,
+        "checkAtPoint": "INPUT|confirm|label",
+        "checks": [
+          {
+            "name": "settlementConfirmed",
+            "disabled": false,
+            "visible": true
+          },
+          {
+            "name": "financialConfirmed",
+            "disabled": false,
+            "visible": true
+          },
+          {
+            "name": "confirm",
+            "disabled": false,
+            "visible": true
+          }
+        ]
+      },
+      "refund": {
+        "label": "cancelconfirm-refund-390",
+        "docW": 390,
+        "win": 390,
+        "mainW": 390,
+        "mainC": 390,
+        "modalOpen": true,
+        "modalW": 352,
+        "modalSW": 350,
+        "modalCW": 350,
+        "formSW": 310,
+        "formCW": 310,
+        "footerPos": "static",
+        "refundHidden": false,
+        "refundDisplay": "grid",
+        "refundH": 432,
+        "checkRect": {
+          "top": 684.875,
+          "bottom": 704.875,
+          "left": 44,
+          "right": 64,
+          "w": 20,
+          "h": 20
+        },
+        "footerRect": {
+          "top": 746.09375,
+          "bottom": 811.09375,
+          "left": 40,
+          "right": 350
+        },
+        "overlap": false,
+        "checkAtPoint": "INPUT|confirm|label",
+        "checks": [
+          {
+            "name": "settlementConfirmed",
+            "disabled": false,
+            "visible": true
+          },
+          {
+            "name": "financialConfirmed",
+            "disabled": false,
+            "visible": true
+          },
+          {
+            "name": "confirm",
+            "disabled": false,
+            "visible": true
+          }
+        ]
+      }
+    },
+    {
+      "w": 768,
+      "page": {
+        "label": "pending-768",
+        "docW": 768,
+        "win": 768,
+        "mainW": 768,
+        "mainC": 768,
+        "modalOpen": false,
+        "modalW": 0,
+        "modalSW": 0,
+        "modalCW": 0,
+        "formSW": 0,
+        "formCW": 0,
+        "footerPos": "static",
+        "refundHidden": false,
+        "refundDisplay": "grid",
+        "refundH": 0,
+        "checkRect": {
+          "top": 0,
+          "bottom": 0,
+          "left": 0,
+          "right": 0,
+          "w": 0,
+          "h": 0
+        },
+        "footerRect": {
+          "top": 0,
+          "bottom": 0,
+          "left": 0,
+          "right": 0
+        },
+        "overlap": false,
+        "checkAtPoint": "HEADER||",
+        "checks": [
+          {
+            "name": "settlementConfirmed",
+            "disabled": false,
+            "visible": false
+          },
+          {
+            "name": "financialConfirmed",
+            "disabled": false,
+            "visible": false
+          },
+          {
+            "name": "confirm",
+            "disabled": false,
+            "visible": false
+          }
+        ]
+      },
+      "item": {
+        "label": "cancelitem-768",
+        "docW": 768,
+        "win": 768,
+        "mainW": 768,
+        "mainC": 768,
+        "modalOpen": true,
+        "modalW": 560,
+        "modalSW": 558,
+        "modalCW": 558,
+        "formSW": 518,
+        "formCW": 518,
+        "footerPos": "static",
+        "refundHidden": null,
+        "refundDisplay": null,
+        "refundH": null,
+        "checkRect": {
+          "top": 697.046875,
+          "bottom": 717.046875,
+          "left": 129,
+          "right": 149,
+          "w": 20,
+          "h": 20
+        },
+        "footerRect": {
+          "top": 742.046875,
+          "bottom": 807.046875,
+          "left": 125,
+          "right": 643
+        },
+        "overlap": false,
+        "checkAtPoint": "INPUT|confirm|label",
+        "checks": [
+          {
+            "name": "confirm",
+            "disabled": false,
+            "visible": true
+          }
+        ]
+      },
+      "wd": {
+        "label": "cancelwithdraw-768",
+        "docW": 768,
+        "win": 768,
+        "mainW": 768,
+        "mainC": 768,
+        "modalOpen": true,
+        "modalW": 560,
+        "modalSW": 558,
+        "modalCW": 558,
+        "formSW": 518,
+        "formCW": 518,
+        "footerPos": "sticky",
+        "refundHidden": null,
+        "refundDisplay": null,
+        "refundH": null,
+        "checkRect": {
+          "top": 584.75,
+          "bottom": 604.75,
+          "left": 129,
+          "right": 149,
+          "w": 20,
+          "h": 20
+        },
+        "footerRect": {
+          "top": 629.75,
+          "bottom": 694.75,
+          "left": 125,
+          "right": 643
+        },
+        "overlap": false,
+        "checkAtPoint": "INPUT|confirm|label",
+        "checks": [
+          {
+            "name": "confirm",
+            "disabled": false,
+            "visible": true
+          }
+        ]
+      },
+      "noRefund": {
+        "label": "cancelconfirm-norefund-768",
+        "docW": 768,
+        "win": 768,
+        "mainW": 768,
+        "mainC": 768,
+        "modalOpen": true,
+        "modalW": 560,
+        "modalSW": 558,
+        "modalCW": 558,
+        "formSW": 518,
+        "formCW": 518,
+        "footerPos": "static",
+        "refundHidden": true,
+        "refundDisplay": "grid",
+        "refundH": 411,
+        "checkRect": {
+          "top": 881.15625,
+          "bottom": 901.15625,
+          "left": 129,
+          "right": 149,
+          "w": 20,
+          "h": 20
+        },
+        "footerRect": {
+          "top": 926.15625,
+          "bottom": 991.15625,
+          "left": 125,
+          "right": 643
+        },
+        "overlap": false,
+        "checkAtPoint": "INPUT|confirm|label",
+        "checks": [
+          {
+            "name": "settlementConfirmed",
+            "disabled": false,
+            "visible": true
+          },
+          {
+            "name": "financialConfirmed",
+            "disabled": false,
+            "visible": true
+          },
+          {
+            "name": "confirm",
+            "disabled": false,
+            "visible": true
+          }
+        ]
+      },
+      "refund": {
+        "label": "cancelconfirm-refund-768",
+        "docW": 768,
+        "win": 768,
+        "mainW": 768,
+        "mainC": 768,
+        "modalOpen": true,
+        "modalW": 560,
+        "modalSW": 558,
+        "modalCW": 558,
+        "formSW": 518,
+        "formCW": 518,
+        "footerPos": "static",
+        "refundHidden": false,
+        "refundDisplay": "grid",
+        "refundH": 411,
+        "checkRect": {
+          "top": 881.15625,
+          "bottom": 901.15625,
+          "left": 129,
+          "right": 149,
+          "w": 20,
+          "h": 20
+        },
+        "footerRect": {
+          "top": 926.15625,
+          "bottom": 991.15625,
+          "left": 125,
+          "right": 643
+        },
+        "overlap": false,
+        "checkAtPoint": "INPUT|confirm|label",
+        "checks": [
+          {
+            "name": "settlementConfirmed",
+            "disabled": false,
+            "visible": true
+          },
+          {
+            "name": "financialConfirmed",
+            "disabled": false,
+            "visible": true
+          },
+          {
+            "name": "confirm",
+            "disabled": false,
+            "visible": true
+          }
+        ]
+      }
+    },
+    {
+      "w": 1440,
+      "page": {
+        "label": "pending-1440",
+        "docW": 1440,
+        "win": 1440,
+        "mainW": 1206,
+        "mainC": 1206,
+        "modalOpen": false,
+        "modalW": 0,
+        "modalSW": 0,
+        "modalCW": 0,
+        "formSW": 0,
+        "formCW": 0,
+        "footerPos": "static",
+        "refundHidden": false,
+        "refundDisplay": "grid",
+        "refundH": 0,
+        "checkRect": {
+          "top": 0,
+          "bottom": 0,
+          "left": 0,
+          "right": 0,
+          "w": 0,
+          "h": 0
+        },
+        "footerRect": {
+          "top": 0,
+          "bottom": 0,
+          "left": 0,
+          "right": 0
+        },
+        "overlap": false,
+        "checkAtPoint": "ASIDE||",
+        "checks": [
+          {
+            "name": "settlementConfirmed",
+            "disabled": false,
+            "visible": false
+          },
+          {
+            "name": "financialConfirmed",
+            "disabled": false,
+            "visible": false
+          },
+          {
+            "name": "confirm",
+            "disabled": false,
+            "visible": false
+          }
+        ]
+      },
+      "item": {
+        "label": "cancelitem-1440",
+        "docW": 1440,
+        "win": 1440,
+        "mainW": 1206,
+        "mainC": 1206,
+        "modalOpen": true,
+        "modalW": 560,
+        "modalSW": 558,
+        "modalCW": 558,
+        "formSW": 518,
+        "formCW": 518,
+        "footerPos": "static",
+        "refundHidden": null,
+        "refundDisplay": null,
+        "refundH": null,
+        "checkRect": {
+          "top": 635.046875,
+          "bottom": 655.046875,
+          "left": 465,
+          "right": 485,
+          "w": 20,
+          "h": 20
+        },
+        "footerRect": {
+          "top": 680.046875,
+          "bottom": 745.046875,
+          "left": 461,
+          "right": 979
+        },
+        "overlap": false,
+        "checkAtPoint": "INPUT|confirm|label",
+        "checks": [
+          {
+            "name": "confirm",
+            "disabled": false,
+            "visible": true
+          }
+        ]
+      },
+      "wd": {
+        "label": "cancelwithdraw-1440",
+        "docW": 1440,
+        "win": 1440,
+        "mainW": 1206,
+        "mainC": 1206,
+        "modalOpen": true,
+        "modalW": 560,
+        "modalSW": 558,
+        "modalCW": 558,
+        "formSW": 518,
+        "formCW": 518,
+        "footerPos": "sticky",
+        "refundHidden": null,
+        "refundDisplay": null,
+        "refundH": null,
+        "checkRect": {
+          "top": 522.75,
+          "bottom": 542.75,
+          "left": 465,
+          "right": 485,
+          "w": 20,
+          "h": 20
+        },
+        "footerRect": {
+          "top": 567.75,
+          "bottom": 632.75,
+          "left": 461,
+          "right": 979
+        },
+        "overlap": false,
+        "checkAtPoint": "INPUT|confirm|label",
+        "checks": [
+          {
+            "name": "confirm",
+            "disabled": false,
+            "visible": true
+          }
+        ]
+      },
+      "noRefund": {
+        "label": "cancelconfirm-norefund-1440",
+        "docW": 1440,
+        "win": 1440,
+        "mainW": 1206,
+        "mainC": 1206,
+        "modalOpen": true,
+        "modalW": 560,
+        "modalSW": 558,
+        "modalCW": 558,
+        "formSW": 518,
+        "formCW": 518,
+        "footerPos": "static",
+        "refundHidden": true,
+        "refundDisplay": "grid",
+        "refundH": 411,
+        "checkRect": {
+          "top": 757.15625,
+          "bottom": 777.15625,
+          "left": 465,
+          "right": 485,
+          "w": 20,
+          "h": 20
+        },
+        "footerRect": {
+          "top": 802.15625,
+          "bottom": 867.15625,
+          "left": 461,
+          "right": 979
+        },
+        "overlap": false,
+        "checkAtPoint": "INPUT|confirm|label",
+        "checks": [
+          {
+            "name": "settlementConfirmed",
+            "disabled": false,
+            "visible": true
+          },
+          {
+            "name": "financialConfirmed",
+            "disabled": false,
+            "visible": true
+          },
+          {
+            "name": "confirm",
+            "disabled": false,
+            "visible": true
+          }
+        ]
+      },
+      "refund": {
+        "label": "cancelconfirm-refund-1440",
+        "docW": 1440,
+        "win": 1440,
+        "mainW": 1206,
+        "mainC": 1206,
+        "modalOpen": true,
+        "modalW": 560,
+        "modalSW": 558,
+        "modalCW": 558,
+        "formSW": 518,
+        "formCW": 518,
+        "footerPos": "static",
+        "refundHidden": false,
+        "refundDisplay": "grid",
+        "refundH": 411,
+        "checkRect": {
+          "top": 757.15625,
+          "bottom": 777.15625,
+          "left": 465,
+          "right": 485,
+          "w": 20,
+          "h": 20
+        },
+        "footerRect": {
+          "top": 802.15625,
+          "bottom": 867.15625,
+          "left": 461,
+          "right": 979
+        },
+        "overlap": false,
+        "checkAtPoint": "INPUT|confirm|label",
+        "checks": [
+          {
+            "name": "settlementConfirmed",
+            "disabled": false,
+            "visible": true
+          },
+          {
+            "name": "financialConfirmed",
+            "disabled": false,
+            "visible": true
+          },
+          {
+            "name": "confirm",
+            "disabled": false,
+            "visible": true
+          }
+        ]
+      }
+    }
+  ],
+  "results": [
+    {
+      "id": "RT-UI-01",
+      "desc": "Sem overflow horizontal em 320/390/768/1440 (página e modais)",
+      "status": "PASS",
+      "detail": "[]"
+    },
+    {
+      "id": "RT-UI-02",
+      "desc": "Footer estático nos modais item/acerto em todas as larguras",
+      "status": "PASS",
+      "detail": "[]"
+    },
+    {
+      "id": "RT-UI-03",
+      "desc": "Footer do modal técnico é estático em 1440",
+      "status": "PASS",
+      "detail": "{\"pos\":\"static\"}"
+    },
+    {
+      "id": "RT-UI-04",
+      "desc": "DEFEITO: seção de devolução marcada hidden não deveria ser exibida",
+      "status": "FAIL",
+      "detail": "[{\"w\":320,\"hidden\":true,\"display\":\"grid\",\"height\":452},{\"w\":390,\"hidden\":true,\"display\":\"grid\",\"height\":432},{\"w\":768,\"hidden\":true,\"display\":\"grid\",\"height\":411},{\"w\":1440,\"hidden\":true,\"display\":\"grid\",\"height\":411}]"
+    },
+    {
+      "id": "RT-UI-05",
+      "desc": "Último checkbox não é coberto pelo footer ao rolar até o fim",
+      "status": "PASS",
+      "detail": "[]"
+    },
+    {
+      "id": "RT-UI-06",
+      "desc": "Checkboxes obrigatórios visíveis e habilitados nos modais",
+      "status": "PASS",
+      "detail": "[]"
+    },
+    {
+      "id": "RT-UI-SETUP",
+      "desc": "Acerto com devolução da OS de impressão confirmado",
+      "status": "PASS",
+      "detail": "{\"open\":false,\"error\":\"\",\"toast\":\"Registro atualizado na demonstração.\"}"
+    },
+    {
+      "id": "RT-UI-07",
+      "desc": "Foco preso no modal e Escape devolve ao acionador",
+      "status": "PASS",
+      "detail": "{\"kb\":{\"inDialog\":true,\"active\":\"BUTTON|\"},\"inside\":true,\"esc\":{\"open\":false,\"active\":\"modal:cancelconfirm:27\"}}"
+    },
+    {
+      "id": "RT-AXE-320-pending-pieces",
+      "desc": "axe sem violações: 320-pending-pieces",
+      "status": "PASS",
+      "detail": "[]"
+    },
+    {
+      "id": "RT-AXE-320-item-modal",
+      "desc": "axe sem violações: 320-item-modal",
+      "status": "PASS",
+      "detail": "[]"
+    },
+    {
+      "id": "RT-AXE-320-confirm-norefund",
+      "desc": "axe sem violações: 320-confirm-norefund",
+      "status": "PASS",
+      "detail": "[]"
+    },
+    {
+      "id": "RT-AXE-390-done-norefund",
+      "desc": "axe sem violações: 390-done-norefund",
+      "status": "PASS",
+      "detail": "[]"
+    },
+    {
+      "id": "RT-AXE-1440-done-norefund",
+      "desc": "axe sem violações: 1440-done-norefund",
+      "status": "PASS",
+      "detail": "[]"
+    },
+    {
+      "id": "RT-AXE-390-portal",
+      "desc": "axe sem violações: 390-portal",
+      "status": "PASS",
+      "detail": "[]"
+    },
+    {
+      "id": "RT-UI-08",
+      "desc": "Sem exceções de página ou console na UI/portal",
+      "status": "PASS",
+      "detail": "{\"errors\":[],\"consoleErrors\":[],\"pErr\":[]}"
+    },
+    {
+      "id": "RT-PR-01",
+      "desc": "A4 da OS cancelada: 1 página A4, valores finais e sem referência privada",
+      "status": "PASS",
+      "detail": "{\"pages\":1,\"size\":\"594.96 x 841.92 pts (A4)\",\"text\":\"Minha oficina · Demonstração\\nOrdem de serviço #026\\n\\nCliente Equipamento\\n\\nClima Sul Serviços RTUI · Devolução\\nEntrada Anda\"}"
+    },
+    {
+      "id": "RT-PR-02",
+      "desc": "Recibo original: 1 página A4, valor original e sem ESTORNADO",
+      "status": "PASS",
+      "detail": "{\"pages\":1,\"size\":\"594.96 x 841.92 pts (A4)\"}"
+    },
+    {
+      "id": "RT-PR-03",
+      "desc": "Cupom 80 mm mantém largura e valores",
+      "status": "PASS",
+      "detail": "{\"pages\":2,\"size\":\"227.04 x 426 pts\",\"widthMm\":80}"
+    },
+    {
+      "id": "RT-PR-04-20",
+      "desc": "Cupom 80 mm da OS antiga #020 (limitação declarada)",
+      "status": "PASS",
+      "detail": "{\"pages\":2,\"size\":\"227.04 x 426 pts\",\"widthMm\":80,\"hasCancelled\":true,\"text\":\"Minha oficina · Demonstração\\nOrdem de serviço #020\\n\\n\\nCliente\\nClima Sul Serviços\\n\\nEquipamento\\nMidea · Xtreme Save\\n\\nEntrad\"}"
+    },
+    {
+      "id": "RT-PR-04-19",
+      "desc": "Cupom 80 mm da OS antiga #019 (limitação declarada)",
+      "status": "PASS",
+      "detail": "{\"pages\":2,\"size\":\"227.04 x 426 pts\",\"widthMm\":80,\"hasCancelled\":true,\"text\":\"Minha oficina · Demonstração\\nOrdem de serviço #019\\n\\n\\nCliente\\nMarina Alves\\n\\nEquipamento\\nElectrolux · Color Adapt\\n\\nEntrada\"}"
+    },
+    {
+      "id": "RT-UI-09",
+      "desc": "Sem exceções, console errors ou requisições externas na UI/impressão",
+      "status": "PASS",
+      "detail": "{\"errors\":[],\"consoleErrors\":[],\"external\":[]}"
+    }
+  ]
+}

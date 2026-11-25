@@ -1,0 +1,19 @@
+PASS R05-X01 — Recebimentos inválidos são rejeitados sem criar eventos :: {"out":["Recebimento excede o saldo ou tem valor inválido.","Informe um valor com até duas casas decimais.","Informe um valor com até duas casas decimais.","Recebimento excede o saldo ou tem valor inválido.","Informe data e forma de pagamento válidas.","Informe data e forma de pagamento válidas.","Informe um valor com até duas casas decimais."],"after":{"opening":20000,"events":[]},"paid":20000}
+PASS R05-X02 — UI bloqueia zero, valor acima do saldo e fração além de centavos :: [{"v":"0","open":true,"paid":20000},{"v":"999","open":true,"paid":20000},{"v":"50.001","open":true,"paid":20000}]
+PASS R05-X03 — Estorno rejeita justificativa vazia/501, data inválida/anterior, receptor inexistente e alvo que não é recebimento :: {"out":["Informe a justificativa da correção (até 500 caracteres).","Informe a justificativa da correção (até 500 caracteres).","Data da correção anterior ao recebimento ou inválida.","Data da correção anterior ao recebimento ou inválida.","Recebimento inexistente ou já estornado.","Recebimento inexistente ou já estornado."],"events":1,"paid":25000}
+PASS R05-X04 — Modal de estorno exige justificativa e limita a 500 caracteres :: {"open":true,"required":true,"max":"500"}
+PASS R05-X05 — Recebimento do saldo exato quita sem exceder :: {"amount":10000,"paid":35000,"balance":0}
+PASS R05-X06 — Central e OS sem exceções/erros de console e sem rede externa :: {"errors":[],"consoleErrors":[],"external":[]}
+PASS R05-X07 — Justificativa de exatamente 500 caracteres é aceita :: {"reasonLength":500,"eventId":2,"paid":25000,"events":3}
+PASS R05-X08 — Segundo estorno do mesmo evento é rejeitado e não abre modal :: {"msg":"Recebimento inexistente ou já estornado.","before":3,"after":3,"open":false}
+PASS R05-X09 — Valor extremo é formatado e não cria overflow em 1440 :: {"over":0,"has":true}
+PASS R05-X10 — Valor extremo não cria overflow em 320 :: {"over":0}
+PASS R05-X11 — OS sem obrigação ou cancelada não aceita recebimento :: {"zero":"Cobrança indisponível. Acerto de cancelamento não autoriza recebimento.","cancel":"Cobrança indisponível. Acerto de cancelamento não autoriza recebimento."}
+PASS R05-X12 — Técnico em rotas diretas não vê valores financeiros :: {"home":"ACESSO\nAção indisponível\n\nEste perfil de demonstra","order":"ATENDIMENTO / #020\nMidea · Xtreme Save\n\nClima Sul ","receipt":"ACESSO\nAção indisponível\n\nEste perfil de demonstra"}
+PASS R05-X13 — Atendente em rota direta não vê valores nem ações de estorno :: atendente
+PASS R05-X14 — Financeiro não abre estorno por rota direta :: direct
+PASS R05-X15 — Recibo normal e estornado imprimem com marcas distintas :: {"normal":36856,"reversed":39255}
+PASS R05-X16 — Recibo estornado preserva o valor original no PDF :: amount
+PASS R05-X17 — Recibo em 320 não cria overflow horizontal :: {"over":0}
+PASS R05-X18 — Cliente/equipamento longos não criam overflow em 320 :: {"over":0}
+TOTAL 18 · PASS 18 · FAIL 0

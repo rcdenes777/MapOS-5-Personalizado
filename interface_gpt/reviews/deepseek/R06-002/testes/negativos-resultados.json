@@ -1,0 +1,106 @@
+{
+  "generatedAt": "2026-11-25T23:47:26.389Z",
+  "codeSha": "033fdc47c09796a584cf9782324fc7c08394ce74",
+  "assetsDir": "/home/dragonblue/workspace/interface-gpt-lab/repo/interface_gpt/assets",
+  "assets": {
+    "quote.js": "f2a7ba38f3d21dd8ee161370ee3986a8b89fe56059032dcd04fd2babc3575a84",
+    "portal.js": "044529bd4930e232fd86304d6090ee107f85c59da3cc969962788a6ef7742140",
+    "finance.js": "0e5872f457d2c2b2f8c915cfde715257f686700c6794c6b49ced289263fffd6a",
+    "cancel.js": "0b9d998e6b7cabe962aad6bba6b9b31fe14a8032963d4ffebf9b47c41438e408"
+  },
+  "total": 15,
+  "pass": 15,
+  "fail": 0,
+  "results": [
+    {
+      "id": "N01",
+      "name": "Devolução com valor divergente e data/forma/referência válidas é rejeitada",
+      "status": "PASS",
+      "detail": "15999 rejeitado; 16000 confirmado (total 8000, pago 8000, recibo #1 intacto)"
+    },
+    {
+      "id": "N02",
+      "name": "Forma de devolução inválida é rejeitada com data e referência válidas",
+      "status": "PASS",
+      "detail": "Cheque rejeitado; Pix confirmado"
+    },
+    {
+      "id": "N03",
+      "name": "Data de devolução inválida é rejeitada com forma e referência válidas",
+      "status": "PASS",
+      "detail": "data 2026-02-30 rejeitada; data válida confirmada"
+    },
+    {
+      "id": "N04",
+      "name": "Devolução sem comprovante ou referência é rejeitada",
+      "status": "PASS",
+      "detail": "referência vazia rejeitada; referência válida confirmada"
+    },
+    {
+      "id": "N05",
+      "name": "Confirmação sem conferência financeira é rejeitada e não grava",
+      "status": "PASS",
+      "detail": "financialConfirmed=false rejeitado; true confirmado"
+    },
+    {
+      "id": "N06",
+      "name": "Confirmação sem conferência do acerto é rejeitada quando há valores",
+      "status": "PASS",
+      "detail": "settlementConfirmed=false rejeitado; true confirmado"
+    },
+    {
+      "id": "N07",
+      "name": "Justificativa vazia é rejeitada quando o acerto exige justificativa",
+      "status": "PASS",
+      "detail": "justificativa vazia rejeitada; justificativa válida confirmada"
+    },
+    {
+      "id": "N08",
+      "name": "Remoção parcial de serviço é rejeitada; remoção integral é aceita",
+      "status": "PASS",
+      "detail": "parcial rejeitada; integral removeu só o serviço não executado"
+    },
+    {
+      "id": "N09",
+      "name": "Peça com destino de serviço é rejeitada; destino de peça é aceito",
+      "status": "PASS",
+      "detail": "peça/notdone rejeitada; peça/unused aceita sem entrada em estoque"
+    },
+    {
+      "id": "N10",
+      "name": "Serviço com destino de peça é rejeitado; destino de serviço é aceito",
+      "status": "PASS",
+      "detail": "serviço/unused rejeitado; serviço/notdone aceito"
+    },
+    {
+      "id": "N11",
+      "name": "Retificação após devolução é bloqueada; retificação sem devolução é aceita",
+      "status": "PASS",
+      "detail": "após devolução rejeitada; cancelamento sem devolução retificado"
+    },
+    {
+      "id": "N12",
+      "name": "Retificação fora da janela (antes da confirmação ou futura) é rejeitada",
+      "status": "PASS",
+      "detail": "2026-11-24 e 2026-11-26 rejeitadas; data da confirmação aceita"
+    },
+    {
+      "id": "N13",
+      "name": "Retificação com tipo inválido é rejeitada; tipo permitido é aceito",
+      "status": "PASS",
+      "detail": "outro rejeitado; lancamento_incorreto aceito"
+    },
+    {
+      "id": "N14",
+      "name": "Valor devido acima do teto é rejeitado; o teto exato é aceito",
+      "status": "PASS",
+      "detail": "1000000000 rejeitado; 999999999 aceito"
+    },
+    {
+      "id": "N15",
+      "name": "Devolução com data anterior aos recebimentos é rejeitada",
+      "status": "PASS",
+      "detail": "2026-11-24 rejeitada; data dos recebimentos aceita"
+    }
+  ]
+}

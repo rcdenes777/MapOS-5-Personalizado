@@ -1,0 +1,257 @@
+{
+  "generatedAt": "2026-11-25T23:47:27.137Z",
+  "codeSha": "033fdc47c09796a584cf9782324fc7c08394ce74",
+  "sourceAssets": "/home/dragonblue/workspace/interface-gpt-lab/repo/interface_gpt/assets",
+  "pristineHashes": {
+    "quote.js": "f2a7ba38f3d21dd8ee161370ee3986a8b89fe56059032dcd04fd2babc3575a84",
+    "portal.js": "044529bd4930e232fd86304d6090ee107f85c59da3cc969962788a6ef7742140",
+    "finance.js": "0e5872f457d2c2b2f8c915cfde715257f686700c6794c6b49ced289263fffd6a",
+    "cancel.js": "0b9d998e6b7cabe962aad6bba6b9b31fe14a8032963d4ffebf9b47c41438e408"
+  },
+  "scratch": "/home/dragonblue/.hermes/cache/scratch/r06-002-mutacoes-final3",
+  "publishedMutants": false,
+  "note": "Mutantes aplicados somente em cópias sob o diretório de scratch; nenhum arquivo do checkout foi alterado.",
+  "tally": {
+    "total": 18,
+    "detectado": 18,
+    "sobrevivente": 0,
+    "equivalente": 0,
+    "inconclusivo": 0
+  },
+  "results": [
+    {
+      "id": "M01",
+      "file": "interface_gpt/assets/cancel.js",
+      "guard": "valor devolvido exatamente igual ao calculado",
+      "expected": "N01",
+      "mutation": {
+        "find": "ensure(d.refund===a.refund,'O valor devolvido deve ser exatamente o valor calculado.');",
+        "replace": "ensure(true,'O valor devolvido deve ser exatamente o valor calculado.');"
+      },
+      "classification": "detectado",
+      "detail": "N01 falhou: operação foi aceita; esperava rejeição com a mensagem: O valor devolvido deve ser exatamente o valor calculado.",
+      "note": ""
+    },
+    {
+      "id": "M01b",
+      "file": "interface_gpt/assets/cancel.js",
+      "guard": "comparação de devolução invertida",
+      "expected": "N01",
+      "mutation": {
+        "find": "ensure(d.refund===a.refund,'O valor devolvido deve ser exatamente o valor calculado.');",
+        "replace": "ensure(d.refund!==a.refund,'O valor devolvido deve ser exatamente o valor calculado.');"
+      },
+      "classification": "detectado",
+      "detail": "N01 falhou: operação foi aceita; esperava rejeição com a mensagem: O valor devolvido deve ser exatamente o valor calculado. | também: N01,N02,N03,N04,N05,N06,N07,N11,N12,N13,N15",
+      "note": "inversão: a rejeição do valor divergente continua ocorrendo, mas o controle positivo (valor exato) é rejeitado; o teste deve falhar no controle positivo."
+    },
+    {
+      "id": "M02",
+      "file": "interface_gpt/assets/cancel.js",
+      "guard": "forma de devolução na lista permitida",
+      "expected": "N02",
+      "mutation": {
+        "find": "ensure(BancadaFinance.dayValid(d.date)&&BancadaFinance.methods.includes(d.method),'Informe data e forma da devolução.');",
+        "replace": "ensure(BancadaFinance.dayValid(d.date),'Informe data e forma da devolução.');"
+      },
+      "classification": "detectado",
+      "detail": "N02 falhou: operação foi aceita; esperava rejeição com a mensagem: Informe data e forma da devolução.",
+      "note": ""
+    },
+    {
+      "id": "M03",
+      "file": "interface_gpt/assets/cancel.js",
+      "guard": "data de devolução válida",
+      "expected": "N03",
+      "mutation": {
+        "find": "ensure(BancadaFinance.dayValid(d.date)&&BancadaFinance.methods.includes(d.method),'Informe data e forma da devolução.');",
+        "replace": "ensure((true||BancadaFinance.dayValid(d.date))&&BancadaFinance.methods.includes(d.method),'Informe data e forma da devolução.');"
+      },
+      "classification": "detectado",
+      "detail": "N03 falhou: mensagem: esperado \"Informe data e forma da devolução.\", obtido \"Data anterior aos registros financeiros.\"",
+      "note": ""
+    },
+    {
+      "id": "M04",
+      "file": "interface_gpt/assets/cancel.js",
+      "guard": "comprovante/referência obrigatório",
+      "expected": "N04",
+      "mutation": {
+        "find": "const ref=text(d.ref,300);",
+        "replace": "const ref=String(d.ref??'').trim();"
+      },
+      "classification": "detectado",
+      "detail": "N04 falhou: operação foi aceita; esperava rejeição com a mensagem: Confira o motivo ou as observações.",
+      "note": ""
+    },
+    {
+      "id": "M05",
+      "file": "interface_gpt/assets/cancel.js",
+      "guard": "conferência financeira explícita",
+      "expected": "N05",
+      "mutation": {
+        "find": "ensure(d.confirm&&d.financialConfirmed,'Confirme a conferência financeira e o cancelamento.');",
+        "replace": "ensure(d.confirm,'Confirme a conferência financeira e o cancelamento.');"
+      },
+      "classification": "detectado",
+      "detail": "N05 falhou: operação foi aceita; esperava rejeição com a mensagem: Confirme a conferência financeira e o cancelamento.",
+      "note": ""
+    },
+    {
+      "id": "M05b",
+      "file": "interface_gpt/assets/cancel.js",
+      "guard": "conferência financeira invertida",
+      "expected": "N05",
+      "mutation": {
+        "find": "ensure(d.confirm&&d.financialConfirmed,'Confirme a conferência financeira e o cancelamento.');",
+        "replace": "ensure(d.confirm&&!d.financialConfirmed,'Confirme a conferência financeira e o cancelamento.');"
+      },
+      "classification": "detectado",
+      "detail": "N05 falhou: operação foi aceita; esperava rejeição com a mensagem: Confirme a conferência financeira e o cancelamento. | também: N01,N02,N03,N04,N05,N06,N07,N11,N12,N13,N15",
+      "note": "inversão: com financialConfirmed=false a guarda passa; o teste negativo deve falhar."
+    },
+    {
+      "id": "M06",
+      "file": "interface_gpt/assets/cancel.js",
+      "guard": "conferência do acerto",
+      "expected": "N06",
+      "mutation": {
+        "find": "ensure(!requires||d.settlementConfirmed,'Confirme os valores do acerto.');",
+        "replace": "ensure(true,'Confirme os valores do acerto.');"
+      },
+      "classification": "detectado",
+      "detail": "N06 falhou: operação foi aceita; esperava rejeição com a mensagem: Confirme os valores do acerto.",
+      "note": ""
+    },
+    {
+      "id": "M07",
+      "file": "interface_gpt/assets/cancel.js",
+      "guard": "justificativa obrigatória no acerto",
+      "expected": "N07",
+      "mutation": {
+        "find": "const reason=text(d.reason,2000,requires);",
+        "replace": "const reason=text(d.reason,2000,false);"
+      },
+      "classification": "detectado",
+      "detail": "N07 falhou: mensagem: esperado \"Confira o motivo ou as observações.\", obtido \"O valor devolvido deve ser exatamente o valor calculado.\"",
+      "note": ""
+    },
+    {
+      "id": "M08",
+      "file": "interface_gpt/assets/cancel.js",
+      "guard": "remoção integral do serviço não executado",
+      "expected": "N08",
+      "mutation": {
+        "find": "ensure(item.type==='Peça'?['unused','lost'].includes(disposition):disposition==='notdone'&&quantity===item.quantity,'Destino inválido para este item.');",
+        "replace": "ensure(item.type==='Peça'?['unused','lost'].includes(disposition):disposition==='notdone','Destino inválido para este item.');"
+      },
+      "classification": "detectado",
+      "detail": "N08 falhou: operação foi aceita; esperava rejeição com a mensagem: Destino inválido para este item.",
+      "note": ""
+    },
+    {
+      "id": "M09",
+      "file": "interface_gpt/assets/cancel.js",
+      "guard": "destino de peça restrito a unused/lost",
+      "expected": "N09",
+      "mutation": {
+        "find": "ensure(item.type==='Peça'?['unused','lost'].includes(disposition):disposition==='notdone'&&quantity===item.quantity,'Destino inválido para este item.');",
+        "replace": "ensure(item.type==='Peça'?['unused','lost','notdone'].includes(disposition):disposition==='notdone'&&quantity===item.quantity,'Destino inválido para este item.');"
+      },
+      "classification": "detectado",
+      "detail": "N09 falhou: operação foi aceita; esperava rejeição com a mensagem: Destino inválido para este item.",
+      "note": ""
+    },
+    {
+      "id": "M10",
+      "file": "interface_gpt/assets/cancel.js",
+      "guard": "destino de serviço restrito a notdone",
+      "expected": "N10",
+      "mutation": {
+        "find": "ensure(item.type==='Peça'?['unused','lost'].includes(disposition):disposition==='notdone'&&quantity===item.quantity,'Destino inválido para este item.');",
+        "replace": "ensure(item.type==='Peça'?['unused','lost'].includes(disposition):['notdone','unused'].includes(disposition)&&quantity===item.quantity,'Destino inválido para este item.');"
+      },
+      "classification": "detectado",
+      "detail": "N10 falhou: operação foi aceita; esperava rejeição com a mensagem: Destino inválido para este item.",
+      "note": ""
+    },
+    {
+      "id": "M11",
+      "file": "interface_gpt/assets/finance.js",
+      "guard": "retificação bloqueada após devolução",
+      "expected": "N11",
+      "mutation": {
+        "find": "ensure(o.total>0&&!events(o).some(e=>e.type==='refund'),'Há devolução registrada ou não há obrigação; confira o histórico.');",
+        "replace": "ensure(o.total>0,'Há devolução registrada ou não há obrigação; confira o histórico.');"
+      },
+      "classification": "detectado",
+      "detail": "N11 falhou: mensagem: esperado \"Há devolução registrada ou não há obrigação; confira o histórico.\", obtido \"A correção deixaria o recebido negativo.\"",
+      "note": ""
+    },
+    {
+      "id": "M12a",
+      "file": "interface_gpt/assets/finance.js",
+      "guard": "limite inferior da janela de retificação",
+      "expected": "N12",
+      "mutation": {
+        "find": "ensure(date>=c.day&&date<=today,'Data fora do período de retificação.');",
+        "replace": "ensure(date<=today,'Data fora do período de retificação.');"
+      },
+      "classification": "detectado",
+      "detail": "N12 falhou: mensagem: esperado \"Data fora do período de retificação.\", obtido \"Data da correção anterior ao recebimento ou inválida.\"",
+      "note": ""
+    },
+    {
+      "id": "M12b",
+      "file": "interface_gpt/assets/finance.js",
+      "guard": "limite superior da janela de retificação",
+      "expected": "N12",
+      "mutation": {
+        "find": "ensure(date>=c.day&&date<=today,'Data fora do período de retificação.');",
+        "replace": "ensure(date>=c.day,'Data fora do período de retificação.');"
+      },
+      "classification": "detectado",
+      "detail": "N12 falhou: operação foi aceita; esperava rejeição com a mensagem: Data fora do período de retificação.",
+      "note": ""
+    },
+    {
+      "id": "M13",
+      "file": "interface_gpt/assets/finance.js",
+      "guard": "tipo de retificação permitido",
+      "expected": "N13",
+      "mutation": {
+        "find": "['lancamento_incorreto','nao_compensado'].includes(rectification)",
+        "replace": "true"
+      },
+      "classification": "detectado",
+      "detail": "N13 falhou: operação foi aceita; esperava rejeição com a mensagem: Retificação indisponível.",
+      "note": ""
+    },
+    {
+      "id": "M14",
+      "file": "interface_gpt/assets/cancel.js",
+      "guard": "teto do valor devido",
+      "expected": "N14",
+      "mutation": {
+        "find": "ensure(Number.isSafeInteger(gross)&&gross>=0&&gross<=999999999&&Number.isSafeInteger(discount)&&discount>=0&&discount<=gross,'Valor devido ou desconto inválido.');",
+        "replace": "ensure(Number.isSafeInteger(gross)&&gross>=0&&Number.isSafeInteger(discount)&&discount>=0&&discount<=gross,'Valor devido ou desconto inválido.');"
+      },
+      "classification": "detectado",
+      "detail": "N14 falhou: operação foi aceita; esperava rejeição com a mensagem: Valor devido ou desconto inválido.",
+      "note": ""
+    },
+    {
+      "id": "M15",
+      "file": "interface_gpt/assets/cancel.js",
+      "guard": "devolução não anterior aos eventos financeiros",
+      "expected": "N15",
+      "mutation": {
+        "find": "ensure(!BancadaFinance.events(o).some(e=>e.date>d.date),'Data anterior aos registros financeiros.');",
+        "replace": "ensure(true,'Data anterior aos registros financeiros.');"
+      },
+      "classification": "detectado",
+      "detail": "N15 falhou: operação foi aceita; esperava rejeição com a mensagem: Data anterior aos registros financeiros.",
+      "note": ""
+    }
+  ]
+}

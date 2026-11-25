@@ -1,0 +1,28 @@
+{
+  "generatedAt": "2026-11-25T23:41:22.736Z",
+  "codeSha": "033fdc47c09796a584cf9782324fc7c08394ce74",
+  "shots": [
+    {
+      "file": "capturas/handler/tech-finalizado-bloqueado-desktop-1440.png",
+      "sha256": "a0414e197a64ba7c6a1a22b8b35fbe67ca345a6a6679ad2d4067ff13bb847626",
+      "bytes": 167297
+    },
+    {
+      "file": "capturas/handler/toast-bloqueio-desktop-1440.png",
+      "sha256": "9713334c646ca0afa0ef5e6a402c155aba918dde3ff5ecaa86f7e1de021ad546",
+      "bytes": 8205,
+      "element": "#toast"
+    },
+    {
+      "file": "capturas/handler/tech-finalizado-bloqueado-mobile-390.png",
+      "sha256": "05f5161809a9c8bb9816724746fde1e21cf75fef5761cb650633af0efe2f501c",
+      "bytes": 72503
+    },
+    {
+      "file": "capturas/handler/toast-bloqueio-mobile-390.png",
+      "sha256": "12b708cc51c867fa2b315e5ab7b693dd8d50f1be7077b8daa83bfb074b2adc72",
+      "bytes": 8539,
+      "element": "#toast"
+    }
+  ]
+}

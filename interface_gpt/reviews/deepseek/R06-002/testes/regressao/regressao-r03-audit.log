@@ -1,0 +1,123 @@
+PASS [base] B01 — Documento tem título, lang pt-BR e viewport :: {"title":"MapOS · Bancada","lang":"pt-BR","viewport":"width=device-width, initial-scale=1, viewport-fit=cover","scripts":["http://127.0.0.1:8130/assets/quote.js","http://127.0.0.1:8130/assets/portal.js","http://127.0.0.1:8130/assets/quote-ui.js","http://127.0.0.1:8130/assets/finance.js","http://127.0.0.1:8130/assets/finance-ui.js","http://127.0.0.1:8130/assets/cancel.js","http://127.0.0.1:8130/assets/cancel-ui.js","http://127.0.0.1:8130/assets/app.js"],"links":["http://127.0.0.1:8130/assets/favicon.svg","http://127.0.0.1:8130/assets/style.css"],"imgs":[],"forms":0}
+PASS [base] B02 — Sem recursos externos declarados (scripts/links/imagens) :: {"scripts":["http://127.0.0.1:8130/assets/quote.js","http://127.0.0.1:8130/assets/portal.js","http://127.0.0.1:8130/assets/quote-ui.js","http://127.0.0.1:8130/assets/finance.js","http://127.0.0.1:8130/assets/finance-ui.js","http://127.0.0.1:8130/assets/cancel.js","http://127.0.0.1:8130/assets/cancel-ui.js","http://127.0.0.1:8130/assets/app.js"],"links":["http://127.0.0.1:8130/assets/favicon.svg","http://127.0.0.1:8130/assets/style.css"],"imgs":[]}
+PASS [rotas] R01 — Rota #inicio renderiza :: h1="O que precisa de atenção?"
+PASS [rotas] R02 — Rota #ordens renderiza :: h1="Ordens de serviço"
+PASS [rotas] R03 — Rota #nova renderiza :: h1="Nova ordem de serviço"
+PASS [rotas] R04 — Rota #os/20 renderiza :: h1="Midea · Xtreme Save"
+PASS [rotas] R05 — Rota #os/20/atendimento renderiza :: h1="Midea · Xtreme Save"
+PASS [rotas] R06 — Rota #os/20/orcamento renderiza :: h1="Midea · Xtreme Save"
+PASS [rotas] R07 — Rota #os/20/entrega renderiza :: h1="Midea · Xtreme Save"
+PASS [rotas] R08 — Rota #os/20/anexos renderiza :: h1="Midea · Xtreme Save"
+PASS [rotas] R09 — Rota #os/20/historico renderiza :: h1="Midea · Xtreme Save"
+PASS [rotas] R10 — Rota #retorno/20 renderiza :: h1="Retorno em garantia"
+PASS [rotas] R11 — Rota #imprimir/20 renderiza :: h1="Impressão da OS #020"
+PASS [rotas] R12 — Rota #imprimir/20/cupom renderiza :: h1="Impressão da OS #020"
+PASS [rotas] R13 — Rota #clientes renderiza :: h1="Clientes"
+PASS [rotas] R14 — Rota #estoque renderiza :: h1="Estoque"
+PASS [rotas] R15 — Rota #financeiro renderiza :: h1="Financeiro"
+PASS [rotas] R16 — Rota #relatorios renderiza :: h1="Relatórios"
+PASS [rotas] R17 — Rota #configuracoes renderiza :: h1="Configurações"
+PASS [rotas] R18 — Rota #mais renderiza :: h1="Mais módulos"
+PASS [perfis] P-Administrador-nav — Administrador: menu lateral esperado :: Hoje | Ordens de serviço | Clientes | Estoque | Financeiro | Relatórios | Configurações
+PASS [perfis] P-Administrador-money — Administrador: exposição financeira coerente :: R$ visível=true
+PASS [perfis] P-Técnico-nav — Técnico: menu lateral esperado :: Hoje | Ordens de serviço | Estoque
+PASS [perfis] P-Técnico-money — Técnico: exposição financeira coerente :: R$ visível=false
+PASS [perfis] P-Atendente-nav — Atendente: menu lateral esperado :: Hoje | Ordens de serviço | Clientes
+PASS [perfis] P-Atendente-money — Atendente: exposição financeira coerente :: R$ visível=false
+PASS [perfis] P-Financeiro-nav — Financeiro: menu lateral esperado :: Hoje | Ordens de serviço | Financeiro | Relatórios
+PASS [perfis] P-Financeiro-money — Financeiro: exposição financeira coerente :: R$ visível=true
+PASS [perfis] T-bloqueio-financeiro — Técnico não acessa Financeiro :: h1="Ação indisponível"
+PASS [perfis] T-bloqueio-nova — Técnico não acessa Nova OS :: h1="Ação indisponível"
+PASS [perfis] T-bloqueio-clientes — Técnico não acessa Clientes :: h1="Ação indisponível"
+PASS [perfis] T-bloqueio-configuracoes — Técnico não acessa Configurações :: h1="Ação indisponível"
+PASS [perfis] T-bloqueio-relatorios — Técnico não acessa Relatórios :: h1="Ação indisponível"
+PASS [perfis] T-estoque — Técnico acessa Estoque :: h1="Estoque"
+PASS [perfis] A-bloqueio-estoque — Atendente não acessa Estoque :: h1="Ação indisponível"
+PASS [perfis] A-bloqueio-financeiro — Atendente não acessa Financeiro :: h1="Ação indisponível"
+PASS [perfis] A-bloqueio-relatorios — Atendente não acessa Relatórios :: h1="Ação indisponível"
+PASS [perfis] A-bloqueio-configuracoes — Atendente não acessa Configurações :: h1="Ação indisponível"
+PASS [perfis] A-acesso--nova — Atendente acessa #nova :: h1="Nova ordem de serviço"
+PASS [perfis] A-acesso--clientes — Atendente acessa #clientes :: h1="Clientes"
+PASS [perfis] A-acesso--retorno-20 — Atendente acessa #retorno/20 :: h1="Retorno em garantia"
+PASS [perfis] F-bloqueio-nova — Financeiro não acessa Nova OS :: h1="Ação indisponível"
+PASS [perfis] F-bloqueio-clientes — Financeiro não acessa Clientes :: h1="Ação indisponível"
+PASS [perfis] F-bloqueio-estoque — Financeiro não acessa Estoque :: h1="Ação indisponível"
+PASS [perfis] F-bloqueio-configuracoes — Financeiro não acessa Configurações :: h1="Ação indisponível"
+PASS [perfis] F-acesso--financeiro — Financeiro acessa #financeiro :: h1="Financeiro"
+PASS [perfis] F-acesso--relatorios — Financeiro acessa #relatorios :: h1="Relatórios"
+PASS [perfis] F-acesso--os-20 — Financeiro acessa #os/20 :: h1="Midea · Xtreme Save"
+PASS [perfis] ADM-financeiro — Administrador vê valores e ações financeiras :: ANDAMENTO TÉCNICO | Finalizado | Conclusão: 23/11/2026 | Atualizar andamento | FINANCEIRO | Parcial | Saldo: R$ 150,00 | Registrar pagamento | RETIRADA | Não en
+PASS [fluxoA] A01 — Nova OS de equipamento novo criada :: hash=#os/25, ordens=9
+PASS [fluxoA] A02 — OS criada preserva equipamento, cliente e defeito :: Marca Teste · Modelo Alfa
+PASS [fluxoA] A03 — Histórico registra a entrada :: Entrada registrada | 25/11/2026 · 20:34
+PASS [fluxoB] B01 — Unidades do cliente listadas para reutilização :: LG · Dual Inverter · #024 | Midea · Xtreme Save · #020 | Marca Teste · Modelo Alfa · #025
+PASS [fluxoB] B02 — Nova OS vinculada à unidade existente :: {"brand":"Midea","model":"Xtreme Save","unit":20}
+PASS [fluxoB] B03 — Nova OS herda a identificação e mantém o defeito novo :: Midea · Xtreme Save
+PASS [fluxoC] C01 — Catálogo preenche marca e modelo :: {"brand":"LG","model":"Dual Inverter"}
+PASS [fluxoC] C02 — Edição manual limpa a seleção do catálogo :: catalog=""
+PASS [fluxoD] D01 — Aprovação fictícia registra decisão sem criar cobrança :: {"total":0,"paid":0,"approval":"Aprovado","status":"Aprovado"}
+PASS [fluxoD] D02 — Andamento técnico alterado para Em Andamento :: ANDAMENTO TÉCNICO
+Em Andamento
+Conclusão não registrada
+Atualizar andamento
+PASS [fluxoD] D03 — OS finalizada com conclusão registrada :: ANDAMENTO TÉCNICO | Finalizado | Conclusão: 25/11/2026 | Atualizar andamento
+PASS [fluxoD] D04 — Histórico registra versão, aprovação e andamento :: Andamento: Finalizado | 25/11/2026 · 20:34 | Andamento: Em Andamento | 25/11/2026 · 20:34 | Orçamento: versão 1 — Aprovado | 25/11/2026 · 20:34 | Entrada registrada | 20/11/2026
+PASS [fluxoD] D05 — Cobrança formalizada separadamente após aprovação e finalização :: {"total":24000,"paid":0,"status":"Finalizado","billing":{"due":"2026-11-30","items":[{"type":"Serviço","name":"Serviço de reparo (demonstração inicial)","quantity":1,"unit":24000}],"discount":0}}
+PASS [fluxoE] E01 — Pagamento parcial atualiza pago e saldo :: FINANCEIRO | Parcial | Saldo: R$ 120,00 | Registrar pagamento
+PASS [fluxoE] E02 — Entrega registrada com saldo pendente :: {"date":"2026-11-25","receiver":"Refrigeração Horizonte","third":false,"items":"Gree · G-Top Inverter","authorization":"","registered":"2026-11-25T23:34:58.418Z"}
+INFO [fluxoE] E03 — Entrega independente do andamento (comportamento intencional) :: status na entrega="ANDAMENTO TÉCNICO Em Andamento Conclusão não registrada Atualizar andamento"; entrega registrada=true
+PASS [fluxoE] E04 — Quitação posterior zera o saldo :: FINANCEIRO | Quitado | Saldo: R$ 0,00
+PASS [fluxoF] F01 — Entrega para terceiro exige autorização :: authorization visível=true
+PASS [fluxoF] F02 — Entrega registra terceiro, recebedor e autorização :: {"date":"2026-11-25","receiver":"Carlos Entregador (fictício)","third":true,"items":"Midea · Xtreme Save","authorization":"Autorizado por telefone, protocolo fictício 123.","registered":"2026-11-25T23:34:59.467Z"}
+PASS [fluxoF] F03 — Aba Entrega exibe vínculo de terceiro e autorização :: Pular para o conteúdo | M | mapos | BANCADA / EXPERIMENTAL | B | Minha oficina | Ambiente de demonstração | Hoje | Ordens de serviço | Clientes | Estoque | Financeiro | Relatórios | Configurações | Dados fictícios · offl
+PASS [fluxoG] G01 — OS finalizada oferece registrar retorno :: links=1
+PASS [fluxoG] G02 — Retorno abre nova OS sem itens/estado informados :: {"id":27,"origin":20,"items":"","condition":""}
+PASS [fluxoG] G03 — Retorno preserva a origem e nasce em avaliação :: Pular para o conteúdo | M | mapos | BANCADA / EXPERIMENTAL | B | Minha oficina | Ambiente de demonstração | Hoje | Ordens de serviço | Clientes | Estoque | Financeiro | Relatórios | Configurações | Dados fictícios · offl
+PASS [fluxoH] H01 — Troca de perfil recompõe a interface sem erro :: nav=4, h1=Samsung · Digital Inverter
+PASS [fluxoI] I01 — Dados persistem após recarregar :: ordens=11, linhas=11
+PASS [fluxoI] I02 — Pagamento e entrega persistem :: FINANCEIRO Quitado Saldo: R$ 0,00 / RETIRADA Entregue 25/11/2026
+PASS [reset] X01 — Restaurar dados fictícios volta à amostra inicial :: ordens=8
+PASS [reset] X02 — Restauração informa o usuário por toast :: Demonstração restaurada.
+PASS [rede] N01 — Nenhuma requisição para serviço externo :: []
+PASS [console] C01 — Sem erros JavaScript durante as operações :: []
+PASS [console] C02 — Sem avisos de console :: []
+PASS [console] C03 — Sem recursos HTTP com erro (404 etc.) :: []
+PASS [a11y] K01 — Primeiro Tab alcança o atalho de conteúdo :: {"tag":"A","cls":"skip","href":"#main","text":"Pular para o conteúdo"}
+PASS [a11y] K02 — Atalho "Pular para o conteúdo" mantém a tela :: h1 após Enter="O que precisa de atenção?"
+PASS [a11y] K03 — Foco de teclado é visível :: {"tag":"A","text":"Voltar","outline":"solid 3px rgb(39, 141, 186)"}
+PASS [a11y] K04 — Modal recebe foco ao abrir :: {"open":true,"activeInside":true,"active":"<button type=\"button\" class=\"btn\" data-action=\"close\">Fechar</button>"}
+PASS [a11y] K05 — Foco permanece dentro do modal (Tab) :: 12 Tabs consecutivos dentro do diálogo
+PASS [a11y] K06 — Escape fecha o modal e devolve o foco ao gatilho :: {"open":false,"active":"modal:tech:20"}
+PASS [a11y] K07 — Controles sem nome acessível :: []
+PASS [a11y] K08 — Navegações rotuladas e diálogo referenciado :: ["Módulos","Seções da OS","Navegação rápida"]
+PASS [a11y] K09-painel — Contraste AA em painel :: []
+PASS [a11y] K09-ordens — Contraste AA em ordens :: []
+PASS [a11y] K09-OS — Contraste AA em OS :: []
+PASS [a11y] K09-financeiro — Contraste AA em financeiro :: []
+PASS [a11y] K10 — Alvos de toque ≥44 px na nova OS (390 px) :: []
+PASS [a11y] K11 — Texto ≥12 px (legibilidade sem zoom) :: []
+PASS [responsivo] V-1920x1080-overflow — 1920x1080: sem rolagem horizontal :: []
+PASS [responsivo] V-1920x1080-bounds — 1920x1080: sem elementos fora da viewport :: []
+PASS [responsivo] V-1440x900-overflow — 1440x900: sem rolagem horizontal :: []
+PASS [responsivo] V-1440x900-bounds — 1440x900: sem elementos fora da viewport :: []
+PASS [responsivo] V-1366x768-overflow — 1366x768: sem rolagem horizontal :: []
+PASS [responsivo] V-1366x768-bounds — 1366x768: sem elementos fora da viewport :: []
+PASS [responsivo] V-768x1024-overflow — 768x1024: sem rolagem horizontal :: []
+PASS [responsivo] V-768x1024-bounds — 768x1024: sem elementos fora da viewport :: []
+PASS [responsivo] V-412x915-overflow — 412x915: sem rolagem horizontal :: []
+PASS [responsivo] V-412x915-bounds — 412x915: sem elementos fora da viewport :: []
+PASS [responsivo] V-390x844-overflow — 390x844: sem rolagem horizontal :: []
+PASS [responsivo] V-390x844-bounds — 390x844: sem elementos fora da viewport :: []
+PASS [responsivo] V-360x800-overflow — 360x800: sem rolagem horizontal :: []
+PASS [responsivo] V-360x800-bounds — 360x800: sem elementos fora da viewport :: []
+PASS [responsivo] V-320x568-overflow — 320x568: sem rolagem horizontal :: []
+PASS [responsivo] V-320x568-bounds — 320x568: sem elementos fora da viewport :: []
+PASS [limites] L01 — Formulário vazio é bloqueado pela validação nativa :: ordens=8, inválidos=3, hash=#nova
+PASS [limites] L02 — Texto longo sem espaços não causa rolagem horizontal :: {"over":0,"h1w":362,"h1sw":362}
+PASS [limites] L03 — Listagem com nome longo sem espaços não estoura :: overflow=0
+PASS [limites] L04 — Busca escapa HTML e não executa script :: {"img":0,"xss":0,"text":"0 ordens encontradas\n\nNenhuma OS nesta seleção."}
+PASS [limites] L05 — Pagamento zero ou acima do saldo é bloqueado :: pago=0/0
+PASS [limites] L06 — Data futura de retirada é bloqueada :: delivery=null
+INFO [limites] L07 — Valor extremo é formatado em BRL sem erro :: R$ 999.999.999,99
+
+TOTAL 118 · PASS 116 · FAIL 0 · INFO 2

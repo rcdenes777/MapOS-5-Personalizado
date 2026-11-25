@@ -1,0 +1,19 @@
+# R06-002 — oito suítes do GPT
+# code SHA 033fdc47c09796a584cf9782324fc7c08394ce74
+2026-11-25T20:39:05-03:00
+=== smoke ===
+72 profile/route combinations; queue, financial display and escaping checks passed.
+=== quote ===
+29 quote domain checks passed.
+=== portal ===
+24 portal domain checks passed.
+=== portal-page ===
+8 portal page render checks passed.
+=== finance ===
+24 financial domain checks passed.
+=== finance-ui ===
+12 finance integration checks passed.
+=== cancel ===
+30 cancellation domain checks passed.
+=== cancel-ui ===
+11 cancellation UI checks passed.

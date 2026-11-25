@@ -1,0 +1,174 @@
+{
+  "generatedAt": "2026-11-25T23:32:47.302Z",
+  "codeSha": "033fdc47c09796a584cf9782324fc7c08394ce74",
+  "total": 33,
+  "unique": 33,
+  "duplicates": [],
+  "files": [
+    {
+      "file": "capturas/desktop/01-pedido-modal-1440.png",
+      "sha256": "6a4939f3e9575355a0c8f07d3fa8583c20ed4da6b58afade005fc0a20041d7cb",
+      "bytes": 107997
+    },
+    {
+      "file": "capturas/desktop/02-pedido-modal-preenchido-1440.png",
+      "sha256": "cc2d2972a0c1483276353a9c6a62fc6a7ec990e7829c1171b735188fea00fd5f",
+      "bytes": 143461
+    },
+    {
+      "file": "capturas/desktop/03-fila-cancelamentos-1440.png",
+      "sha256": "0b5cd2f6b72baba69ae4c973d14d2365039e052da8542307b0a134dbb92e20f1",
+      "bytes": 194837
+    },
+    {
+      "file": "capturas/desktop/04-fila-os-pendente-1440.png",
+      "sha256": "9bd76170ecb67cf570c9756cafcde58c336a3c386addaa00065d6975fa1257e7",
+      "bytes": 90914
+    },
+    {
+      "file": "capturas/desktop/05-conferencia-pendente-1440.png",
+      "sha256": "7be98578f14dd91ec4df8c7e4c446de66f9cc1d35a8a8ce991c7ee7caf3d9656",
+      "bytes": 165547
+    },
+    {
+      "file": "capturas/desktop/06-item-perda-modal-1440.png",
+      "sha256": "5b29c65dad83793bf3fe6b29151e15e3f941f1d04e99574a3a3ae5d058fb6ec9",
+      "bytes": 154091
+    },
+    {
+      "file": "capturas/desktop/07-conferencia-historico-item-1440.png",
+      "sha256": "a3976e2a99908f2f8a056456a5f368e758dbe300400ab5244f3e7a75e5967ab9",
+      "bytes": 194056
+    },
+    {
+      "file": "capturas/desktop/08-acerto-devolucao-modal-1440.png",
+      "sha256": "faa7bd18b8ff383701cb7b8ba96e287c4a71ea66837d176ecb309f8ef8a2a0b5",
+      "bytes": 163841
+    },
+    {
+      "file": "capturas/desktop/09-cancelado-historico-1440.png",
+      "sha256": "1451ea60c13023fe229f3f1c66c46030c11f6ca37c2bd214c8ea7bae0806dddf",
+      "bytes": 162802
+    },
+    {
+      "file": "capturas/desktop/10-financeiro-devolucao-1440.png",
+      "sha256": "716182ca80ed1c7fe3a94b86b702b0f90143cfa62253a3f3dad2a1ab52389e7c",
+      "bytes": 141863
+    },
+    {
+      "file": "capturas/desktop/11-entrega-modal-1440.png",
+      "sha256": "a39a07920d7fdc653afc2168a859b7918fa599e2acfd1c6fba0836b7a51d4fc0",
+      "bytes": 132641
+    },
+    {
+      "file": "capturas/desktop/12-portal-cancelado-1440.png",
+      "sha256": "283757a57819af8e72eb7675ba879f791bad6833d0f3e57c6d8f38799a1d9f7f",
+      "bytes": 73303
+    },
+    {
+      "file": "capturas/desktop/13-acerto-sem-obrigacao-modal-1440.png",
+      "sha256": "cd5647069327e09b6fae17b6d2e2281d12aadaa9e75d10a5b7a10dfd90b8f4a4",
+      "bytes": 146890
+    },
+    {
+      "file": "capturas/tablet/14-conferencia-pendente-768.png",
+      "sha256": "19fb4a2eb8c8f207d0818a865f7d6d9c0349bb5ef3285691c39b5308133e73ef",
+      "bytes": 129697
+    },
+    {
+      "file": "capturas/tablet/15-item-peca-modal-768.png",
+      "sha256": "63c458813fc81863a7dc066e013c517e257e9256779c9147ea3ec0243c9d3834",
+      "bytes": 98964
+    },
+    {
+      "file": "capturas/tablet/16-cancelado-768.png",
+      "sha256": "8ac12054fc42ae25ea913c75593da5b27986cb3cf251dbf5ec124213a9e1b1e4",
+      "bytes": 129669
+    },
+    {
+      "file": "capturas/tablet/17-financeiro-768.png",
+      "sha256": "ff963288555b535d6ca7096e79fa495287bfbf04be42970af8a77def9be80b6e",
+      "bytes": 108456
+    },
+    {
+      "file": "capturas/tablet/18-fila-768.png",
+      "sha256": "f5ce6a50738b157973373d1ea0a7b63829654035be5477e6e33afb08509ecb19",
+      "bytes": 179082
+    },
+    {
+      "file": "capturas/tablet/19-portal-768.png",
+      "sha256": "36a18f9ff18f07980d2f54b88526b29e70a1043d44ee1a7e0122e3633a178e4f",
+      "bytes": 69551
+    },
+    {
+      "file": "capturas/mobile/14-conferencia-pendente-390.png",
+      "sha256": "031af724041c4d6573667fca9bbea3063a67a9ae3e12c39cc8100a7c79754dc5",
+      "bytes": 133358
+    },
+    {
+      "file": "capturas/mobile/15-item-peca-modal-390.png",
+      "sha256": "a90c6faba4aa20fb2f904505f1fbac87b342079c2248284825fd4afcf7fb01c0",
+      "bytes": 51190
+    },
+    {
+      "file": "capturas/mobile/16-cancelado-390.png",
+      "sha256": "518bd6b40972738914e97b785cf6293964d82a9e53ecba1c86eb5d5e9d31d89e",
+      "bytes": 126740
+    },
+    {
+      "file": "capturas/mobile/17-financeiro-390.png",
+      "sha256": "c497abd751b7e1e2d4f2017ff7a457a17078e0f1e3923a8227a56e15e7f122fc",
+      "bytes": 106573
+    },
+    {
+      "file": "capturas/mobile/18-fila-390.png",
+      "sha256": "7c830fea50dbae1ad26a9874740812d4ff90f086305894cee731ae7d3e728031",
+      "bytes": 157087
+    },
+    {
+      "file": "capturas/mobile/19-portal-390.png",
+      "sha256": "4c9da61eed2c3640267734f56e2367224afe7db82e39948635e2cf0f18cfedf2",
+      "bytes": 63225
+    },
+    {
+      "file": "capturas/mobile/14-conferencia-pendente-320.png",
+      "sha256": "72e0913c198599acc6139d82f8f24c95ecc2ca52741289ecd39f91e6f81f9762",
+      "bytes": 126377
+    },
+    {
+      "file": "capturas/mobile/15-item-peca-modal-320.png",
+      "sha256": "520c813c99fc8b13d9e5d78e3dd1c4d50c677bc6a50bc777f875890ed4a8d872",
+      "bytes": 29436
+    },
+    {
+      "file": "capturas/mobile/16-cancelado-320.png",
+      "sha256": "097fc876a4437fae1a27994a7c2244cf884e02e4932b2fa1528c6eb12315bc5c",
+      "bytes": 123519
+    },
+    {
+      "file": "capturas/mobile/17-financeiro-320.png",
+      "sha256": "2e4a76a3c065d1ade97dc3df6c2d50d9d4a32a830af7d4eea6232b505b52ded5",
+      "bytes": 104525
+    },
+    {
+      "file": "capturas/mobile/18-fila-320.png",
+      "sha256": "d5320a389f77cb8ccdbdba7a5252aae7f2a90bca3d05c8417057360217cbf4d8",
+      "bytes": 138134
+    },
+    {
+      "file": "capturas/mobile/19-portal-320.png",
+      "sha256": "b7909205d660e9a0ee09bb8dfdc86fa6eb110efb7fbb5fbfaab45351d337c505",
+      "bytes": 62714
+    },
+    {
+      "file": "capturas/mobile/20-valor-extremo-320.png",
+      "sha256": "df550abc161a6ac2f19713b6e2e1a27d36afc7e72c4d26f5bb12adde3c08ba17",
+      "bytes": 92942
+    },
+    {
+      "file": "capturas/desktop/21-financeiro-lista-canceladas-1440.png",
+      "sha256": "b3fec9b5d686c313245042ec932a94376fc61c524c57f285b775a350a879c6ec",
+      "bytes": 188818
+    }
+  ]
+}

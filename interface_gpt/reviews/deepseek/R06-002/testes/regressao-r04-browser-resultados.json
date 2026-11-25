@@ -1,0 +1,271 @@
+{
+  "generatedAt": "2026-11-25T23:37:11.737Z",
+  "codeSha": "033fdc47c09796a584cf9782324fc7c08394ce74",
+  "incrementSha": "bb43e2ffbb9cd6e5ada7516370d2598999598239",
+  "results": [
+    {
+      "id": "R04-L01",
+      "desc": "OS #023 começa sem link",
+      "status": "PASS",
+      "detail": "{\"status\":\"Orçamento\",\"total\":0,\"paid\":0,\"approval\":\"Aguardando resposta\",\"link\":null,\"versions\":1,\"current\":1,\"decision\":null,\"delivery\":false}"
+    },
+    {
+      "id": "R04-L02",
+      "desc": "Gerar link cria token de 64 hex e validade de 120 dias",
+      "status": "PASS",
+      "detail": "{\"len\":64,\"days\":120}"
+    },
+    {
+      "id": "R04-L03",
+      "desc": "Link ativo exibe abrir e gerenciar, sem botão de gerar",
+      "status": "PASS",
+      "detail": "ui"
+    },
+    {
+      "id": "R04-L04",
+      "desc": "Portal mostra OS, equipamento, orçamento v1 e total R$ 240,00",
+      "status": "PASS",
+      "detail": "SEU ATENDIMENTO · OS #023\nSamsung · Digital Inverter\nOrçamento\nEntrada\n20/11/2026\nPrevisão\nNão informada\nSeu orçamento\nVersão 1\n\nTotal da proposta\n\nR$ 240,00\n\nPeças e serviços\nServ"
+    },
+    {
+      "id": "R04-L05",
+      "desc": "Portal abre sem decisão pré-selecionada",
+      "status": "PASS",
+      "detail": "[false,false]"
+    },
+    {
+      "id": "R04-L06",
+      "desc": "Portal não tem navegação administrativa",
+      "status": "PASS",
+      "detail": "admin nav"
+    },
+    {
+      "id": "R04-L07",
+      "desc": "Renovar mantém o endereço e estende a validade",
+      "status": "PASS",
+      "detail": "{\"same\":true,\"delta\":1480}"
+    },
+    {
+      "id": "R04-L08",
+      "desc": "Revogar invalida o portal e preserva a versão",
+      "status": "PASS",
+      "detail": "{\"status\":\"Orçamento\",\"total\":0,\"paid\":0,\"approval\":\"Aguardando resposta\",\"link\":null,\"versions\":1,\"current\":1,\"decision\":null,\"delivery\":false}"
+    },
+    {
+      "id": "R04-L09",
+      "desc": "Novo link não reutiliza o token revogado",
+      "status": "PASS",
+      "detail": "{\"old\":false}"
+    },
+    {
+      "id": "R04-L10",
+      "desc": "Expiração invalida o portal e volta a oferecer geração",
+      "status": "PASS",
+      "detail": "expired"
+    },
+    {
+      "id": "R04-L11",
+      "desc": "Novo link após expiração é diferente e resolve",
+      "status": "PASS",
+      "detail": "new"
+    },
+    {
+      "id": "R04-B01",
+      "desc": "Resposta vazia não é aceita",
+      "status": "PASS",
+      "detail": "native required"
+    },
+    {
+      "id": "R04-B02",
+      "desc": "Aprovação pelo portal grava decisão e não cria cobrança",
+      "status": "PASS",
+      "detail": "{\"status\":\"Aprovado\",\"total\":0,\"paid\":0,\"approval\":\"Aprovado\",\"link\":{\"token\":\"d5a12e276223da5f5f1e0ee8bb7fa3a562e53cfee9c35d303335ee5862007f6f\",\"expires\":1806017772152},\"versions\":1,\"current\":1,\"decision\":{\"answer\":\"Aprovado\",\"name\":\"Marina Alves (fictícia)\",\"channel\":\"link simulado\",\"date\":\"2026-11-25\",\"note\":\"\",\"registered\":\"2026-11-25T23:36:13.534Z\",\"afterDelivery\":false},\"delivery\":false}"
+    },
+    {
+      "id": "R04-B03",
+      "desc": "Portal mostra resposta registrada, nome e ausência de Pagamento",
+      "status": "PASS",
+      "detail": "portal state"
+    },
+    {
+      "id": "R04-B04",
+      "desc": "Decisão persiste após recarregar o portal",
+      "status": "PASS",
+      "detail": "reload"
+    },
+    {
+      "id": "R04-B05",
+      "desc": "Segunda resposta pelo portal é rejeitada",
+      "status": "PASS",
+      "detail": "Este orçamento não está mais disponível para resposta. Confira a versão atual."
+    },
+    {
+      "id": "R04-B06",
+      "desc": "Recusa pelo portal registra Orçamento recusado e total zero",
+      "status": "PASS",
+      "detail": "{\"status\":\"Orçamento recusado\",\"total\":0,\"paid\":0,\"approval\":\"Recusado\",\"link\":{\"token\":\"b6dc3b3d2822ba1c802a774b5d01f0e40221f0d8d3a45e74c006105d850086e9\",\"expires\":1806017776335},\"versions\":1,\"current\":1,\"decision\":{\"answer\":\"Recusado\",\"name\":\"Cliente Fictício\",\"channel\":\"link simulado\",\"date\":\"2026-11-25\",\"note\":\"\",\"registered\":\"2026-11-25T23:36:17.484Z\",\"afterDelivery\":false},\"delivery\":false}"
+    },
+    {
+      "id": "R04-B07",
+      "desc": "Portal mostra recusa registrada sem formulário",
+      "status": "PASS",
+      "detail": "recused"
+    },
+    {
+      "id": "R04-C01",
+      "desc": "Rascunho não publicado não aparece no portal",
+      "status": "PASS",
+      "detail": "draft hidden"
+    },
+    {
+      "id": "R04-C02",
+      "desc": "Portal não responde a versão desatualizada",
+      "status": "PASS",
+      "detail": "stale"
+    },
+    {
+      "id": "R04-C03",
+      "desc": "Painel avisa divergência entre rascunho e versão publicada",
+      "status": "PASS",
+      "detail": "warning"
+    },
+    {
+      "id": "R04-C04",
+      "desc": "Publicar v2 atualiza o portal e preserva a v1",
+      "status": "PASS",
+      "detail": "{\"versions\":2,\"current\":2,\"hasVersion\":true,\"hasTotal\":true,\"hasDiag\":true}"
+    },
+    {
+      "id": "R04-C05",
+      "desc": "Envio de versão antiga no formulário é bloqueado",
+      "status": "PASS",
+      "detail": "Este orçamento não está mais disponível para resposta. Confira a versão atual."
+    },
+    {
+      "id": "R04-C06",
+      "desc": "Retirar publicação esconde orçamento mas mantém o link",
+      "status": "PASS",
+      "detail": "{\"status\":\"Negociação\",\"total\":0,\"paid\":0,\"approval\":\"Publicação retirada\",\"link\":{\"token\":\"fd3209af1498ec2f6bc97cb7014b9b90f3389c381071a9d64aceed0c4ba9acfd\",\"expires\":1806017779536},\"versions\":2,\"current\":2,\"decision\":null,\"delivery\":false}"
+    },
+    {
+      "id": "R04-C07",
+      "desc": "Resposta após retirada é rejeitada",
+      "status": "PASS",
+      "detail": "withdrawn"
+    },
+    {
+      "id": "R04-D01",
+      "desc": "Após entrega o portal fica somente consulta, sem formulário",
+      "status": "PASS",
+      "detail": "{\"status\":\"Aprovado\",\"total\":0,\"paid\":0,\"approval\":\"Aprovado\",\"link\":{\"token\":\"7c036a5cbed0dd4ef1aa19931b06212308f0b21a771f77e03694efb058a3137c\",\"expires\":1806017799944},\"versions\":1,\"current\":1,\"decision\":{\"answer\":\"Aprovado\",\"name\":\"Marina Alves (fictícia)\",\"channel\":\"link simulado\",\"date\":\"2026-11-25\",\"note\":\"\",\"registered\":\"2026-11-25T23:36:41.116Z\",\"afterDelivery\":false},\"delivery\":true}"
+    },
+    {
+      "id": "R04-D02",
+      "desc": "Entrega não expõe recebedor nem data de retirada",
+      "status": "PASS",
+      "detail": "ia)\nData da comunicação\n25/11/2026\nArquivos compartilhados\n\nNenhum arquivo compartilhado nesta demonstração.\n\nEste é um link de demonstração. Na versão real, compartilhe o endereço privado apenas com pessoas autorizadas."
+    },
+    {
+      "id": "R04-D03",
+      "desc": "Resposta após entrega é rejeitada",
+      "status": "PASS",
+      "detail": "delivery guard"
+    },
+    {
+      "id": "R04-E01",
+      "desc": "Aprovação não mostra Pagamento antes da formalização",
+      "status": "PASS",
+      "detail": "no billing"
+    },
+    {
+      "id": "R04-E02",
+      "desc": "Formalização cria Pagamento de R$ 240,00 em aberto",
+      "status": "PASS",
+      "detail": "billing"
+    },
+    {
+      "id": "R04-E03",
+      "desc": "Pagamento parcial atualiza Pago e Saldo no portal",
+      "status": "PASS",
+      "detail": "partial"
+    },
+    {
+      "id": "R04-E04",
+      "desc": "Quitação atualiza o portal e não altera o orçamento",
+      "status": "PASS",
+      "detail": "paid"
+    },
+    {
+      "id": "R04-F01",
+      "desc": "Projeção pública não expõe dados internos nem o token",
+      "status": "PASS",
+      "detail": "{\"privateHits\":[],\"attrHits\":[]}"
+    },
+    {
+      "id": "R04-F02",
+      "desc": "Conteúdo publicado é escapado no portal",
+      "status": "PASS",
+      "detail": "xss"
+    },
+    {
+      "id": "R04-F03",
+      "desc": "Decisão autorizada aparece sem observação interna",
+      "status": "PASS",
+      "detail": "decision visibility"
+    },
+    {
+      "id": "R04-G01",
+      "desc": "Estado inicial tem um único primário",
+      "status": "PASS",
+      "detail": "[\"Registrar resposta do cliente\"]"
+    },
+    {
+      "id": "R04-G02",
+      "desc": "Rascunho alterado prioriza publicar e avisa a divergência",
+      "status": "PASS",
+      "detail": "{\"prim\":[\"Publicar nova versão\"],\"warning\":\"\\n\\nFormalizar cobrança\\n\\nA proposta não é um recebimento nem cria automaticamente uma cobrança.\\n\\nVersões e decisões\\n1 versão\\nVersão 1\\n20/11/2026 · Amostra inicial\\nAguardando resposta\"}"
+    },
+    {
+      "id": "R04-G03",
+      "desc": "Após publicar, resposta é o primário",
+      "status": "PASS",
+      "detail": "[\"Registrar resposta do cliente\"]"
+    },
+    {
+      "id": "R04-G04",
+      "desc": "Após recusa, cobrança é primária e recebe aviso",
+      "status": "PASS",
+      "detail": "[\"Formalizar cobrança\"]"
+    },
+    {
+      "id": "R04-N01",
+      "desc": "Sem exceções JavaScript na página administrativa",
+      "status": "PASS",
+      "detail": "[]"
+    },
+    {
+      "id": "R04-N02",
+      "desc": "Sem erros de console na página administrativa",
+      "status": "PASS",
+      "detail": "[]"
+    },
+    {
+      "id": "R04-N03",
+      "desc": "Sem requisições externas nas duas páginas",
+      "status": "PASS",
+      "detail": "[]"
+    },
+    {
+      "id": "R04-N04",
+      "desc": "Portal é página independente, sem shell administrativo",
+      "status": "PASS",
+      "detail": "standalone"
+    },
+    {
+      "id": "R04-N05",
+      "desc": "Sem exceções de página ou erros de console no portal",
+      "status": "PASS",
+      "detail": "{\"errors\":[],\"console\":[]}"
+    }
+  ]
+}

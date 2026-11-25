@@ -1,0 +1,229 @@
+{
+  "generatedAt": "2026-11-25T23:33:39.271Z",
+  "codeSha": "033fdc47c09796a584cf9782324fc7c08394ce74",
+  "incrementSha": "bb43e2ffbb9cd6e5ada7516370d2598999598239",
+  "results": [
+    {
+      "id": "G1-01",
+      "desc": "Atalho de conteúdo não altera a rota e mantém a tela",
+      "status": "PASS",
+      "detail": "{\"before\":{\"hash\":\"\",\"href\":\"#main\",\"cls\":\"skip\"},\"after\":{\"hash\":\"\",\"h1\":\"O que precisa de atenção?\",\"focused\":\"main\"}}"
+    },
+    {
+      "id": "G1-02-1920",
+      "desc": "Texto longo sem overflow em 1920x1080",
+      "status": "PASS",
+      "detail": "detalhe=0, lista=0"
+    },
+    {
+      "id": "G1-02-1440",
+      "desc": "Texto longo sem overflow em 1440x900",
+      "status": "PASS",
+      "detail": "detalhe=0, lista=0"
+    },
+    {
+      "id": "G1-02-1366",
+      "desc": "Texto longo sem overflow em 1366x768",
+      "status": "PASS",
+      "detail": "detalhe=0, lista=0"
+    },
+    {
+      "id": "G1-02-768",
+      "desc": "Texto longo sem overflow em 768x1024",
+      "status": "PASS",
+      "detail": "detalhe=0, lista=0"
+    },
+    {
+      "id": "G1-02-412",
+      "desc": "Texto longo sem overflow em 412x915",
+      "status": "PASS",
+      "detail": "detalhe=0, lista=0"
+    },
+    {
+      "id": "G1-02-390",
+      "desc": "Texto longo sem overflow em 390x844",
+      "status": "PASS",
+      "detail": "detalhe=0, lista=0"
+    },
+    {
+      "id": "G1-02-360",
+      "desc": "Texto longo sem overflow em 360x800",
+      "status": "PASS",
+      "detail": "detalhe=0, lista=0"
+    },
+    {
+      "id": "G1-02-320",
+      "desc": "Texto longo sem overflow em 320x568",
+      "status": "PASS",
+      "detail": "detalhe=0, lista=0"
+    },
+    {
+      "id": "G1-03",
+      "desc": "Cartão estreito usa uma coluna e não quebra o título",
+      "status": "PASS",
+      "detail": "{\"width\":387,\"height\":139,\"cols\":1,\"titleLines\":1,\"fullCols\":3}"
+    },
+    {
+      "id": "G1-03b",
+      "desc": "Cartão em contêiner largo mantém três colunas",
+      "status": "PASS",
+      "detail": "fullCols=3"
+    },
+    {
+      "id": "G1-04",
+      "desc": "Tab permanece dentro do modal",
+      "status": "PASS",
+      "detail": "12 Tabs contidos"
+    },
+    {
+      "id": "G1-04b",
+      "desc": "Escape fecha e devolve o foco ao gatilho",
+      "status": "PASS",
+      "detail": "{\"open\":false,\"active\":\"modal:tech:20\"}"
+    },
+    {
+      "id": "G1-04c",
+      "desc": "Shift+Tab no primeiro focável volta ao último",
+      "status": "PASS",
+      "detail": "{\"inside\":true,\"text\":\"Confirmar\"}"
+    },
+    {
+      "id": "G1-05",
+      "desc": "Favicon declarado e sem 404",
+      "status": "PASS",
+      "detail": "[]"
+    },
+    {
+      "id": "G1-06",
+      "desc": "Alvos de toque ≥44 px",
+      "status": "PASS",
+      "detail": "[]"
+    },
+    {
+      "id": "G1-07",
+      "desc": "Texto auxiliar ≥12 px",
+      "status": "PASS",
+      "detail": "[]"
+    },
+    {
+      "id": "G1-08",
+      "desc": "Pluralização \"1 atendimento\"",
+      "status": "PASS",
+      "detail": "Contatos e atendimentos vinculados. | 2 atendimentos | 2 atendimentos | 3 atendimentos | 1 atendimento"
+    },
+    {
+      "id": "G1-08b",
+      "desc": "Consulta com um resultado usa \"1 ordem encontrada\"",
+      "status": "PASS",
+      "detail": "1 ordem encontrada"
+    },
+    {
+      "id": "G1-09",
+      "desc": "Placeholder da busca menciona defeito",
+      "status": "PASS",
+      "detail": "Buscar OS, cliente, equipamento ou defeito"
+    },
+    {
+      "id": "G1-10",
+      "desc": "Datas do histórico padronizadas (sem ISO)",
+      "status": "PASS",
+      "detail": "Entrada registrada | 20/11/2026"
+    },
+    {
+      "id": "G1-11",
+      "desc": "Nome acessível da marca contém o texto visível",
+      "status": "PASS",
+      "detail": "aria-label=m. · MapOS Bancada"
+    },
+    {
+      "id": "G1-12",
+      "desc": "Impressão define @page A4 e cupom 80 mm",
+      "status": "PASS",
+      "detail": "{\"a4\":{\"rules\":[\"@page { size: a4; margin: 12mm; }\",\"@page cupom { size: 80mm 150mm; margin: 3mm; }\"],\"sheet\":800},\"cupom\":{\"rules\":[\"@page { size: a4; margin: 12mm; }\",\"@page cupom { size: 80mm 150mm; margin: 3mm; }\"],\"sheet\":302,\"page\":\"cupom\"}}"
+    },
+    {
+      "id": "G1-13",
+      "desc": "Troca de perfil preserva rota acessível",
+      "status": "PASS",
+      "detail": "{\"hash\":\"#os/20\",\"h1\":\"Midea · Xtreme Save\"}"
+    },
+    {
+      "id": "G1-13b",
+      "desc": "Troca de perfil sai da rota quando o novo perfil não acessa",
+      "status": "PASS",
+      "detail": "{\"hash\":\"#inicio\",\"h1\":\"O que precisa de atenção?\"}"
+    },
+    {
+      "id": "G2-01",
+      "desc": "Painel mobile compacto mostra a primeira OS",
+      "status": "PASS",
+      "detail": "{\"hero\":130,\"metrics\":227,\"firstTop\":656,\"firstVisible\":true,\"queues\":6}"
+    },
+    {
+      "id": "G2-02",
+      "desc": "Celular usa seletor de fila e mostra a primeira OS",
+      "status": "PASS",
+      "detail": "{\"selectVisible\":true,\"chipsVisible\":false,\"firstTop\":392,\"activeLabel\":\"Todas as filas\"}"
+    },
+    {
+      "id": "G2-01b",
+      "desc": "Painel em 320x568 mostra a primeira OS acima do menu",
+      "status": "PASS",
+      "detail": "{\"firstTop\":460,\"firstVisibleAboveNav\":true,\"navTop\":507,\"hero\":41}"
+    },
+    {
+      "id": "G2-03",
+      "desc": "Detalhe mobile compacta os três estados e aproxima as abas",
+      "status": "PASS",
+      "detail": "{\"stats\":277,\"tabsTop\":516,\"labels\":[\"ANDAMENTO TÉCNICO\",\"FINANCEIRO\",\"RETIRADA\"],\"actions\":[\"Atualizar andamento\",\"Registrar pagamento\",\"Registrar entrega\"]}"
+    },
+    {
+      "id": "G2-04",
+      "desc": "Barra de ações da Nova OS visível e acima do menu",
+      "status": "PASS",
+      "detail": "{\"submitVisible\":true,\"submitTop\":726,\"footerBottom\":780,\"navTop\":783,\"position\":\"fixed\",\"optional\":[{\"summary\":\"Dados opcionais (selo, série e IMEI)\",\"open\":false},{\"summary\":\"Itens, acessórios e estado (opcionais)\",\"open\":false}],\"requiredVisible\":true}"
+    },
+    {
+      "id": "G2-04b",
+      "desc": "Campo focado fica acima da barra de ações",
+      "status": "PASS",
+      "detail": "{\"fieldBottom\":555,\"barTop\":715,\"fieldVisible\":true}"
+    },
+    {
+      "id": "G2-05",
+      "desc": "Opcionais (selo/série/IMEI) recolhidos e disponíveis",
+      "status": "PASS",
+      "detail": "[{\"summary\":\"Dados opcionais (selo, série e IMEI)\",\"open\":false},{\"summary\":\"Itens, acessórios e estado (opcionais)\",\"open\":false}]"
+    },
+    {
+      "id": "G2-05b",
+      "desc": "Campos obrigatórios continuam disponíveis",
+      "status": "PASS",
+      "detail": "brand/defect=true"
+    },
+    {
+      "id": "G2-06",
+      "desc": "Somente a aba atual fica ativa (Nova OS)",
+      "status": "PASS",
+      "detail": "[\"#nova\"]"
+    },
+    {
+      "id": "G2-06b",
+      "desc": "Somente a aba atual fica ativa (OS)",
+      "status": "PASS",
+      "detail": "[\"#ordens\"]"
+    },
+    {
+      "id": "G3-01",
+      "desc": "Entrega não impede finalizar a OS",
+      "status": "PASS",
+      "detail": "{\"status\":\"Finalizado\",\"delivered\":true,\"conclusion\":\"2026-11-25\"}"
+    },
+    {
+      "id": "G3-02",
+      "desc": "Finalizada e entregue não pode ser reaberta",
+      "status": "PASS",
+      "detail": "{\"status\":\"Finalizado\",\"toast\":\"Equipamento entregue: registre outro atendimento em vez de reabrir esta OS.\"}"
+    }
+  ]
+}

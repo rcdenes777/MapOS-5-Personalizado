@@ -1,0 +1,231 @@
+{
+  "round": "R06-002",
+  "generatedAt": "2026-11-25T20:42:37.797165-03:00",
+  "candidate": "bb43e2ffbb9cd6e5ada7516370d2598999598239",
+  "codeCommit": "033fdc47c09796a584cf9782324fc7c08394ce74",
+  "codeTree": "7b9c69db95ac2727912c8365d5511968e0a0a3b8",
+  "codeParent": "edcd7f51",
+  "branchBaseBeforeCode": "15a235c5",
+  "correctionDiff": {
+    "files": 1,
+    "insertions": 1,
+    "deletions": 1,
+    "path": "interface_gpt/assets/app.js"
+  },
+  "assetsSha256": {
+    "interface_gpt/assets/app.js": "6715c6428304e6c3cec9b62d1fde942115a835538ff8deda36112e0b05ceb021",
+    "interface_gpt/assets/cancel.js": "0b9d998e6b7cabe962aad6bba6b9b31fe14a8032963d4ffebf9b47c41438e408",
+    "interface_gpt/assets/cancel-ui.js": "9e21da71ca8ed5d8fc730097b4020d5b4b71bcd40f4879cad806c2a190c36a2e",
+    "interface_gpt/assets/finance.js": "0e5872f457d2c2b2f8c915cfde715257f686700c6794c6b49ced289263fffd6a",
+    "interface_gpt/assets/finance-ui.js": "7658e8ebe78fb3c34a5d1fa0424ab4de3eabb1495bd950f3b2363031846606a1",
+    "interface_gpt/assets/quote.js": "f2a7ba38f3d21dd8ee161370ee3986a8b89fe56059032dcd04fd2babc3575a84",
+    "interface_gpt/assets/quote-ui.js": "4c32fed93a5c27fbd904b7144904fa20cdc5255da7bb96889309fef1d7ea2fee",
+    "interface_gpt/assets/portal.js": "044529bd4930e232fd86304d6090ee107f85c59da3cc969962788a6ef7742140",
+    "interface_gpt/assets/portal-page.js": "a3a76b09fb7871be59537cb1c5832cdf21c226557511550b3579bc50980c7e6c",
+    "interface_gpt/index.html": "dcbe5779494b3525049618fca761200e49617027606f5ab05102e382322364b4",
+    "interface_gpt/portal.html": "ff57603e06d930282dfb64c5045d35f17e7b2f86bcd97cd2d6eb2b88649d4e5f"
+  },
+  "testScriptsSha256": {
+    "interface_gpt/reviews/deepseek/R06-002/testes/negativos.cjs": "188679e2d5f5ef480d7df7bba362867a22b7b3c43312c82602eafc648231b373",
+    "interface_gpt/reviews/deepseek/R06-002/testes/mutacoes.cjs": "3aca7f6fb32f2502a40c838c181bbd1b870b00c50b1af824ef8eadd9c8858392",
+    "interface_gpt/reviews/deepseek/R06-002/testes/handler-tech.cjs": "b35a1a200d7f627b919a8a6ad60780b44abff2c36480df212085679935795ff8",
+    "interface_gpt/reviews/deepseek/R06-002/testes/captura-handler.cjs": "b463430452d35910a1685313792908fdaf862ea84e1b5c44873ca1da0cea560b",
+    "interface_gpt/reviews/deepseek/R06-002/testes/browser.cjs": "7f505810121d389105182f1d786f8724727b6126985718b7a80b127a3f77fb6f",
+    "interface_gpt/reviews/deepseek/R06-002/testes/edge.cjs": "8531ce3d65c18634860a65357e7891b703157e87255321ef61fdce5072dd95b7",
+    "interface_gpt/reviews/deepseek/R06-002/testes/axe.cjs": "d05cb56211c9e28aa1e55e16f28c4f0bbf3d9041179ec2e6b50e4783854aa665",
+    "interface_gpt/reviews/deepseek/R06-002/testes/capture.cjs": "096eb48bb5982d260692f362fdaf16ba18a1c153342a14ea58a125cec0645be9",
+    "interface_gpt/reviews/deepseek/R06-002/testes/print.cjs": "b596418ffe8f987d7f0bfe6e9ad0d5b5b349a0866cc5118183df16de1cdff519"
+  },
+  "environment": {
+    "server": "http://127.0.0.1:8130 (python3 -m http.server, serving interface_gpt/)",
+    "chrome": "/home/dragonblue/.cache/ms-playwright/chromium-1248/chrome-linux64/chrome",
+    "node": "v26.12.1",
+    "localStorage": true
+  },
+  "results": {
+    "total": 691,
+    "pass": 687,
+    "fail": 0,
+    "info": 4,
+    "byBattery": {
+      "nodeSuites": {
+        "total": 210,
+        "pass": 210,
+        "fail": 0,
+        "log": "interface_gpt/reviews/deepseek/R06-002/testes/node-suites.log"
+      },
+      "handlerTech": {
+        "total": 16,
+        "pass": 16,
+        "fail": 0,
+        "info": 0
+      },
+      "browser": {
+        "total": 103,
+        "pass": 102,
+        "fail": 0,
+        "info": 1
+      },
+      "edge": {
+        "total": 25,
+        "pass": 25,
+        "fail": 0,
+        "info": 0
+      },
+      "axe": {
+        "total": 23,
+        "pass": 23,
+        "fail": 0,
+        "info": 0
+      },
+      "print": {
+        "total": 9,
+        "pass": 8,
+        "fail": 0,
+        "info": 1
+      },
+      "negativos": {
+        "total": 15,
+        "pass": 15,
+        "fail": 0,
+        "info": 0
+      },
+      "regressions": {
+        "r02": {
+          "total": 37,
+          "pass": 37,
+          "fail": 0,
+          "info": 0
+        },
+        "r03": {
+          "total": 118,
+          "pass": 116,
+          "fail": 0,
+          "info": 2
+        },
+        "r04Browser": {
+          "total": 44,
+          "pass": 44,
+          "fail": 0,
+          "info": 0
+        },
+        "r04Edge": {
+          "total": 17,
+          "pass": 17,
+          "fail": 0,
+          "info": 0
+        },
+        "r05Browser": {
+          "total": 56,
+          "pass": 56,
+          "fail": 0,
+          "info": 0
+        },
+        "r05Edge": {
+          "total": 18,
+          "pass": 18,
+          "fail": 0,
+          "info": 0
+        }
+      },
+      "mutations": {
+        "tally": {
+          "total": 18,
+          "detectado": 18,
+          "sobrevivente": 0,
+          "equivalente": 0,
+          "inconclusivo": 0
+        },
+        "detected": [
+          "M01",
+          "M01b",
+          "M02",
+          "M03",
+          "M04",
+          "M05",
+          "M05b",
+          "M06",
+          "M07",
+          "M08",
+          "M09",
+          "M10",
+          "M11",
+          "M12a",
+          "M12b",
+          "M13",
+          "M14",
+          "M15"
+        ],
+        "survivors": [],
+        "equivalent": [],
+        "inconclusive": []
+      }
+    }
+  },
+  "captures": {
+    "r06Manifest": "interface_gpt/reviews/deepseek/R06/testes/capturas.json",
+    "r06002Manifest": "interface_gpt/reviews/deepseek/R06-002/testes/capturas.json",
+    "delta": "interface_gpt/reviews/deepseek/R06-002/testes/capturas-delta.json",
+    "handler": "interface_gpt/reviews/deepseek/R06-002/testes/capturas-handler.json",
+    "total": 33,
+    "identicalToR06": 18,
+    "textOnlyDiffs": 15,
+    "maxChangedPct": 0.144,
+    "dimensionsChanged": 0
+  },
+  "previousRoundProvenance": {
+    "path": "interface_gpt/reviews/deepseek/R06/proveniencia.json",
+    "addedIn": "d7ee2601b73d0d0cf323608501522276dfa33f7c",
+    "existsAtCodeCommit": false,
+    "existsAtBranchHead": true,
+    "explanation": "O proveniencia.json do R06 foi criado no commit de protocolo d7ee2601 (depois do commit de código bb43e2ff). O arquivo existe no caminho anunciado no HEAD da branch, mas não existia no SHA de código bb43e2ff; por isso um lookup restrito a esse SHA retorna 404. Os hashes dos assets efetivamente medidos no R06 estão registrados no próprio arquivo e no RELATORIO."
+  },
+  "handlerMutation": {
+    "generatedAt": "2026-11-25T20:47:47.369117-03:00",
+    "codeSha": "033fdc47c09796a584cf9782324fc7c08394ce74",
+    "mutation": "remover a guarda `if(d.status==='Finalizado'&&BancadaCancel.pending(o))` do handler tech de app.js em cópia scratch",
+    "expectedTest": "R06B-07",
+    "classification": "detectado",
+    "failedTests": [
+      "R06B-07",
+      "R06B-08",
+      "R06B-09"
+    ],
+    "detail": [
+      "{\"open\":false,\"toast\":\"Registro atualizado na demonstração.\",\"error\":\"\"}",
+      "{\"before\":{\"status\":\"Em Andamento\",\"conclusion\":null,\"total\":32000,\"paid\":10000,\"approval\":\"Aprovado\",\"delivery\":null,\"history\":[\"Entrada registrada\",\"Cancelamento: Pedido registrado\",\"Cancelamento: Conferência técnica\"],\"cancellation\":{\"events\":[{\"id\":1,\"type\":\"request\",\"when\":\"2026-11-25T23:47:34.908Z\",\"origin\":\"cliente\",\"reason\":\"Pedido pendente para o handler R06-002.\",\"status\":\"Em Andamento\"},{\"id\":2,\"type\":\"technical\",\"when\":\"2026-11-25T23:47:35.773Z\",\"request\":1,\"key\":\"[\\\"Em Andamento\\\",[[\\\"Serviço\\\",\\\"Serviço de reparo (demonstração inicial)\\\",1,32000]]]\",\"reason\":\"Peças conciliadas e serviço executado conferido — R06-002.\"}]},\"ledger\":{\"opening\":10000,\"events\":[]},\"stored\":\"{\\\"clients\\\":[{\\\"id\\\":1,\\\"name\\\":\\\"Clima Sul Serviços\\\",\\\"phone\\\":\\\"(45) 90000-0101\\\"},{\\\"id\\\":2,\\\"name\\\":\\\"Marina Alves\\\",\\\"phone\\\":\\\"(45) 90000-0102\\\"},{\\\"id\\\":3,\\\"name\\\":\\\"Refrigeração Horizonte\\\",\\\"phone\\",
+      "stored bytes 4847"
+    ],
+    "pristineAppSha256": "6715c6428304e6c3cec9b62d1fde942115a835538ff8deda36112e0b05ceb021",
+    "mutantAppSha256": "438aba78e4ce8a3ae774050886b53256267a9473f92dc62b543189e8483fa216",
+    "mutantLocation": "/home/dragonblue/.hermes/cache/scratch/r06-002-proto-mutante (fora do repositório; não publicado)",
+    "run": {
+      "server": "http://127.0.0.1:8131 (cópia estática)",
+      "total": 16,
+      "pass": 13,
+      "fail": 3
+    },
+    "note": "O checkout do laboratório não foi alterado; o mutante existiu apenas na cópia sob scratch e foi descartado após a execução."
+  },
+  "independentReview": {
+    "model": "Claude Sonnet 4.6 via Antigravity CLI (agy), processo externo",
+    "initial": {
+      "verdict": "APTO COM RESSALVAS",
+      "blockers": [],
+      "artifact": "interface_gpt/reviews/deepseek/R06-002/AUDITORIA-INDEPENDENTE.md",
+      "note": "Revisor não executou as suítes de forma autônoma (node indisponível no sandbox); verificou código, JSONs e logs por leitura."
+    },
+    "reReview": {
+      "verdict": "APTO",
+      "blockers": [],
+      "artifact": "interface_gpt/reviews/deepseek/R06-002/AUDITORIA-REVISAO.md",
+      "suggestionsClosed": [
+        "handler-mutante-resultados.json com codeSha",
+        "asserções explícitas de setup em negativos.cjs",
+        "mutacao-handler.json com codeSha"
+      ],
+      "remainingSuggestion": "timestamp histórico do R06 (fora do escopo desta rodada)"
+    }
+  },
+  "generatedAtFinal": "2026-11-25T20:49:40.046453-03:00"
+}

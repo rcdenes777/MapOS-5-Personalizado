@@ -1,0 +1,484 @@
+{
+  "generatedAt": "2026-11-25T20:39:21.852714",
+  "r06Manifest": "interface_gpt/reviews/deepseek/R06/testes/capturas.json",
+  "r06002Manifest": "interface_gpt/reviews/deepseek/R06-002/testes/capturas.json",
+  "total": 33,
+  "identical": 18,
+  "changed": 15,
+  "maxChangedPct": 0.144,
+  "viewports": [
+    "1440x900",
+    "768x1024",
+    "390x844",
+    "320x568"
+  ],
+  "dimensionsChanged": [],
+  "items": [
+    {
+      "file": "capturas/desktop/01-pedido-modal-1440.png",
+      "r06Sha256": "6a4939f3e9575355a0c8f07d3fa8583c20ed4da6b58afade005fc0a20041d7cb",
+      "r06002Sha256": "6a4939f3e9575355a0c8f07d3fa8583c20ed4da6b58afade005fc0a20041d7cb",
+      "identical": true,
+      "size": [
+        1440,
+        900
+      ]
+    },
+    {
+      "file": "capturas/desktop/02-pedido-modal-preenchido-1440.png",
+      "r06Sha256": "cc2d2972a0c1483276353a9c6a62fc6a7ec990e7829c1171b735188fea00fd5f",
+      "r06002Sha256": "cc2d2972a0c1483276353a9c6a62fc6a7ec990e7829c1171b735188fea00fd5f",
+      "identical": true,
+      "size": [
+        1440,
+        900
+      ]
+    },
+    {
+      "file": "capturas/desktop/03-fila-cancelamentos-1440.png",
+      "r06Sha256": "0b5cd2f6b72baba69ae4c973d14d2365039e052da8542307b0a134dbb92e20f1",
+      "r06002Sha256": "0b5cd2f6b72baba69ae4c973d14d2365039e052da8542307b0a134dbb92e20f1",
+      "identical": true,
+      "size": [
+        1440,
+        1231
+      ]
+    },
+    {
+      "file": "capturas/desktop/04-fila-os-pendente-1440.png",
+      "r06Sha256": "9bd76170ecb67cf570c9756cafcde58c336a3c386addaa00065d6975fa1257e7",
+      "r06002Sha256": "9bd76170ecb67cf570c9756cafcde58c336a3c386addaa00065d6975fa1257e7",
+      "identical": true,
+      "size": [
+        1440,
+        900
+      ]
+    },
+    {
+      "file": "capturas/desktop/05-conferencia-pendente-1440.png",
+      "r06Sha256": "170ddfa955e024cdce85303613cb8bc55dbe2528ebf262964dca23786d627f30",
+      "r06002Sha256": "7be98578f14dd91ec4df8c7e4c446de66f9cc1d35a8a8ce991c7ee7caf3d9656",
+      "identical": false,
+      "size": [
+        1440,
+        1509
+      ],
+      "diffBbox": [
+        382,
+        682,
+        423,
+        694
+      ],
+      "changedPixels": 230,
+      "changedPct": 0.011,
+      "bboxAreaPct": 0.02
+    },
+    {
+      "file": "capturas/desktop/06-item-perda-modal-1440.png",
+      "r06Sha256": "cd81ee7c4173aa706f876c8c5262eddce84e7e52d37af3b3e6497508f5bd1b66",
+      "r06002Sha256": "5b29c65dad83793bf3fe6b29151e15e3f941f1d04e99574a3a3ae5d058fb6ec9",
+      "identical": false,
+      "size": [
+        1440,
+        900
+      ],
+      "diffBbox": [
+        375,
+        186,
+        430,
+        212
+      ],
+      "changedPixels": 1092,
+      "changedPct": 0.084,
+      "bboxAreaPct": 0.11
+    },
+    {
+      "file": "capturas/desktop/07-conferencia-historico-item-1440.png",
+      "r06Sha256": "a05b4f19efcc53626e6ad04e3340ed529cefd3f7c8e8f04cab842955119bcc01",
+      "r06002Sha256": "a3976e2a99908f2f8a056456a5f368e758dbe300400ab5244f3e7a75e5967ab9",
+      "identical": false,
+      "size": [
+        1440,
+        1743
+      ],
+      "diffBbox": [
+        382,
+        682,
+        423,
+        1618
+      ],
+      "changedPixels": 518,
+      "changedPct": 0.021,
+      "bboxAreaPct": 1.53
+    },
+    {
+      "file": "capturas/desktop/08-acerto-devolucao-modal-1440.png",
+      "r06Sha256": "73d403a295a63ae1f4ebdb94abb964251b622a2dcd24af3b305b6691651ac306",
+      "r06002Sha256": "faa7bd18b8ff383701cb7b8ba96e287c4a71ea66837d176ecb309f8ef8a2a0b5",
+      "identical": false,
+      "size": [
+        1440,
+        900
+      ],
+      "diffBbox": [
+        375,
+        233,
+        430,
+        259
+      ],
+      "changedPixels": 1092,
+      "changedPct": 0.084,
+      "bboxAreaPct": 0.11
+    },
+    {
+      "file": "capturas/desktop/09-cancelado-historico-1440.png",
+      "r06Sha256": "bda1ac7487c472312cbbe1ace7250a6b7d012bbb44066238e28003a0d0245f6a",
+      "r06002Sha256": "1451ea60c13023fe229f3f1c66c46030c11f6ca37c2bd214c8ea7bae0806dddf",
+      "identical": false,
+      "size": [
+        1440,
+        1458
+      ],
+      "diffBbox": [
+        389,
+        1155,
+        422,
+        1334
+      ],
+      "changedPixels": 491,
+      "changedPct": 0.023,
+      "bboxAreaPct": 0.28
+    },
+    {
+      "file": "capturas/desktop/10-financeiro-devolucao-1440.png",
+      "r06Sha256": "716182ca80ed1c7fe3a94b86b702b0f90143cfa62253a3f3dad2a1ab52389e7c",
+      "r06002Sha256": "716182ca80ed1c7fe3a94b86b702b0f90143cfa62253a3f3dad2a1ab52389e7c",
+      "identical": true,
+      "size": [
+        1440,
+        986
+      ]
+    },
+    {
+      "file": "capturas/desktop/11-entrega-modal-1440.png",
+      "r06Sha256": "25ac32635d97ec5522b5b2869d95817207b17e74255c039207f6a1f175bc3577",
+      "r06002Sha256": "a39a07920d7fdc653afc2168a859b7918fa599e2acfd1c6fba0836b7a51d4fc0",
+      "identical": false,
+      "size": [
+        1440,
+        900
+      ],
+      "diffBbox": [
+        1241,
+        4,
+        1366,
+        58
+      ],
+      "changedPixels": 34,
+      "changedPct": 0.003,
+      "bboxAreaPct": 0.52
+    },
+    {
+      "file": "capturas/desktop/12-portal-cancelado-1440.png",
+      "r06Sha256": "283757a57819af8e72eb7675ba879f791bad6833d0f3e57c6d8f38799a1d9f7f",
+      "r06002Sha256": "283757a57819af8e72eb7675ba879f791bad6833d0f3e57c6d8f38799a1d9f7f",
+      "identical": true,
+      "size": [
+        1440,
+        900
+      ]
+    },
+    {
+      "file": "capturas/desktop/13-acerto-sem-obrigacao-modal-1440.png",
+      "r06Sha256": "fd90be1cee8b09715e3505c8ae1001c4bd91a06efd8e970a78009cd2e3f8d8b7",
+      "r06002Sha256": "cd5647069327e09b6fae17b6d2e2281d12aadaa9e75d10a5b7a10dfd90b8f4a4",
+      "identical": false,
+      "size": [
+        1440,
+        900
+      ],
+      "diffBbox": [
+        375,
+        270,
+        430,
+        296
+      ],
+      "changedPixels": 1202,
+      "changedPct": 0.093,
+      "bboxAreaPct": 0.11
+    },
+    {
+      "file": "capturas/desktop/21-financeiro-lista-canceladas-1440.png",
+      "r06Sha256": "b3fec9b5d686c313245042ec932a94376fc61c524c57f285b775a350a879c6ec",
+      "r06002Sha256": "b3fec9b5d686c313245042ec932a94376fc61c524c57f285b775a350a879c6ec",
+      "identical": true,
+      "size": [
+        1440,
+        1480
+      ]
+    },
+    {
+      "file": "capturas/mobile/14-conferencia-pendente-320.png",
+      "r06Sha256": "86434d61db58774d2f9a3fed29543b76ae2a0dba92e5646ae2c7b1cad8c99cc4",
+      "r06002Sha256": "72e0913c198599acc6139d82f8f24c95ecc2ca52741289ecd39f91e6f81f9762",
+      "identical": false,
+      "size": [
+        320,
+        2156
+      ],
+      "diffBbox": [
+        124,
+        1027,
+        165,
+        1039
+      ],
+      "changedPixels": 230,
+      "changedPct": 0.033,
+      "bboxAreaPct": 0.07
+    },
+    {
+      "file": "capturas/mobile/14-conferencia-pendente-390.png",
+      "r06Sha256": "e75e7b72885e9e58ea8f76542c531d239922feb3176b8d451f369400446433b4",
+      "r06002Sha256": "031af724041c4d6573667fca9bbea3063a67a9ae3e12c39cc8100a7c79754dc5",
+      "identical": false,
+      "size": [
+        390,
+        1930
+      ],
+      "diffBbox": [
+        128,
+        936,
+        169,
+        948
+      ],
+      "changedPixels": 230,
+      "changedPct": 0.031,
+      "bboxAreaPct": 0.07
+    },
+    {
+      "file": "capturas/mobile/15-item-peca-modal-320.png",
+      "r06Sha256": "520c813c99fc8b13d9e5d78e3dd1c4d50c677bc6a50bc777f875890ed4a8d872",
+      "r06002Sha256": "520c813c99fc8b13d9e5d78e3dd1c4d50c677bc6a50bc777f875890ed4a8d872",
+      "identical": true,
+      "size": [
+        320,
+        568
+      ]
+    },
+    {
+      "file": "capturas/mobile/15-item-peca-modal-390.png",
+      "r06Sha256": "52f16e908e433ce4b6db65a05d4722b15fce28cdecc5dda461c188da37e722b9",
+      "r06002Sha256": "a90c6faba4aa20fb2f904505f1fbac87b342079c2248284825fd4afcf7fb01c0",
+      "identical": false,
+      "size": [
+        390,
+        844
+      ],
+      "diffBbox": [
+        103,
+        4,
+        380,
+        67
+      ],
+      "changedPixels": 424,
+      "changedPct": 0.129,
+      "bboxAreaPct": 5.3
+    },
+    {
+      "file": "capturas/mobile/16-cancelado-320.png",
+      "r06Sha256": "80793dc763dc4670604fb751204a085ca032ba21e46b3a444125d4d2edf3804c",
+      "r06002Sha256": "097fc876a4437fae1a27994a7c2244cf884e02e4932b2fa1528c6eb12315bc5c",
+      "identical": false,
+      "size": [
+        320,
+        1932
+      ],
+      "diffBbox": [
+        131,
+        1516,
+        164,
+        1744
+      ],
+      "changedPixels": 491,
+      "changedPct": 0.079,
+      "bboxAreaPct": 1.22
+    },
+    {
+      "file": "capturas/mobile/16-cancelado-390.png",
+      "r06Sha256": "99b1d188697e5e57b763037b2b9d56e5b3adfd8a07bf4a7e44110a0a0bf3aa69",
+      "r06002Sha256": "518bd6b40972738914e97b785cf6293964d82a9e53ecba1c86eb5d5e9d31d89e",
+      "identical": false,
+      "size": [
+        390,
+        1748
+      ],
+      "diffBbox": [
+        135,
+        1381,
+        168,
+        1584
+      ],
+      "changedPixels": 491,
+      "changedPct": 0.072,
+      "bboxAreaPct": 0.98
+    },
+    {
+      "file": "capturas/mobile/17-financeiro-320.png",
+      "r06Sha256": "2e4a76a3c065d1ade97dc3df6c2d50d9d4a32a830af7d4eea6232b505b52ded5",
+      "r06002Sha256": "2e4a76a3c065d1ade97dc3df6c2d50d9d4a32a830af7d4eea6232b505b52ded5",
+      "identical": true,
+      "size": [
+        320,
+        1801
+      ]
+    },
+    {
+      "file": "capturas/mobile/17-financeiro-390.png",
+      "r06Sha256": "c497abd751b7e1e2d4f2017ff7a457a17078e0f1e3923a8227a56e15e7f122fc",
+      "r06002Sha256": "c497abd751b7e1e2d4f2017ff7a457a17078e0f1e3923a8227a56e15e7f122fc",
+      "identical": true,
+      "size": [
+        390,
+        1634
+      ]
+    },
+    {
+      "file": "capturas/mobile/18-fila-320.png",
+      "r06Sha256": "d5320a389f77cb8ccdbdba7a5252aae7f2a90bca3d05c8417057360217cbf4d8",
+      "r06002Sha256": "d5320a389f77cb8ccdbdba7a5252aae7f2a90bca3d05c8417057360217cbf4d8",
+      "identical": true,
+      "size": [
+        320,
+        2164
+      ]
+    },
+    {
+      "file": "capturas/mobile/18-fila-390.png",
+      "r06Sha256": "7c830fea50dbae1ad26a9874740812d4ff90f086305894cee731ae7d3e728031",
+      "r06002Sha256": "7c830fea50dbae1ad26a9874740812d4ff90f086305894cee731ae7d3e728031",
+      "identical": true,
+      "size": [
+        390,
+        2211
+      ]
+    },
+    {
+      "file": "capturas/mobile/19-portal-320.png",
+      "r06Sha256": "b7909205d660e9a0ee09bb8dfdc86fa6eb110efb7fbb5fbfaab45351d337c505",
+      "r06002Sha256": "b7909205d660e9a0ee09bb8dfdc86fa6eb110efb7fbb5fbfaab45351d337c505",
+      "identical": true,
+      "size": [
+        320,
+        897
+      ]
+    },
+    {
+      "file": "capturas/mobile/19-portal-390.png",
+      "r06Sha256": "4c9da61eed2c3640267734f56e2367224afe7db82e39948635e2cf0f18cfedf2",
+      "r06002Sha256": "4c9da61eed2c3640267734f56e2367224afe7db82e39948635e2cf0f18cfedf2",
+      "identical": true,
+      "size": [
+        390,
+        908
+      ]
+    },
+    {
+      "file": "capturas/mobile/20-valor-extremo-320.png",
+      "r06Sha256": "df550abc161a6ac2f19713b6e2e1a27d36afc7e72c4d26f5bb12adde3c08ba17",
+      "r06002Sha256": "df550abc161a6ac2f19713b6e2e1a27d36afc7e72c4d26f5bb12adde3c08ba17",
+      "identical": true,
+      "size": [
+        320,
+        1530
+      ]
+    },
+    {
+      "file": "capturas/tablet/14-conferencia-pendente-768.png",
+      "r06Sha256": "0b5c3cbb5aaa9b937cd698e710376d3a5eb2ee1590dcf1b9e85f2f487a1cc6ad",
+      "r06002Sha256": "19fb4a2eb8c8f207d0818a865f7d6d9c0349bb5ef3285691c39b5308133e73ef",
+      "identical": false,
+      "size": [
+        768,
+        1596
+      ],
+      "diffBbox": [
+        132,
+        731,
+        173,
+        743
+      ],
+      "changedPixels": 230,
+      "changedPct": 0.019,
+      "bboxAreaPct": 0.04
+    },
+    {
+      "file": "capturas/tablet/15-item-peca-modal-768.png",
+      "r06Sha256": "70c2ca4021260ba48c2b967f697db48b625bf7e216c0e135b3f8c910867b7984",
+      "r06002Sha256": "63c458813fc81863a7dc066e013c517e257e9256779c9147ea3ec0243c9d3834",
+      "identical": false,
+      "size": [
+        768,
+        1024
+      ],
+      "diffBbox": [
+        125,
+        4,
+        752,
+        187
+      ],
+      "changedPixels": 1129,
+      "changedPct": 0.144,
+      "bboxAreaPct": 14.59
+    },
+    {
+      "file": "capturas/tablet/16-cancelado-768.png",
+      "r06Sha256": "d64d44b35ec5ab95ec099e3e439431c50c56452c051f0653b6bfc6ec19fdafd6",
+      "r06002Sha256": "8ac12054fc42ae25ea913c75593da5b27986cb3cf251dbf5ec124213a9e1b1e4",
+      "identical": false,
+      "size": [
+        768,
+        1534
+      ],
+      "diffBbox": [
+        139,
+        1188,
+        172,
+        1368
+      ],
+      "changedPixels": 491,
+      "changedPct": 0.042,
+      "bboxAreaPct": 0.5
+    },
+    {
+      "file": "capturas/tablet/17-financeiro-768.png",
+      "r06Sha256": "ff963288555b535d6ca7096e79fa495287bfbf04be42970af8a77def9be80b6e",
+      "r06002Sha256": "ff963288555b535d6ca7096e79fa495287bfbf04be42970af8a77def9be80b6e",
+      "identical": true,
+      "size": [
+        768,
+        1458
+      ]
+    },
+    {
+      "file": "capturas/tablet/18-fila-768.png",
+      "r06Sha256": "f5ce6a50738b157973373d1ea0a7b63829654035be5477e6e33afb08509ecb19",
+      "r06002Sha256": "f5ce6a50738b157973373d1ea0a7b63829654035be5477e6e33afb08509ecb19",
+      "identical": true,
+      "size": [
+        768,
+        1793
+      ]
+    },
+    {
+      "file": "capturas/tablet/19-portal-768.png",
+      "r06Sha256": "36a18f9ff18f07980d2f54b88526b29e70a1043d44ee1a7e0122e3633a178e4f",
+      "r06002Sha256": "36a18f9ff18f07980d2f54b88526b29e70a1043d44ee1a7e0122e3633a178e4f",
+      "identical": true,
+      "size": [
+        768,
+        1024
+      ]
+    }
+  ],
+  "note": "R06-002 não altera CSS/HTML; as 33 capturas foram refeitas. Das 33, 18 são idênticas byte a byte; as 15 restantes diferem apenas em pixels de texto esparsos (relógio do topo e horários do histórico), no máximo 0,144% dos pixels, sem mudança de dimensão ou deslocamento de layout."
+}

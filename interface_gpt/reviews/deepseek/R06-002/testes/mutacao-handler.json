@@ -1,0 +1,27 @@
+{
+  "generatedAt": "2026-11-25T20:47:47.369117-03:00",
+  "codeSha": "033fdc47c09796a584cf9782324fc7c08394ce74",
+  "mutation": "remover a guarda `if(d.status==='Finalizado'&&BancadaCancel.pending(o))` do handler tech de app.js em cópia scratch",
+  "expectedTest": "R06B-07",
+  "classification": "detectado",
+  "failedTests": [
+    "R06B-07",
+    "R06B-08",
+    "R06B-09"
+  ],
+  "detail": [
+    "{\"open\":false,\"toast\":\"Registro atualizado na demonstração.\",\"error\":\"\"}",
+    "{\"before\":{\"status\":\"Em Andamento\",\"conclusion\":null,\"total\":32000,\"paid\":10000,\"approval\":\"Aprovado\",\"delivery\":null,\"history\":[\"Entrada registrada\",\"Cancelamento: Pedido registrado\",\"Cancelamento: Conferência técnica\"],\"cancellation\":{\"events\":[{\"id\":1,\"type\":\"request\",\"when\":\"2026-11-25T23:47:34.908Z\",\"origin\":\"cliente\",\"reason\":\"Pedido pendente para o handler R06-002.\",\"status\":\"Em Andamento\"},{\"id\":2,\"type\":\"technical\",\"when\":\"2026-11-25T23:47:35.773Z\",\"request\":1,\"key\":\"[\\\"Em Andamento\\\",[[\\\"Serviço\\\",\\\"Serviço de reparo (demonstração inicial)\\\",1,32000]]]\",\"reason\":\"Peças conciliadas e serviço executado conferido — R06-002.\"}]},\"ledger\":{\"opening\":10000,\"events\":[]},\"stored\":\"{\\\"clients\\\":[{\\\"id\\\":1,\\\"name\\\":\\\"Clima Sul Serviços\\\",\\\"phone\\\":\\\"(45) 90000-0101\\\"},{\\\"id\\\":2,\\\"name\\\":\\\"Marina Alves\\\",\\\"phone\\\":\\\"(45) 90000-0102\\\"},{\\\"id\\\":3,\\\"name\\\":\\\"Refrigeração Horizonte\\\",\\\"phone\\",
+    "stored bytes 4847"
+  ],
+  "pristineAppSha256": "6715c6428304e6c3cec9b62d1fde942115a835538ff8deda36112e0b05ceb021",
+  "mutantAppSha256": "438aba78e4ce8a3ae774050886b53256267a9473f92dc62b543189e8483fa216",
+  "mutantLocation": "/home/dragonblue/.hermes/cache/scratch/r06-002-proto-mutante (fora do repositório; não publicado)",
+  "run": {
+    "server": "http://127.0.0.1:8131 (cópia estática)",
+    "total": 16,
+    "pass": 13,
+    "fail": 3
+  },
+  "note": "O checkout do laboratório não foi alterado; o mutante existiu apenas na cópia sob scratch e foi descartado após a execução."
+}

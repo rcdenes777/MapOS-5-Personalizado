@@ -3,7 +3,7 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const vm = require('node:vm');
 const path = require('node:path');
-const app = fs.readFileSync(path.join(__dirname,'../assets/app.js'),'utf8');
+const app = ['quote.js','quote-ui.js','app.js'].map(f=>fs.readFileSync(path.join(__dirname,'../assets',f),'utf8')).join('\n');
 const nodes = new Map(), handlers = {};
 const document = {querySelector(k) {
   if(k === '#new-form') return null;

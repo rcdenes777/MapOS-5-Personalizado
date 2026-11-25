@@ -36,7 +36,7 @@ const KEY = 'mapos-bancada-prototype-v1';
   await mp.evaluate(() => localStorage.clear());
   await mp.reload({ waitUntil: 'networkidle' });
   const mgo = async x => { await mp.evaluate(h => { const d = document.querySelector('#modal'); if (d && d.open) d.close(); window.scrollTo(0, 0); if (location.hash === h) render(); else location.hash = h; }, x); await mp.waitForTimeout(180); };
-  await mgo('#ordens'); await shot(mp, 'mobile', '98-r02-filtros-compactos', 390, 844);
+  await mgo('#ordens'); await mp.selectOption('#queue-filter', 'andamento'); await mp.waitForTimeout(180); await shot(mp, 'mobile', '98-r02-filtros-compactos', 390, 844);
   await mgo('#nova'); await shot(mp, 'mobile', '99-r02-nova-os-barra', 390, 844);
   await mgo('#os/20'); await shot(mp, 'mobile', '94-r02-os-compacta', 390, 844);
 

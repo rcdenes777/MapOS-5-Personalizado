@@ -11,6 +11,7 @@
 **SHA final do código antes das evidências:** `789d8622`
 **Commit das evidências (92 capturas, testes e logs):** `fbea8b01f92fb4da3ae6927294d0eb020f206a6f`
 **Baseline funcional do MapOS:** `8c256cae4ddaeefad68922abddbb8addfe37c99d`
+**Errata da auditoria cega da R01:** [`ERRATA-R01.md`](ERRATA-R01.md)
 **Pasta no GitHub:** https://github.com/rcdenes777/MapOS-5-Personalizado/tree/interface-gpt/interface_gpt/reviews/deepseek/R02
 
 Nenhum arquivo fora de `interface_gpt/` foi alterado. Não houve merge, deploy ou mudança na `v5-trifase`. As evidências da R01 foram preservadas em `reviews/deepseek/R01/`.

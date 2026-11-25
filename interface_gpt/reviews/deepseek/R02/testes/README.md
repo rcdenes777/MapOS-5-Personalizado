@@ -27,7 +27,7 @@ Scripts e logs da rodada de correções/refinamentos. Nada aqui altera o protót
 ```bash
 # 1. Servir o protótipo
 cd interface_gpt
-python3 -m http.server 8130 --bind 127.0.0.1
+python3 -m http.server 8130 --bind 0.0.0.0
 
 # 2. Em outro terminal
 export NODE_PATH=/caminho/para/node_modules   # playwright-core + axe-core

@@ -105,7 +105,7 @@ As imagens usam os mesmos dados, resoluções e enquadramentos da R01, para comp
 | 31 | [`mobile/95-painel-360x800.png`](mobile/95-painel-360x800.png) | Painel em 360×800. |
 | 32 | [`mobile/96-r02-texto-longo-390x844.png`](mobile/96-r02-texto-longo-390x844.png) | R02: texto longo sem overflow no detalhe. |
 | 33 | [`mobile/97-r02-texto-longo-lista-390x844.png`](mobile/97-r02-texto-longo-lista-390x844.png) | R02: nome longo sem overflow na listagem. |
-| 34 | [`mobile/98-r02-filtros-compactos-390x844.png`](mobile/98-r02-filtros-compactos-390x844.png) | R02: filtro de fila compacto com primeiro resultado em 392 px. |
+| 34 | [`mobile/98-r02-filtros-compactos-390x844.png`](mobile/98-r02-filtros-compactos-390x844.png) | R02: filtro “Em atendimento” ativo no seletor compacto; resultado filtrado. |
 | 35 | [`mobile/99-r02-nova-os-barra-390x844.png`](mobile/99-r02-nova-os-barra-390x844.png) | R02: barra de ações acima do menu, sem cobrir o defeito. |
 
 ## Tablet (8 capturas)

@@ -10,6 +10,7 @@
 **Commit dos refinamentos visuais:** `789d86229bb48aa3b53f5bfe59cff483d2a46689`
 **SHA final do código antes das evidências:** `789d8622`
 **Commit das evidências (92 capturas, testes e logs):** `fbea8b01f92fb4da3ae6927294d0eb020f206a6f`
+**Commit da errata e ajuste da captura 98:** `23fdf9ead8174074e903403a5cea69ed9e0da630`
 **Baseline funcional do MapOS:** `8c256cae4ddaeefad68922abddbb8addfe37c99d`
 **Errata da auditoria cega da R01:** [`ERRATA-R01.md`](ERRATA-R01.md)
 **Pasta no GitHub:** https://github.com/rcdenes777/MapOS-5-Personalizado/tree/interface-gpt/interface_gpt/reviews/deepseek/R02

@@ -4,6 +4,7 @@
 **Commit técnico:** `fe27e12a280859e585dfb2f7a8c6d3ba18718106`
 **Commit visual:** `789d86229bb48aa3b53f5bfe59cff483d2a46689`
 **Commit das evidências:** `fbea8b01f92fb4da3ae6927294d0eb020f206a6f`
+**Commit da errata:** `23fdf9ead8174074e903403a5cea69ed9e0da630`
 **Errata da auditoria cega da R01:** [`ERRATA-R01.md`](ERRATA-R01.md)
 **Branch:** `interface-gpt` · **Pasta:** https://github.com/rcdenes777/MapOS-5-Personalizado/tree/interface-gpt/interface_gpt/reviews/deepseek/R02
 

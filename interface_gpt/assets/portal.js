@@ -23,7 +23,7 @@ const BancadaPortal = (() => {
     BancadaQuote.init(o);
     const v=BancadaQuote.vigente(o);
     const eq=[o.brand,o.model].filter(Boolean).join(' · ')||o.description||'Identificação pendente';
-    const finance=o.total>0?{total:o.total,paid:o.paid,balance:o.total-o.paid,status:o.paid===o.total?'Quitada':o.paid>0?'Parcialmente paga':'Em aberto'}:null;
+    const finance=o.total>0||o.billing?{total:o.total,paid:o.paid,balance:o.total-o.paid,status:o.total===0?'Sem cobrança':o.paid===o.total?'Quitada':o.paid>0?'Parcialmente paga':'Em aberto'}:null;
     // Deliberate allowlist. Never return an order, draft, link, private note, or full decision.
     const quote=v?{number:v.number,created:v.created,items:v.items.map(i=>({type:i.type,name:i.name,quantity:i.quantity,unit:i.unit})),discount:v.discount,total:v.total,terms:{payment:v.terms.payment,deadline:v.terms.deadline,warranty:v.terms.warranty,diagnosis:v.terms.diagnosis,equipment:v.terms.equipment||'',defect:v.terms.defect||''},decision:v.decision?{answer:v.decision.answer,name:v.decision.name,channel:v.decision.channel,date:v.decision.date,registered:v.decision.registered,afterDelivery:!!v.decision.afterDelivery}:null,readOnly:!!o.delivery}:null;
     return {id:o.id,status:o.status,entry:o.entry,forecast:o.forecast||'',equipment:eq,finance,quote,attachments:[]};

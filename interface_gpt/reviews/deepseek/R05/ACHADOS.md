@@ -17,6 +17,7 @@
 | R05-A04 | Baixa (UX) | **OBSERVAÇÃO** | `#financeiro` e `#recibo` de Técnico/Atendente mostram “Ação indisponível”; `#os/<id>/financeiro` permanece na OS e mostra “Acesso restrito”. Nenhum valor ou ação é exposto. | `browser.cjs` P07; `edge.cjs` X12–X13. |
 | R05-A05 | Baixa | **LIMITE** | Recibos são prévias de demonstração sem validade comercial; PDFs não comprovam movimentação bancária. | Rodapé do recibo; `recibos/*.pdf`. |
 | R05-A06 | Baixa (histórico) | **HISTÓRICO** | Scripts antigos da R03 que usavam `publicresponse` permanecem como evidência daquela árvore; a R04/R05 usam `portal.html`. | `R03/testes/`; R05 `testes/README.md`. |
+| R05-A07 | Baixa (UX) | **OBSERVAÇÃO** | OS sem obrigação e OS cancelada compartilham a mesma mensagem de erro (“Acerto de cancelamento…”), imprecisa para o caso sem obrigação; não altera valores nem eventos. | `edge.cjs` X11; refinamento de texto possível em etapa posterior. |
 
 ## O que não foi tratado como falha
 

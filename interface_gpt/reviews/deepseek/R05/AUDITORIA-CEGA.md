@@ -37,6 +37,6 @@ As correções foram reexecutadas sobre `0d0b4e74`:
 - 37 PNG R05 únicas + 8 auxiliares da regressão R03, 0 duplicatas no delta;
 - PDFs #023 normal/estornado e #020 auxiliares.
 
-O veredito permanece **APTO COM RESSALVAS**: não há falha funcional do contrato; as ressalvas eram de lastro, referência de PDF, data fixa, contagem de pacote e sincronização remota, e foram tratadas. Permanecem os limites declarados da simulação local (`localStorage`, sem autenticação, CSRF, idempotência de servidor ou devolução bancária) e a observação de UX sobre a rota financeira restrita permanecer na OS com “Acesso restrito”.
+O veredito permanece **APTO COM RESSALVAS**: não há falha funcional do contrato; as ressalvas eram de lastro, referência de PDF, data fixa, contagem de pacote e sincronização remota, e foram tratadas. Permanecem os limites declarados da simulação local (`localStorage`, sem autenticação, CSRF, idempotência de servidor ou devolução bancária), a observação de UX sobre a rota financeira restrita permanecer na OS com “Acesso restrito” e a mensagem compartilhada para OS sem obrigação/cancelada (`R05-A07`). A produção real não é acessível neste laboratório; a verificação de “produção intocada” é a ausência de alterações fora de `interface_gpt` e de deploy.
 
 Arquivos de referência: [`RELATORIO.md`](RELATORIO.md), [`ACHADOS.md`](ACHADOS.md), [`testes/README.md`](testes/README.md), [`testes/proveniencia.json`](testes/proveniencia.json).

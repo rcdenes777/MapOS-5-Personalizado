@@ -137,6 +137,7 @@ Nenhuma regra de negócio, texto criativo, identidade visual, backend, banco, pr
 - **R05-A04 (observação de UX):** a rota direta `#financeiro`/`#recibo` de Técnico/Atendente mostra **Ação indisponível**; `#os/<id>/financeiro` permanece na OS e mostra **Acesso restrito**, em vez de redirecionar. Não há valores nem ações; não é uma exposição.
 - **R05-A05 (limite):** recibos são prévias de demonstração sem validade comercial.
 - **R05-A06 (histórico):** os scripts R03 que usavam a simulação `publicresponse` ficam como evidência histórica; o fluxo atual usa `portal.html`.
+- **R05-A07 (UX):** OS sem obrigação e OS cancelada compartilham a mensagem “Acerto de cancelamento…”, imprecisa para o primeiro caso; não altera valores ou eventos e pode ser refinada em etapa posterior.
 
 ## 6. Artefatos
 

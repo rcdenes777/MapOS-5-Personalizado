@@ -57,11 +57,11 @@ function quoteModal(kind,o){
  if(kind==='quote'){if(!BancadaQuote.editable(o))return null;return ['Preparar orçamento',quoteEditor(o),'Salvar rascunho']}
  if(kind==='publish'){if(o.delivery||o.origin||o.status==='Cancelado'||!d.items.length)return null;return ['Publicar versão '+(q.versions.length+1),quoteRows(d.items)+quoteTotals(d.items,d.discount)+quoteTerms(d.terms)+check('Conferi os textos, itens e valores e autorizo o compartilhamento desta versão.')+'<p class="note">A publicação anterior, se houver, será preservada no histórico.</p>','Publicar versão']}
  if(kind==='withdraw'){if(!v)return null;return ['Retirar publicação','<input type="hidden" name="version" value="'+v.number+'">'+check('Retirar a publicação e preservar versões e respostas no histórico.'),'Retirar publicação']}
- if(kind==='approval'||kind==='publicresponse'){
-   const isPublic=kind==='publicresponse',current=BancadaQuote.vigente(o);
-   if(!v||o.status==='Cancelado'||(isPublic&&(!current||current.decision||o.delivery))||(!isPublic&&current?.decision))return null;
+ if(kind==='approval'){
+   const current=BancadaQuote.vigente(o);
+   if(!v||o.status==='Cancelado'||current?.decision)return null;
    const shown=current||{items:d.items,discount:d.discount,terms:d.terms};
-   return [isPublic?'Simular resposta pelo link':'Registrar resposta do cliente', '<div class="note">'+(current?'Versão '+v.number:'Os itens foram alterados; o registro interno criará uma versão com os itens atuais.')+'</div><input type="hidden" name="version" value="'+v.number+'">'+quoteRows(shown.items)+quoteTotals(shown.items,shown.discount)+quoteTerms(shown.terms)+select('Resposta','answer',['Aprovado','Recusado'])+field('Nome de quem respondeu *','name',client(o).name,'required maxlength="150"')+(!isPublic?select('Canal','channel',[['whatsapp','WhatsApp'],['telefone','Telefone'],['presencial','Presencial']])+field('Data da comunicação *','date',o.delivery?.date||today(),'type="date" max="'+(o.delivery?.date||today())+'" required')+textarea('Observação (opcional)','note','','maxlength="2000"'):'')+check('Confirmo a decisão sobre estes itens e valores.'),'Registrar resposta'];
+   return ['Registrar resposta do cliente','<div class="note">'+(current?'Versão '+v.number:'Os itens foram alterados; o registro interno criará uma versão com os itens atuais.')+'</div><input type="hidden" name="version" value="'+v.number+'">'+quoteRows(shown.items)+quoteTotals(shown.items,shown.discount)+quoteTerms(shown.terms)+select('Resposta','answer',[['','Selecione a resposta'],['Aprovado','Aprovado'],['Recusado','Recusado']],'','required')+field('Nome de quem respondeu *','name',client(o).name,'required maxlength="150"')+select('Canal','channel',[['whatsapp','WhatsApp'],['telefone','Telefone'],['presencial','Presencial']])+field('Data da comunicação *','date',o.delivery?.date||today(),'type="date" max="'+(o.delivery?.date||today())+'" required')+textarea('Observação (opcional)','note','','maxlength="2000"')+check('Confirmo a decisão sobre estes itens e valores.'),'Registrar resposta'];
  }
  if(kind==='billing'){if(o.total||o.origin||['Cancelado','Faturado'].includes(o.status))return null;return ['Formalizar cobrança',quoteTotals(d.items,d.discount)+billingWarning(o,d,v)+field('Vencimento *','due',today(),'type="date" required')+check('Conferi o valor e confirmo a criação da cobrança.'),'Formalizar cobrança']}
  return null;
@@ -72,7 +72,7 @@ function handleQuoteSubmit(kind,o,f,d){
  if(kind==='quote'){BancadaQuote.saveDraft(o,quoteDraftFromForm(f));event(o,'Rascunho de orçamento atualizado')}
  if(kind==='publish'){if(!d.confirm)throw Error('Confirme a publicação.');const v=BancadaQuote.publish(o,now);event(o,'Orçamento: versão '+v.number+' publicada')}
  if(kind==='withdraw'){if(!d.confirm)throw Error('Confirme a retirada.');BancadaQuote.withdraw(o,Number(d.version));event(o,'Orçamento: publicação retirada')}
- if(kind==='approval'||kind==='publicresponse'){const v=BancadaQuote.respond(o,Number(d.version),d,now,kind==='approval',today());event(o,'Orçamento: versão '+v.number+' — '+v.decision.answer)}
+ if(kind==='approval'){const v=BancadaQuote.respond(o,Number(d.version),d,now,true,today());event(o,'Orçamento: versão '+v.number+' — '+v.decision.answer)}
  if(kind==='billing'){if(!d.confirm)throw Error('Confirme a cobrança.');BancadaQuote.formalize(o,d.due);event(o,'Cobrança formalizada')}
 }
 document.addEventListener('click',e=>{

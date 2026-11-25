@@ -102,3 +102,8 @@ body{overflow-wrap:anywhere}
   .modal-head h2{font-size:1.05rem}
   .modal-head button{padding:8px 10px;font-size:.8rem}
 }
+
+/* R04: prioritize operational actions before history, one primary per quote state. */
+.quote-workspace{grid-template-columns:minmax(0,1fr);grid-template-areas:"proposal" "operations" "history";align-items:start}.quote-proposal{grid-area:proposal}.quote-operations{grid-area:operations}.quote-history{grid-area:history}.quote-workspace>.panel{margin:0}.portal-controls .btn{width:100%}.portal-controls .section-head{align-items:center}.portal-controls .section-head h2{min-width:0}.portal-controls .quote-version-body{gap:8px}
+@media(min-width:1151px){.quote-workspace{grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);grid-template-areas:"proposal operations" "history operations"}}
+#action-form .form-footer{position:sticky;bottom:-1px;background:white;border-top:1px solid var(--line);padding:10px 0;z-index:1}#modal:has(#action-form){scroll-padding-bottom:80px}

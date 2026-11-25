@@ -1,0 +1,80 @@
+[
+  {
+    "page": "1440x900",
+    "type": "error",
+    "text": "Failed to load resource: the server responded with a status of 404 (File not found)",
+    "url": "http://127.0.0.1:8130/"
+  },
+  {
+    "page": "1440x900",
+    "type": "error",
+    "text": "Failed to load resource: the server responded with a status of 404 (File not found)",
+    "url": "http://127.0.0.1:8130/"
+  },
+  {
+    "page": "1440x900",
+    "type": "error",
+    "text": "Failed to load resource: the server responded with a status of 404 (File not found)",
+    "url": "http://127.0.0.1:8130/"
+  },
+  {
+    "page": "390x844",
+    "type": "error",
+    "text": "Failed to load resource: the server responded with a status of 404 (File not found)",
+    "url": "http://127.0.0.1:8130/"
+  },
+  {
+    "page": "1920x1080",
+    "type": "error",
+    "text": "Failed to load resource: the server responded with a status of 404 (File not found)",
+    "url": "http://127.0.0.1:8130/"
+  },
+  {
+    "page": "1440x900",
+    "type": "error",
+    "text": "Failed to load resource: the server responded with a status of 404 (File not found)",
+    "url": "http://127.0.0.1:8130/"
+  },
+  {
+    "page": "1366x768",
+    "type": "error",
+    "text": "Failed to load resource: the server responded with a status of 404 (File not found)",
+    "url": "http://127.0.0.1:8130/"
+  },
+  {
+    "page": "768x1024",
+    "type": "error",
+    "text": "Failed to load resource: the server responded with a status of 404 (File not found)",
+    "url": "http://127.0.0.1:8130/"
+  },
+  {
+    "page": "412x915",
+    "type": "error",
+    "text": "Failed to load resource: the server responded with a status of 404 (File not found)",
+    "url": "http://127.0.0.1:8130/"
+  },
+  {
+    "page": "390x844",
+    "type": "error",
+    "text": "Failed to load resource: the server responded with a status of 404 (File not found)",
+    "url": "http://127.0.0.1:8130/"
+  },
+  {
+    "page": "360x800",
+    "type": "error",
+    "text": "Failed to load resource: the server responded with a status of 404 (File not found)",
+    "url": "http://127.0.0.1:8130/"
+  },
+  {
+    "page": "320x568",
+    "type": "error",
+    "text": "Failed to load resource: the server responded with a status of 404 (File not found)",
+    "url": "http://127.0.0.1:8130/"
+  },
+  {
+    "page": "390x844",
+    "type": "error",
+    "text": "Failed to load resource: the server responded with a status of 404 (File not found)",
+    "url": "http://127.0.0.1:8130/"
+  }
+]

@@ -1,0 +1,13 @@
+R01 — ambiente de execução
+Data: 2026-11-25T14:57:07-03:00
+Host: Linux 6.18.63-3-MANJARO x86_64
+Node: v26.12.1
+Python: Python 3.14.9
+Chromium: Google Chrome for Testing 156.0.8078.4 
+playwright-core: 1.65.1
+Repositório: https://github.com/rcdenes777/MapOS-5-Personalizado.git
+Branch: interface-gpt
+SHA testado: 82c167b1d4ddc8f9939ff58123eec611199452eb
+Servidor: python3 -m http.server 8130 --bind 0.0.0.0 (diretório interface_gpt)
+URL: http://127.0.0.1:8130
+Dados: somente seed fictício do protótipo; localStorage limpo antes das capturas.

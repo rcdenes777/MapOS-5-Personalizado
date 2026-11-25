@@ -1,0 +1,46 @@
+{
+  "propostaAntes": {
+    "proposal": 24000,
+    "approval": "Aguardando resposta",
+    "total": 0
+  },
+  "propostaDepois": {
+    "proposal": 30000,
+    "approval": "Aguardando resposta",
+    "total": 0,
+    "historico": [
+      "Entrada registrada",
+      "Orçamento preparado"
+    ]
+  },
+  "impressao": {
+    "pageRule": null,
+    "larguraFolhaPx": 800,
+    "larguraA4ConteudoPx": 794,
+    "larguraCupomPx": 302
+  },
+  "trocaPerfil": {
+    "antes": "#os/20",
+    "depois": {
+      "hash": "#inicio",
+      "h1": "O que precisa de atenção?"
+    }
+  },
+  "textoLongo": [
+    {
+      "viewport": "1440x900",
+      "overflowDetalhePx": 4338,
+      "overflowListaPx": 0
+    },
+    {
+      "viewport": "390x844",
+      "overflowDetalhePx": 4315,
+      "overflowListaPx": 744
+    },
+    {
+      "viewport": "320x568",
+      "overflowDetalhePx": 4379,
+      "overflowListaPx": 808
+    }
+  ]
+}

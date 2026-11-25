@@ -16,7 +16,7 @@
     </header>
 
     <?= component('data-table', [
-        'columns' => conecteColunasOs(true),
+        'columns' => conecteColunasOs(true, $financeiroVisivel ?? false),
         'rows' => $results,
         'caption' => 'Ordens de serviço',
         'empty' => component('empty-state', [

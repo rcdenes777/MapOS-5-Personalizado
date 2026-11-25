@@ -3,6 +3,7 @@
 defined('BASEPATH') or exit('No direct script access allowed');
 
 require_once APPPATH . 'helpers/trifase_video_helper.php';
+require_once APPPATH . 'helpers/trifase_financeiro_helper.php';
 
 /** Leitura por capacidade (token), independente do login de cliente e da API. */
 class Publico extends CI_Controller
@@ -73,7 +74,13 @@ class Publico extends CI_Controller
                 ];
             }
         }
-        $this->load->view('trifase/publico', $dadosOrcamento + ['os' => trifasePublicoDados($os), 'anexos' => $anexos, 'basePublica' => $base, 'noncePublico' => $nonce]);
+        $financeiro = null;
+        if (trifaseFinanceiroHabilitado() && $this->db->table_exists('trifase_financeiro_obrigacoes')) {
+            $this->load->model('Trifase_financeiro_model', 'financeiro_publico');
+            $financeiro = $this->financeiro_publico->resumoCliente((int) $os->idOs);
+        }
+        $this->load->view('trifase/publico', $dadosOrcamento + ['os' => trifasePublicoDados($os), 'anexos' => $anexos,
+            'basePublica' => $base, 'noncePublico' => $nonce, 'financeiro' => $financeiro]);
     }
 
     public function anexo($token = null, $id = null)

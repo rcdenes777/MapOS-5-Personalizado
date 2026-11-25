@@ -282,7 +282,7 @@ final class TrifaseGarantiaOperacoesTest extends MaposTestCase
         $m->up();
         $entregas=new Trifase_entrega_model();
         $entregas->db=$this->db;
-        $dadosEntrega=['recebedor'=>'Cliente sintético', 'entregue_em'=>date('Y-m-d\TH:i'), 'itens'=>'Placa de teste', 'terceiro'=>'0', 'confirmou_condicoes'=>'1'];
+        $dadosEntrega=['recebedor'=>'Cliente sintético', 'entregue_em'=>date('Y-m-d'), 'itens'=>'Placa de teste', 'terceiro'=>'0', 'confirmou_condicoes'=>'1'];
         $entregaOrigem=$entregas->registrar(1, $dadosEntrega, 7, $this->chave('entregar-origem'));
         $origemAntes=$this->db->where('idOs', 1)->get('os')->row_array();
         $m=new class extends Migration_trifase_orcamentos {

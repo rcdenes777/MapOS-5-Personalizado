@@ -38,8 +38,8 @@ $idEquipamentoOs = (int) $os->idOs;
                     <?= component('input', ['name' => 'serie', 'id' => 'piloto-equipamento-serie', 'label' => 'Número de série', 'attrs' => ['maxlength' => 100]]) ?>
                     <?= component('input', ['name' => 'imei', 'id' => 'piloto-equipamento-imei', 'label' => 'IMEI (quando aplicável)', 'attrs' => ['maxlength' => 100]]) ?>
                     <p class="text-caption text-muted">Selo, série e IMEI são opcionais na entrada. O equipamento recebe um número interno e pode ser identificado depois.</p>
-                    <?= component('textarea', ['name' => 'itens_recebidos', 'id' => 'piloto-equipamento-itens', 'label' => 'Itens recebidos e acessórios', 'required' => true, 'help' => 'Ex.: placa e dissipador; ou somente o aparelho, sem acessórios.', 'attrs' => ['maxlength' => 10000, 'rows' => 3]]) ?>
-                    <?= component('textarea', ['name' => 'estado_entrada', 'id' => 'piloto-equipamento-estado', 'label' => 'Estado na entrada', 'required' => true, 'attrs' => ['maxlength' => 10000, 'rows' => 3]]) ?>
+                    <?= component('textarea', ['name' => 'itens_recebidos', 'id' => 'piloto-equipamento-itens', 'label' => 'Itens recebidos e acessórios', 'help' => 'Opcional. Ex.: placa e dissipador; ou somente o aparelho, sem acessórios.', 'attrs' => ['maxlength' => 10000, 'rows' => 3]]) ?>
+                    <?= component('textarea', ['name' => 'estado_entrada', 'id' => 'piloto-equipamento-estado', 'label' => 'Estado na entrada', 'help' => 'Opcional.', 'attrs' => ['maxlength' => 10000, 'rows' => 3]]) ?>
                     <?= component('button', ['label' => 'Salvar identificação', 'type' => 'submit']) ?>
                 </form>
             </details>
@@ -52,8 +52,8 @@ $idEquipamentoOs = (int) $os->idOs;
                         <?= component('input', ['name' => 'busca_unidade', 'id' => 'piloto-equipamento-busca-unidade', 'label' => 'Buscar selo, série, IMEI ou modelo', 'autocomplete' => 'off', 'required' => true, 'placeholder' => 'Somente equipamentos deste cliente']) ?>
                         <input type="hidden" name="equipamento_id" id="piloto-equipamento-unidade-id" value="">
                     </div>
-                    <?= component('textarea', ['name' => 'itens_recebidos', 'id' => 'piloto-equipamento-reuso-itens', 'label' => 'Itens recebidos neste atendimento', 'required' => true, 'attrs' => ['maxlength' => 10000, 'rows' => 3]]) ?>
-                    <?= component('textarea', ['name' => 'estado_entrada', 'id' => 'piloto-equipamento-reuso-estado', 'label' => 'Estado nesta entrada', 'required' => true, 'attrs' => ['maxlength' => 10000, 'rows' => 3]]) ?>
+                    <?= component('textarea', ['name' => 'itens_recebidos', 'id' => 'piloto-equipamento-reuso-itens', 'label' => 'Itens recebidos neste atendimento', 'help' => 'Opcional.', 'attrs' => ['maxlength' => 10000, 'rows' => 3]]) ?>
+                    <?= component('textarea', ['name' => 'estado_entrada', 'id' => 'piloto-equipamento-reuso-estado', 'label' => 'Estado nesta entrada', 'help' => 'Opcional.', 'attrs' => ['maxlength' => 10000, 'rows' => 3]]) ?>
                     <?= component('button', ['label' => 'Vincular unidade à OS', 'type' => 'submit']) ?>
                 </form>
             </details>

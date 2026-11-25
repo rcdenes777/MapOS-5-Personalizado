@@ -71,7 +71,7 @@ final class TrifaseOrcamentoSimplificadoTest extends MaposTestCase
         $m->up();
         $e = new Trifase_entrega_model();
         $e->db = $this->db;
-        $e->registrar(1, ['recebedor' => 'Cliente QA', 'entregue_em' => ($dia ?? date('Y-m-d')) . 'T10:00',
+        $e->registrar(1, ['recebedor' => 'Cliente QA', 'entregue_em' => ($dia ?? date('Y-m-d')),
             'itens' => 'Equipamento sintético', 'terceiro' => '0', 'confirmou_condicoes' => '1'], 7, str_pad('ent', 16, 'y'));
     }
 

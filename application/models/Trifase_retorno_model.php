@@ -110,7 +110,8 @@ class Trifase_retorno_model extends CI_Model
         }
         $normalizados = [];
         foreach (['defeito', 'itens_recebidos', 'estado_entrada'] as $campo) {
-            $normalizados[$campo] = $this->texto($dados[$campo] ?? null, 10000);
+            $valor = $dados[$campo] ?? ($campo === 'defeito' ? null : '');
+            $normalizados[$campo] = $this->texto($valor, 10000, $campo === 'defeito');
         }
         $dados = $normalizados;
         $hash = $this->hash([$anterior, $dados, $usuario]);

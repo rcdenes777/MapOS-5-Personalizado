@@ -125,11 +125,33 @@ final class TrifaseRetornoTest extends MaposTestCase
         $this->assertSame(0, (int) $this->tecnico->conclusao($id)->garantia_dias);
         $this->assertCount(2, $this->modelo->historicoUnidade(1));
     }
+    public function testItensEEstadoDaEntradaSaoOpcionaisNoRetorno(): void
+    {
+        $origem = $this->db->where('os_id', 1)->get('trifase_os_equipamentos')->row_array();
+        $id = $this->modelo->criar(1, array_replace($this->dados(), ['itens_recebidos' => '', 'estado_entrada' => '']), 7, $this->chave('sem-itens-estado'));
+        $vinculo = $this->db->where('os_id', $id)->get('trifase_os_equipamentos')->row();
+        $this->assertSame('', $vinculo->itens_recebidos);
+        $this->assertSame('', $vinculo->estado_entrada);
+        $this->assertSame('Aberto', $this->db->where('idOs', $id)->get('os')->row()->status);
+        $this->assertSame(1, (int) $this->modelo->vinculo($id)->origem_id);
+        $this->assertSame($origem, $this->db->where('os_id', 1)->get('trifase_os_equipamentos')->row_array());
+        $this->assertSame('Estado original', $origem['estado_entrada']);
+        $this->assertSame('Entrada original', $origem['itens_recebidos']);
+    }
+
+    public function testChavesOpcionaisAusentesSaoTratadasComoVazias(): void
+    {
+        $id = $this->modelo->criar(1, ['defeito' => 'Somente defeito'], 7, $this->chave('somente-defeito'));
+        $vinculo = $this->db->where('os_id', $id)->get('trifase_os_equipamentos')->row();
+        $this->assertSame('', $vinculo->itens_recebidos);
+        $this->assertSame('', $vinculo->estado_entrada);
+    }
+
     public function testDadosInvalidosNaoCriamOuDecidem(): void
     {
         try {
-            $this->modelo->criar(1, array_replace($this->dados(), ['estado_entrada' => '']), 7, $this->chave('sem-estado'));
-            $this->fail('Aceitou entrada incompleta');
+            $this->modelo->criar(1, array_replace($this->dados(), ['defeito' => '']), 7, $this->chave('sem-defeito'));
+            $this->fail('Aceitou defeito vazio');
         } catch (DomainException $e) {
             $this->assertSame(1, $this->db->count_all('os'));
         }

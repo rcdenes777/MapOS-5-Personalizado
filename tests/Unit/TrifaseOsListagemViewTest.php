@@ -218,7 +218,7 @@ final class TrifaseOsListagemViewTest extends \PHPUnit\Framework\TestCase
         require_once APPPATH . 'helpers/trifase_entrega_helper.php';
         $opcoes = ['contextoFinanceiro' => false, 'listaVerFinanceiro' => false, 'listaEntregaHabilitada' => true];
         $html = $this->renderizar([], ['status' => 'Cancelado', 'entregue_em' => '2026-11-10 14:30:00', 'recebedor' => 'PRIVADO'], $opcoes);
-        $this->assertSame(['Entregue em 10/11/2026 às 14:30'], $this->celulas($html, 'Entrega'));
+        $this->assertSame(['Entregue em 10/11/2026'], $this->celulas($html, 'Entrega'));
         $this->assertStringContainsString('Entrega do equipamento', $html);
         $this->assertStringContainsString('Previsão', $html);
         $this->assertStringNotContainsString('PRIVADO', $html);

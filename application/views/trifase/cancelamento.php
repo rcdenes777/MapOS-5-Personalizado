@@ -226,7 +226,7 @@ $etapaCancelamento = $cancelado ? ($entregue ? 4 : 3) : ($pendenteCancelamento ?
         <section class="rounded-card border border-border bg-surface p-4">
             <h2 class="text-heading-sm">3. Entrega do equipamento</h2>
             <?php if ($entregue) { ?>
-                <p class="mt-3 text-success-ink"><?= e('Entregue em ' . date('d/m/Y H:i', strtotime($entregaCancelamento->entregue_em)) . ' · Recebedor: ' . $entregaCancelamento->recebedor) ?></p>
+                <p class="mt-3 text-success-ink"><?= e('Entregue em ' . date('d/m/Y', strtotime($entregaCancelamento->entregue_em)) . ' · Recebedor: ' . $entregaCancelamento->recebedor) ?></p>
                 <?= component('link', ['label' => 'Abrir comprovante', 'href' => site_url('trifase_entregas/comprovante/' . $idCancelamento . '/' . (int) $entregaCancelamento->id)]) ?>
             <?php } else { ?>
                 <p class="my-3 text-muted">O cancelamento não registra a retirada física. Registre quem recebeu o equipamento e quando.</p>

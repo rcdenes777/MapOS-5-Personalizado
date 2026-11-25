@@ -57,11 +57,21 @@ if (($pilotoEquipamento ?? null) !== null
         </div>
     </header>
 
+    <nav class="trifase-os-acoes" aria-label="Atalhos da OS">
+        <?php $iconesSecao = ['anexos' => 'paperclip', 'compartilhamento' => 'file-text', 'entrega' => 'package', 'historico' => 'history', 'atendimento' => 'wrench']; ?>
+        <?php foreach ($secoes as $chaveSecao => $rotuloSecao) { ?>
+            <?= component('button', ['label' => $rotuloSecao, 'icon' => $iconesSecao[$chaveSecao] ?? 'file-text', 'variant' => 'outline', 'href' => site_url('os/visualizar/' . $idOs) . '?secao=' . $chaveSecao . '#os-secoes']) ?>
+        <?php } ?>
+    </nav>
+
     <section class="trifase-os-andamento" aria-label="Andamento do atendimento">
         <div>
             <h2>Andamento do serviço</h2>
             <div class="flex flex-wrap items-center gap-2">
                 <?= component('pill-status', osStatusPill($os->status)) ?>
+                <?php if (($pilotoEntrega ?? null) !== null) { ?>
+                    <?= component('pill-status', ['label' => 'Entregue', 'variant' => 'info', 'attrs' => ['title' => 'Retirada registrada em ' . date('d/m/Y', strtotime($pilotoEntrega->entregue_em))]]) ?>
+                <?php } ?>
                 <?php if (($pilotoCancelamento->tipo ?? '') === 'solicitar' && $os->status !== 'Cancelado') { ?>
                     <?= component('pill-status', ['label' => 'Cancelamento solicitado — conferir etapas', 'variant' => 'warning', 'class' => 'max-w-full whitespace-normal']) ?>
                 <?php } ?>

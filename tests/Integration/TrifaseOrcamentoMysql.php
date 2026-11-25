@@ -51,7 +51,7 @@ function act(array $a): ?int
         // Carry the preview hash into the worker; do not refresh it after waiting.
         return $o->publicar($id, $version, 7, $key, $a[4] ?? []);
     } elseif ($action === 'delivery') {
-        $e->registrar($id, ['recebedor' => 'Cliente Teste', 'itens' => 'Equipamento', 'terceiro' => '0', 'confirmou_condicoes' => '1', 'entregue_em' => date('Y-m-d\TH:i')], 7, $key);
+        $e->registrar($id, ['recebedor' => 'Cliente Teste', 'itens' => 'Equipamento', 'terceiro' => '0', 'confirmou_condicoes' => '1', 'entregue_em' => date('Y-m-d')], 7, $key);
     } elseif ($action === 'correction') {
         $e->cancelar($id, $version, 'Correcao sintetica', 7, $key);
     } elseif (in_array($action, ['public', 'public_aprovar', 'public_recusar'], true)) {

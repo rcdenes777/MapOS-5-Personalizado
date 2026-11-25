@@ -4,7 +4,7 @@ O andamento do serviço e a entrega física são informações independentes.
 
 - No início, **Aguardando retirada** reúne OS finalizadas e canceladas sem comprovante ativo de entrega.
 - Ao abrir o indicador, o filtro **Todas / Aguardando retirada / Entregues** consulta as OS finalizadas e canceladas no próprio painel.
-- A coluna **Previsão** é a data prevista da OS. A coluna **Entrega** mostra a retirada pendente ou a data e hora da entrega registrada.
+- A coluna **Previsão** é a data prevista da OS. A coluna **Entrega** mostra a retirada pendente ou a data da entrega registrada; o horário real do registro permanece no comprovante e no histórico para auditoria.
 - Na lista operacional de OS, o filtro **Entrega do equipamento** encontra retiradas pendentes ou entregues, preservando a paginação e os demais filtros.
 - Corrigir/cancelar um comprovante retira a indicação de entregue e faz a OS voltar à fila. O comprovante anterior continua no histórico.
 - Sem registro ativo, o sistema não presume uma entrega antiga. Confira os casos legados e registre a entrega quando necessário.

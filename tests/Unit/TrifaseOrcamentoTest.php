@@ -72,7 +72,7 @@ final class TrifaseOrcamentoTest extends MaposTestCase
         $m->up();
         $entregas = new Trifase_entrega_model();
         $entregas->db = $this->db;
-        $id = $entregas->registrar(1, ['recebedor' => 'Cliente QA', 'entregue_em' => date('Y-m-d\TH:i'),
+        $id = $entregas->registrar(1, ['recebedor' => 'Cliente QA', 'entregue_em' => date('Y-m-d'),
             'itens' => 'Equipamento sintético', 'terceiro' => '0', 'confirmou_condicoes' => '1'], 7, $this->chave($chave));
         return [$entregas, $id];
     }
@@ -216,6 +216,38 @@ final class TrifaseOrcamentoTest extends MaposTestCase
         $this->assertSame($entrega, (int) $entregas->ativa(1)->id);
         $this->assertNotNull($this->modelo->publicado(1, $this->token));
         $this->assertCount(2, $this->modelo->eventos(1));
+    }
+
+    public function testOsAbertaAprovadaFinalizadaEEntregueNoMesmoDiaNaoTemConflitoTemporal(): void
+    {
+        $hoje = date('Y-m-d');
+        $this->db->query('ALTER TABLE os ADD COLUMN dataInicial TEXT');
+        $this->db->where('idOs', 1)->update('os', ['dataInicial' => $hoje, 'status' => 'Aberto']);
+        $versao = $this->publicar('mesmo-dia');
+        $this->modelo->registrarRespostaInterna(
+            1,
+            $versao,
+            'aprovar',
+            'Cliente QA',
+            '1',
+            $this->chave('aprovacao-mesmo-dia'),
+            7,
+            ['canal' => 'presencial', 'comunicado_em' => $hoje]
+        );
+        $this->assertSame('Aprovado', $this->db->where('idOs', 1)->get('os')->row()->status);
+        $this->db->where('idOs', 1)->update('os', ['status' => 'Finalizado']);
+        [$entregas, $entrega] = $this->entregar('entrega-mesmo-dia');
+        $evento = $this->db->where('id', $entrega)->get('trifase_entregas_eventos')->row();
+        $this->assertSame($hoje . ' 00:00:00', $evento->entregue_em);
+        $this->assertSame($hoje, substr($evento->entregue_em, 0, 10));
+        $this->assertSame('Finalizado', $this->db->where('idOs', 1)->get('os')->row()->status);
+        $this->assertSame($entrega, (int) $entregas->ativa(1)->id);
+        try {
+            $this->modelo->responder(1, $this->token, $versao, 'recusar', 'Cliente QA', '1', $this->chave('link-mesmo-dia'));
+            $this->fail('Aceitou decisão pelo link após entrega no mesmo dia');
+        } catch (DomainException $e) {
+            $this->assertStringContainsString('entregue', $e->getMessage());
+        }
     }
 
     public function testReenvioDeDecisaoAnteriorAEntregaNaoDuplicaEConflitoPermaneceNegado(): void

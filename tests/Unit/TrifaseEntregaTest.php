@@ -29,7 +29,7 @@ final class TrifaseEntregaTest extends MaposTestCase
 
     private function dados(): array
     {
-        return ['recebedor' => 'Cliente de teste', 'entregue_em' => date('Y-m-d\TH:i', time() - 120),
+        return ['recebedor' => 'Cliente de teste', 'entregue_em' => date('Y-m-d'),
             'itens' => 'Placa e dissipador', 'observacoes' => 'Nota interna privada', 'terceiro' => '0',
             'autorizacao' => '', 'confirmou_condicoes' => '1'];
     }
@@ -45,6 +45,8 @@ final class TrifaseEntregaTest extends MaposTestCase
         $dados = $this->dados();
         $id = $this->modelo->registrar(1, $dados, 7, $this->chave('registrar'));
         $original = $this->db->where('id', $id)->get('trifase_entregas_eventos')->row_array();
+        $this->assertSame(date('Y-m-d') . ' 00:00:00', $original['entregue_em']);
+        $this->assertNotSame('', $original['registrado_em']);
         $this->assertSame($id, $this->modelo->registrar(1, $dados, 7, $this->chave('registrar')));
         $this->assertSame(1, $this->db->count_all('trifase_entregas_eventos'));
         $this->assertSame($id, (int) $this->modelo->ativa(1)->id);
@@ -75,7 +77,7 @@ final class TrifaseEntregaTest extends MaposTestCase
 
     public function testTerceiroExigeAutorizacaoEConfirmacaoDeCondicoes(): void
     {
-        foreach ([['terceiro' => '1', 'autorizacao' => ''], ['confirmou_condicoes' => '0'], ['terceiro' => 'sim'], ['entregue_em' => '2039-01-01T12:00'], ['entregue_em' => "2026-01-01T12:\0"], ['recebedor' => []]] as $invalido) {
+        foreach ([['terceiro' => '1', 'autorizacao' => ''], ['confirmou_condicoes' => '0'], ['terceiro' => 'sim'], ['entregue_em' => '2039-01-01'], ['entregue_em' => "2026-01-01\0"], ['recebedor' => []]] as $invalido) {
             try {
                 $this->modelo->registrar(1, array_replace($this->dados(), $invalido), 7, $this->chave('invalida'));
                 $this->fail('Aceitou dados inválidos de retirada');
@@ -114,7 +116,7 @@ final class TrifaseEntregaTest extends MaposTestCase
             $this->assertSame($id, (int) $this->modelo->ativa(1)->id);
         }
         $this->expectException(DomainException::class);
-        $this->modelo->registrar(2, array_replace($this->dados(), ['entregue_em' => '2019-12-31T12:00']), 7, $this->chave('antes-entrada'));
+        $this->modelo->registrar(2, array_replace($this->dados(), ['entregue_em' => '2019-12-31']), 7, $this->chave('antes-entrada'));
     }
 
     public function testFalhaNaProjecaoDesfazEventoInteiro(): void

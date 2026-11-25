@@ -1,0 +1,20 @@
+PASS R05-AXE-central-1440x900 — axe sem violações: central :: []
+PASS R05-AXE-os-finance-1440x900 — axe sem violações: os-finance :: []
+PASS R05-AXE-central-320x568 — axe sem violações: central :: []
+PASS R05-AXE-os-finance-320x568 — axe sem violações: os-finance :: []
+PASS R05-AXE-central-390x844 — axe sem violações: central :: []
+PASS R05-AXE-os-finance-390x844 — axe sem violações: os-finance :: []
+PASS R05-AXE-central-768x1024 — axe sem violações: central :: []
+PASS R05-AXE-os-finance-768x1024 — axe sem violações: os-finance :: []
+PASS R05-AXE-pagamento-1440x900 — axe sem violações: pagamento :: []
+PASS R05-AXE-pagamento-320x568 — axe sem violações: pagamento :: []
+PASS R05-AXE-estorno-390x844 — axe sem violações: estorno :: []
+PASS R05-K01 — Tab percorre data, justificativa, confirmação e submit no estorno :: [{"tag":"TEXTAREA","name":"reason","text":"","label":""},{"tag":"INPUT","name":"confirm","text":"on","label":""},{"tag":"BUTTON","name":"","text":"Confirmar estorno","label":""},{"tag":"BUTTON","name":"","text":"Fechar","label":""}]
+PASS R05-K02 — Escape no estorno fecha o modal e devolve foco ao gatilho :: {"open":false,"active":"modal:reverse:20:1"}
+PASS R05-AXE-recibo-normal-390x844 — axe sem violações: recibo-normal :: []
+PASS R05-AXE-recibo-normal-1440x900 — axe sem violações: recibo-normal :: []
+PASS R05-AXE-recibo-estornado-1440x900 — axe sem violações: recibo-estornado :: []
+PASS R05-AXE-portal-financeiro-390x844 — axe sem violações: portal-financeiro :: []
+PASS R05-AXE-portal-financeiro-1440x900 — axe sem violações: portal-financeiro :: []
+PASS R05-K03 — Portal financeiro mantém região viva e saldo destacado :: portal
+scans 16 violations 0

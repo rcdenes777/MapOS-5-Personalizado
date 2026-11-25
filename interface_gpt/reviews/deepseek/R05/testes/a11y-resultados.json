@@ -1,0 +1,204 @@
+{
+  "generatedAt": "2026-11-25T20:56:37.408Z",
+  "codeSha": "0d0b4e74297d77939e8c6060759ca419f7956ad9",
+  "incrementSha": "f3bbf1bd6d7269fa6a977d83116a82d5886edd83",
+  "results": [
+    {
+      "id": "R05-AXE-central-1440x900",
+      "desc": "axe sem violações: central",
+      "status": "PASS",
+      "detail": "[]"
+    },
+    {
+      "id": "R05-AXE-os-finance-1440x900",
+      "desc": "axe sem violações: os-finance",
+      "status": "PASS",
+      "detail": "[]"
+    },
+    {
+      "id": "R05-AXE-central-320x568",
+      "desc": "axe sem violações: central",
+      "status": "PASS",
+      "detail": "[]"
+    },
+    {
+      "id": "R05-AXE-os-finance-320x568",
+      "desc": "axe sem violações: os-finance",
+      "status": "PASS",
+      "detail": "[]"
+    },
+    {
+      "id": "R05-AXE-central-390x844",
+      "desc": "axe sem violações: central",
+      "status": "PASS",
+      "detail": "[]"
+    },
+    {
+      "id": "R05-AXE-os-finance-390x844",
+      "desc": "axe sem violações: os-finance",
+      "status": "PASS",
+      "detail": "[]"
+    },
+    {
+      "id": "R05-AXE-central-768x1024",
+      "desc": "axe sem violações: central",
+      "status": "PASS",
+      "detail": "[]"
+    },
+    {
+      "id": "R05-AXE-os-finance-768x1024",
+      "desc": "axe sem violações: os-finance",
+      "status": "PASS",
+      "detail": "[]"
+    },
+    {
+      "id": "R05-AXE-pagamento-1440x900",
+      "desc": "axe sem violações: pagamento",
+      "status": "PASS",
+      "detail": "[]"
+    },
+    {
+      "id": "R05-AXE-pagamento-320x568",
+      "desc": "axe sem violações: pagamento",
+      "status": "PASS",
+      "detail": "[]"
+    },
+    {
+      "id": "R05-AXE-estorno-390x844",
+      "desc": "axe sem violações: estorno",
+      "status": "PASS",
+      "detail": "[]"
+    },
+    {
+      "id": "R05-K01",
+      "desc": "Tab percorre data, justificativa, confirmação e submit no estorno",
+      "status": "PASS",
+      "detail": "[{\"tag\":\"TEXTAREA\",\"name\":\"reason\",\"text\":\"\",\"label\":\"\"},{\"tag\":\"INPUT\",\"name\":\"confirm\",\"text\":\"on\",\"label\":\"\"},{\"tag\":\"BUTTON\",\"name\":\"\",\"text\":\"Confirmar estorno\",\"label\":\"\"},{\"tag\":\"BUTTON\",\"name\":\"\",\"text\":\"Fechar\",\"label\":\"\"}]"
+    },
+    {
+      "id": "R05-K02",
+      "desc": "Escape no estorno fecha o modal e devolve foco ao gatilho",
+      "status": "PASS",
+      "detail": "{\"open\":false,\"active\":\"modal:reverse:20:1\"}"
+    },
+    {
+      "id": "R05-AXE-recibo-normal-390x844",
+      "desc": "axe sem violações: recibo-normal",
+      "status": "PASS",
+      "detail": "[]"
+    },
+    {
+      "id": "R05-AXE-recibo-normal-1440x900",
+      "desc": "axe sem violações: recibo-normal",
+      "status": "PASS",
+      "detail": "[]"
+    },
+    {
+      "id": "R05-AXE-recibo-estornado-1440x900",
+      "desc": "axe sem violações: recibo-estornado",
+      "status": "PASS",
+      "detail": "[]"
+    },
+    {
+      "id": "R05-AXE-portal-financeiro-390x844",
+      "desc": "axe sem violações: portal-financeiro",
+      "status": "PASS",
+      "detail": "[]"
+    },
+    {
+      "id": "R05-AXE-portal-financeiro-1440x900",
+      "desc": "axe sem violações: portal-financeiro",
+      "status": "PASS",
+      "detail": "[]"
+    },
+    {
+      "id": "R05-K03",
+      "desc": "Portal financeiro mantém região viva e saldo destacado",
+      "status": "PASS",
+      "detail": "portal"
+    }
+  ],
+  "scans": [
+    {
+      "viewport": "1440x900",
+      "label": "central",
+      "violations": []
+    },
+    {
+      "viewport": "1440x900",
+      "label": "os-finance",
+      "violations": []
+    },
+    {
+      "viewport": "320x568",
+      "label": "central",
+      "violations": []
+    },
+    {
+      "viewport": "320x568",
+      "label": "os-finance",
+      "violations": []
+    },
+    {
+      "viewport": "390x844",
+      "label": "central",
+      "violations": []
+    },
+    {
+      "viewport": "390x844",
+      "label": "os-finance",
+      "violations": []
+    },
+    {
+      "viewport": "768x1024",
+      "label": "central",
+      "violations": []
+    },
+    {
+      "viewport": "768x1024",
+      "label": "os-finance",
+      "violations": []
+    },
+    {
+      "viewport": "1440x900",
+      "label": "pagamento",
+      "violations": []
+    },
+    {
+      "viewport": "320x568",
+      "label": "pagamento",
+      "violations": []
+    },
+    {
+      "viewport": "390x844",
+      "label": "estorno",
+      "violations": []
+    },
+    {
+      "viewport": "390x844",
+      "label": "recibo-normal",
+      "violations": []
+    },
+    {
+      "viewport": "1440x900",
+      "label": "recibo-normal",
+      "violations": []
+    },
+    {
+      "viewport": "1440x900",
+      "label": "recibo-estornado",
+      "violations": []
+    },
+    {
+      "viewport": "390x844",
+      "label": "portal-financeiro",
+      "violations": []
+    },
+    {
+      "viewport": "1440x900",
+      "label": "portal-financeiro",
+      "violations": []
+    }
+  ],
+  "violations": 0
+}

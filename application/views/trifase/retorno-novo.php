@@ -14,8 +14,8 @@
         <input type="hidden" name="<?= e($this->security->get_csrf_token_name()) ?>" value="<?= e($this->security->get_csrf_hash()) ?>">
         <input type="hidden" name="operacao" value="<?= e($chaveRetorno) ?>">
         <?= component('textarea', ['name' => 'defeito', 'id' => 'retorno-defeito', 'label' => 'Novo defeito relatado', 'value' => $valoresRetorno['defeito'], 'required' => true, 'attrs' => ['maxlength' => 10000, 'rows' => 4]]) ?>
-        <?= component('textarea', ['name' => 'itens_recebidos', 'id' => 'retorno-itens', 'label' => 'Itens recebidos e acessórios nesta entrada', 'value' => $valoresRetorno['itens_recebidos'], 'required' => true, 'attrs' => ['maxlength' => 10000, 'rows' => 3]]) ?>
-        <?= component('textarea', ['name' => 'estado_entrada', 'id' => 'retorno-estado', 'label' => 'Estado do equipamento nesta entrada', 'value' => $valoresRetorno['estado_entrada'], 'required' => true, 'attrs' => ['maxlength' => 10000, 'rows' => 3]]) ?>
+        <?= component('textarea', ['name' => 'itens_recebidos', 'id' => 'retorno-itens', 'label' => 'Itens recebidos e acessórios nesta entrada', 'value' => $valoresRetorno['itens_recebidos'], 'help' => 'Opcional.', 'attrs' => ['maxlength' => 10000, 'rows' => 3]]) ?>
+        <?= component('textarea', ['name' => 'estado_entrada', 'id' => 'retorno-estado', 'label' => 'Estado do equipamento nesta entrada', 'value' => $valoresRetorno['estado_entrada'], 'help' => 'Opcional.', 'attrs' => ['maxlength' => 10000, 'rows' => 3]]) ?>
         <?= component('checkbox', ['name' => 'confirmar', 'id' => 'retorno-confirmar', 'value' => '1', 'label' => 'Recebi novamente esta unidade e confirmo abrir outra OS, preservando o atendimento e prazo originais.', 'required' => true]) ?>
         <?= component('button', ['label' => 'Abrir OS de retorno', 'type' => 'submit']) ?>
     </form>

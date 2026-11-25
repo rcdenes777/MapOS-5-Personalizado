@@ -46,8 +46,8 @@ $origemSubstitutaHistorico = $this->db->table_exists('trifase_garantia_trocas') 
                     </div>
                     <p class="mt-2 text-caption text-muted"><?= e('Entrada em ' . dataBr($atendimentoEquipamento->dataInicial) . ' · ' . $atendimentoEquipamento->marca . ' · ' . $atendimentoEquipamento->modelo) ?></p>
                     <dl class="mt-3 grid gap-3">
-                        <div><dt class="text-label-md text-muted">Itens recebidos</dt><dd class="whitespace-pre-wrap break-words text-body-md text-text"><?= e($atendimentoEquipamento->itens_recebidos) ?></dd></div>
-                        <div><dt class="text-label-md text-muted">Estado na entrada</dt><dd class="whitespace-pre-wrap break-words text-body-md text-text"><?= e($atendimentoEquipamento->estado_entrada) ?></dd></div>
+                        <div><dt class="text-label-md text-muted">Itens recebidos</dt><dd class="whitespace-pre-wrap break-words text-body-md text-text"><?= e(trim((string) $atendimentoEquipamento->itens_recebidos) !== '' ? $atendimentoEquipamento->itens_recebidos : 'Não informado') ?></dd></div>
+                        <div><dt class="text-label-md text-muted">Estado na entrada</dt><dd class="whitespace-pre-wrap break-words text-body-md text-text"><?= e(trim((string) $atendimentoEquipamento->estado_entrada) !== '' ? $atendimentoEquipamento->estado_entrada : 'Não informado') ?></dd></div>
                     </dl>
                 </li>
             <?php } ?>

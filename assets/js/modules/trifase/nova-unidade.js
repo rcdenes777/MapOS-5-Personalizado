@@ -4,34 +4,36 @@ export default function iniciarNovaUnidade(secao, atualizarDescricao) {
     if (!busca) return;
     const campo = (nome) => secao.querySelector(`[name=equipamento_${nome}]`);
     const id = campo('modelo_id'), marca = campo('marca'), modelo = campo('modelo'), tipo = campo('tipo');
-    const atualizarModelo = () => {
-        marca.readOnly = modelo.readOnly = Boolean(id.value);
-        tipo.disabled = Boolean(id.value);
-    };
+    const valoresAtuais = () => [tipo.value, marca.value.trim(), modelo.value.trim()].join("\u0000");
+    let valoresCatalogo = id.value ? valoresAtuais() : '';
     const descrever = () => atualizarDescricao([marca.value.trim(), modelo.value.trim()].filter(Boolean).join(' · '));
+    const desanexar = () => {
+        if (id.value !== '' && valoresAtuais() !== valoresCatalogo) {
+            id.value = '';
+            valoresCatalogo = '';
+        }
+    };
     busca.addEventListener('autocomplete-escolha', (evento) => {
         const dados = evento.detail?.dados;
         if (!dados) return;
         marca.value = dados.marca;
         modelo.value = dados.modelo;
         tipo.value = dados.tipo;
-        atualizarModelo();
+        valoresCatalogo = valoresAtuais();
         descrever();
     });
-    id.addEventListener('change', atualizarModelo);
-    marca.addEventListener('input', descrever);
-    modelo.addEventListener('input', descrever);
+    marca.addEventListener('input', () => { desanexar(); descrever(); });
+    modelo.addEventListener('input', () => { desanexar(); descrever(); });
+    tipo.addEventListener('change', desanexar);
     secao.querySelector('[data-nova-os-modelo-limpar]').addEventListener('click', () => {
         id.value = '';
+        valoresCatalogo = '';
         const input = busca.querySelector('input:not([type=hidden])');
         input.value = '';
         input.dispatchEvent(new Event('input', { bubbles: true }));
         input.dispatchEvent(new Event('blur')); // Cancela também a pesquisa que ainda está no debounce.
-        marca.value = modelo.value = '';
-        atualizarModelo();
         descrever();
         marca.focus();
     });
-    atualizarModelo();
     return descrever;
 }

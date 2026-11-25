@@ -23,13 +23,16 @@ test('nova unidade: selo, série e IMEI são opcionais na entrada', () => {
     c.serie.value = ''; c.imei.value = 'IMEI PRIVADO'; c.imei.dispatchEvent(new Event('input'));
     assert.ok(!c.selo.message);
 });
-test('nova unidade: modelo escolhido bloqueia catálogo e limpar permite cadastro sem expor identificadores na descrição', () => {
+test('nova unidade: catálogo permanece editável, edição desanexa e limpar preserva os valores', () => {
     const t = tela(), c = t.campos;
     c.modelo_id.value = '4'; c.selo.value = 'SEGREDO';
     t.busca.dispatchEvent(new CustomEvent('autocomplete-escolha', { detail: { dados: { marca: 'LG', modelo: 'INV', tipo: 'placa' } } }));
-    assert.equal(c.marca.readOnly, true); assert.equal(c.tipo.disabled, true);
+    assert.ok(!c.marca.readOnly); assert.ok(!c.tipo.disabled);
     assert.equal(t.descricoes.at(-1), 'LG · INV');
+    c.modelo.value = 'INV-13';
+    c.modelo.dispatchEvent(new Event('input'));
+    assert.equal(c.modelo_id.value, '');
     t.limpar.dispatchEvent(new Event('click'));
-    assert.equal(c.modelo_id.value, ''); assert.equal(c.marca.readOnly, false); assert.equal(c.tipo.disabled, false);
+    assert.equal(c.modelo_id.value, ''); assert.equal(c.marca.value, 'LG'); assert.equal(c.modelo.value, 'INV-13');
     assert.equal(c.selo.value, 'SEGREDO'); assert.equal(c.marca.focused, true);
 });

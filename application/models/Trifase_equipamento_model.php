@@ -38,6 +38,9 @@ class Trifase_equipamento_model extends CI_Model
 
     public function porOs(int $id): ?object
     {
+        if (! $this->db->table_exists('trifase_os_equipamentos')) {
+            return null;
+        }
         $retrato = $this->db->where('os_id', $id)->get('trifase_os_equipamentos', 1)->row() ?: null;
         if ($retrato !== null) {
             $retrato->correcao_versao = 0;
@@ -72,7 +75,7 @@ class Trifase_equipamento_model extends CI_Model
         }
         $novo = [];
         foreach ($campos as $campo => $limite) {
-            $novo[$campo] = $this->texto($dados[$campo] ?? '', $limite, in_array($campo, ['marca', 'modelo', 'itens_recebidos', 'estado_entrada'], true));
+            $novo[$campo] = $this->texto($dados[$campo] ?? '', $limite, in_array($campo, ['marca', 'modelo'], true));
         }
         $motivo = $this->texto($motivo, 2000, true);
         $hash = hash('sha256', json_encode([$osId, $novo, $versao, $motivo, $usuario], JSON_THROW_ON_ERROR));
@@ -138,8 +141,8 @@ class Trifase_equipamento_model extends CI_Model
         if (! in_array($modo, ['novo', 'existente'], true)) {
             throw new DomainException('Escolha cadastrar ou reutilizar uma unidade.');
         }
-        $itens = $this->texto($dados['itens_recebidos'], 10000, true);
-        $estado = $this->texto($dados['estado_entrada'], 10000, true);
+        $itens = $this->texto($dados['itens_recebidos'], 10000);
+        $estado = $this->texto($dados['estado_entrada'], 10000);
         $hash = hash('sha256', json_encode([$osId, $dados, $usuario], JSON_THROW_ON_ERROR));
         $lock = new Trifase_os_lock($this->db, $osId);
         try {
@@ -185,7 +188,14 @@ class Trifase_equipamento_model extends CI_Model
                     if ($modelo === null) {
                         throw new DomainException('Modelo não encontrado. Escolha novamente.');
                     }
-                } else {
+                    $informado = [$dados['tipo'], trim($dados['marca']), trim($dados['modelo'])];
+                    $catalogo = [$modelo->tipo, $modelo->marca, $modelo->modelo];
+                    if ($informado[1] !== '' && $informado[2] !== '' && $informado !== $catalogo) {
+                        // Edição manual depois de escolher o catálogo: não reescreve o modelo original.
+                        $modeloId = false;
+                    }
+                }
+                if ($modeloId === false) {
                     $modeloId = $this->obterModelo($dados['tipo'], $dados['marca'], $dados['modelo'], $usuario);
                 }
                 $this->inserir('trifase_equipamentos', ['modelo_id' => $modeloId, 'cliente_id' => (int) $os->clientes_id,

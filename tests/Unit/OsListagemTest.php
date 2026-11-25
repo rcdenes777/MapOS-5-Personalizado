@@ -195,7 +195,7 @@ final class OsListagemTest extends MaposTestCase
             $this->assertSame(3, $model->contar(['entrega' => 'todas']));
             $entregue = $model->listar(['entrega' => 'entregue'], 10, 0);
             $this->assertCount(1, $entregue);
-            $this->assertSame('Entregue em 10/11/2026 às 14:30', trifaseEntregaRotulo($entregue[0]));
+            $this->assertSame('Entregue em 10/11/2026', trifaseEntregaRotulo($entregue[0]));
             $this->assertSame('Aguardando retirada', trifaseEntregaRotulo((object) ['status' => 'Cancelado']));
             $this->assertSame('—', trifaseEntregaRotulo((object) ['status' => 'Aberto']));
             $this->db->where('os_id', 1)->delete('trifase_entregas_estado');

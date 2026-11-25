@@ -317,7 +317,9 @@ class Os extends MY_Controller
             $modelo = $modeloId !== false ? $this->db->where('id', $modeloId)->get('trifase_equipamento_modelos', 1)->row() : null;
             if ($modelo) {
                 foreach (['tipo', 'marca', 'modelo'] as $campo) {
-                    $this->entradaEquipamentoNovaOs[$campo] = $modelo->$campo;
+                    if (trim((string) $this->entradaEquipamentoNovaOs[$campo]) === '') {
+                        $this->entradaEquipamentoNovaOs[$campo] = $modelo->$campo;
+                    }
                 }
             }
             $this->entradaEquipamentoNovaOs += [
@@ -641,10 +643,12 @@ class Os extends MY_Controller
             ? $this->db->select('id, tipo, criado_em')->where('os_id', (int) $os->idOs)->where_in('tipo', ['solicitar', 'retirar', 'confirmar'])->order_by('id', 'desc')->get('trifase_cancelamentos', 1)->row() : null;
         $dados['pilotoEntrega'] = null;
         $dados['pilotoEntregasHistorico'] = [];
+        $dados['pilotoEntregaItens'] = '';
         if (trifaseEntregaHabilitada()) {
             $this->load->model('Trifase_entrega_model', 'piloto_entregas');
             $dados['pilotoEntrega'] = $this->piloto_entregas->ativa((int) $os->idOs);
             $dados['pilotoEntregasHistorico'] = $this->piloto_entregas->historico((int) $os->idOs);
+            $dados['pilotoEntregaItens'] = trifaseEntregaItensSugeridos($this->db, (int) $os->idOs, (string) ($os->descricaoProduto ?? ''));
         }
         $dados['pilotoPodeRegistrarResposta'] = $this->permite('vLancamento') && $this->permite('eOs') && $this->permite('publicarOrcamento');
         $dados['pilotoPodeRegularizarOrcamento'] = $dados['pilotoPodeRegistrarResposta'] && $this->permite('regularizarOrcamento');
@@ -983,6 +987,7 @@ class Os extends MY_Controller
         
         $this->data['imprimirAnexo'] = isset($_ENV['IMPRIMIR_ANEXOS']) ? (filter_var($_ENV['IMPRIMIR_ANEXOS'] ?? false, FILTER_VALIDATE_BOOLEAN)) : false;
 
+        $this->data = array_merge($this->data, $this->dadosDaImpressao((int) $this->uri->segment(3)));
         $this->load->view('os/imprimirOs', $this->data);
     }
 
@@ -1015,7 +1020,24 @@ class Os extends MY_Controller
         );
         $this->data['chaveFormatada'] = $this->formatarChave($this->data['configuration']['pix_key']);
 
+        $this->data = array_merge($this->data, $this->dadosDaImpressao((int) $this->uri->segment(3)));
         $this->load->view('os/imprimirOsTermica', $this->data);
+    }
+
+    /** Entrega e projeção financeira do cliente, sem custos ou margens. */
+    private function dadosDaImpressao(int $id): array
+    {
+        $dados = ['mostrarEntrega' => false, 'entregaImpressao' => null, 'financeiroImpressao' => null];
+        if ($id > 0 && trifaseEntregaHabilitada() && $this->db->table_exists('trifase_entregas_eventos') && $this->db->table_exists('trifase_entregas_estado')) {
+            $this->load->model('Trifase_entrega_model', 'entrega_impressao');
+            $dados['mostrarEntrega'] = true;
+            $dados['entregaImpressao'] = $this->entrega_impressao->ativa($id);
+        }
+        if ($id > 0 && trifaseFinanceiroHabilitado() && $this->db->table_exists('trifase_financeiro_obrigacoes')) {
+            $this->load->model('Trifase_financeiro_model', 'financeiro_impressao');
+            $dados['financeiroImpressao'] = $this->financeiro_impressao->resumoCliente($id);
+        }
+        return $dados;
     }
 
     public function enviar_email()

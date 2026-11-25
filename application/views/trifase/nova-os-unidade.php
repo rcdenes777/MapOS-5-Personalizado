@@ -48,7 +48,7 @@ $clienteUnidadeOs = $valores['clientes_id'] !== '';
     <input type="hidden" name="equipamento_operacao" value="<?= e(is_string($entradaNovaOs['operacao'] ?? null) ? $entradaNovaOs['operacao'] : bin2hex(random_bytes(16))) ?>">
     <fieldset class="<?= e($grade) ?>" data-nova-os-unidade-entrada <?= e(($novaUnidadeOs && $clienteUnidadeOs) || ($buscaUnidadeOs && $unidadeNovaOs !== null) ? '' : 'disabled') ?>>
         <legend class="sr-only">Dados desta entrada do equipamento</legend>
-        <?= component('textarea', ['name' => 'equipamento_itens', 'label' => 'Itens recebidos neste atendimento', 'value' => $valorUnidadeNovaOs('itens_recebidos'), 'required' => true, 'help' => 'Preencha para esta entrada; os acessórios do atendimento anterior não são copiados.', 'attrs' => ['maxlength' => 10000, 'rows' => 3]]) ?>
-        <?= component('textarea', ['name' => 'equipamento_estado', 'label' => 'Estado nesta entrada', 'value' => $valorUnidadeNovaOs('estado_entrada'), 'required' => true, 'attrs' => ['maxlength' => 10000, 'rows' => 3]]) ?>
+        <?= component('textarea', ['name' => 'equipamento_itens', 'label' => 'Itens recebidos neste atendimento', 'value' => $valorUnidadeNovaOs('itens_recebidos'), 'help' => 'Opcional. Os acessórios do atendimento anterior não são copiados.', 'attrs' => ['maxlength' => 10000, 'rows' => 3]]) ?>
+        <?= component('textarea', ['name' => 'equipamento_estado', 'label' => 'Estado nesta entrada', 'value' => $valorUnidadeNovaOs('estado_entrada'), 'help' => 'Opcional.', 'attrs' => ['maxlength' => 10000, 'rows' => 3]]) ?>
     </fieldset>
 </section>

@@ -47,9 +47,9 @@ class Trifase_entrega_model extends CI_Model
             $autorizacao = '';
         }
         $valorData = $dados['entregue_em'] ?? null;
-        $data = is_string($valorData) && strlen($valorData) === 16 && ! str_contains($valorData, "\0") ? DateTimeImmutable::createFromFormat('!Y-m-d\TH:i', $valorData) : false;
-        if (! $data || $data->format('Y-m-d\TH:i') !== $valorData || $data->getTimestamp() > time() + 60) {
-            throw new DomainException('Informe a data e hora reais da retirada, sem data futura.');
+        $data = is_string($valorData) && strlen($valorData) === 10 && ! str_contains($valorData, "\0") ? DateTimeImmutable::createFromFormat('!Y-m-d', $valorData) : false;
+        if (! $data || $data->format('Y-m-d') !== $valorData || $valorData > date('Y-m-d')) {
+            throw new DomainException('Informe a data da retirada, sem data futura.');
         }
         $hash = $this->hash([$osId, 'registrar', $recebedor, $itens, $observacoes, $terceiro, $autorizacao, $valorData, $usuario]);
         return $this->transacao($osId, function ($os) use ($osId, $usuario, $chave, $hash, $recebedor, $itens, $observacoes, $terceiro, $autorizacao, $data) {
@@ -63,7 +63,7 @@ class Trifase_entrega_model extends CI_Model
                 throw new DomainException('Esta OS já tem uma entrega ativa. Corrija o registro anterior com justificativa antes de registrar outra.');
             }
             $id = $this->inserir([
-                'os_id' => $osId, 'tipo' => 'registrar', 'entregue_em' => $data->format('Y-m-d H:i:s'),
+                'os_id' => $osId, 'tipo' => 'registrar', 'entregue_em' => $data->format('Y-m-d') . ' 00:00:00',
                 'registrado_em' => date('Y-m-d H:i:s'), 'usuario_id' => $usuario,
                 'recebedor' => $recebedor, 'terceiro' => (int) $terceiro, 'autorizacao' => $autorizacao,
                 'equipamento' => trifaseGarantiaEquipamentoEntrega($this->db, $osId, trifaseEquipamentoTextoDaOs($this->db, $osId, (string) ($os->descricaoProduto ?? ''))), 'itens' => $itens, 'observacoes' => $observacoes,

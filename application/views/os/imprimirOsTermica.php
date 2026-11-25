@@ -193,6 +193,8 @@ if (!empty($result->cidade) || !empty($result->estado) || !empty($result->cep)) 
                 </tbody>
             </table>
 
+            <?php $this->load->view('os/partes/impressao-entrega-financeiro-cupom', ['mostrarEntrega' => $mostrarEntrega ?? false, 'entregaImpressao' => $entregaImpressao ?? null, 'financeiroImpressao' => $financeiroImpressao ?? null]); ?>
+
             <div class="cupom-assinatura">Assinatura do Cliente</div>
         </div>
 
@@ -384,6 +386,8 @@ if (!empty($result->cidade) || !empty($result->estado) || !empty($result->cep)) 
                     <?php } ?>
                 </tbody>
             </table>
+
+            <?php $this->load->view('os/partes/impressao-entrega-financeiro-cupom', ['mostrarEntrega' => $mostrarEntrega ?? false, 'entregaImpressao' => $entregaImpressao ?? null, 'financeiroImpressao' => $financeiroImpressao ?? null]); ?>
 
             <div class="cupom-assinatura">Assinatura do Recebedor</div>
         </div>

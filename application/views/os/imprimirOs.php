@@ -80,6 +80,8 @@ $totalProdutos = 0;
                     </div>
                 <?php endif; ?>
 
+                <?php $this->load->view('os/partes/impressao-entrega-financeiro', ['mostrarEntrega' => $mostrarEntrega ?? false, 'entregaImpressao' => $entregaImpressao ?? null, 'financeiroImpressao' => $financeiroImpressao ?? null]); ?>
+
                 <div class="doc-subtitulo">DADOS DO CLIENTE</div>
                 <div class="doc-dados">
                     <div>
@@ -334,6 +336,8 @@ $totalProdutos = 0; ?>
                             </table>
                         </div>
                     <?php endif; ?>
+
+                    <?php $this->load->view('os/partes/impressao-entrega-financeiro', ['mostrarEntrega' => $mostrarEntrega ?? false, 'entregaImpressao' => $entregaImpressao ?? null, 'financeiroImpressao' => $financeiroImpressao ?? null]); ?>
 
                     <div class="doc-subtitulo">DADOS DO CLIENTE</div>
                     <div class="doc-dados">

@@ -26,7 +26,7 @@
         <dl class="my-4 grid gap-4">
             <div><dt class="font-bold">Cliente</dt><dd><?= e($osEntrega->nomeCliente) ?></dd></div>
             <div><dt class="font-bold">Retirado por</dt><dd><?= e($retirada->recebedor . ((int) $retirada->terceiro === 1 ? ' · terceiro autorizado' : ' · próprio cliente')) ?></dd></div>
-            <div><dt class="font-bold">Data e hora reais da retirada</dt><dd><?= e(date('d/m/Y H:i', strtotime($retirada->entregue_em))) ?></dd></div>
+            <div><dt class="font-bold">Data da retirada</dt><dd><?= e(date('d/m/Y', strtotime($retirada->entregue_em))) ?></dd></div>
             <div><dt class="font-bold">Equipamento registrado na ocasião</dt><dd class="whitespace-pre-wrap break-words"><?= e(osTextoWhatsApp('{TEXTO}', ['{TEXTO}' => $retirada->equipamento])) ?></dd></div>
             <div><dt class="font-bold">Itens entregues e conferidos</dt><dd class="whitespace-pre-wrap break-words"><?= e($retirada->itens) ?></dd></div>
             <div><dt class="font-bold">Registro pelo atendente</dt><dd><?= e('Operador #' . (int) $retirada->usuario_id . ' em ' . date('d/m/Y H:i', strtotime($retirada->registrado_em))) ?></dd></div>

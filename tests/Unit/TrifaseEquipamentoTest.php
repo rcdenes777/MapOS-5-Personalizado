@@ -143,7 +143,7 @@ final class TrifaseEquipamentoTest extends MaposTestCase
 
     public function testDadosInvalidosECampoFinanceiroNaoAlteramCadastro(): void
     {
-        foreach ([['estado_entrada' => ''], ['marca' => []], ['preco' => '1'], ['imei' => "invalido\0"], ['tipo' => 'invalido'], ['modelo_id' => 'invalido']] as $invalido) {
+        foreach ([['marca' => []], ['preco' => '1'], ['imei' => "invalido\0"], ['tipo' => 'invalido'], ['modelo_id' => 'invalido']] as $invalido) {
             try {
                 $this->modelo->vincular(1, array_replace($this->dados(), $invalido), 7, $this->chave('invalido'));
                 $this->fail('Aceitou dados inválidos de identificação');
@@ -152,6 +152,45 @@ final class TrifaseEquipamentoTest extends MaposTestCase
                 $this->assertNull($this->modelo->porOs(1));
             }
         }
+    }
+
+    public function testEdicaoManualAposCatalogoNaoAlteraOModeloOriginal(): void
+    {
+        $this->modelo->vincular(1, $this->dados(), 7, $this->chave('catalogo-origem'));
+        $original = (array) $this->db->get('trifase_equipamento_modelos')->row();
+        $dados = $this->dados('T-002');
+        $dados['modelo'] = 'INV-13';
+        $dados['modelo_id'] = (string) $original['id'];
+        $unidade = $this->modelo->vincular(2, $dados, 7, $this->chave('catalogo-editado'));
+        $this->assertSame('INV-13', $this->modelo->porOs(2)->modelo);
+        $this->assertSame(2, $this->db->count_all('trifase_equipamento_modelos'));
+        $this->assertSame($original, (array) $this->db->where('id', $original['id'])->get('trifase_equipamento_modelos')->row());
+        $this->assertNotSame((int) $original['id'], (int) $this->db->where('id', $this->modelo->porOs(2)->equipamento_id)->get('trifase_equipamentos')->row()->modelo_id);
+        $this->assertGreaterThan(0, $unidade);
+    }
+
+    public function testItensEEstadoDaEntradaSaoOpcionaisNaCriacaoECorrecao(): void
+    {
+        $m = new class() extends Migration_trifase_equipamento_correcoes {
+            public object $dbforge;
+        };
+        $m->db = $this->db;
+        $m->dbforge = new CI_DB_sqlite3_forge($this->db);
+        $m->up();
+        $this->modelo->vincular(1, $this->dados(), 7, $this->chave('opcionais-criacao'));
+        $novo = array_intersect_key((array) $this->modelo->porOs(1), array_flip(['marca', 'modelo', 'selo', 'serie', 'imei', 'itens_recebidos', 'estado_entrada']));
+        $novo['itens_recebidos'] = '';
+        $novo['estado_entrada'] = '';
+        $this->modelo->corrigir(1, $novo, 0, 'Limpeza dos campos opcionais', 7, $this->chave('opcionais-correcao'));
+        $this->assertSame('', $this->modelo->porOs(1)->itens_recebidos);
+        $this->assertSame('', $this->modelo->porOs(1)->estado_entrada);
+    }
+
+    public function testPorOsSemTabelaDeVinculosRetornaNull(): void
+    {
+        $this->db->query('DROP TABLE trifase_os_equipamentos');
+        $this->db->data_cache = [];
+        $this->assertNull($this->modelo->porOs(1));
     }
 
     public function testHistoricoDeEntregaImpedeIdentificacaoPosterior(): void

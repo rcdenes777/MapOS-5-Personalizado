@@ -10,7 +10,7 @@ $camposCorrecao = ['marca' => 'Marca', 'modelo' => 'Modelo', 'selo' => 'Número 
             <input type="hidden" name="versao" value="<?= e((string) $equipamentoDaOs->correcao_versao) ?>">
             <?php foreach ($camposCorrecao as $campoCorrecao => $rotuloCorrecao) { ?>
                 <?php if (in_array($campoCorrecao, ['itens_recebidos', 'estado_entrada'], true)) { ?>
-                    <?= component('textarea', ['name' => $campoCorrecao, 'id' => 'corrigir-equipamento-' . $campoCorrecao, 'label' => $rotuloCorrecao, 'value' => $equipamentoDaOs->$campoCorrecao, 'required' => true, 'attrs' => ['maxlength' => 10000, 'rows' => 3]]) ?>
+                    <?= component('textarea', ['name' => $campoCorrecao, 'id' => 'corrigir-equipamento-' . $campoCorrecao, 'label' => $rotuloCorrecao, 'value' => $equipamentoDaOs->$campoCorrecao, 'help' => 'Opcional.', 'attrs' => ['maxlength' => 10000, 'rows' => 3]]) ?>
                 <?php } else { ?>
                     <?= component('input', ['name' => $campoCorrecao, 'id' => 'corrigir-equipamento-' . $campoCorrecao, 'label' => $rotuloCorrecao, 'value' => $equipamentoDaOs->$campoCorrecao, 'required' => in_array($campoCorrecao, ['marca', 'modelo'], true), 'attrs' => ['maxlength' => $campoCorrecao === 'modelo' ? 160 : 100]]) ?>
                 <?php } ?>

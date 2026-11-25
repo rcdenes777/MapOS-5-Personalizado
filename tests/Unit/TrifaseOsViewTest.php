@@ -2,6 +2,24 @@
 
 require_once APPPATH . 'helpers/trifase_publico_helper.php';
 require_once APPPATH . 'helpers/trifase_financeiro_helper.php';
+require_once APPPATH . 'helpers/trifase_entrega_helper.php';
+require_once APPPATH . 'helpers/trifase_orcamento_helper.php';
+require_once APPPATH . 'helpers/trifase_atendimento_helper.php';
+require_once APPPATH . 'helpers/trifase_equipamento_helper.php';
+
+if (! function_exists('site_url')) {
+    function site_url(string $uri = ''): string
+    {
+        return 'http://mapos.test/index.php/' . ltrim($uri, '/');
+    }
+}
+
+if (! function_exists('base_url')) {
+    function base_url(string $uri = ''): string
+    {
+        return 'http://mapos.test/' . ltrim($uri, '/');
+    }
+}
 
 final class TrifaseOsViewTest extends \PHPUnit\Framework\TestCase
 {
@@ -57,6 +75,18 @@ final class TrifaseOsViewTest extends \PHPUnit\Framework\TestCase
         $this->assertStringContainsString('Não informado', $atendimento);
     }
 
+    public function testAtalhosReutilizamAsSecoesEIndicamEntregaAtiva(): void
+    {
+        $html = $this->renderizar(true, true, false, null, 'anexos', [
+            'pilotoEntrega' => (object) ['entregue_em' => '2026-11-25 00:00:00'],
+        ]);
+        $this->assertStringContainsString('Entregue', $html);
+        foreach (['?secao=anexos#os-secoes', '?secao=compartilhamento#os-secoes', '?secao=entrega#os-secoes',
+            '?secao=historico#os-secoes', '?secao=atendimento#os-secoes'] as $link) {
+            $this->assertStringContainsString($link, $html);
+        }
+    }
+
     public function testFormulariosCompartilhadosTemIdsUnicosEEnviamAMesmaOs(): void
     {
         $html = $this->renderizar(true, false, true);
@@ -100,6 +130,8 @@ final class TrifaseOsViewTest extends \PHPUnit\Framework\TestCase
         $env = $_ENV;
         $_ENV['TRIFASE_FINANCEIRO_ENABLED'] = 'false';
         $_ENV['TRIFASE_PUBLICO_ENABLED'] = 'false';
+        $_ENV['TRIFASE_ENTREGAS_ENABLED'] = 'true';
+        $_ENV['TRIFASE_ORCAMENTOS_ENABLED'] = 'true';
         $v = new class($financeiro) {
             public object $load;
             public object $permission;

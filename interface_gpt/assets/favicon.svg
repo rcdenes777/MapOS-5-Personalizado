@@ -1,0 +1,4 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="MapOS Bancada">
+  <rect width="64" height="64" rx="14" fill="#176b58"/>
+  <path d="M14 47V19h7.4L32 33.6 42.6 19H50v28h-7.2V31.4L32 46 21.2 31.4V47z" fill="#ffffff"/>
+</svg>

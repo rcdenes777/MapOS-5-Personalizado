@@ -40,7 +40,7 @@ function quoteModal(kind,o){
  const q=BancadaQuote.init(o),v=BancadaQuote.active(o),d=q.draft;
  if(kind==='quote'){if(!BancadaQuote.editable(o))return null;return ['Preparar orçamento',quoteEditor(o),'Salvar rascunho']}
  if(kind==='publish'){if(o.delivery||o.origin||o.status==='Cancelado'||!d.items.length)return null;return ['Publicar versão '+(q.versions.length+1),quoteRows(d.items)+quoteTotals(d.items,d.discount)+quoteTerms(d.terms)+check('Conferi os textos, itens e valores e autorizo o compartilhamento desta versão.')+'<p class="note">A publicação anterior, se houver, será preservada no histórico.</p>','Publicar versão']}
- if(kind==='withdraw'){if(!v)return null;return ['Retirar publicação',field('Versão','version',v.number,'type="hidden"')+check('Retirar a publicação e preservar versões e respostas no histórico.'),'Retirar publicação']}
+ if(kind==='withdraw'){if(!v)return null;return ['Retirar publicação','<input type="hidden" name="version" value="'+v.number+'">'+check('Retirar a publicação e preservar versões e respostas no histórico.'),'Retirar publicação']}
  if(kind==='approval'||kind==='publicresponse'){
    const isPublic=kind==='publicresponse',current=BancadaQuote.vigente(o);
    if(!v||o.status==='Cancelado'||(isPublic&&(!current||current.decision||o.delivery))||(!isPublic&&current?.decision))return null;
@@ -55,7 +55,7 @@ function handleQuoteSubmit(kind,o,f,d){
  if(kind==='quote'){BancadaQuote.saveDraft(o,quoteDraftFromForm(f));event(o,'Rascunho de orçamento atualizado')}
  if(kind==='publish'){if(!d.confirm)throw Error('Confirme a publicação.');const v=BancadaQuote.publish(o,now);event(o,'Orçamento: versão '+v.number+' publicada')}
  if(kind==='withdraw'){if(!d.confirm)throw Error('Confirme a retirada.');BancadaQuote.withdraw(o,Number(d.version));event(o,'Orçamento: publicação retirada')}
- if(kind==='approval'||kind==='publicresponse'){const v=BancadaQuote.respond(o,Number(d.version),d,now,kind==='approval');event(o,'Orçamento: versão '+v.number+' — '+v.decision.answer)}
+ if(kind==='approval'||kind==='publicresponse'){const v=BancadaQuote.respond(o,Number(d.version),d,now,kind==='approval',today());event(o,'Orçamento: versão '+v.number+' — '+v.decision.answer)}
  if(kind==='billing'){if(!d.confirm)throw Error('Confirme a cobrança.');BancadaQuote.formalize(o,d.due);event(o,'Cobrança formalizada')}
 }
 document.addEventListener('click',e=>{

@@ -2,9 +2,9 @@
 Estado: ATIVO
 Autorização: proprietário autorizou explicitamente o ciclo GPT/Hermes em 25/11/2026.
 Escopo: R05–R10, protótipo interface_gpt exclusivamente.
-Rodada atual: R06-001
-Aguardando: validação e relatório R06 do DeepSeek.
-R05 aprovada no escopo experimental; R06 candidato a8639c6dd3d0048d3f77a5d88761f9a664f998de.
+Rodada atual: R06-002
+Aguardando: correção objetiva e validação reforçada R06-002 do DeepSeek. R06-001 concluída pelo laboratório, não aprovada para avanço.
+R05 aprovada no escopo experimental; R06-002 candidato bb43e2ffbb9cd6e5ada7516370d2598999598239.
 GPT: agendador criado, verificação a cada 60 minutos; acesso GitHub durante execução agendada ainda precisa de confirmação.
 Hermes: verificação a cada 20 minutos, ativação confirmada no R05-001-DONE.md.
 Somente a tarefa indicada em Rodada atual pode ser executada. Não repetir R05 se já em andamento ou concluída. Publicar ACK e DONE conforme protocolo.

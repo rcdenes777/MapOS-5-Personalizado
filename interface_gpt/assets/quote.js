@@ -40,7 +40,7 @@ const BancadaQuote = (() => {
   function saveDraft(o,draft) {
     assert(editable(o),'Edição de itens indisponível neste atendimento.');
     totals(draft.items,draft.discount);
-    const terms={};for(const k of ['payment','deadline','warranty','diagnosis']){const v=String(draft.terms?.[k]||'');assert(v.length<=2000,'Texto muito longo.');terms[k]=v}
+    const terms={};for(const k of ['payment','deadline','warranty','diagnosis','equipment','defect']){const v=String(draft.terms?.[k]||'');assert(v.length<=2000,'Texto muito longo.');terms[k]=v}
     init(o).draft={items:copy(draft.items),discount:draft.discount,terms};sync(o);
   }
   function publish(o,when,{source='publicar',internal=false}={}) {

@@ -1,0 +1,58 @@
+{
+  "round": "R06-001",
+  "generatedAt": "2026-11-25T22:55:00-03:00",
+  "lab": "/home/dragonblue/workspace/interface-gpt-lab/repo",
+  "branch": "interface-gpt",
+  "server": "http://127.0.0.1:8130 (python3 -m http.server, serving interface_gpt/)",
+  "baseBranchHead": "f65305f31c5d6d61a69c7729a7c0634199704797",
+  "candidate": "a8639c6dd3d0048d3f77a5d88761f9a664f998de",
+  "r05Baseline": "0d0b4e74297d77939e8c6060759ca419f7956ad9",
+  "codeCommit": "bb43e2ffbb9cd6e5ada7516370d2598999598239",
+  "codeTree": "130bc83019d6eae0036c71da76491b0d501abafe",
+  "correctionDiff": {
+    "files": 4,
+    "insertions": 7,
+    "deletions": 2,
+    "paths": [
+      "interface_gpt/assets/app.js",
+      "interface_gpt/assets/cancel-ui.js",
+      "interface_gpt/assets/finance-ui.js",
+      "interface_gpt/assets/style.css"
+    ]
+  },
+  "assets": {
+    "interface_gpt/assets/app.js": "56a4f512d835ec841ecae5b07516d643a8b325c6",
+    "interface_gpt/assets/cancel-ui.js": "f90e3130fb660d9ac8af8ef6f12bae86f63b9bc3",
+    "interface_gpt/assets/finance-ui.js": "9f825d36c122afc5df80d4c89261979713606e7e",
+    "interface_gpt/assets/style.css": "f4925cd6e27f8ef4b4046d9c69e5280707db4fa1",
+    "interface_gpt/assets/cancel.js": "1cdb858a26f5cd18b6c3ed2d039afff496f4cdcc",
+    "interface_gpt/assets/finance.js": "535802e7db9ca52d52d46d355976c6e35ba04b25",
+    "interface_gpt/assets/quote.js": "4e0db5fae58ff4afcf227137300c9d4323b5a4d2",
+    "interface_gpt/assets/portal.js": "be3c2aaf6943644f33fa716546683838cf6398d5",
+    "interface_gpt/assets/quote-ui.js": "c96adb0ff5b7d7352cf7431338d67d771f69ae1e"
+  },
+  "viewports": ["1440x900", "768x1024", "390x844", "320x568"],
+  "results": {
+    "nodeSuites": { "total": 210, "pass": 210, "fail": 0 },
+    "browser": { "total": 103, "pass": 102, "fail": 0, "info": 1 },
+    "edge": { "total": 25, "pass": 25, "fail": 0, "info": 0 },
+    "axe": { "total": 23, "pass": 23, "fail": 0, "info": 0, "scans": 21, "violations": 0 },
+    "print": { "total": 9, "pass": 8, "fail": 0, "info": 1 },
+    "regressions": { "total": 290, "pass": 288, "fail": 0, "info": 2 }
+  },
+  "captures": { "total": 33, "unique": 33, "duplicates": 0, "manifest": "interface_gpt/reviews/deepseek/R06/testes/capturas.json" },
+  "pdfs": [
+    "interface_gpt/reviews/deepseek/R06/impressos/os-cancelada-a4.pdf (1 página A4)",
+    "interface_gpt/reviews/deepseek/R06/impressos/os-cancelada-cupom.pdf (2 páginas, 80x150 mm)",
+    "interface_gpt/reviews/deepseek/R06/impressos/recibo-original.pdf (1 página A4)",
+    "interface_gpt/reviews/deepseek/R06/impressos/os020-cupom.pdf (2 páginas, baseline)",
+    "interface_gpt/reviews/deepseek/R06/impressos/os019-cupom.pdf (2 páginas, baseline)"
+  ],
+  "independentReview": {
+    "initialVerdict": "APTO COM RESSALVAS",
+    "initialFindings": ["P1 bloco de devolução visível sem devolução", "P2 pagamento direto sem perfil"],
+    "finalVerdict": "APTO",
+    "artifacts": "interface_gpt/reviews/deepseek/R06/testes/auditoria-externa/"
+  },
+  "note": "Os JSONs de teste gravam codeSha=f65305f3 (árvore de origem). As correções R06 estavam no worktree durante a geração e foram commitadas em bb43e2ff; os hashes dos assets acima identificam a árvore efetivamente medida."
+}

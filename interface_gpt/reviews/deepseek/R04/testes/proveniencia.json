@@ -1,15 +1,15 @@
 {
   "incrementSha": "431c428270e2ca98fece34c8ebc58624320b8628",
-  "codeTreeSha": "df925de31c09b2cc116abb025e9fdca5d39f5183",
-  "docsHeadAtGeneration": "98cf8b87aa539a7ef2f36240888a55492fa6e8d9",
-  "generatedAt": "2026-11-25T17:23:08-03:00",
+  "codeTreeSha": "8fba40c72bba50b0c7f6f75f89a99ab34f5e7e90",
+  "docsHeadAtGeneration": "8fba40c72bba50b0c7f6f75f89a99ab34f5e7e90",
+  "generatedAt": "2026-11-25T17:35:47-03:00",
   "assets": {
     "interface_gpt/assets/app.js": {
-      "working": "9fbdc6b3a9175d0f0ed81b382dae5d25ed4f98568df5d2ea11b67714e414667b",
-      "codeTree": "9fbdc6b3a9175d0f0ed81b382dae5d25ed4f98568df5d2ea11b67714e414667b",
+      "working": "b434e1158f0d70fcd06a1830f07a0d6ac469363c769a5a9bd88896a7aaac0f91",
+      "codeTree": "b434e1158f0d70fcd06a1830f07a0d6ac469363c769a5a9bd88896a7aaac0f91",
       "increment": "9fbdc6b3a9175d0f0ed81b382dae5d25ed4f98568df5d2ea11b67714e414667b",
       "equal_codeTree": true,
-      "changed_since_increment": false
+      "changed_since_increment": true
     },
     "interface_gpt/assets/quote.js": {
       "working": "f2a7ba38f3d21dd8ee161370ee3986a8b89fe56059032dcd04fd2babc3575a84",
@@ -19,11 +19,11 @@
       "changed_since_increment": false
     },
     "interface_gpt/assets/quote-ui.js": {
-      "working": "e4aa2654775cc5a2e586a9952c9d5f28363f738321287b162cef2d1b72b9c879",
-      "codeTree": "e4aa2654775cc5a2e586a9952c9d5f28363f738321287b162cef2d1b72b9c879",
+      "working": "4c32fed93a5c27fbd904b7144904fa20cdc5255da7bb96889309fef1d7ea2fee",
+      "codeTree": "4c32fed93a5c27fbd904b7144904fa20cdc5255da7bb96889309fef1d7ea2fee",
       "increment": "e4aa2654775cc5a2e586a9952c9d5f28363f738321287b162cef2d1b72b9c879",
       "equal_codeTree": true,
-      "changed_since_increment": false
+      "changed_since_increment": true
     },
     "interface_gpt/assets/portal.js": {
       "working": "7f66eff7917d48c5d83d2d1d94c253d7246af00b4c39b37a3de416984efc6bd4",
@@ -75,6 +75,6 @@
       "changed_since_increment": false
     }
   },
-  "codeDiffFromIncrement": "",
-  "note": "SHA_TESTED/incrementSha identifica o incremento R04; codeTreeSha identifica a arvore servida, incluindo a correcao CSS do selo em 320. Docs foram commitados depois e nao alteram assets."
+  "codeDiffFromIncrement": "interface_gpt/assets/app.js      |  6 +++---\n interface_gpt/assets/portal.css  |  9 ++++++++-\n interface_gpt/assets/quote-ui.js | 10 +++++-----\n 3 files changed, 16 insertions(+), 9 deletions(-)",
+  "note": "SHA_TESTED/incrementSha identifica o incremento R04; codeTreeSha identifica a arvore servida, incluindo as tres correcoes tecnicas: selo 320, remocao do publicresponse legado e escolha explicita no modal interno."
 }

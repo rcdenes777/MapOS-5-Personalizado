@@ -1,8 +1,8 @@
 {
-  "generatedAt": "2026-11-25T20:04:14.841Z",
+  "generatedAt": "2026-11-25T20:31:12.863Z",
   "base": "http://127.0.0.1:8130",
   "sha": "431c428270e2ca98fece34c8ebc58624320b8628",
-  "codeSha": "df925de31c09b2cc116abb025e9fdca5d39f5183",
+  "codeSha": "8fba40c72bba50b0c7f6f75f89a99ab34f5e7e90",
   "incrementSha": "431c428270e2ca98fece34c8ebc58624320b8628",
   "totals": {
     "pass": 116,
@@ -373,7 +373,7 @@
       "id": "A03",
       "desc": "Histórico registra a entrada",
       "status": "PASS",
-      "detail": "Entrada registrada | 25/11/2026 · 17:03"
+      "detail": "Entrada registrada | 25/11/2026 · 17:30"
     },
     {
       "area": "fluxoB",
@@ -436,7 +436,7 @@
       "id": "D04",
       "desc": "Histórico registra versão, aprovação e andamento",
       "status": "PASS",
-      "detail": "Andamento: Finalizado | 25/11/2026 · 17:03 | Andamento: Em Andamento | 25/11/2026 · 17:03 | Orçamento: versão 1 — Aprovado | 25/11/2026 · 17:03 | Entrada registrada | 20/11/2026"
+      "detail": "Andamento: Finalizado | 25/11/2026 · 17:30 | Andamento: Em Andamento | 25/11/2026 · 17:30 | Orçamento: versão 1 — Aprovado | 25/11/2026 · 17:30 | Entrada registrada | 20/11/2026"
     },
     {
       "area": "fluxoD",
@@ -457,7 +457,7 @@
       "id": "E02",
       "desc": "Entrega registrada com saldo pendente",
       "status": "PASS",
-      "detail": "{\"date\":\"2026-11-25\",\"receiver\":\"Refrigeração Horizonte\",\"third\":false,\"items\":\"Gree · G-Top Inverter\",\"authorization\":\"\",\"registered\":\"2026-11-25T20:03:31.679Z\"}"
+      "detail": "{\"date\":\"2026-11-25\",\"receiver\":\"Refrigeração Horizonte\",\"third\":false,\"items\":\"Gree · G-Top Inverter\",\"authorization\":\"\",\"registered\":\"2026-11-25T20:30:30.366Z\"}"
     },
     {
       "area": "fluxoE",
@@ -485,7 +485,7 @@
       "id": "F02",
       "desc": "Entrega registra terceiro, recebedor e autorização",
       "status": "PASS",
-      "detail": "{\"date\":\"2026-11-25\",\"receiver\":\"Carlos Entregador (fictício)\",\"third\":true,\"items\":\"Midea · Xtreme Save\",\"authorization\":\"Autorizado por telefone, protocolo fictício 123.\",\"registered\":\"2026-11-25T20:03:32.717Z\"}"
+      "detail": "{\"date\":\"2026-11-25\",\"receiver\":\"Carlos Entregador (fictício)\",\"third\":true,\"items\":\"Midea · Xtreme Save\",\"authorization\":\"Autorizado por telefone, protocolo fictício 123.\",\"registered\":\"2026-11-25T20:30:31.347Z\"}"
     },
     {
       "area": "fluxoF",
@@ -855,7 +855,7 @@
     },
     {
       "file": "desktop/42-fluxo-d-finalizado-1440x900.png",
-      "bytes": 113540
+      "bytes": 113502
     },
     {
       "file": "desktop/43-fluxo-d-cobranca-1440x900.png",

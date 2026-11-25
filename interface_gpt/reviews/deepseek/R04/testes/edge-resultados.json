@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-11-25T20:09:24.499Z",
-  "codeSha": "df925de31c09b2cc116abb025e9fdca5d39f5183",
+  "generatedAt": "2026-11-25T20:30:13.208Z",
+  "codeSha": "8fba40c72bba50b0c7f6f75f89a99ab34f5e7e90",
   "incrementSha": "431c428270e2ca98fece34c8ebc58624320b8628",
   "results": [
     {
@@ -49,7 +49,7 @@
       "id": "R04-X08",
       "desc": "Endereço local contém portal.html e o token ativo",
       "status": "PASS",
-      "detail": "http://127.0.0.1:8130/portal.html#ee82258d915fbb86e8ed5a2d1c57c8e5a4f887f6673b1f…"
+      "detail": "http://127.0.0.1:8130/portal.html#c7148b6f93eecb0c4f29afb5b0f775dbb049b2a7dc9eeb…"
     },
     {
       "id": "R04-X15",
@@ -74,6 +74,18 @@
       "desc": "Financeiro vê o link do cliente",
       "status": "PASS",
       "detail": "finance"
+    },
+    {
+      "id": "R04-X16",
+      "desc": "Modal interno de resposta não pré-seleciona decisão",
+      "status": "PASS",
+      "detail": "{\"open\":true,\"value\":\"\",\"required\":true}"
+    },
+    {
+      "id": "R04-X17",
+      "desc": "Caminho legado publicresponse não abre modal",
+      "status": "PASS",
+      "detail": "false"
     },
     {
       "id": "R04-X12",

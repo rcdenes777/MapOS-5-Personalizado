@@ -2,7 +2,7 @@
 
 **Incremento:** `431c428270e2ca98fece34c8ebc58624320b8628`
 **Auditoria cega:** [`AUDITORIA-CEGA.md`](AUDITORIA-CEGA.md)
-**Árvore de código testada:** `df925de31c09b2cc116abb025e9fdca5d39f5183` (incremento + correção CSS do selo em 320)
+**Árvore de código testada:** `8fba40c72bba50b0c7f6f75f89a99ab34f5e7e90` (incremento + três correções técnicas)
 **Branch:** `interface-gpt`
 **Relatório:** [`RELATORIO.md`](RELATORIO.md) · **Achados:** [`ACHADOS.md`](ACHADOS.md) · **Correções:** [`CORRECOES.md`](CORRECOES.md)
 **Pasta no GitHub:** https://github.com/rcdenes777/MapOS-5-Personalizado/tree/interface-gpt/interface_gpt/reviews/deepseek/R04
@@ -16,7 +16,7 @@
 | Portal do GPT | **24/24 PASS** |
 | Portal-page do GPT | **8/8 PASS** |
 | Navegador real — portal e administração | **44/44 PASS** |
-| Bordas, concorrência e privacidade | **15/15 PASS** |
+| Bordas, concorrência e privacidade | **17/17 PASS** |
 | Auditoria R03 adaptada | **118: 116 PASS, 0 FAIL, 2 INFO** |
 | Regressão R02 | **37/37 PASS** |
 | Responsividade | **27/27 PASS** |
@@ -38,8 +38,10 @@
 
 ## Correção técnica
 
-**F04-01:** o selo “Demonstração” quebrava em `Demonstraç / ão` em 320 px. Corrigido com `white-space:nowrap` e ajuste de gap/padding no cabeçalho do portal. Antes/depois: `mobile/00-antes-fix-demo-320.png` e `mobile/portal-inicial-320-320x568.png`. Commit `df925de3`; apenas `assets/portal.css` (+8/−1).
+**F04-01:** selo “Demonstração” em 320 px, corrigido em `portal.css` (commit `df925de3`).
+
+**F04-02/F04-03:** removido o caminho legado `publicresponse` e o select interno de resposta agora exige escolha explícita, sem pré-selecionar “Aprovado” (commit `8fba40c7`). Diff acumulado: 3 arquivos, +16/−9.
 
 ## Limitações
 
-O identificador é uma simulação local; não há autenticação, CSRF, isolamento entre usuários, token seguro, expiração contínua nem garantia transacional. O portal não deve ser enviado a clientes reais. A atualização entre abas não tem `aria-live` dedicado. Há ainda um resíduo de código `publicresponse` sem botão na UI, que deve ser removido em limpeza técnica. A R01–R03 permanecem preservadas; `v5-trifase` e produção não foram tocadas. O R04 **não autoriza merge ou deploy**.
+O identificador é uma simulação local; não há autenticação, CSRF, isolamento entre usuários, token seguro, expiração contínua nem garantia transacional. O portal não deve ser enviado a clientes reais. A atualização entre abas não tem `aria-live` dedicado. A R01–R03 permanecem preservadas; `v5-trifase` e produção não foram tocadas. O R04 **não autoriza merge ou deploy**.

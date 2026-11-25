@@ -6,7 +6,7 @@
 **Repositório:** `rcdenes777/MapOS-5-Personalizado`
 **Branch:** `interface-gpt`
 **Incremento avaliado:** `431c428270e2ca98fece34c8ebc58624320b8628`
-**Árvore de código testada:** `df925de31c09b2cc116abb025e9fdca5d39f5183` (incremento + correção CSS do selo em 320)
+**Árvore de código testada:** `8fba40c72bba50b0c7f6f75f89a99ab34f5e7e90` (incremento + três correções técnicas)
 **Auditoria cega:** [`AUDITORIA-CEGA.md`](AUDITORIA-CEGA.md)
 **Baseline R03:** evidências `0fa965b3`; árvore validada `b180ab6c`
 **Referência funcional:** `8c256cae4ddaeefad68922abddbb8addfe37c99d`
@@ -25,7 +25,7 @@ Nenhum arquivo fora de `interface_gpt/` foi alterado. Não houve merge, deploy, 
 | `tests/portal.cjs` | **24/24 PASS** |
 | `tests/portal-page.cjs` | **8/8 PASS** |
 | Navegador real — portal e administração (`browser.cjs`) | **44/44 PASS** |
-| Bordas, concorrência e privacidade (`edge.cjs`) | **15/15 PASS** |
+| Bordas, concorrência e privacidade (`edge.cjs`) | **17/17 PASS** |
 | Bateria R03 adaptada (`audit-r03.cjs`) | **118: 116 PASS, 0 FAIL, 2 INFO** |
 | Regressão R02 (`regressao-r02.cjs`) | **37/37 PASS** |
 | Responsividade e capturas (`capture.cjs`) | **27/27 PASS** |
@@ -192,10 +192,18 @@ Textos publicados com HTML (`<img onerror…>`) são escapados; o diagnóstico l
 
 **Antes:** `Demonstraç / ão` em duas linhas no cabeçalho do portal.
 **Depois:** selo em uma linha, cabeçalho dentro da largura e sem overflow.
-**Correção:** apenas `assets/portal.css`; commit `df925de3` (1 arquivo, +8/-1).
+**Correção:** `assets/portal.css`; commit `df925de3` (+8/-1).
 **Evidência:** `mobile/00-antes-fix-demo-320.png` (antes) e `mobile/portal-inicial-320-320x568.png` (depois); `responsivo.json` registra `demoOneLine=true`.
 
-Nenhuma regra operacional, texto criativo, identidade visual, backend, banco ou arquivo fora de `interface_gpt` foi alterado. A R03 permanece preservada; o CSS do painel administrativo foi o entregue pelo GPT.
+### F04-02 — caminho legado `publicresponse` removido
+
+A capability e o branch do antigo “Simular resposta pelo link” foram removidos de `app.js`/`quote-ui.js`; a decisão pública agora só existe em `portal.html`. `edge.cjs` X17 confirma que `openModal('publicresponse')` não abre modal. Commit `8fba40c7`.
+
+### F04-03 — resposta interna sem pré-seleção
+
+O select do modal “Registrar resposta do cliente” inicia em **“Selecione a resposta”**, com valor vazio e `required`; o portal já começava com os dois rádios desmarcados. `edge.cjs` X16 confirma `value=""` e obrigatoriedade. Commit `8fba40c7`.
+
+O diff acumulado é **3 arquivos, +16/−9** (`portal.css`, `app.js`, `quote-ui.js`). Nenhuma regra operacional, texto criativo, identidade visual, backend, banco ou arquivo fora de `interface_gpt` foi alterado. A R03 permanece preservada; o CSS do painel administrativo foi o entregue pelo GPT.
 
 ---
 
@@ -223,7 +231,6 @@ Os itens abaixo não foram corrigidos por serem decisões de produto, limites de
 - **R04-A03:** atualização entre abas troca o DOM sem anúncio `aria-live` dedicado; axe não encontrou violação, mas leitores de tela podem não anunciar a mudança.
 - **R04-A04:** “Ver endereço para copiar” exibe e seleciona o endereço; não usa a Clipboard API. O rótulo foi escolhido para não prometer cópia automática.
 - **R04-A05:** sem publicação, o link continua ativo e o portal mostra “Não há orçamento publicado”, conforme a decisão do R04; retirar publicação não revoga o link.
-- **R04-A06:** a simulação antiga de resposta pública ainda permanece como branch interna `publicresponse`; nenhum botão a expõe, mas chamada direta pelo console abre o modal antigo. Recomenda-se remover numa limpeza técnica, sem mudar o fluxo do portal agora.
 
 Nenhum desses itens é uma regra operacional nova. O GPT deve decidir se quer tratá-los na próxima rodada.
 
@@ -250,7 +257,7 @@ Nenhum desses itens é uma regra operacional nova. O GPT deve decidir se quer tr
 - Servidor estático em `interface_gpt/`: `python3 -m http.server 8130 --bind 0.0.0.0`.
 - Chromium local `chromium-1248/chrome-linux64/chrome`.
 - `playwright-core` e `axe-core 4.14.1` em `interface-gpt-lab/tools/node_modules`.
-- `BASE_URL=http://127.0.0.1:8130`; `incrementSha=431c4282` e `codeSha=df925de3` registrados nos JSONs.
+- `BASE_URL=http://127.0.0.1:8130`; `incrementSha=431c4282` e `codeSha=8fba40c7` registrados nos JSONs.
 - Manifesto de hashes e explicação da árvore: [`testes/proveniencia.json`](testes/proveniencia.json).
 - Comandos: [`testes/README.md`](testes/README.md).
 
@@ -260,6 +267,6 @@ Os dados são fictícios e ficam no `localStorage`; não há login, token real, 
 
 ## 13. Conclusão
 
-O R04 está **funcionalmente completo no escopo experimental** e não introduziu violação do contrato de orçamento, privacidade ou financeiro. As duas suítes do GPT para o portal, os 44 fluxos de navegador, os 15 casos de borda e as 22 varreduras axe fecham sem falhas. A única correção de produto foi visual e restrita ao selo de 320 px.
+O R04 está **funcionalmente completo no escopo experimental** e não introduziu violação do contrato de orçamento, privacidade ou financeiro. As duas suítes do GPT para o portal, os 44 fluxos de navegador, os 17 casos de borda e as 22 varreduras axe fecham sem falhas. As três correções de produto foram técnicas: selo em 320, remoção do resíduo legado e escolha explícita interna.
 
 A entrega **não autoriza merge, deploy ou uso com clientes reais**. O portal continua sendo uma demonstração local; a próxima etapa real é substituir o identificador local por endpoints autenticados e proteção de backend, além de decidir os pontos abertos acima.

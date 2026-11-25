@@ -1,7 +1,7 @@
 # Índice de evidências — R04
 
 **Incremento:** `431c428270e2ca98fece34c8ebc58624320b8628`
-**Árvore de código testada:** `df925de31c09b2cc116abb025e9fdca5d39f5183` (incremento + correção CSS do selo em 320)
+**Árvore de código testada:** `8fba40c72bba50b0c7f6f75f89a99ab34f5e7e90` (incremento + três correções técnicas)
 **Relatório:** [`RELATORIO.md`](RELATORIO.md) · **Resumo:** [`RESUMO.md`](RESUMO.md) · **Achados:** [`ACHADOS.md`](ACHADOS.md) · **Correções:** [`CORRECOES.md`](CORRECOES.md)
 **Auditoria cega:** [`AUDITORIA-CEGA.md`](AUDITORIA-CEGA.md)
 **Testes:** [`testes/README.md`](testes/README.md) · [`responsivo.md`](testes/responsivo.md) · [`axe.md`](testes/axe.md) · [`resultados.md`](testes/resultados.md) · [`proveniencia.json`](testes/proveniencia.json)

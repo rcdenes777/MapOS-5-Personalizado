@@ -125,6 +125,11 @@ async function setDraftLong(a) {
     await a.selectOption('#role', 'Financeiro'); await a.waitForTimeout(200);
     const fin = norm(await a.locator('#main').innerText());
     rec('R04-X11', 'Financeiro vê o link do cliente', /Link do cliente/.test(fin), 'finance');
+    const internal = await a.evaluate(() => { openModal('approval', 23); const s = document.querySelector('#action-form select[name=answer]'); return { open: document.querySelector('#modal').open, value: s?.value, required: s?.required }; });
+    rec('R04-X16', 'Modal interno de resposta não pré-seleciona decisão', internal.open && internal.value === '' && internal.required === true, JSON.stringify(internal));
+    await a.locator('#modal button[data-action=close]').click();
+    const legacy = await a.evaluate(() => { openModal('publicresponse', 23); return document.querySelector('#modal').open; });
+    rec('R04-X17', 'Caminho legado publicresponse não abre modal', !legacy, String(legacy));
     await ctx.close();
   }
 

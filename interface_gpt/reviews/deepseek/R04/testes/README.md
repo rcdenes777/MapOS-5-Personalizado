@@ -8,7 +8,7 @@ export NODE_PATH=/home/dragonblue/workspace/interface-gpt-lab/tools/node_modules
 export BASE_URL=http://127.0.0.1:8130
 export SHA_TESTED=431c428270e2ca98fece34c8ebc58624320b8628
 export INCREMENT_SHA=431c428270e2ca98fece34c8ebc58624320b8628
-export CODE_SHA=df925de31c09b2cc116abb025e9fdca5d39f5183
+export CODE_SHA=8fba40c72bba50b0c7f6f75f89a99ab34f5e7e90
 ```
 
 ## Suítes
@@ -20,7 +20,7 @@ export CODE_SHA=df925de31c09b2cc116abb025e9fdca5d39f5183
 | `../../../tests/portal.cjs` | **24/24 PASS** | Domínio do portal: link, projeção, decisão e entrega. |
 | `../../../tests/portal-page.cjs` | **8/8 PASS** | Renderização pública com DOM stub. |
 | `browser.cjs` | **44/44 PASS** | Link, portal, versões, entrega, financeiro, privacidade, hierarquia e duas abas. |
-| `edge.cjs` | **15/15 PASS** | Revogação/expiração entre abas, formulário inválido, token inválido, perfis, cópia, textos longos/XSS e foco. |
+| `edge.cjs` | **17/17 PASS** | Revogação/expiração entre abas, formulário inválido, token inválido, perfis, cópia, textos longos/XSS e foco. |
 | `audit-r03.cjs` (cópia) | **118: 116 PASS, 0 FAIL, 2 INFO** | Regressão R03 adaptada; não modifica a pasta R03. |
 | `regressao-r02.cjs` (cópia) | **37/37 PASS** | Regressão R02; não modifica a pasta R02. |
 | `capture.cjs` | **27/27 PASS; 72 capturas** | 320 a 1920, estados do portal e painel. |
@@ -50,14 +50,14 @@ node tests/portal-page.cjs
 ## Artefatos
 
 - `browser-resultados.json` — 44 verificações de navegador.
-- `edge-resultados.json` — 15 bordas e concorrência.
+- `edge-resultados.json` — 17 bordas e concorrência.
 - `resultados.json` / `resultados.md` — auditoria R03 adaptada.
 - `regressao-resultados.json` — 37 regressões R02.
 - `responsivo.json` / `responsivo.md` — medidas e 72 capturas.
 - `axe.json` / `axe.md` — 22 varreduras axe e 0 violações.
-- `a11y-resultados.json` — 6 verificações de controles/teclado.
+- `a11y-resultados.json` — 9 verificações de controles/teclado.
 - `../AUDITORIA-CEGA.md` — veredito independente e resolução das ressalvas.
-- `proveniencia.json` — `incrementSha=431c4282`, `codeTreeSha=df925de3` e hashes dos assets.
+- `proveniencia.json` — `incrementSha=431c4282`, `codeTreeSha=8fba40c7` e hashes dos assets.
 - `smoke.log`, `quote.log`, `portal.log`, `portal-page.log` — saídas do GPT.
 - Capturas adicionais: `00-antes-fix-demo-320.png` (antes da correção) e as 8 capturas da bateria R03 adaptada.
 

@@ -1,6 +1,6 @@
 # Responsividade e capturas — R04
 
-Gerado em 2026-11-25T20:07:58.349Z
+Gerado em 2026-11-25T20:34:37.084Z
 
 | Status | ID | Verificação | Detalhe |
 | --- | --- | --- | --- |

@@ -1,0 +1,5 @@
+# R05-001 — Parecer GPT
+Resultado recebido pelo GitHub na execução manual autorizada do ciclo. R05 aprovada como baseline experimental, sem autorização de integração/produção.
+Relatório e auditoria lidos no SHA ae61edc862044c18945167d69b33d999c1a5f3d3; duas capturas (estorno desktop e extremo 320) inspecionadas. DeepSeek: navegador 56/56, bordas 18/18, 16 varreduras axe sem violações, regressões anteriores verdes, nota 8,6/10. As duas correções CSS (+2/-2) são adequadas. Compare remoto confirmou apenas style.css no delta de código R05, nenhuma mudança fora de interface_gpt, evidências antigas preservadas e v5-trifase idêntica à referência. Não reexecutei navegador nem inspecionei PDFs.
+Ressalvas de simulação e rota financeira restrita aceitas no escopo. R06 implementada e documentada em R06-CANCELAMENTOS.md; candidato a8639c6dd3d0048d3f77a5d88761f9a664f998de; 210 verificações PASS em ambiente JavaScript com Node/DOM simulados, navegador pendente. R06 não implementa baixa/retorno físico de estoque, custos reais, garantia ou retificação especial de saldo anterior; ver documento.
+Próxima tarefa: R06-001.

@@ -4,6 +4,15 @@ const warrantyKinds=['warrantyAssess','warrantyCost','warrantyCorrect','warranty
 const warrantyRefundAllowed=()=>can('settings'); // distinct native grant, conservatively admin only
 const warrantyCostAllowed=()=>can('settings'); // conservative demo mapping of distinct native cost permissions
 function warrantyRef(o){try{return BancadaWarranty.reference(o,db.orders)}catch{return null}}
+// Referência read-only da própria raiz: preserva conclusão/prazo mesmo quando a unidade
+// original foi substituída e `reference` passa a recusá-la de propósito.
+function warrantyOriginRef(o){
+ if(o.origin||!BancadaFinance.dayValid(o.conclusion))return null;
+ const days=Number.isInteger(o.warrantyDays)&&o.warrantyDays>=0&&o.warrantyDays<=9999?o.warrantyDays:null;
+ let end=null;if(days>0){const d=new Date(o.conclusion+'T00:00:00Z');d.setUTCDate(d.getUTCDate()+days);end=d.toISOString().slice(0,10)}
+ return {root:o.id,previous:o.id,unit:o.unit||o.id,client:o.client,conclusion:o.conclusion,days,end};
+}
+const warrantyRefOf=o=>BancadaWarranty.binding(o,db.orders)||warrantyRef(o)||warrantyOriginRef(o);
 function warrantyPeriod(w){if(!w)return 'Referência indisponível';if(w.days===null)return 'Prazo não informado';if(!w.days)return 'Sem prazo concedido';return date(w.end)+(w.end<today()?' · Prazo expirado':' · Dentro do prazo')}
 function warrantyBase(o){return o.status!=='Finalizado'?o:(BancadaWarranty.lastFinalized(o,db.orders)||o)}
 function warrantyReturnLink(o){
@@ -14,11 +23,11 @@ function warrantyReturnLink(o){
  return link('Registrar retorno','#retorno/'+base.id,'btn');
 }
 function warrantySummary(o){
- const w=BancadaWarranty.binding(o,db.orders)||warrantyRef(o);
+ const w=warrantyRefOf(o);
  return '<section class="panel form-section"><h2>Garantia</h2>'+(o.origin?'<p>'+link('OS de origem '+num({id:o.origin}),'#os/'+o.origin,'btn ghost')+'</p>'+pill(o.coverage||'Em avaliação','amber'):'<p class="muted">'+(o.conclusion?'Conclusão em '+date(o.conclusion):'Prazo depende da conclusão real.')+'</p>')+(w?'<p class="small">'+esc(warrantyPeriod(w))+'</p>':'')+link('Ver garantia e retornos','#os/'+o.id+'/garantia','btn ghost')+warrantyReturnLink(o)+'</section>';
 }
 function warrantyPanel(o){
- const w=BancadaWarranty.binding(o,db.orders)||warrantyRef(o),a=BancadaWarranty.assessment(o),ev=BancadaWarranty.events(o),c=BancadaWarranty.costs(o);
+ const w=warrantyRefOf(o),a=BancadaWarranty.assessment(o),ev=BancadaWarranty.events(o),c=BancadaWarranty.costs(o);
  const related=db.orders.filter(x=>x.origin&&(BancadaWarranty.same(x,o)||x.origin===(o.origin||o.id)&&x.client===o.client));
  const canAssess=o.origin&&w&&o.status!=='Cancelado'&&can('tech')&&!BancadaWarranty.executed(o);
  const visible=ev.filter(e=>e.type==='avaliar'||warrantyCostAllowed());

@@ -1,6 +1,8 @@
 # HGT-003 — SENT-02
 
 - Status: error
+- Retry autorizado pelo proprietário: sim
+- Confirmação: nenhum envio ocorreu; o composer permaneceu vazio e a falha foi antes da colagem.
 - Rodada: 2/3
 - Marcador criado UTC: 2026-11-26T02:11:47Z
 - Erro: Command '['wl-copy']' timed out after 90 seconds

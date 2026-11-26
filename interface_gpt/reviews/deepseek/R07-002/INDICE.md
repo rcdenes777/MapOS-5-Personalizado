@@ -58,9 +58,11 @@ Manifesto completo com SHA-256 e bytes: `testes/r07-002-capturas.json`.
 | `testes/regressao/*` | R02 37/37; R03 118 (116+2 INFO); R04 61/61; R05 74/74. |
 | `testes/axe-r07-002.md` | 0 violações em 5 varreduras da garantia/modal/portal. |
 
-## Impressos (6 PDFs)
+## Impressos
 
-`impressos/origem-parcial-a4.pdf`, `origem-parcial-cupom.pdf`, `retorno-a4.pdf`, `origem-reembolsada-a4.pdf`, `recibo-original.pdf`, `origem-encerrada-cupom.pdf`.
+**Novos (6 PDFs):** `impressos/origem-parcial-a4.pdf`, `origem-parcial-cupom.pdf`, `retorno-a4.pdf`, `origem-reembolsada-a4.pdf`, `recibo-original.pdf`, `origem-encerrada-cupom.pdf`.
+
+**Regressão R07-001 (7 PDFs, preservados à parte):** `impressos/regressao-r07-001/` e `recibos/regressao-r07-001/` — resultados da reexecução de `r07-print.cjs` no código final; os originais continuam em `R07-001/impressos` e `R07-001/recibos`.
 
 ## Outros documentos
 

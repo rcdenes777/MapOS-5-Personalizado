@@ -1,0 +1,102 @@
+{
+  "generatedAt": "2026-11-26T16:40:35.589Z",
+  "codeSha": "a35b6749",
+  "results": [
+    {
+      "id": "R06B-01",
+      "desc": "OS aprovada recebe pedido de cancelamento pendente",
+      "status": "PASS",
+      "detail": "{\"open\":false,\"error\":\"\",\"toast\":\"Registro atualizado na demonstração.\"}"
+    },
+    {
+      "id": "R06B-02",
+      "desc": "Conferência técnica concluída antes do teste do handler",
+      "status": "PASS",
+      "detail": "{\"open\":false,\"error\":\"\",\"toast\":\"Registro atualizado na demonstração.\"}"
+    },
+    {
+      "id": "R06B-03",
+      "desc": "Modal de acerto abre após a conferência técnica",
+      "status": "PASS",
+      "detail": "true"
+    },
+    {
+      "id": "R06B-04",
+      "desc": "cancelLive calcula saldo a receber sem bloco de devolução",
+      "status": "PASS",
+      "detail": "{\"text\":\"Recebido\\nR$ 100,00\\nTotal final devido\\nR$ 320,00\\nA receber: R$ 220,00\",\"hidden\":true,\"refundDisabled\":true}"
+    },
+    {
+      "id": "R06B-05",
+      "desc": "cancelLive calcula devolução e habilita data/forma/referência",
+      "status": "PASS",
+      "detail": "{\"text\":\"Recebido\\nR$ 100,00\\nTotal final devido\\nR$ 0,00\\nA devolver: R$ 100,00\",\"hidden\":false,\"refundDisabled\":false,\"dateRequired\":true,\"refRequired\":true}"
+    },
+    {
+      "id": "R06B-06",
+      "desc": "cancelLive rejeita valor não monetário e volta a ocultar a devolução",
+      "status": "PASS",
+      "detail": "{\"text\":\"Confira valor e desconto.\",\"hidden\":true,\"refundDisabled\":true}"
+    },
+    {
+      "id": "R06B-07",
+      "desc": "Handler real rejeita Finalizado com pedido pendente e mensagem original exata",
+      "status": "PASS",
+      "detail": "{\"open\":true,\"toast\":\"Resolva ou retire o pedido de cancelamento antes de finalizar a OS.\",\"error\":\"\"}"
+    },
+    {
+      "id": "R06B-08",
+      "desc": "Finalização bloqueada não altera status, conclusão, histórico, financeiro ou pedido",
+      "status": "PASS",
+      "detail": "{\"before\":{\"status\":\"Em Andamento\",\"conclusion\":null,\"total\":32000,\"paid\":10000,\"approval\":\"Aprovado\",\"delivery\":null,\"history\":[\"Entrada registrada\",\"Cancelamento: Pedido registrado\",\"Cancelamento: Conferência técnica\"],\"cancellation\":{\"events\":[{\"id\":1,\"type\":\"request\",\"when\":\"2026-11-26T16:40:28.028Z\",\"origin\":\"cliente\",\"reason\":\"Pedido pendente para o handler R06-002.\",\"status\":\"Em Andamento\"},{\"id\":2,\"type\":\"technical\",\"when\":\"2026-11-26T16:40:28.896Z\",\"request\":1,\"key\":\"[\\\"Em Andamento\\\",[[\\\"Serviço\\\",\\\"Serviço de reparo (demonstração inicial)\\\",1,32000]]]\",\"reason\":\"Peças conciliadas e serviço executado conferido — R06-002.\"}]},\"ledger\":{\"opening\":10000,\"events\":[]},\"stored\":\"{\\\"clients\\\":[{\\\"id\\\":1,\\\"name\\\":\\\"Clima Sul Serviços\\\",\\\"phone\\\":\\\"(45) 90000-0101\\\"},{\\\"id\\\":2,\\\"name\\\":\\\"Marina Alves\\\",\\\"phone\\\":\\\"(45) 90000-0102\\\"},{\\\"id\\\":3,\\\"name\\\":\\\"Refrigeração Horizonte\\\",\\\"phone\\"
+    },
+    {
+      "id": "R06B-09",
+      "desc": "Finalização bloqueada não grava no localStorage",
+      "status": "PASS",
+      "detail": "stored bytes 4986"
+    },
+    {
+      "id": "R06B-10",
+      "desc": "Controle positivo: pedido retirado deixa a OS sem pendência",
+      "status": "PASS",
+      "detail": "{\"open\":false,\"error\":\"\",\"toast\":\"Registro atualizado na demonstração.\"}"
+    },
+    {
+      "id": "R06B-11",
+      "desc": "Controle positivo: após a retirada, Finalizado é aceito e grava conclusão",
+      "status": "PASS",
+      "detail": "{\"ui\":{\"open\":false,\"toast\":\"Registro atualizado na demonstração.\",\"error\":\"\"},\"status\":\"Finalizado\",\"conclusion\":\"2026-11-26\",\"last\":\"Andamento: Finalizado\"}"
+    },
+    {
+      "id": "R06B-12",
+      "desc": "OS #021 recebe pedido pendente para o fluxo completo",
+      "status": "PASS",
+      "detail": "{\"open\":false,\"error\":\"\",\"toast\":\"Registro atualizado na demonstração.\"}"
+    },
+    {
+      "id": "R06B-13",
+      "desc": "Conferência técnica da OS #021 concluída",
+      "status": "PASS",
+      "detail": "{\"open\":false,\"error\":\"\",\"toast\":\"Registro atualizado na demonstração.\"}"
+    },
+    {
+      "id": "R06B-14",
+      "desc": "Confirmação de cancelamento continua possível após a correção",
+      "status": "PASS",
+      "detail": "{\"status\":\"Cancelado\",\"last\":\"confirm\",\"total\":28000}"
+    },
+    {
+      "id": "R06B-15",
+      "desc": "Painel concluído exibe o acerto e mantém a retirada independente",
+      "status": "PASS",
+      "detail": "ATENDIMENTO / #021\nPhilco · PAC 12000\n\nPaulo Lima · Entrada em 21/11/2026\n\nVoltar\nImprimir\nANDAMENTO TÉCNICO\nCancelado\nConclusão não registrada\nFINANCEIRO\nEm aberto\nSaldo: R$ 280,00\nRegistrar pagamento\nRETIRADA\nNão entregue\nRegistro independente do pagamento\nR"
+    },
+    {
+      "id": "R06B-16",
+      "desc": "Sem exceções, erros de console ou requisições externas no handler R06-002",
+      "status": "PASS",
+      "detail": "{\"errors\":[],\"consoleErrors\":[],\"external\":[]}"
+    }
+  ]
+}

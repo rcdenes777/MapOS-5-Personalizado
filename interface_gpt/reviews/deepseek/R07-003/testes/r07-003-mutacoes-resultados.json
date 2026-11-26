@@ -1,0 +1,278 @@
+{
+  "generatedAt": "2026-11-26T16:30:55.466Z",
+  "source": "/home/dragonblue/workspace/interface-gpt-lab/repo/interface_gpt/assets",
+  "scratch": "/home/dragonblue/.hermes/cache/scratch/r07-003-mutacoes",
+  "total": 26,
+  "summary": {
+    "DETECTADA": 24,
+    "DETECTADA_FORA_DO_ALVO": 2
+  },
+  "results": [
+    {
+      "id": "R07M3-01",
+      "file": "warranty.js",
+      "guard": "solução vigente exige troca",
+      "expect": [
+        "D07",
+        "D31"
+      ],
+      "status": "DETECTADA",
+      "detail": "falha em D07"
+    },
+    {
+      "id": "R07M3-02",
+      "file": "warranty.js",
+      "guard": "cobertura concluída na execução",
+      "expect": [
+        "D31"
+      ],
+      "status": "DETECTADA",
+      "detail": "falha em D31"
+    },
+    {
+      "id": "R07M3-03",
+      "file": "warranty.js",
+      "guard": "retorno aberto para executar",
+      "expect": [
+        "D07"
+      ],
+      "status": "DETECTADA",
+      "detail": "falha em D07"
+    },
+    {
+      "id": "R07M3-04",
+      "file": "warranty.js",
+      "guard": "retorno sem cobrança própria",
+      "expect": [
+        "D08"
+      ],
+      "status": "DETECTADA",
+      "detail": "falha em D08"
+    },
+    {
+      "id": "R07M3-05",
+      "file": "warranty.js",
+      "guard": "retorno sem entrega",
+      "expect": [
+        "D08"
+      ],
+      "status": "DETECTADA",
+      "detail": "falha em D08"
+    },
+    {
+      "id": "R07M3-06",
+      "file": "warranty.js",
+      "guard": "publicação de orçamento retirada",
+      "expect": [
+        "D08"
+      ],
+      "status": "DETECTADA",
+      "detail": "falha em D08"
+    },
+    {
+      "id": "R07M3-07",
+      "file": "warranty.js",
+      "guard": "unidade não substituída nem solução executada",
+      "expect": [
+        "D10",
+        "D17",
+        "D18"
+      ],
+      "status": "DETECTADA",
+      "detail": "falha em D10"
+    },
+    {
+      "id": "R07M3-08",
+      "file": "warranty.js",
+      "guard": "outro atendimento aberto da unidade",
+      "expect": [
+        "D09"
+      ],
+      "status": "DETECTADA",
+      "detail": "falha em D09"
+    },
+    {
+      "id": "R07M3-09",
+      "file": "warranty.js",
+      "guard": "avaliação esperada (stale)",
+      "expect": [
+        "D07"
+      ],
+      "status": "DETECTADA",
+      "detail": "falha em D07"
+    },
+    {
+      "id": "R07M3-10",
+      "file": "warranty.js",
+      "guard": "confirmação da troca",
+      "expect": [
+        "D07",
+        "D19"
+      ],
+      "status": "DETECTADA",
+      "detail": "falha em D07"
+    },
+    {
+      "id": "R07M3-11",
+      "file": "warranty.js",
+      "guard": "origem/destino permitidos",
+      "expect": [
+        "D05"
+      ],
+      "status": "DETECTADA",
+      "detail": "falha em D05"
+    },
+    {
+      "id": "R07M3-12",
+      "file": "warranty.js",
+      "guard": "identificação da nova unidade",
+      "expect": [
+        "D05"
+      ],
+      "status": "DETECTADA",
+      "detail": "falha em D05"
+    },
+    {
+      "id": "R07M3-13",
+      "file": "warranty.js",
+      "guard": "selo normalizado não duplicado",
+      "expect": [
+        "D06"
+      ],
+      "status": "DETECTADA",
+      "detail": "falha em D06"
+    },
+    {
+      "id": "R07M3-14",
+      "file": "warranty.js",
+      "guard": "textos obrigatórios e limites",
+      "expect": [
+        "D05"
+      ],
+      "status": "DETECTADA",
+      "detail": "falha em D05"
+    },
+    {
+      "id": "R07M3-15",
+      "file": "warranty.js",
+      "guard": "custo externo válido",
+      "expect": [
+        "D04",
+        "D24"
+      ],
+      "status": "DETECTADA",
+      "detail": "falha em D04"
+    },
+    {
+      "id": "R07M3-16",
+      "file": "warranty.js",
+      "guard": "estoque existente e disponível",
+      "expect": [
+        "D03"
+      ],
+      "status": "DETECTADA",
+      "detail": "falha em D03"
+    },
+    {
+      "id": "R07M3-17",
+      "file": "warranty.js",
+      "guard": "baixa de exatamente 1 unidade",
+      "expect": [
+        "D02"
+      ],
+      "status": "DETECTADA",
+      "detail": "falha em D02"
+    },
+    {
+      "id": "R07M3-18",
+      "file": "warranty.js",
+      "guard": "linhagem física na referência",
+      "expect": [
+        "D32"
+      ],
+      "status": "DETECTADA",
+      "detail": "falha em D32"
+    },
+    {
+      "id": "R07M3-19",
+      "file": "warranty.js",
+      "guard": "unidade substituída não referencia retorno",
+      "expect": [
+        "D10"
+      ],
+      "status": "DETECTADA",
+      "detail": "falha em D10"
+    },
+    {
+      "id": "R07M3-20",
+      "file": "warranty.js",
+      "guard": "lastFinalized restrito à raiz e unidade física",
+      "expect": [
+        "D13"
+      ],
+      "status": "DETECTADA_FORA_DO_ALVO",
+      "detail": "falha em D11"
+    },
+    {
+      "id": "R07M3-21",
+      "file": "warranty.js",
+      "guard": "currentUnit percorre a cadeia de trocas",
+      "expect": [
+        "D11",
+        "D25"
+      ],
+      "status": "DETECTADA",
+      "detail": "falha em D11"
+    },
+    {
+      "id": "R07M3-22",
+      "file": "warranty.js",
+      "guard": "linhagem restrita à origem",
+      "expect": [
+        "D13"
+      ],
+      "status": "DETECTADA",
+      "detail": "falha em D13"
+    },
+    {
+      "id": "R07M3-23",
+      "file": "warranty.js",
+      "guard": "operações legadas inicializadas só no sucesso",
+      "expect": [
+        "D19"
+      ],
+      "status": "DETECTADA",
+      "detail": "falha em D19"
+    },
+    {
+      "id": "R07M3-24",
+      "file": "warranty.js",
+      "guard": "identidade física preservada na referência",
+      "expect": [
+        "D11"
+      ],
+      "status": "DETECTADA_FORA_DO_ALVO",
+      "detail": "falha em D06"
+    },
+    {
+      "id": "R07M3-25",
+      "file": "portal.js",
+      "guard": "portal não projeta a unidade antiga depois da troca",
+      "expect": [
+        "D21"
+      ],
+      "status": "DETECTADA",
+      "detail": "falha em D21"
+    },
+    {
+      "id": "R07M3-26",
+      "file": "warranty.js",
+      "guard": "lastFinalized não cruza raízes da mesma unidade",
+      "expect": [
+        "D33"
+      ],
+      "status": "DETECTADA",
+      "detail": "falha em D33"
+    }
+  ]
+}

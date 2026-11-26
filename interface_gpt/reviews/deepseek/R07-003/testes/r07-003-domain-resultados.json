@@ -1,0 +1,17 @@
+{
+  "generatedAt": "2026-11-26T16:45:38.788Z",
+  "codeSha": "a35b6749f1918af87b75bffa7000832c559b9736",
+  "assetsDir": "/home/dragonblue/workspace/interface-gpt-lab/repo/interface_gpt/assets",
+  "total": 33,
+  "summary": {
+    "PASS": 33,
+    "FAIL": 0
+  },
+  "results": [
+    {
+      "id": "DOMAIN",
+      "status": "PASS",
+      "total": 33
+    }
+  ]
+}

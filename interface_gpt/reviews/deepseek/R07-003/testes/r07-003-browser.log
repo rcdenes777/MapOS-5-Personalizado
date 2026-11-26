@@ -1,0 +1,278 @@
+PASS R07-003-B01 — Avaliar como troca não executa, não cobra e não altera origem nem estoque :: {"ops":0,"o16":"{\"id\":16,\"client\":3,\"brand\":\"Daikin\",\"model\":\"EcoSwing\",\"type\":\"Placa eletrônica\",\"defect\":\"Equipamento não liga.\",\"entry\":\"2026-11-12\",\"items\":\"\",\"condition\":\"\",\"status\":\"Finalizado\",\"to
+PASS R07-003-B02 — Modal de troca sem origem/destino pré-selecionados e com campos condicionais :: {"source":"","dest":"","confirm":false,"stockHidden":true,"skuDisabled":true,"costDisabled":false}
+PASS R07-003-B03 — Negativo: marca vazia recusa com motivo e estado intacto :: {"open":true,"error":"Confira os textos obrigatórios e seus limites.","title":"Registrar troca em garantia"}
+PASS R07-003-B04 — Negativo: identidade ausente recusa com motivo específico :: {"open":true,"error":"Identifique a nova unidade por selo, série ou IMEI.","title":"Registrar troca em garantia"}
+PASS R07-003-B05 — Negativo: destino vazio recusa com motivo específico :: {"open":true,"error":"Informe origem da substituta e destino da antiga.","title":"Registrar troca em garantia"}
+PASS R07-003-B06 — Negativo: custo externo inválido recusa e não grava :: {"open":true,"error":"Informe um custo externo válido.","title":"Registrar troca em garantia"}
+PASS R07-003-B07 — Negativo: confirmação ausente recusa e não grava :: {"open":true,"error":"Confirme a substituição física e o destino da unidade antiga.","title":"Registrar troca em garantia"}
+PASS R07-003-B08 — Negativo: selo duplicado normalizado (espaços/caixa) contra a unidade antiga :: {"open":true,"error":"Selo já cadastrado. Identifique outra unidade física.","title":"Registrar troca em garantia"}
+PASS R07-003-B09 — Negativo: avaliação obsoleta recusa com motivo e estado intacto :: {"open":true,"error":"A avaliação mudou ou não permite esta solução. Reabra e confira.","title":"Registrar troca em garantia"}
+PASS R07-003-B10 — Troca externa grava uma operação, custo privado e não move estoque nem financeiro :: {"ok":{"opened":true,"open":false,"error":"","toast":"Registro atualizado na demonstração."},"ev":{"id":1,"type":"troca","assessment":1,"origin":16,"oldUnit":16,"replacement":{"type":"Placa","brand":"Midea","model":"Nova","seal":"NOVA-1","s
+PASS R07-003-B11 — Painel registra substituta, destino, motivo e custo para Admin :: ATENDIMENTO / #018
+Daikin · EcoSwing
+
+Refrigeração Horizonte · Entrada em 21/11/2026
+
+Voltar
+Imprimir
+ANDAMENTO TÉCNICO
+Aberto
+Conclusão não registrada
+Atualizar andamento
+FINANCEIRO
+Sem cobrança
+Saldo: R$ 0,00
+RETIRADA
+Não entregue
+Registr
+PASS R07-003-B12 — Origem aponta para o retorno em andamento enquanto a substituta não conclui :: {"links":["#os/18/garantia","#os/18"],"text":"ATENDIMENTO / #016\nDaikin · EcoSwing\n\nRefrigeração Horizonte · Entrada em 12/11/2026\n\nVoltar\nImprimir\nANDAMENTO TÉCNICO\nFinalizado\nConclusão: 17/11/2026\nAtualizar andamento\nFINANCEIRO
+PASS R07-003-B13 — URL da origem durante troca em andamento não abre outra OS :: GARANTIA
+Retorno em andamento
+
+A unidade já tem um atendimento aberto.
+
+Abrir retorno #018
+PASS R07-003-B14 — A4 e cupom mostram a substituta sem custo/motivo privados :: {"a4":"DOCUMENTO\nImpressão da OS #018\n\nPrévia fictícia para avaliação do formato.\n\nVoltar\nCupom 80 mm\nImprimir\nMinha oficina · Demonstração\nOrdem de serviço #018\nCliente\nRefrigeração Horizonte\nEquipamento\nDaikin · EcoSwing\nSub
+PASS R07-003-B15 — Entrega pré-preenche a substituta com identificação física :: Substituta em garantia · Placa · Midea · Nova · Selo NOVA-1
+PASS R07-003-B16 — Portal mostra marca/modelo da substituta sem selo, motivo, custo ou IDs :: M
+Minha oficina
+Acompanhamento de serviço
+Demonstração
+
+SEU ATENDIMENTO · OS #018
+Substituta em garantia · Midea · Nova
+Aberto
+Entrada
+21/11/2026
+Previsão
+Não informada
+Orçamento
+
+Não há orçamento publicado disponível para consulta neste mo
+PASS R07-003-B17 — Sem erros de página ou console no fluxo externo :: {"errors":[],"consoleErrors":[]}
+PASS R07-003-B18 — Troca de estoque baixa exatamente 1 unidade, custo desconhecido e sem cobrança :: {"stk":[{"name":"IGBT 650 V","quantity":8},{"name":"Optoacoplador PC817","quantity":2},{"name":"Capacitor 450 V","quantity":16}],"ev":{"id":1,"type":"troca","assessment":1,"origin":16,"oldUnit":16,"replacement":{"type":"Placa","brand":"Mide
+PASS R07-003-B19 — Movimento de saída vinculado ao retorno e à operação :: [{"type":"troca_saida","quantity":1,"returnId":18,"operationId":1,"cost":null,"when":"2026-11-26T16:47:56.030Z","reason":"MOTIVO PRIVADO R07-003"}]
+PASS R07-003-B20 — Painel de estoque mostra custo não informado para Admin :: ATENDIMENTO / #018
+Daikin · EcoSwing
+
+Refrigeração Horizonte · Entrada em 21/11/2026
+
+Voltar
+Imprimir
+ANDAMENTO TÉCNICO
+Aberto
+Conclusão não registrada
+Atualizar andamento
+FINANCEIRO
+Sem cobrança
+Saldo: R$ 0,00
+RETIRADA
+Não entregue
+Registr
+PASS R07-003-B21 — Tela de estoque reflete a baixa de 1 e mantém os demais produtos :: PEÇAS
+Estoque
+
+Consulta de demonstração. Baixa de substituta em garantia simulada; demais movimentos na R08.
+
+P-001
+IGBT 650 V
+
+8 unidades
+
+Disponível
+P-002
+Optoacoplador PC817
+
+2 unidades
+
+Estoque baixo
+P-003
+Capacitor 450 V
+
+16 unidades
+
+
+PASS R07-003-B22 — Troca de estoque não altera a cobrança da origem nem cria dívida no retorno :: {"fin":"{\"s\":{\"total\":41000,\"paid\":41000,\"balance\":0,\"due\":\"\",\"opening\":41000},\"l\":null}","total":0}
+PASS R07-003-B23 — Origem com retorno aberto mostra o vínculo ativo e não permite duplicar :: ATENDIMENTO / #016
+Daikin · EcoSwing
+
+Refrigeração Horizonte · Entrada em 12/11/2026
+
+Voltar
+Imprimir
+ANDAMENTO TÉCNICO
+Finalizado
+Conclusão: 17/11/2026
+Atualizar andamento
+FINANCEIRO
+Quitado
+Saldo: R$ 0,00
+RETIRADA
+Entregue
+18/11/2026
+Visã
+PASS R07-003-B24 — Concluir o retorno após a troca grava conclusão e não reinicia prazo :: {"status":"Finalizado","conclusion":"2026-11-26","days":0,"end":"2027-02-15"}
+PASS R07-003-B25 — Retorno posterior aponta para a troca (#018) sem nova raiz :: {"link16":["#retorno/18"],"formBase":"18"}
+PASS R07-003-B26 — Retorno da substituta mantém raiz, atendimento anterior e prazo original :: {"id":25,"unit":25,"replUnit":25,"origin":16,"prev":18,"end":"2027-02-15"}
+PASS R07-003-B27 — Nova OS comum não oferece a unidade antiga e oferece a substituta :: [{"v":"22","t":"Gree · G-Top Inverter · #022"},{"v":"18","t":"Midea · Nova · #018"}]
+PASS R07-003-B28 — Handler direto recusa a unidade antiga e não cria OS :: {"n":9,"toast":"Unidade substituída. Selecione a substituta."}
+PASS R07-003-B29 — Sem erros de página ou console no fluxo de estoque :: {"errors":[],"consoleErrors":[]}
+PASS R07-003-B30 — Solução diferente de troca não oferece a ação :: ATENDIMENTO / #018
+Daikin · EcoSwing
+
+Refrigeração Horizonte · Entrada em 21/11/2026
+
+Voltar
+Imprimir
+ANDAMENTO TÉCNICO
+Aberto
+Conclusão não registrada
+Atualizar andamento
+FINANCEIRO
+Sem cobrança
+Saldo: R$ 0,00
+RETIRADA
+Não entregue
+Registr
+PASS R07-003-B31 — Cobrança própria bloqueia a troca com motivo e sem ação :: ATENDIMENTO / #018
+Daikin · EcoSwing
+
+Refrigeração Horizonte · Entrada em 21/11/2026
+
+Voltar
+Imprimir
+ANDAMENTO TÉCNICO
+Aberto
+Conclusão não registrada
+Atualizar andamento
+FINANCEIRO
+Sem cobrança
+Saldo: R$ 0,00
+RETIRADA
+Não entregue
+Registr
+PASS R07-003-B32 — Entrega registrada bloqueia a troca com motivo e sem ação :: ATENDIMENTO / #018
+Daikin · EcoSwing
+
+Refrigeração Horizonte · Entrada em 21/11/2026
+
+Voltar
+Imprimir
+ANDAMENTO TÉCNICO
+Aberto
+Conclusão não registrada
+Atualizar andamento
+FINANCEIRO
+Sem cobrança
+Saldo: R$ 0,00
+RETIRADA
+Entregue
+26/11/2026
+
+PASS R07-003-B33 — Conclusão antes da troca bloqueia a ação com motivo :: ATENDIMENTO / #018
+Daikin · EcoSwing
+
+Refrigeração Horizonte · Entrada em 21/11/2026
+
+Voltar
+Imprimir
+ANDAMENTO TÉCNICO
+Finalizado
+Conclusão: 26/11/2026
+Atualizar andamento
+FINANCEIRO
+Sem cobrança
+Saldo: R$ 0,00
+RETIRADA
+Não entregue
+Regist
+PASS R07-003-B34 — Publicação ativa bloqueia e a retirada libera a troca :: {"pubBlocked":true,"afterWithdraw":1,"blocker":"Retire a publicação do orçamento antes de executar troca ou devolução.","text":"ATENDIMENTO / #018\nDaikin · EcoSwing\n\nRefrigeração Horizonte · Entrada em 21/11/2026\n\nVoltar\nImprimir\nAND
+PASS R07-003-B35 — Outro atendimento aberto da unidade bloqueia a troca :: ATENDIMENTO / #018
+Daikin · EcoSwing
+
+Refrigeração Horizonte · Entrada em 21/11/2026
+
+Voltar
+Imprimir
+ANDAMENTO TÉCNICO
+Aberto
+Conclusão não registrada
+Atualizar andamento
+FINANCEIRO
+Sem cobrança
+Saldo: R$ 0,00
+RETIRADA
+Não entregue
+Registr
+PASS R07-003-B36 — Duas abas: envio obsoleto abortado e uma única troca gravada :: {"ops":1,"stB":{"open":false,"error":"","toast":"Dados alterados em outra aba. Reabra a operação para evitar sobrescrever a atualização."}}
+PASS R07-003-B37 — Duas abas: sem exceção de página :: {"errsB":[],"errors":[]}
+PASS R07-003-B38 — Troca repetida não oferece ação e o handler direto não altera o estado :: {"repeated":0,"direct":"Esta unidade ou retorno já tem solução executada."}
+PASS R07-003-B39 — Unidade substituída não é reutilizada por URL nem por handler direto :: {"formBase":"18","oldErr":"Unidade substituída. Utilize o atendimento da substituta."}
+PASS R07-003-B40 — Sem erros de página ou console nos bloqueios :: {"errors":[],"consoleErrors":[]}
+PASS R07-003-B41 — IDs de OS e de unidade podem coincidir sem quebrar o vínculo inicial :: {"root":100,"r1":101,"u1":102}
+PASS R07-003-B42 — Retorno posterior cria OS #102 com unidade 102, raiz 100 e anterior 101 :: {"link":["#retorno/101"],"formBase":"101","r2":{"id":102,"unit":102,"origin":100}}
+PASS R07-003-B43 — Histórico por raiz lista as duas gerações de retorno :: ATENDIMENTO / #100
+Marca · Raiz
+
+Clima Sul Serviços · Entrada em 01/08/2026
+
+Voltar
+Imprimir
+ANDAMENTO TÉCNICO
+Finalizado
+Conclusão: 10/08/2026
+Atualizar andamento
+FINANCEIRO
+Sem cobrança
+Saldo: R$ 0,00
+RETIRADA
+Não entregue
+Registro indepe
+PASS R07-003-B44 — Segunda troca em sequência continua a linhagem e cria unidade 103 :: {"id":1,"type":"troca","assessment":1,"origin":100,"oldUnit":102,"replacement":{"type":"Placa","brand":"Midea","model":"Dois","seal":"SUB-2","serial":"","imei":"","unit":103},"source":"externa","destination":"retida_assistencia","sku":null,
+PASS R07-003-B45 — Retorno da segunda substituta usa a unidade 103 e a raiz 100 :: {"base3":"102","id":103,"unit":103}
+PASS R07-003-B46 — Cliente distinto não consegue vincular retorno à unidade da substituta :: Identifique a mesma unidade e o cliente na OS de origem antes de registrar retorno.
+PASS R07-003-B47 — Sem erros de página ou console na linhagem :: {"errors":[],"consoleErrors":[]}
+PASS R07-003-B48 — Retorno cancelado: Admin consulta histórico corrigido e não recebe ação de nova devolução/correção :: {"btns":{"refund":0,"corr":0},"text":"ATENDIMENTO / #031\nLG · Cancelado\n\nClima Sul Serviços · Entrada em 26/11/2026\n\nVoltar\nImprimir\nANDAMENTO TÉCNICO\nCancelado\nConclusão não registrada\nFINANCEIRO\nSem cobrança\nSaldo: R$ 0,00\nRE
+PASS R07-003-B49 — Financeiro consulta valores sem ação de devolução/correção no retorno cancelado :: {"btns":{"refund":0,"corr":0}}
+PASS R07-003-B50 — Técnico não vê valores nem motivo financeiro no retorno cancelado :: ATENDIMENTO / #031
+LG · Cancelado
+
+Clima Sul Serviços · Entrada em 26/11/2026
+
+Voltar
+Imprimir
+ANDAMENTO TÉCNICO
+Cancelado
+Conclusão não registrada
+FINANCEIRO
+Acesso restrito
+Valores ocultos neste perfil
+RETIRADA
+Não entregue
+Registro indep
+PASS R07-003-B51 — Prévia decimal rejeita 3 casas/vazio/extremo e aceita 2 casas :: {"p3":"Selecione a modalidade e confira o valor.","pe":"Selecione a modalidade e confira o valor.","pmax":"Selecione a modalidade e confira o valor.","p2":"Abatimento: R$ 1,23 · Saldo após registro: R$ 300,00"}
+PASS R07-003-B52 — Handler de devolução recusa 3 casas e não altera ledger/estado :: {"st":"Informe valor válido com até dois centavos."}
+PASS R07-003-B53 — Operações legadas sem array só inicializam em sucesso válido :: {"absent":true,"present":true}
+PASS R07-003-B54 — Sem erros de página ou console nas ressalvas R07-002 :: {"errors":[],"consoleErrors":[]}
+PASS R07-003-B55-Financeiro — Financeiro consulta a troca sem custo/ação e o handler direto é negado :: {"direct":"Ação indisponível neste perfil.","text":"ATENDIMENTO / #018\nDaikin · EcoSwing\n\nRefrigeração Horizonte · Entrada em 21/11/2026\n\nVoltar\nImprimir\nANDAMENTO TÉCNICO\nAberto\nConclusão não registrada\nFINANCEIRO\nSem cobrança\n
+PASS R07-003-B55-Técnico — Técnico consulta a troca sem custo/ação e o handler direto é negado :: {"direct":"Ação indisponível neste perfil.","text":"ATENDIMENTO / #018\nDaikin · EcoSwing\n\nRefrigeração Horizonte · Entrada em 21/11/2026\n\nVoltar\nImprimir\nANDAMENTO TÉCNICO\nAberto\nConclusão não registrada\nAtualizar andamento\nFINAN
+PASS R07-003-B55-Atendente — Atendente consulta a troca sem custo/ação e o handler direto é negado :: {"direct":"Ação indisponível neste perfil.","text":"ATENDIMENTO / #018\nDaikin · EcoSwing\n\nRefrigeração Horizonte · Entrada em 21/11/2026\n\nVoltar\nImprimir\nANDAMENTO TÉCNICO\nAberto\nConclusão não registrada\nFINANCEIRO\nAcesso restrit
+PASS R07-003-B56 — Admin vê custo interno e mantém a ação somente antes de executar :: ATENDIMENTO / #018
+Daikin · EcoSwing
+
+Refrigeração Horizonte · Entrada em 21/11/2026
+
+Voltar
+Imprimir
+ANDAMENTO TÉCNICO
+Aberto
+Conclusão não registrada
+Atualizar andamento
+FINANCEIRO
+Sem cobrança
+Saldo: R$ 0,00
+RETIRADA
+Não entregue
+Registr
+PASS R07-003-B57 — Sem erros de página ou console nas permissões :: {"errors":[],"consoleErrors":[]}
+TOTAL 59 · PASS 59 · FAIL 0 · INFO 0

@@ -1,0 +1,115 @@
+{
+  "generatedAt": "2026-11-26T16:37:08.576Z",
+  "codeSha": "",
+  "incrementSha": "",
+  "results": [
+    {
+      "id": "R05-X01",
+      "desc": "Recebimentos inválidos são rejeitados sem criar eventos",
+      "status": "PASS",
+      "detail": "{\"out\":[\"Recebimento excede o saldo ou tem valor inválido.\",\"Informe um valor com até duas casas decimais.\",\"Informe um valor com até duas casas decimais.\",\"Recebimento excede o saldo ou tem valor inválido.\",\"Informe data e forma de pagamento válidas.\",\"Informe data e forma de pagamento válidas.\",\"Informe um valor com até duas casas decimais.\"],\"after\":{\"opening\":20000,\"events\":[]},\"paid\":20000}"
+    },
+    {
+      "id": "R05-X02",
+      "desc": "UI bloqueia zero, valor acima do saldo e fração além de centavos",
+      "status": "PASS",
+      "detail": "[{\"v\":\"0\",\"open\":true,\"paid\":20000},{\"v\":\"999\",\"open\":true,\"paid\":20000},{\"v\":\"50.001\",\"open\":true,\"paid\":20000}]"
+    },
+    {
+      "id": "R05-X03",
+      "desc": "Estorno rejeita justificativa vazia/501, data inválida/anterior, receptor inexistente e alvo que não é recebimento",
+      "status": "PASS",
+      "detail": "{\"out\":[\"Informe a justificativa da correção (até 500 caracteres).\",\"Informe a justificativa da correção (até 500 caracteres).\",\"Data da correção anterior ao recebimento ou inválida.\",\"Data da correção anterior ao recebimento ou inválida.\",\"Recebimento inexistente ou já estornado.\",\"Recebimento inexistente ou já estornado.\"],\"events\":1,\"paid\":25000}"
+    },
+    {
+      "id": "R05-X04",
+      "desc": "Modal de estorno exige justificativa e limita a 500 caracteres",
+      "status": "PASS",
+      "detail": "{\"open\":true,\"required\":true,\"max\":\"500\"}"
+    },
+    {
+      "id": "R05-X05",
+      "desc": "Recebimento do saldo exato quita sem exceder",
+      "status": "PASS",
+      "detail": "{\"amount\":10000,\"paid\":35000,\"balance\":0}"
+    },
+    {
+      "id": "R05-X06",
+      "desc": "Central e OS sem exceções/erros de console e sem rede externa",
+      "status": "PASS",
+      "detail": "{\"errors\":[],\"consoleErrors\":[],\"external\":[]}"
+    },
+    {
+      "id": "R05-X07",
+      "desc": "Justificativa de exatamente 500 caracteres é aceita",
+      "status": "PASS",
+      "detail": "{\"reasonLength\":500,\"eventId\":2,\"paid\":25000,\"events\":3}"
+    },
+    {
+      "id": "R05-X08",
+      "desc": "Segundo estorno do mesmo evento é rejeitado e não abre modal",
+      "status": "PASS",
+      "detail": "{\"msg\":\"Recebimento inexistente ou já estornado.\",\"before\":3,\"after\":3,\"open\":false}"
+    },
+    {
+      "id": "R05-X09",
+      "desc": "Valor extremo é formatado e não cria overflow em 1440",
+      "status": "PASS",
+      "detail": "{\"over\":0,\"has\":true}"
+    },
+    {
+      "id": "R05-X10",
+      "desc": "Valor extremo não cria overflow em 320",
+      "status": "PASS",
+      "detail": "{\"over\":0}"
+    },
+    {
+      "id": "R05-X11",
+      "desc": "OS sem obrigação ou cancelada não aceita recebimento",
+      "status": "PASS",
+      "detail": "{\"zero\":\"Cobrança indisponível. Acerto de cancelamento não autoriza recebimento.\",\"cancel\":\"Cobrança indisponível. Acerto de cancelamento não autoriza recebimento.\"}"
+    },
+    {
+      "id": "R05-X12",
+      "desc": "Técnico em rotas diretas não vê valores financeiros",
+      "status": "PASS",
+      "detail": "{\"home\":\"ACESSO\\nAção indisponível\\n\\nEste perfil de demonstra\",\"order\":\"ATENDIMENTO / #020\\nMidea · Xtreme Save\\n\\nClima Sul \",\"receipt\":\"ACESSO\\nAção indisponível\\n\\nEste perfil de demonstra\"}"
+    },
+    {
+      "id": "R05-X13",
+      "desc": "Atendente em rota direta não vê valores nem ações de estorno",
+      "status": "PASS",
+      "detail": "atendente"
+    },
+    {
+      "id": "R05-X14",
+      "desc": "Financeiro não abre estorno por rota direta",
+      "status": "PASS",
+      "detail": "direct"
+    },
+    {
+      "id": "R05-X15",
+      "desc": "Recibo normal e estornado imprimem com marcas distintas",
+      "status": "PASS",
+      "detail": "{\"normal\":36726,\"reversed\":39006}"
+    },
+    {
+      "id": "R05-X16",
+      "desc": "Recibo estornado preserva o valor original no PDF",
+      "status": "PASS",
+      "detail": "amount"
+    },
+    {
+      "id": "R05-X17",
+      "desc": "Recibo em 320 não cria overflow horizontal",
+      "status": "PASS",
+      "detail": "{\"over\":0}"
+    },
+    {
+      "id": "R05-X18",
+      "desc": "Cliente/equipamento longos não criam overflow em 320",
+      "status": "PASS",
+      "detail": "{\"over\":0}"
+    }
+  ]
+}

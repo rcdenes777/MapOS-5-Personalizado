@@ -1,0 +1,20 @@
+DETECTADO M01 — valor devolvido exatamente igual ao calculado :: N01 falhou: operação foi aceita; esperava rejeição com a mensagem: O valor devolvido deve ser exatamente o valor calculado.
+DETECTADO M01b — comparação de devolução invertida :: N01 falhou: operação foi aceita; esperava rejeição com a mensagem: O valor devolvido deve ser exatamente o valor calculado. | também: N01,N02,N03,N04,N05,N06,N07,N11,N12,N13,N15
+DETECTADO M02 — forma de devolução na lista permitida :: N02 falhou: operação foi aceita; esperava rejeição com a mensagem: Informe data e forma da devolução.
+DETECTADO M03 — data de devolução válida :: N03 falhou: mensagem: esperado "Informe data e forma da devolução.", obtido "Data anterior aos registros financeiros."
+DETECTADO M04 — comprovante/referência obrigatório :: N04 falhou: operação foi aceita; esperava rejeição com a mensagem: Confira o motivo ou as observações.
+DETECTADO M05 — conferência financeira explícita :: N05 falhou: operação foi aceita; esperava rejeição com a mensagem: Confirme a conferência financeira e o cancelamento.
+DETECTADO M05b — conferência financeira invertida :: N05 falhou: operação foi aceita; esperava rejeição com a mensagem: Confirme a conferência financeira e o cancelamento. | também: N01,N02,N03,N04,N05,N06,N07,N11,N12,N13,N15
+DETECTADO M06 — conferência do acerto :: N06 falhou: operação foi aceita; esperava rejeição com a mensagem: Confirme os valores do acerto.
+DETECTADO M07 — justificativa obrigatória no acerto :: N07 falhou: mensagem: esperado "Confira o motivo ou as observações.", obtido "O valor devolvido deve ser exatamente o valor calculado."
+DETECTADO M08 — remoção integral do serviço não executado :: N08 falhou: operação foi aceita; esperava rejeição com a mensagem: Destino inválido para este item.
+DETECTADO M09 — destino de peça restrito a unused/lost :: N09 falhou: operação foi aceita; esperava rejeição com a mensagem: Destino inválido para este item.
+DETECTADO M10 — destino de serviço restrito a notdone :: N10 falhou: operação foi aceita; esperava rejeição com a mensagem: Destino inválido para este item.
+DETECTADO M11 — retificação bloqueada após devolução :: N11 falhou: mensagem: esperado "Há devolução registrada ou não há obrigação; confira o histórico.", obtido "A correção deixaria o recebido negativo."
+DETECTADO M12a — limite inferior da janela de retificação :: N12 falhou: mensagem: esperado "Data fora do período de retificação.", obtido "Data da correção anterior ao recebimento ou inválida."
+DETECTADO M12b — limite superior da janela de retificação :: N12 falhou: operação foi aceita; esperava rejeição com a mensagem: Data fora do período de retificação.
+DETECTADO M13 — tipo de retificação permitido :: N13 falhou: operação foi aceita; esperava rejeição com a mensagem: Retificação indisponível.
+DETECTADO M14 — teto do valor devido :: N14 falhou: operação foi aceita; esperava rejeição com a mensagem: Valor devido ou desconto inválido.
+DETECTADO M15 — devolução não anterior aos eventos financeiros :: N15 falhou: operação foi aceita; esperava rejeição com a mensagem: Data anterior aos registros financeiros.
+
+MUTAÇÕES 18 · detectado 18 · sobrevivente 0 · equivalente 0 · inconclusivo 0

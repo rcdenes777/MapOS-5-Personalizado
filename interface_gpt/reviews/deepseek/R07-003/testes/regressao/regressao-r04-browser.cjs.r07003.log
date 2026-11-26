@@ -1,0 +1,68 @@
+PASS R04-L01 — OS #023 começa sem link :: {"status":"Orçamento","total":0,"paid":0,"approval":"Aguardando resposta","link":null,"versions":1,"current":1,"decision":null,"delivery":false}
+PASS R04-L02 — Gerar link cria token de 64 hex e validade de 120 dias :: {"len":64,"days":120}
+PASS R04-L03 — Link ativo exibe abrir e gerenciar, sem botão de gerar :: ui
+PASS R04-L04 — Portal mostra OS, equipamento, orçamento v1 e total R$ 240,00 :: SEU ATENDIMENTO · OS #023
+Samsung · Digital Inverter
+Orçamento
+Entrada
+21/11/2026
+Previsão
+Não informada
+Seu orçamento
+Versão 1
+
+Total da proposta
+
+R$ 240,00
+
+Peças e serviços
+Serv
+PASS R04-L05 — Portal abre sem decisão pré-selecionada :: [false,false]
+PASS R04-L06 — Portal não tem navegação administrativa :: admin nav
+PASS R04-L07 — Renovar mantém o endereço e estende a validade :: {"same":true,"delta":1481}
+PASS R04-L08 — Revogar invalida o portal e preserva a versão :: {"status":"Orçamento","total":0,"paid":0,"approval":"Aguardando resposta","link":null,"versions":1,"current":1,"decision":null,"delivery":false}
+PASS R04-L09 — Novo link não reutiliza o token revogado :: {"old":false}
+PASS R04-L10 — Expiração invalida o portal e volta a oferecer geração :: expired
+PASS R04-L11 — Novo link após expiração é diferente e resolve :: new
+PASS R04-B01 — Resposta vazia não é aceita :: native required
+PASS R04-B02 — Aprovação pelo portal grava decisão e não cria cobrança :: {"status":"Aprovado","total":0,"paid":0,"approval":"Aprovado","link":{"token":"d8ae63274270d07b728ce0b60de48c111f511bb0a487ff26c90b76b8398a1166","expires":1806078863303},"versions":1,"current":1,"decision":{"answer":"Aprovado","name":"Marina Alves (fictícia)","channel":"link simulado","date":"2026-11-26","note":"","registered":"2026-11-26T16:34:24.678Z","afterDelivery":false},"delivery":false}
+PASS R04-B03 — Portal mostra resposta registrada, nome e ausência de Pagamento :: portal state
+PASS R04-B04 — Decisão persiste após recarregar o portal :: reload
+PASS R04-B05 — Segunda resposta pelo portal é rejeitada :: Este orçamento não está mais disponível para resposta. Confira a versão atual.
+PASS R04-B06 — Recusa pelo portal registra Orçamento recusado e total zero :: {"status":"Orçamento recusado","total":0,"paid":0,"approval":"Recusado","link":{"token":"6f6387682c6fb931cd99d3f93df749f7aab4acb5bb1db8eb57e7ad6ca21ae0c9","expires":1806078867468},"versions":1,"current":1,"decision":{"answer":"Recusado","name":"Cliente Fictício","channel":"link simulado","date":"2026-11-26","note":"","registered":"2026-11-26T16:34:28.628Z","afterDelivery":false},"delivery":false}
+PASS R04-B07 — Portal mostra recusa registrada sem formulário :: recused
+PASS R04-C01 — Rascunho não publicado não aparece no portal :: draft hidden
+PASS R04-C02 — Portal não responde a versão desatualizada :: stale
+PASS R04-C03 — Painel avisa divergência entre rascunho e versão publicada :: warning
+PASS R04-C04 — Publicar v2 atualiza o portal e preserva a v1 :: {"versions":2,"current":2,"hasVersion":true,"hasTotal":true,"hasDiag":true}
+PASS R04-C05 — Envio de versão antiga no formulário é bloqueado :: Este orçamento não está mais disponível para resposta. Confira a versão atual.
+PASS R04-C06 — Retirar publicação esconde orçamento mas mantém o link :: {"status":"Negociação","total":0,"paid":0,"approval":"Publicação retirada","link":{"token":"8a90f45dc7fa6cfd0dba4906cc5ff55f103fe55f3469b7cb9e1913629ad6a349","expires":1806078870687},"versions":2,"current":2,"decision":null,"delivery":false}
+PASS R04-C07 — Resposta após retirada é rejeitada :: withdrawn
+PASS R04-D01 — Após entrega o portal fica somente consulta, sem formulário :: {"status":"Aprovado","total":0,"paid":0,"approval":"Aprovado","link":{"token":"5a37e6cd1ef590cf19675baa8ae6aec6f075ddae423b6ada9f7d0cbb2b72d45c","expires":1806078891099},"versions":1,"current":1,"decision":{"answer":"Aprovado","name":"Marina Alves (fictícia)","channel":"link simulado","date":"2026-11-26","note":"","registered":"2026-11-26T16:34:52.261Z","afterDelivery":false},"delivery":true}
+PASS R04-D02 — Entrega não expõe recebedor nem data de retirada :: ia)
+Data da comunicação
+26/11/2026
+Arquivos compartilhados
+
+Nenhum arquivo compartilhado nesta demonstração.
+
+Este é um link de demonstração. Na versão real, compartilhe o endereço privado apenas com pessoas autorizadas.
+PASS R04-D03 — Resposta após entrega é rejeitada :: delivery guard
+PASS R04-E01 — Aprovação não mostra Pagamento antes da formalização :: no billing
+PASS R04-E02 — Formalização cria Pagamento de R$ 240,00 em aberto :: billing
+PASS R04-E03 — Pagamento parcial atualiza Pago e Saldo no portal :: partial
+PASS R04-E04 — Quitação atualiza o portal e não altera o orçamento :: paid
+PASS R04-F01 — Projeção pública não expõe dados internos nem o token :: {"privateHits":[],"attrHits":[]}
+PASS R04-F02 — Conteúdo publicado é escapado no portal :: xss
+PASS R04-F03 — Decisão autorizada aparece sem observação interna :: decision visibility
+PASS R04-G01 — Estado inicial tem um único primário :: ["Registrar resposta do cliente"]
+PASS R04-G02 — Rascunho alterado prioriza publicar e avisa a divergência :: {"prim":["Publicar nova versão"],"warning":"\n\nFormalizar cobrança\n\nA proposta não é um recebimento nem cria automaticamente uma cobrança.\n\nVersões e decisões\n1 versão\nVersão 1\n21/11/2026 · Amostra inicial\nAguardando resposta"}
+PASS R04-G03 — Após publicar, resposta é o primário :: ["Registrar resposta do cliente"]
+PASS R04-G04 — Após recusa, cobrança é primária e recebe aviso :: ["Formalizar cobrança"]
+PASS R04-N01 — Sem exceções JavaScript na página administrativa :: []
+PASS R04-N02 — Sem erros de console na página administrativa :: []
+PASS R04-N03 — Sem requisições externas nas duas páginas :: []
+PASS R04-N04 — Portal é página independente, sem shell administrativo :: standalone
+PASS R04-N05 — Sem exceções de página ou erros de console no portal :: {"errors":[],"console":[]}
+
+TOTAL 44 · PASS 44 · FAIL 0 · INFO 0

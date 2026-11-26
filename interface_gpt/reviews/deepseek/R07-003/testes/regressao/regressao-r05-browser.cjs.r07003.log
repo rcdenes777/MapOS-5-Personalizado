@@ -1,0 +1,205 @@
+PASS R05-F01 — Central lista cinco cobranças e exclui OS sem obrigação :: {"rows":5}
+PASS R05-F02 — Totais iniciais: 650 a receber, 930 recebido, 1.580 cobrado, 0 vencido :: {"total":158000,"paid":93000,"balance":65000,"overdue":0,"count":3}
+PASS R05-F03 — Sem vencimento não é classificado como vencido :: {"total":158000,"paid":93000,"balance":65000,"overdue":0,"count":3}
+PASS R05-F04 — Vencimento passado entra em Vencido; hoje e futuro não :: {"due":{"total":158000,"paid":93000,"balance":65000,"overdue":22000,"count":3},"yesterday":"25/11/2026"}
+PASS R05-F05 — Filtro Vencidas mostra #022 e exclui #021 :: 1 cobrança
+
+#022
+Refrigeração Horizonte
+Gree · G-Top Inverter
+Vencimento
+25/11/2026
+Vencida
+Saldo
+R$ 220,00
+Total R$ 320,00
+PASS R05-F06 — Filtro A vencer/sem data inclui hoje e futuro, não a vencida :: {"rows":2}
+PASS R05-F07 — Filtro Quitadas mostra #019 e #016, sem saldo :: {"rows":2}
+PASS R05-F08 — Busca por equipamento encontra #020 :: Midea
+PASS R05-F09 — Busca por equipamento encontra #022 :: Gree
+PASS R05-F10 — Busca por número de OS encontra #019 :: #019
+PASS R05-F11 — Busca vazia mostra estado vazio :: empty
+PASS R05-F12 — Sem exceções ou erros de console na central :: {"errors":[],"consoleErrors":[]}
+PASS R05-F13 — Central não fez requisições externas :: []
+PASS R05-B01 — Portal mostra condições vazias como texto único, sem fatos vazios ::  e o total desta versão e confirmo minha decisão.
+Registrar minha resposta
+Arquivos compartilhados
+
+Nenhum arquivo compartilhado nesta demonstração.
+
+Este é um link de demonstração. Na versão real, compartilhe o endereço privado apenas com pessoas autorizadas.
+PASS R05-B02 — Aprovação via portal não cria cobrança nem pagamento :: {"status":"Aprovado","total":0,"paid":0}
+PASS R05-B03 — Decisão aprovada no portal persiste após recarregar, ainda sem cobrança :: {"status":"Aprovado","total":0,"paid":0}
+PASS R05-B04 — Formalização cria obrigação de R$ 240,00 sem recebimento :: {"due":"2026-11-26","items":[{"type":"Serviço","name":"Serviço de reparo (demonstração inicial)","quantity":1,"unit":24000}],"discount":0}
+PASS R05-B05 — Aba financeira começa em aberto e sem recibos :: initial finance
+PASS R05-B06 — Recebimento parcial de R$ 100,00 (Pix) cria evento e saldo R$ 140,00 :: {"opening":0,"events":[{"id":1,"type":"receive","amount":10000,"date":"2026-11-26","method":"Pix","registered":"2026-11-26T16:36:09.207Z"}]}
+PASS R05-B07 — Portal atualiza Pago e Saldo após recebimento parcial :: lmente paga
+Total cobrado
+R$ 240,00
+Pago
+R$ 100,00
+Saldo a pagar
+R$ 140,00
+Arquivos compartilhados
+
+Nenhum arquivo compartilhado nesta demonstração.
+
+Este é um link de demonstração. Na versão real, compartilhe o endereço privado apenas com pessoas autorizadas.
+PASS R05-B08 — Segundo recebimento quita a OS sem alterar andamento :: {"paid":24000,"status":"Aprovado","events":2}
+PASS R05-B09 — Recibo normal #1 tem valor, OS e forma, sem ESTORNADO :: DOCUMENTO
+Recibo de recebimento
+
+Prévia de demonstração, sem validade comercial.
+
+Voltar
+Imprimir
+
+MINHA OFICINA · DEMONSTRAÇÃO
+
+Recibo #23 / 1
+
+Recebimento registrado
+
+R$ 100,00
+
+OS
+#023
+Cliente
+Marina Alves
+Equipamento
+PASS R05-B10 — Recibo normal #2 tem valor e forma Dinheiro :: receipt 2
+PASS R05-B11 — Prévia de estorno explica que não há devolução e mostra saldo recomposto :: Corrige um recebimento registrado indevidamente. Não realiza reembolso, transferência ou devolução.
+
+Recebimento #1
+R$ 100,00
+Data
+26/11/2026
+Forma
+Pix
+Saldo após correção
+R$ 100,00
+Data da correção
+Justificativa *
+Confirmo a correção do registro, sem moviment
+PASS R05-B12 — Estorno preserva obrigação de R$ 240,00 e recompõe saldo para R$ 100,00 :: {"opening":0,"events":[{"id":1,"type":"receive","amount":10000,"date":"2026-11-26","method":"Pix","registered":"2026-11-26T16:36:09.207Z"},{"id":2,"type":"receive","amount":14000,"date":"2026-11-26","method":"Dinheiro","registered":"2026-11-26T16:36:13.308Z"},{"id":3,"type":"reverse","reference":1,"amount":10000,"date":"2026-11-26","method":"Pix","reason":"Lançamento incorreto na demonstração","registered":"2026-11-26T16:36:19.958Z"}]}
+PASS R05-B13 — Evento de estorno referencia o recebimento original, mantém valor e justificativa :: {"id":3,"type":"reverse","reference":1,"amount":10000,"date":"2026-11-26","method":"Pix","reason":"Lançamento incorreto na demonstração","registered":"2026-11-26T16:36:19.958Z"}
+PASS R05-B14 — Histórico mostra estorno, original marcado e saldo parcial :: ATENDIMENTO / #023
+Samsung · Digital Inverter
+
+Marina Alves · Entrada em 21/11/2026
+
+Voltar
+Imprimir
+ANDAMENTO TÉCNICO
+Aprovado
+Conclusão não registrada
+Atualizar andamento
+FINANCEIRO
+Parcial
+Saldo: R$ 100,00
+Registrar pagamento
+RETIRADA
+Não entregue
+Registro independente do pagamento
+Registrar entrega
+Visão geral
+Atendimento
+Orçamento e link
+Entrega
+Anexos
+Histórico
+Garantia
+Cancelamento
+Financeiro
+Recebimentos e co
+PASS R05-B15 — Recibo original permanece acessível e marcado ESTORNADO :: DOCUMENTO
+Recibo de recebimento
+
+Prévia de demonstração, sem validade comercial.
+
+Voltar
+Imprimir
+
+MINHA OFICINA · DEMONSTRAÇÃO
+
+Recibo #23 / 1
+
+ESTORNADO em 26/11/2026 — registro corrigido, sem reembolso bancário.
+
+R$ 1
+PASS R05-B16 — Original não oferece segundo estorno :: duplicate hidden
+PASS R05-B17 — Estorno duplicado é rejeitado e não abre modal :: {"open":false,"err":"Recebimento inexistente ou já estornado.","before":3,"after":3}
+PASS R05-B18 — Justificativa privada não entra na projeção do portal :: private
+PASS R05-B19 — Portal mostra saldo recomposto e não expõe motivo privado ::  comunicação
+26/11/2026
+Pagamento
+Parcialmente paga
+Total cobrado
+R$ 240,00
+Pago
+R$ 140,00
+Saldo a pagar
+R$ 100,00
+Arquivos compartilhados
+
+Nenhum arquivo compartilhado nesta demonstração.
+
+Este é um link de demonstração. Na versão real, compartilhe o endereço privado apenas com pessoas autorizadas.
+PASS R05-B20 — Novo recebimento após estorno quita o saldo recomposto :: {"paid":24000,"events":4}
+PASS R05-B21 — Portal fica quitado após novo recebimento ::  pagar
+R$ 0,00
+Arquivos compartilhados
+
+Nenhum arquivo compartilhado nesta demonstração.
+
+Este é um link de demonstração. Na versão real, compartilhe o endereço privado apenas com pessoas autorizadas.
+PASS R05-B22 — Persistência mantém quatro eventos e saldo zero após recarregar :: reload
+PASS R05-R01 — Portal tem região viva para atualização entre abas :: live
+PASS R05-R02 — Saldo do portal é destacado em bloco próprio :: balance
+PASS R05-R03 — Condições vazias são agrupadas, sem repetição de fatos vazios :: Nenhum arquivo compartilhado nesta demonstração.
+
+Este é um link de demonstração. Na versão real, compartilhe o endereço privado apenas com pessoas autorizadas.
+PASS R05-R04 — Ação de copiar abre endereço local e seleciona o campo :: {"open":true,"value":"http://127.0.0.1:8130/portal.html#5c0ffbc4ca79520f95262a3b244272bd7be48e3d0bbc3b71dc418efffdac18fa","selected":true}
+PASS R05-L01 — OS #020 mostra valor anterior sem recibo individual :: {"opening":20000,"events":[]}
+PASS R05-L02 — Valor legado não oferece estorno :: no reverse
+PASS R05-L03 — Novo recebimento soma ao valor anterior :: {"paid":25000,"opening":20000}
+PASS R05-L04 — Estornar o novo recebimento preserva o valor anterior :: {"paid":20000,"events":2}
+PASS R05-L05 — Valor anterior continua sem recibo artificial :: opening preserved
+PASS R05-P01 — Financeiro acessa central e recebe, sem estorno :: finance role
+PASS R05-P02 — Financeiro consulta a aba financeira da OS :: order finance
+PASS R05-P03 — Financeiro não vê ação de estorno :: no reverse finance
+PASS R05-P04 — Financeiro consulta recibo autorizado :: receipt finance
+PASS R05-P05 — Financeiro não abre estorno por chamada direta :: direct reverse
+PASS R05-P06-Técnico — Técnico não vê valores em central, OS ou recibo :: {"home":"ACESSO\nAção indisponível\n\nEste perfil de","order":"ATENDIMENTO / #020\nMidea · Xtreme Save\n\n","receipt":"ACESSO\nAção indisponível\n\nEste perfil de"}
+PASS R05-P06-Atendente — Atendente não vê valores em central, OS ou recibo :: {"home":"ACESSO\nAção indisponível\n\nEste perfil de","order":"ATENDIMENTO / #020\nMidea · Xtreme Save\n\n","receipt":"ACESSO\nAção indisponível\n\nEste perfil de"}
+PASS R05-P07 — Troca de perfil remove conteúdo financeiro sem expor valores :: {"url":"http://127.0.0.1:8130/?r05=1795710994598#os/20/financeiro","text":"ATENDIMENTO / #020\nMidea · Xtreme Save\n\nClima Sul Serviços · Entrada em 21/11/2026\n\nVoltar\nImprimir\nANDAMENTO TÉCNICO\nFi"}
+PASS R05-T01 — Segunda aba recebe o novo saldo por storage :: ATENDIMENTO / #020
+Midea · Xtreme Save
+
+Clima Sul Serviços · Entrada em 21/11/2026
+
+Voltar
+Imprimir
+ANDAMENTO TÉCNICO
+Finalizado
+Conclusão: 24/11/2026
+Atualizar andamento
+FINANCEIRO
+Parcial
+Saldo: R$ 100,00
+Registrar pag
+PASS R05-T02 — Portal atualiza o saldo após recebimento em outra aba :: obrado
+R$ 350,00
+Pago
+R$ 300,00
+Saldo a pagar
+R$ 50,00
+Arquivos compartilhados
+
+Nenhum arquivo compartilhado nesta demonstração.
+
+Este é um link de demonstração. Na versão real, compartilhe o endereço privado apenas com pessoas autorizadas.
+PASS R05-T03 — Portal anuncia atualização na região viva :: Informações do atendimento atualizadas.
+PASS R05-T04 — Recebimentos persistem após recarregar :: {"id":20,"status":"Finalizado","total":35000,"paid":30000,"delivery":null,"ledger":{"opening":20000,"events":[{"id":1,"type":"receive","amount":5000,"date":"2026-11-26","method":"Pix","registered":"2026-11-26T16:36:44.590Z"},{"id":2,"type":"receive","amount":5000,"date":"2026-11-26","method":"Dinheiro","registered":"2026-11-26T16:36:56.190Z"}]},"publicLink":{"token":"afdf9eeb4de61ebef807fcc4f592652f5acf3a310bee70d324c1877d5605bd50","expires":1806079011757},"quote":{"draft":{"items":[{"type":"Serviço","name":"Serviço de reparo (demonstração inicial)","quantity":1,"unit":35000}],"discount":0,"terms":{"payment":"","deadline":"","warranty":"","diagnosis":""}},"versions":[{"number":1,"items":[{"type":"Serviço","name":"Serviço de reparo (demonstração inicial)","quantity":1,"unit":35000}],"discount":0,"terms":{"payment":"","deadline":"","warranty":"","diagnosis":""},"total":35000,"created":"2026-11-21","decision":{"answer":"Aprovado","name":"Cliente de demonstração","channel":"presencial","date":"2026-11-21"},"source":"seed"}],"current":1,"active":true}}
+
+TOTAL 56 · PASS 56 · FAIL 0 · INFO 0

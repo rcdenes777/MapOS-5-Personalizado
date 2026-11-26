@@ -1,0 +1,3 @@
+PASS R07C3-01 — Capturei as telas novas/modificadas e estados de erro :: 20 PNG
+PASS R07C3-02 — Manifesto sem arquivos duplicados e com SHA-256 :: 20 arquivos
+TOTAL 2 · PASS 2 · FAIL 0 · PNG 20

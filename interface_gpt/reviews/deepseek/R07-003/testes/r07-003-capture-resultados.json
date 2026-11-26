@@ -1,0 +1,22 @@
+{
+  "generatedAt": "2026-11-26T16:49:10.051Z",
+  "codeSha": "a35b6749f1918af87b75bffa7000832c559b9736",
+  "total": 2,
+  "summary": {
+    "PASS": 2
+  },
+  "results": [
+    {
+      "id": "R07C3-01",
+      "desc": "Capturei as telas novas/modificadas e estados de erro",
+      "status": "PASS",
+      "detail": "20 PNG"
+    },
+    {
+      "id": "R07C3-02",
+      "desc": "Manifesto sem arquivos duplicados e com SHA-256",
+      "status": "PASS",
+      "detail": "20 arquivos"
+    }
+  ]
+}

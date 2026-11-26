@@ -1,0 +1,396 @@
+{
+  "generatedAt": "2026-11-26T16:30:59.310Z",
+  "source": "/home/dragonblue/workspace/interface-gpt-lab/repo/interface_gpt/assets",
+  "scratch": "/home/dragonblue/.hermes/cache/scratch/r07-003-mut-regressao",
+  "total": 26,
+  "summary": {
+    "DETECTADA": 26
+  },
+  "results": [
+    {
+      "id": "R07M2-01",
+      "file": "warranty.js",
+      "guard": "solução vigente exige devolução",
+      "expect": [
+        "N01"
+      ],
+      "failed": [
+        "N01",
+        "N02"
+      ],
+      "extra": [
+        "N02"
+      ],
+      "status": "DETECTADA",
+      "detail": "falhas: N01, N02"
+    },
+    {
+      "id": "R07M2-02",
+      "file": "warranty.js",
+      "guard": "cobertura concluída",
+      "expect": [
+        "N02"
+      ],
+      "failed": [
+        "N02"
+      ],
+      "extra": [],
+      "status": "DETECTADA",
+      "detail": "falhas: N02"
+    },
+    {
+      "id": "R07M2-03",
+      "file": "warranty.js",
+      "guard": "avaliação esperada (stale)",
+      "expect": [
+        "N03"
+      ],
+      "failed": [
+        "N03"
+      ],
+      "extra": [],
+      "status": "DETECTADA",
+      "detail": "falhas: N03"
+    },
+    {
+      "id": "R07M2-04",
+      "file": "warranty.js",
+      "guard": "chave financeira",
+      "expect": [
+        "N04"
+      ],
+      "failed": [
+        "N04"
+      ],
+      "extra": [],
+      "status": "DETECTADA",
+      "detail": "falhas: N04"
+    },
+    {
+      "id": "R07M2-05",
+      "file": "warranty.js",
+      "guard": "devolução não excede o recebido",
+      "expect": [
+        "N05"
+      ],
+      "failed": [
+        "N05",
+        "N06"
+      ],
+      "extra": [
+        "N06"
+      ],
+      "status": "DETECTADA",
+      "detail": "falhas: N05, N06"
+    },
+    {
+      "id": "R07M2-06",
+      "file": "warranty.js",
+      "guard": "total devolve exatamente o recebido",
+      "expect": [
+        "N06"
+      ],
+      "failed": [
+        "N06"
+      ],
+      "extra": [],
+      "status": "DETECTADA",
+      "detail": "falhas: N06"
+    },
+    {
+      "id": "R07M2-07",
+      "file": "warranty.js",
+      "guard": "modalidade e valor válidos",
+      "expect": [
+        "N07",
+        "N08"
+      ],
+      "failed": [
+        "N07",
+        "N08"
+      ],
+      "extra": [],
+      "status": "DETECTADA",
+      "detail": "falhas: N07, N08"
+    },
+    {
+      "id": "R07M2-08",
+      "file": "warranty.js",
+      "guard": "forma de devolução permitida",
+      "expect": [
+        "N09"
+      ],
+      "failed": [
+        "N09"
+      ],
+      "extra": [],
+      "status": "DETECTADA",
+      "detail": "falhas: N09"
+    },
+    {
+      "id": "R07M2-09",
+      "file": "warranty.js",
+      "guard": "data não futura",
+      "expect": [
+        "N10"
+      ],
+      "failed": [
+        "N10"
+      ],
+      "extra": [],
+      "status": "DETECTADA",
+      "detail": "falhas: N10"
+    },
+    {
+      "id": "R07M2-10",
+      "file": "warranty.js",
+      "guard": "data não anterior a eventos financeiros",
+      "expect": [
+        "N12"
+      ],
+      "failed": [
+        "N12"
+      ],
+      "extra": [],
+      "status": "DETECTADA",
+      "detail": "falhas: N12"
+    },
+    {
+      "id": "R07M2-11",
+      "file": "warranty.js",
+      "guard": "textos obrigatórios e limites",
+      "expect": [
+        "N13",
+        "N14"
+      ],
+      "failed": [
+        "N13",
+        "N14",
+        "N24"
+      ],
+      "extra": [
+        "N24"
+      ],
+      "status": "DETECTADA",
+      "detail": "falhas: N13, N14, N24"
+    },
+    {
+      "id": "R07M2-12",
+      "file": "warranty.js",
+      "guard": "confirmação da devolução",
+      "expect": [
+        "N15"
+      ],
+      "failed": [
+        "N15"
+      ],
+      "extra": [],
+      "status": "DETECTADA",
+      "detail": "falhas: N15"
+    },
+    {
+      "id": "R07M2-13",
+      "file": "warranty.js",
+      "guard": "retorno sem cobrança própria",
+      "expect": [
+        "N18"
+      ],
+      "failed": [
+        "N18"
+      ],
+      "extra": [],
+      "status": "DETECTADA",
+      "detail": "falhas: N18"
+    },
+    {
+      "id": "R07M2-14",
+      "file": "warranty.js",
+      "guard": "retorno sem entrega",
+      "expect": [
+        "N19"
+      ],
+      "failed": [
+        "N19"
+      ],
+      "extra": [],
+      "status": "DETECTADA",
+      "detail": "falhas: N19"
+    },
+    {
+      "id": "R07M2-15",
+      "file": "warranty.js",
+      "guard": "retorno aberto (não finalizado/cancelado)",
+      "expect": [
+        "N20"
+      ],
+      "failed": [
+        "N20"
+      ],
+      "extra": [],
+      "status": "DETECTADA",
+      "detail": "falhas: N20"
+    },
+    {
+      "id": "R07M2-16",
+      "file": "warranty.js",
+      "guard": "publicação retirada",
+      "expect": [
+        "N21"
+      ],
+      "failed": [
+        "N21"
+      ],
+      "extra": [],
+      "status": "DETECTADA",
+      "detail": "falhas: N21"
+    },
+    {
+      "id": "R07M2-17",
+      "file": "warranty.js",
+      "guard": "cobrança já encerrada",
+      "expect": [
+        "N22"
+      ],
+      "failed": [
+        "N22"
+      ],
+      "extra": [],
+      "status": "DETECTADA",
+      "detail": "falhas: N22"
+    },
+    {
+      "id": "R07M2-18",
+      "file": "warranty.js",
+      "guard": "confirmação da correção",
+      "expect": [
+        "N23"
+      ],
+      "failed": [
+        "N23"
+      ],
+      "extra": [],
+      "status": "DETECTADA",
+      "detail": "falhas: N23"
+    },
+    {
+      "id": "R07M2-19",
+      "file": "warranty.js",
+      "guard": "correção única por devolução",
+      "expect": [
+        "N25"
+      ],
+      "failed": [
+        "N25"
+      ],
+      "extra": [],
+      "status": "DETECTADA",
+      "detail": "falhas: N25"
+    },
+    {
+      "id": "R07M2-20",
+      "file": "warranty.js",
+      "guard": "último finalizado por raiz",
+      "expect": [
+        "N35"
+      ],
+      "failed": [
+        "N35"
+      ],
+      "extra": [],
+      "status": "DETECTADA",
+      "detail": "falhas: N35"
+    },
+    {
+      "id": "R07M2-21",
+      "file": "finance.js",
+      "guard": "estorno bloqueado com devolução",
+      "expect": [
+        "N27"
+      ],
+      "failed": [
+        "N27"
+      ],
+      "extra": [],
+      "status": "DETECTADA",
+      "detail": "falhas: N27"
+    },
+    {
+      "id": "R07M2-22",
+      "file": "finance.js",
+      "guard": "acerto protegido por crédito de garantia",
+      "expect": [
+        "N28"
+      ],
+      "failed": [
+        "N28"
+      ],
+      "extra": [],
+      "status": "DETECTADA",
+      "detail": "falhas: N28"
+    },
+    {
+      "id": "R07M2-23",
+      "file": "finance.js",
+      "guard": "crédito ignora devolução corrigida",
+      "expect": [
+        "N26"
+      ],
+      "failed": [
+        "N26",
+        "N27"
+      ],
+      "extra": [
+        "N27"
+      ],
+      "status": "DETECTADA",
+      "detail": "falhas: N26, N27"
+    },
+    {
+      "id": "R07M2-24",
+      "file": "cancel.js",
+      "guard": "F02 solução executada bloqueia",
+      "expect": [
+        "N31"
+      ],
+      "failed": [
+        "N31",
+        "N32"
+      ],
+      "extra": [
+        "N32"
+      ],
+      "status": "DETECTADA",
+      "detail": "falhas: N31, N32"
+    },
+    {
+      "id": "R07M2-25",
+      "file": "cancel.js",
+      "guard": "F02 derivado por origem/anterior bloqueia",
+      "expect": [
+        "N33",
+        "N34"
+      ],
+      "failed": [
+        "N33",
+        "N34"
+      ],
+      "extra": [],
+      "status": "DETECTADA",
+      "detail": "falhas: N33, N34"
+    },
+    {
+      "id": "R07M2-26",
+      "file": "quote.js",
+      "guard": "edição bloqueada por obrigação encerrada",
+      "expect": [
+        "N30"
+      ],
+      "failed": [
+        "N30"
+      ],
+      "extra": [],
+      "status": "DETECTADA",
+      "detail": "falhas: N30"
+    }
+  ]
+}

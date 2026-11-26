@@ -1,0 +1,343 @@
+{
+  "generatedAt": "2026-11-26T16:36:57.886Z",
+  "codeSha": "",
+  "incrementSha": "",
+  "results": [
+    {
+      "id": "R05-F01",
+      "desc": "Central lista cinco cobranças e exclui OS sem obrigação",
+      "status": "PASS",
+      "detail": "{\"rows\":5}"
+    },
+    {
+      "id": "R05-F02",
+      "desc": "Totais iniciais: 650 a receber, 930 recebido, 1.580 cobrado, 0 vencido",
+      "status": "PASS",
+      "detail": "{\"total\":158000,\"paid\":93000,\"balance\":65000,\"overdue\":0,\"count\":3}"
+    },
+    {
+      "id": "R05-F03",
+      "desc": "Sem vencimento não é classificado como vencido",
+      "status": "PASS",
+      "detail": "{\"total\":158000,\"paid\":93000,\"balance\":65000,\"overdue\":0,\"count\":3}"
+    },
+    {
+      "id": "R05-F04",
+      "desc": "Vencimento passado entra em Vencido; hoje e futuro não",
+      "status": "PASS",
+      "detail": "{\"due\":{\"total\":158000,\"paid\":93000,\"balance\":65000,\"overdue\":22000,\"count\":3},\"yesterday\":\"25/11/2026\"}"
+    },
+    {
+      "id": "R05-F05",
+      "desc": "Filtro Vencidas mostra #022 e exclui #021",
+      "status": "PASS",
+      "detail": "1 cobrança\n\n#022\nRefrigeração Horizonte\nGree · G-Top Inverter\nVencimento\n25/11/2026\nVencida\nSaldo\nR$ 220,00\nTotal R$ 320,00"
+    },
+    {
+      "id": "R05-F06",
+      "desc": "Filtro A vencer/sem data inclui hoje e futuro, não a vencida",
+      "status": "PASS",
+      "detail": "{\"rows\":2}"
+    },
+    {
+      "id": "R05-F07",
+      "desc": "Filtro Quitadas mostra #019 e #016, sem saldo",
+      "status": "PASS",
+      "detail": "{\"rows\":2}"
+    },
+    {
+      "id": "R05-F08",
+      "desc": "Busca por equipamento encontra #020",
+      "status": "PASS",
+      "detail": "Midea"
+    },
+    {
+      "id": "R05-F09",
+      "desc": "Busca por equipamento encontra #022",
+      "status": "PASS",
+      "detail": "Gree"
+    },
+    {
+      "id": "R05-F10",
+      "desc": "Busca por número de OS encontra #019",
+      "status": "PASS",
+      "detail": "#019"
+    },
+    {
+      "id": "R05-F11",
+      "desc": "Busca vazia mostra estado vazio",
+      "status": "PASS",
+      "detail": "empty"
+    },
+    {
+      "id": "R05-F12",
+      "desc": "Sem exceções ou erros de console na central",
+      "status": "PASS",
+      "detail": "{\"errors\":[],\"consoleErrors\":[]}"
+    },
+    {
+      "id": "R05-F13",
+      "desc": "Central não fez requisições externas",
+      "status": "PASS",
+      "detail": "[]"
+    },
+    {
+      "id": "R05-B01",
+      "desc": "Portal mostra condições vazias como texto único, sem fatos vazios",
+      "status": "PASS",
+      "detail": " e o total desta versão e confirmo minha decisão.\nRegistrar minha resposta\nArquivos compartilhados\n\nNenhum arquivo compartilhado nesta demonstração.\n\nEste é um link de demonstração. Na versão real, compartilhe o endereço privado apenas com pessoas autorizadas."
+    },
+    {
+      "id": "R05-B02",
+      "desc": "Aprovação via portal não cria cobrança nem pagamento",
+      "status": "PASS",
+      "detail": "{\"status\":\"Aprovado\",\"total\":0,\"paid\":0}"
+    },
+    {
+      "id": "R05-B03",
+      "desc": "Decisão aprovada no portal persiste após recarregar, ainda sem cobrança",
+      "status": "PASS",
+      "detail": "{\"status\":\"Aprovado\",\"total\":0,\"paid\":0}"
+    },
+    {
+      "id": "R05-B04",
+      "desc": "Formalização cria obrigação de R$ 240,00 sem recebimento",
+      "status": "PASS",
+      "detail": "{\"due\":\"2026-11-26\",\"items\":[{\"type\":\"Serviço\",\"name\":\"Serviço de reparo (demonstração inicial)\",\"quantity\":1,\"unit\":24000}],\"discount\":0}"
+    },
+    {
+      "id": "R05-B05",
+      "desc": "Aba financeira começa em aberto e sem recibos",
+      "status": "PASS",
+      "detail": "initial finance"
+    },
+    {
+      "id": "R05-B06",
+      "desc": "Recebimento parcial de R$ 100,00 (Pix) cria evento e saldo R$ 140,00",
+      "status": "PASS",
+      "detail": "{\"opening\":0,\"events\":[{\"id\":1,\"type\":\"receive\",\"amount\":10000,\"date\":\"2026-11-26\",\"method\":\"Pix\",\"registered\":\"2026-11-26T16:36:09.207Z\"}]}"
+    },
+    {
+      "id": "R05-B07",
+      "desc": "Portal atualiza Pago e Saldo após recebimento parcial",
+      "status": "PASS",
+      "detail": "lmente paga\nTotal cobrado\nR$ 240,00\nPago\nR$ 100,00\nSaldo a pagar\nR$ 140,00\nArquivos compartilhados\n\nNenhum arquivo compartilhado nesta demonstração.\n\nEste é um link de demonstração. Na versão real, compartilhe o endereço privado apenas com pessoas autorizadas."
+    },
+    {
+      "id": "R05-B08",
+      "desc": "Segundo recebimento quita a OS sem alterar andamento",
+      "status": "PASS",
+      "detail": "{\"paid\":24000,\"status\":\"Aprovado\",\"events\":2}"
+    },
+    {
+      "id": "R05-B09",
+      "desc": "Recibo normal #1 tem valor, OS e forma, sem ESTORNADO",
+      "status": "PASS",
+      "detail": "DOCUMENTO\nRecibo de recebimento\n\nPrévia de demonstração, sem validade comercial.\n\nVoltar\nImprimir\n\nMINHA OFICINA · DEMONSTRAÇÃO\n\nRecibo #23 / 1\n\nRecebimento registrado\n\nR$ 100,00\n\nOS\n#023\nCliente\nMarina Alves\nEquipamento"
+    },
+    {
+      "id": "R05-B10",
+      "desc": "Recibo normal #2 tem valor e forma Dinheiro",
+      "status": "PASS",
+      "detail": "receipt 2"
+    },
+    {
+      "id": "R05-B11",
+      "desc": "Prévia de estorno explica que não há devolução e mostra saldo recomposto",
+      "status": "PASS",
+      "detail": "Corrige um recebimento registrado indevidamente. Não realiza reembolso, transferência ou devolução.\n\nRecebimento #1\nR$ 100,00\nData\n26/11/2026\nForma\nPix\nSaldo após correção\nR$ 100,00\nData da correção\nJustificativa *\nConfirmo a correção do registro, sem moviment"
+    },
+    {
+      "id": "R05-B12",
+      "desc": "Estorno preserva obrigação de R$ 240,00 e recompõe saldo para R$ 100,00",
+      "status": "PASS",
+      "detail": "{\"opening\":0,\"events\":[{\"id\":1,\"type\":\"receive\",\"amount\":10000,\"date\":\"2026-11-26\",\"method\":\"Pix\",\"registered\":\"2026-11-26T16:36:09.207Z\"},{\"id\":2,\"type\":\"receive\",\"amount\":14000,\"date\":\"2026-11-26\",\"method\":\"Dinheiro\",\"registered\":\"2026-11-26T16:36:13.308Z\"},{\"id\":3,\"type\":\"reverse\",\"reference\":1,\"amount\":10000,\"date\":\"2026-11-26\",\"method\":\"Pix\",\"reason\":\"Lançamento incorreto na demonstração\",\"registered\":\"2026-11-26T16:36:19.958Z\"}]}"
+    },
+    {
+      "id": "R05-B13",
+      "desc": "Evento de estorno referencia o recebimento original, mantém valor e justificativa",
+      "status": "PASS",
+      "detail": "{\"id\":3,\"type\":\"reverse\",\"reference\":1,\"amount\":10000,\"date\":\"2026-11-26\",\"method\":\"Pix\",\"reason\":\"Lançamento incorreto na demonstração\",\"registered\":\"2026-11-26T16:36:19.958Z\"}"
+    },
+    {
+      "id": "R05-B14",
+      "desc": "Histórico mostra estorno, original marcado e saldo parcial",
+      "status": "PASS",
+      "detail": "ATENDIMENTO / #023\nSamsung · Digital Inverter\n\nMarina Alves · Entrada em 21/11/2026\n\nVoltar\nImprimir\nANDAMENTO TÉCNICO\nAprovado\nConclusão não registrada\nAtualizar andamento\nFINANCEIRO\nParcial\nSaldo: R$ 100,00\nRegistrar pagamento\nRETIRADA\nNão entregue\nRegistro independente do pagamento\nRegistrar entrega\nVisão geral\nAtendimento\nOrçamento e link\nEntrega\nAnexos\nHistórico\nGarantia\nCancelamento\nFinanceiro\nRecebimentos e co"
+    },
+    {
+      "id": "R05-B15",
+      "desc": "Recibo original permanece acessível e marcado ESTORNADO",
+      "status": "PASS",
+      "detail": "DOCUMENTO\nRecibo de recebimento\n\nPrévia de demonstração, sem validade comercial.\n\nVoltar\nImprimir\n\nMINHA OFICINA · DEMONSTRAÇÃO\n\nRecibo #23 / 1\n\nESTORNADO em 26/11/2026 — registro corrigido, sem reembolso bancário.\n\nR$ 1"
+    },
+    {
+      "id": "R05-B16",
+      "desc": "Original não oferece segundo estorno",
+      "status": "PASS",
+      "detail": "duplicate hidden"
+    },
+    {
+      "id": "R05-B17",
+      "desc": "Estorno duplicado é rejeitado e não abre modal",
+      "status": "PASS",
+      "detail": "{\"open\":false,\"err\":\"Recebimento inexistente ou já estornado.\",\"before\":3,\"after\":3}"
+    },
+    {
+      "id": "R05-B18",
+      "desc": "Justificativa privada não entra na projeção do portal",
+      "status": "PASS",
+      "detail": "private"
+    },
+    {
+      "id": "R05-B19",
+      "desc": "Portal mostra saldo recomposto e não expõe motivo privado",
+      "status": "PASS",
+      "detail": " comunicação\n26/11/2026\nPagamento\nParcialmente paga\nTotal cobrado\nR$ 240,00\nPago\nR$ 140,00\nSaldo a pagar\nR$ 100,00\nArquivos compartilhados\n\nNenhum arquivo compartilhado nesta demonstração.\n\nEste é um link de demonstração. Na versão real, compartilhe o endereço privado apenas com pessoas autorizadas."
+    },
+    {
+      "id": "R05-B20",
+      "desc": "Novo recebimento após estorno quita o saldo recomposto",
+      "status": "PASS",
+      "detail": "{\"paid\":24000,\"events\":4}"
+    },
+    {
+      "id": "R05-B21",
+      "desc": "Portal fica quitado após novo recebimento",
+      "status": "PASS",
+      "detail": " pagar\nR$ 0,00\nArquivos compartilhados\n\nNenhum arquivo compartilhado nesta demonstração.\n\nEste é um link de demonstração. Na versão real, compartilhe o endereço privado apenas com pessoas autorizadas."
+    },
+    {
+      "id": "R05-B22",
+      "desc": "Persistência mantém quatro eventos e saldo zero após recarregar",
+      "status": "PASS",
+      "detail": "reload"
+    },
+    {
+      "id": "R05-R01",
+      "desc": "Portal tem região viva para atualização entre abas",
+      "status": "PASS",
+      "detail": "live"
+    },
+    {
+      "id": "R05-R02",
+      "desc": "Saldo do portal é destacado em bloco próprio",
+      "status": "PASS",
+      "detail": "balance"
+    },
+    {
+      "id": "R05-R03",
+      "desc": "Condições vazias são agrupadas, sem repetição de fatos vazios",
+      "status": "PASS",
+      "detail": "Nenhum arquivo compartilhado nesta demonstração.\n\nEste é um link de demonstração. Na versão real, compartilhe o endereço privado apenas com pessoas autorizadas."
+    },
+    {
+      "id": "R05-R04",
+      "desc": "Ação de copiar abre endereço local e seleciona o campo",
+      "status": "PASS",
+      "detail": "{\"open\":true,\"value\":\"http://127.0.0.1:8130/portal.html#5c0ffbc4ca79520f95262a3b244272bd7be48e3d0bbc3b71dc418efffdac18fa\",\"selected\":true}"
+    },
+    {
+      "id": "R05-L01",
+      "desc": "OS #020 mostra valor anterior sem recibo individual",
+      "status": "PASS",
+      "detail": "{\"opening\":20000,\"events\":[]}"
+    },
+    {
+      "id": "R05-L02",
+      "desc": "Valor legado não oferece estorno",
+      "status": "PASS",
+      "detail": "no reverse"
+    },
+    {
+      "id": "R05-L03",
+      "desc": "Novo recebimento soma ao valor anterior",
+      "status": "PASS",
+      "detail": "{\"paid\":25000,\"opening\":20000}"
+    },
+    {
+      "id": "R05-L04",
+      "desc": "Estornar o novo recebimento preserva o valor anterior",
+      "status": "PASS",
+      "detail": "{\"paid\":20000,\"events\":2}"
+    },
+    {
+      "id": "R05-L05",
+      "desc": "Valor anterior continua sem recibo artificial",
+      "status": "PASS",
+      "detail": "opening preserved"
+    },
+    {
+      "id": "R05-P01",
+      "desc": "Financeiro acessa central e recebe, sem estorno",
+      "status": "PASS",
+      "detail": "finance role"
+    },
+    {
+      "id": "R05-P02",
+      "desc": "Financeiro consulta a aba financeira da OS",
+      "status": "PASS",
+      "detail": "order finance"
+    },
+    {
+      "id": "R05-P03",
+      "desc": "Financeiro não vê ação de estorno",
+      "status": "PASS",
+      "detail": "no reverse finance"
+    },
+    {
+      "id": "R05-P04",
+      "desc": "Financeiro consulta recibo autorizado",
+      "status": "PASS",
+      "detail": "receipt finance"
+    },
+    {
+      "id": "R05-P05",
+      "desc": "Financeiro não abre estorno por chamada direta",
+      "status": "PASS",
+      "detail": "direct reverse"
+    },
+    {
+      "id": "R05-P06-Técnico",
+      "desc": "Técnico não vê valores em central, OS ou recibo",
+      "status": "PASS",
+      "detail": "{\"home\":\"ACESSO\\nAção indisponível\\n\\nEste perfil de\",\"order\":\"ATENDIMENTO / #020\\nMidea · Xtreme Save\\n\\n\",\"receipt\":\"ACESSO\\nAção indisponível\\n\\nEste perfil de\"}"
+    },
+    {
+      "id": "R05-P06-Atendente",
+      "desc": "Atendente não vê valores em central, OS ou recibo",
+      "status": "PASS",
+      "detail": "{\"home\":\"ACESSO\\nAção indisponível\\n\\nEste perfil de\",\"order\":\"ATENDIMENTO / #020\\nMidea · Xtreme Save\\n\\n\",\"receipt\":\"ACESSO\\nAção indisponível\\n\\nEste perfil de\"}"
+    },
+    {
+      "id": "R05-P07",
+      "desc": "Troca de perfil remove conteúdo financeiro sem expor valores",
+      "status": "PASS",
+      "detail": "{\"url\":\"http://127.0.0.1:8130/?r05=1795710994598#os/20/financeiro\",\"text\":\"ATENDIMENTO / #020\\nMidea · Xtreme Save\\n\\nClima Sul Serviços · Entrada em 21/11/2026\\n\\nVoltar\\nImprimir\\nANDAMENTO TÉCNICO\\nFi\"}"
+    },
+    {
+      "id": "R05-T01",
+      "desc": "Segunda aba recebe o novo saldo por storage",
+      "status": "PASS",
+      "detail": "ATENDIMENTO / #020\nMidea · Xtreme Save\n\nClima Sul Serviços · Entrada em 21/11/2026\n\nVoltar\nImprimir\nANDAMENTO TÉCNICO\nFinalizado\nConclusão: 24/11/2026\nAtualizar andamento\nFINANCEIRO\nParcial\nSaldo: R$ 100,00\nRegistrar pag"
+    },
+    {
+      "id": "R05-T02",
+      "desc": "Portal atualiza o saldo após recebimento em outra aba",
+      "status": "PASS",
+      "detail": "obrado\nR$ 350,00\nPago\nR$ 300,00\nSaldo a pagar\nR$ 50,00\nArquivos compartilhados\n\nNenhum arquivo compartilhado nesta demonstração.\n\nEste é um link de demonstração. Na versão real, compartilhe o endereço privado apenas com pessoas autorizadas."
+    },
+    {
+      "id": "R05-T03",
+      "desc": "Portal anuncia atualização na região viva",
+      "status": "PASS",
+      "detail": "Informações do atendimento atualizadas."
+    },
+    {
+      "id": "R05-T04",
+      "desc": "Recebimentos persistem após recarregar",
+      "status": "PASS",
+      "detail": "{\"id\":20,\"status\":\"Finalizado\",\"total\":35000,\"paid\":30000,\"delivery\":null,\"ledger\":{\"opening\":20000,\"events\":[{\"id\":1,\"type\":\"receive\",\"amount\":5000,\"date\":\"2026-11-26\",\"method\":\"Pix\",\"registered\":\"2026-11-26T16:36:44.590Z\"},{\"id\":2,\"type\":\"receive\",\"amount\":5000,\"date\":\"2026-11-26\",\"method\":\"Dinheiro\",\"registered\":\"2026-11-26T16:36:56.190Z\"}]},\"publicLink\":{\"token\":\"afdf9eeb4de61ebef807fcc4f592652f5acf3a310bee70d324c1877d5605bd50\",\"expires\":1806079011757},\"quote\":{\"draft\":{\"items\":[{\"type\":\"Serviço\",\"name\":\"Serviço de reparo (demonstração inicial)\",\"quantity\":1,\"unit\":35000}],\"discount\":0,\"terms\":{\"payment\":\"\",\"deadline\":\"\",\"warranty\":\"\",\"diagnosis\":\"\"}},\"versions\":[{\"number\":1,\"items\":[{\"type\":\"Serviço\",\"name\":\"Serviço de reparo (demonstração inicial)\",\"quantity\":1,\"unit\":35000}],\"discount\":0,\"terms\":{\"payment\":\"\",\"deadline\":\"\",\"warranty\":\"\",\"diagnosis\":\"\"},\"total\":35000,\"created\":\"2026-11-21\",\"decision\":{\"answer\":\"Aprovado\",\"name\":\"Cliente de demonstração\",\"channel\":\"presencial\",\"date\":\"2026-11-21\"},\"source\":\"seed\"}],\"current\":1,\"active\":true}}"
+    }
+  ]
+}

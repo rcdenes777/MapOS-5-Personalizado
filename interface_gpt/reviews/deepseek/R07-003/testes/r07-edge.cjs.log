@@ -1,0 +1,77 @@
+PASS R07-E-garantia-retorno-320 — garantia-retorno sem overflow em 320 :: {"over":0,"h1":1}
+PASS R07-E-garantia-retorno-390 — garantia-retorno sem overflow em 390 :: {"over":0,"h1":1}
+PASS R07-E-garantia-retorno-768 — garantia-retorno sem overflow em 768 :: {"over":0,"h1":1}
+PASS R07-E-garantia-retorno-1440 — garantia-retorno sem overflow em 1440 :: {"over":0,"h1":1}
+PASS R07-E-origem-resumo-320 — origem-resumo sem overflow em 320 :: {"over":0,"h1":1}
+PASS R07-E-origem-resumo-390 — origem-resumo sem overflow em 390 :: {"over":0,"h1":1}
+PASS R07-E-origem-resumo-768 — origem-resumo sem overflow em 768 :: {"over":0,"h1":1}
+PASS R07-E-origem-resumo-1440 — origem-resumo sem overflow em 1440 :: {"over":0,"h1":1}
+PASS R07-E-orcamento-retorno-320 — orcamento-retorno sem overflow em 320 :: {"over":0,"h1":1}
+PASS R07-E-orcamento-retorno-390 — orcamento-retorno sem overflow em 390 :: {"over":0,"h1":1}
+PASS R07-E-orcamento-retorno-768 — orcamento-retorno sem overflow em 768 :: {"over":0,"h1":1}
+PASS R07-E-orcamento-retorno-1440 — orcamento-retorno sem overflow em 1440 :: {"over":0,"h1":1}
+PASS R07-E-retorno-bloqueado-320 — retorno-bloqueado sem overflow em 320 :: {"over":0,"h1":1}
+PASS R07-E-retorno-bloqueado-390 — retorno-bloqueado sem overflow em 390 :: {"over":0,"h1":1}
+PASS R07-E-retorno-bloqueado-768 — retorno-bloqueado sem overflow em 768 :: {"over":0,"h1":1}
+PASS R07-E-retorno-bloqueado-1440 — retorno-bloqueado sem overflow em 1440 :: {"over":0,"h1":1}
+PASS R07-E-retorno-novo-320 — retorno-novo sem overflow em 320 :: {"over":0,"h1":1}
+PASS R07-E-retorno-novo-390 — retorno-novo sem overflow em 390 :: {"over":0,"h1":1}
+PASS R07-E-retorno-novo-768 — retorno-novo sem overflow em 768 :: {"over":0,"h1":1}
+PASS R07-E-retorno-novo-1440 — retorno-novo sem overflow em 1440 :: {"over":0,"h1":1}
+PASS R07-E-retorno-novo-resumo-320 — retorno-novo-resumo sem overflow em 320 :: {"over":0,"h1":1}
+PASS R07-E-retorno-novo-resumo-390 — retorno-novo-resumo sem overflow em 390 :: {"over":0,"h1":1}
+PASS R07-E-retorno-novo-resumo-768 — retorno-novo-resumo sem overflow em 768 :: {"over":0,"h1":1}
+PASS R07-E-retorno-novo-resumo-1440 — retorno-novo-resumo sem overflow em 1440 :: {"over":0,"h1":1}
+PASS R07-E-impressao-retorno-320 — impressao-retorno sem overflow em 320 :: {"over":0,"h1":1}
+PASS R07-E-impressao-retorno-390 — impressao-retorno sem overflow em 390 :: {"over":0,"h1":1}
+PASS R07-E-impressao-retorno-768 — impressao-retorno sem overflow em 768 :: {"over":0,"h1":1}
+PASS R07-E-impressao-retorno-1440 — impressao-retorno sem overflow em 1440 :: {"over":0,"h1":1}
+PASS R07-E-modal-avaliacao-320 — Modal de avaliação cabe em 320 :: {"over":0,"dialog":{"open":true,"left":19,"right":301,"width":282,"viewport":320}}
+PASS R07-E-modal-custo-320 — Modal de custo cabe em 320 :: {"overCost":0,"costDialog":{"open":true,"left":19,"right":301,"width":282,"viewport":320}}
+PASS R07-E-modal-avaliacao-390 — Modal de avaliação cabe em 390 :: {"over":0,"dialog":{"open":true,"left":19,"right":371,"width":352,"viewport":390}}
+PASS R07-E-modal-custo-390 — Modal de custo cabe em 390 :: {"overCost":0,"costDialog":{"open":true,"left":19,"right":371,"width":352,"viewport":390}}
+PASS R07-E-modal-avaliacao-768 — Modal de avaliação cabe em 768 :: {"over":0,"dialog":{"open":true,"left":104,"right":664,"width":560,"viewport":768}}
+PASS R07-E-modal-custo-768 — Modal de custo cabe em 768 :: {"overCost":0,"costDialog":{"open":true,"left":104,"right":664,"width":560,"viewport":768}}
+PASS R07-E-modal-avaliacao-1440 — Modal de avaliação cabe em 1440 :: {"over":0,"dialog":{"open":true,"left":440,"right":1000,"width":560,"viewport":1440}}
+PASS R07-E-modal-custo-1440 — Modal de custo cabe em 1440 :: {"overCost":0,"costDialog":{"open":true,"left":440,"right":1000,"width":560,"viewport":1440}}
+PASS R07-KB-01 — Modal de avaliação prende o foco, fecha com Escape e devolve o foco :: {"initial":{"tag":"BUTTON","name":null,"inDialog":true,"labelled":"modal-title"},"inside":true,"escaped":{"open":false,"active":"modal:warrantyAssess:18"}}
+PASS R07-KB-02 — Todos os campos do modal têm rótulo acessível e os obrigatórios são explícitos :: [{"name":"coverage","labelled":true,"required":false},{"name":"solution","labelled":true,"required":false},{"name":"diagnosis","labelled":true,"required":false},{"name":"reason","labelled":true,"required":true},{"name":"confirm","labelled":
+PASS R07-E-EXT-01 — Defeito de 1.200 caracteres não cria overflow em 390 :: {"over390":0}
+PASS R07-E-EXT-02 — Diagnóstico de 20.000 e justificativa de 10.000 são aceitos, escapados e sem overflow :: {"overLong":0,"longStored":{"diagnosis":20000,"reason":10000,"raw":false}}
+PASS R07-E-EXT-03 — Defeito com HTML é escapado na tela de garantia :: {"html":false,"text":true}
+PASS R07-AXE-garantia-390 — axe sem violações: garantia 390 :: []
+PASS R07-AXE-garantia-1440 — axe sem violações: garantia 1440 :: []
+PASS R07-AXE-origem-390 — axe sem violações: origem 390 :: []
+PASS R07-AXE-origem-1440 — axe sem violações: origem 1440 :: []
+PASS R07-AXE-orcamento-390 — axe sem violações: orcamento 390 :: []
+PASS R07-AXE-orcamento-1440 — axe sem violações: orcamento 1440 :: []
+PASS R07-AXE-retorno-bloqueado-390 — axe sem violações: retorno-bloqueado 390 :: []
+PASS R07-AXE-retorno-bloqueado-1440 — axe sem violações: retorno-bloqueado 1440 :: []
+PASS R07-AXE-modal-avaliacao-390 — axe sem violações: modal-avaliacao 390 :: []
+PASS R07-AXE-modal-custo-390 — axe sem violações: modal-custo 390 :: []
+PASS R07-E-PORTAL-01 — Portal do orçamento do retorno não cria overflow em 390 :: {"pOver":0,"token":true,"text":"SEU ATENDIMENTO · OS #018\nDaikin · EcoSwing\nNegociação\nEntrada\n21/11/2026\nPrevisão\nNão informada\nSeu orçamento\nVersão 1\n\nTotal da proposta\n\nR$ 45,00\n\nPeças e se"}
+PASS R07-E-PORTAL-02 — Portal do retorno não exibe avaliação, custo, origem nem laudo :: SEU ATENDIMENTO · OS #018
+Daikin · EcoSwing
+Negociação
+Entrada
+21/11/2026
+Previsão
+Não informada
+Seu orçamento
+Versão 1
+
+Total da proposta
+
+R$ 45,00
+
+Peças e serviços
+Reparo do retorno R07
+Serviço · 1 × R$ 45,00
+R$ 45,00
+Peças
+R$ 0,00
+Servi
+PASS R07-E-PORTAL-03 — axe sem violações no portal do retorno em 390 :: []
+PASS R07-E-PORTAL-04 — Portal sem exceções de página :: []
+PASS R07-E-HOST-01 — Sem erros de página ou console no host :: {"errors":[],"consoleErrors":[]}
+TOTAL 56 · PASS 56 · FAIL 0 · INFO 0

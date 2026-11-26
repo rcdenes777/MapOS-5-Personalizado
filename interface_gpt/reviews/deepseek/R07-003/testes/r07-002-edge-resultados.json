@@ -1,0 +1,230 @@
+{
+  "generatedAt": "2026-11-26T16:13:22.279Z",
+  "codeSha": "",
+  "baseUrl": "http://127.0.0.1:8130",
+  "total": 32,
+  "summary": {
+    "PASS": 32
+  },
+  "scans": [
+    {
+      "label": "garantia-390",
+      "viewport": 390,
+      "violations": []
+    },
+    {
+      "label": "modal-devolucao-390",
+      "viewport": 390,
+      "violations": []
+    },
+    {
+      "label": "garantia-1440",
+      "viewport": 1440,
+      "violations": []
+    },
+    {
+      "label": "modal-devolucao-1440",
+      "viewport": 1440,
+      "violations": []
+    },
+    {
+      "label": "portal-390",
+      "viewport": 390,
+      "violations": []
+    }
+  ],
+  "results": [
+    {
+      "id": "R07E-R-320",
+      "desc": "Garantia e ação de devolução utilizáveis em 320px",
+      "status": "PASS",
+      "detail": "{\"over\":0,\"box\":{\"x\":25,\"y\":2074.421875,\"width\":270,\"height\":64.21875}}"
+    },
+    {
+      "id": "R07E-M-320",
+      "desc": "Modal de devolução cabe na tela e não cria overflow em 320px",
+      "status": "PASS",
+      "detail": "{\"open\":true,\"w\":282,\"h\":544,\"vw\":320,\"vh\":568,\"sw\":280,\"cw\":280,\"sh\":1302,\"ch\":542,\"over\":0}"
+    },
+    {
+      "id": "R07E-M-SCROLL",
+      "desc": "Conteúdo do modal rola verticalmente em 320px quando necessário",
+      "status": "PASS",
+      "detail": "{\"sh\":1302,\"ch\":542}"
+    },
+    {
+      "id": "R07E-M-SCROLL-2",
+      "desc": "Rodapé com confirmação e envio alcançável por rolagem",
+      "status": "PASS",
+      "detail": "true"
+    },
+    {
+      "id": "R07E-C-320",
+      "desc": "Modal fecha pelo botão Fechar em 320px",
+      "status": "PASS",
+      "detail": "fechado"
+    },
+    {
+      "id": "R07E-R-390",
+      "desc": "Garantia e ação de devolução utilizáveis em 390px",
+      "status": "PASS",
+      "detail": "{\"over\":0,\"box\":{\"x\":29,\"y\":23.84375,\"width\":332,\"height\":44}}"
+    },
+    {
+      "id": "R07E-M-390",
+      "desc": "Modal de devolução cabe na tela e não cria overflow em 390px",
+      "status": "PASS",
+      "detail": "{\"open\":true,\"w\":352,\"h\":820,\"vw\":390,\"vh\":844,\"sw\":350,\"cw\":350,\"sh\":1137,\"ch\":818,\"over\":0}"
+    },
+    {
+      "id": "R07E-C-390",
+      "desc": "Modal fecha pelo botão Fechar em 390px",
+      "status": "PASS",
+      "detail": "fechado"
+    },
+    {
+      "id": "R07E-R-768",
+      "desc": "Garantia e ação de devolução utilizáveis em 768px",
+      "status": "PASS",
+      "detail": "{\"over\":0,\"box\":{\"x\":33,\"y\":157.546875,\"width\":702,\"height\":44}}"
+    },
+    {
+      "id": "R07E-M-768",
+      "desc": "Modal de devolução cabe na tela e não cria overflow em 768px",
+      "status": "PASS",
+      "detail": "{\"open\":true,\"w\":560,\"h\":1000,\"vw\":768,\"vh\":1024,\"sw\":558,\"cw\":558,\"sh\":1043,\"ch\":998,\"over\":0}"
+    },
+    {
+      "id": "R07E-C-768",
+      "desc": "Modal fecha pelo botão Fechar em 768px",
+      "status": "PASS",
+      "detail": "fechado"
+    },
+    {
+      "id": "R07E-R-1440",
+      "desc": "Garantia e ação de devolução utilizáveis em 1440px",
+      "status": "PASS",
+      "detail": "{\"over\":0,\"box\":{\"x\":283,\"y\":66.3125,\"width\":1108,\"height\":44}}"
+    },
+    {
+      "id": "R07E-M-1440",
+      "desc": "Modal de devolução cabe na tela e não cria overflow em 1440px",
+      "status": "PASS",
+      "detail": "{\"open\":true,\"w\":560,\"h\":876,\"vw\":1440,\"vh\":900,\"sw\":558,\"cw\":558,\"sh\":1043,\"ch\":874,\"over\":0}"
+    },
+    {
+      "id": "R07E-C-1440",
+      "desc": "Modal fecha pelo botão Fechar em 1440px",
+      "status": "PASS",
+      "detail": "fechado"
+    },
+    {
+      "id": "R07E-K-01",
+      "desc": "Foco inicial entra no diálogo de devolução",
+      "status": "PASS",
+      "detail": "{\"id\":\"\",\"tag\":\"BUTTON\",\"inside\":true}"
+    },
+    {
+      "id": "R07E-K-02",
+      "desc": "Tab mantém o foco dentro do diálogo (14 passos)",
+      "status": "PASS",
+      "detail": "true"
+    },
+    {
+      "id": "R07E-K-03",
+      "desc": "Shift+Tab no primeiro campo permanece no diálogo",
+      "status": "PASS",
+      "detail": "true"
+    },
+    {
+      "id": "R07E-K-04",
+      "desc": "Escape fecha o diálogo",
+      "status": "PASS",
+      "detail": "fechado"
+    },
+    {
+      "id": "R07E-K-05",
+      "desc": "Foco retorna ao acionador após fechar",
+      "status": "PASS",
+      "detail": "{\"tag\":\"BUTTON\",\"action\":\"modal:warrantyRefund:26\"}"
+    },
+    {
+      "id": "R07E-AXE-garantia-390-390",
+      "desc": "axe sem violações: garantia-390 390",
+      "status": "PASS",
+      "detail": "[]"
+    },
+    {
+      "id": "R07E-AXE-modal-devolucao-390-390",
+      "desc": "axe sem violações: modal-devolucao-390 390",
+      "status": "PASS",
+      "detail": "[]"
+    },
+    {
+      "id": "R07E-AXE-garantia-1440-1440",
+      "desc": "axe sem violações: garantia-1440 1440",
+      "status": "PASS",
+      "detail": "[]"
+    },
+    {
+      "id": "R07E-AXE-modal-devolucao-1440-1440",
+      "desc": "axe sem violações: modal-devolucao-1440 1440",
+      "status": "PASS",
+      "detail": "[]"
+    },
+    {
+      "id": "R07E-X-01",
+      "desc": "Cobrança de 9.999.999,99 ainda oferece devolução",
+      "status": "PASS",
+      "detail": "presente"
+    },
+    {
+      "id": "R07E-X-02",
+      "desc": "Limite de valor e data extrema não estouram o modal",
+      "status": "PASS",
+      "detail": "{\"max\":\"9999999.99\",\"dateMax\":\"2026-11-26\",\"dateMin\":\"2026-11-25\",\"over\":0,\"amountW\":518,\"panelW\":518}"
+    },
+    {
+      "id": "R07E-X-03",
+      "desc": "Total extremo calculado em centavos e readOnly",
+      "status": "PASS",
+      "detail": "{\"v\":\"9999999.99\",\"ro\":true,\"preview\":\"Abatimento: R$ 9.999.999,99 · Saldo após registro: R$ 0,00\"}"
+    },
+    {
+      "id": "R07E-X-04",
+      "desc": "Motivo com 2.000 caracteres permanece no limite e sem overflow",
+      "status": "PASS",
+      "detail": "{\"longOver\":0,\"reasonLen\":2000}"
+    },
+    {
+      "id": "R07E-X-05",
+      "desc": "Data mínima nativa reflete o último recebimento (25/11) e o handler revalida",
+      "status": "PASS",
+      "detail": "2026-11-25"
+    },
+    {
+      "id": "R07E-P-01",
+      "desc": "Técnico em 1440 não vê valores/comprovante do reembolso",
+      "status": "PASS",
+      "detail": "ATENDIMENTO / #026\nLG · Inverter\n\nClima Sul Serviços · Entrada em 26/11/2026\n\nVoltar\nImprimir\nANDAMENTO TÉCNICO\nAberto\nConclusão não registrada\nAtualizar andamento\nFINANCEIRO\nAcesso restrito\nValores ocultos neste perfil\n"
+    },
+    {
+      "id": "R07E-P-02",
+      "desc": "Portal em 390 sem overflow, com resumo financeiro e sem dados privados",
+      "status": "PASS",
+      "detail": "M\nMinha oficina\nAcompanhamento de serviço\nDemonstração\n\nSEU ATENDIMENTO · OS #025\nLG · Inverter\nFinalizado\nEntrada\n20/08/2026\nPrevisão\nNão informada\nSeu orçamento\nVersão 1\n\nTotal da proposta\n\nR$ 500,00\n\nPeças e serviços\nServiço de reparo (demonstração inicial)\nServiço · 1 × R$ 500,00\nR$ 500,00\nPeças\nR$ 0,00\nServiços\nR$ 500,00\nDesconto\nR$ 0,00\n\nCondições de pagamento, prazo e garantia a confirmar c"
+    },
+    {
+      "id": "R07E-P-03",
+      "desc": "axe sem violações no portal em 390",
+      "status": "PASS",
+      "detail": "[]"
+    },
+    {
+      "id": "R07E-ERR",
+      "desc": "Sem erros de página ou console nas bordas",
+      "status": "PASS",
+      "detail": "{\"errors\":[],\"consoleErrors\":[]}"
+    }
+  ]
+}

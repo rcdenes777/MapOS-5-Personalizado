@@ -1,0 +1,335 @@
+{
+  "generatedAt": "2026-11-26T16:38:42.316Z",
+  "codeSha": "",
+  "assetsDir": "/home/dragonblue/workspace/interface-gpt-lab/repo/interface_gpt/assets",
+  "total": 54,
+  "summary": {
+    "PASS": 54
+  },
+  "results": [
+    {
+      "id": "R07N-01",
+      "name": "Retorno duplicado da mesma unidade é rejeitado",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "id": "R07N-02",
+      "name": "Origem sem conclusão real é rejeitada",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "id": "R07N-02b",
+      "name": "Origem cancelada com data de conclusão não gera retorno",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "id": "R07N-03",
+      "name": "Unidade sem identificação é rejeitada",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "id": "R07N-04",
+      "name": "Cliente divergente é rejeitado",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "id": "R07N-05",
+      "name": "Defeito vazio é rejeitado",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "id": "R07N-06",
+      "name": "Confirmação física é obrigatória",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "id": "R07N-07",
+      "name": "Unidade diferente não bloqueia retorno legítimo",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "id": "R07N-07b",
+      "name": "Mesmo cliente com unidade divergente é rejeitado",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "id": "R07N-07c",
+      "name": "Origem de retorno precisa estar finalizada no momento do novo retorno",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "id": "R07N-08",
+      "name": "Retorno não copia laudo, itens, financeiro, token nem orçamento",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "id": "R07N-09",
+      "name": "Prazo desconhecido não é inventado",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "id": "R07N-10",
+      "name": "Prazo vencido não presume cobertura",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "id": "R07N-11",
+      "name": "Cobertura pendente não aceita solução",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "id": "R07N-12",
+      "name": "Diagnóstico é obrigatório com cobertura concluída",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "id": "R07N-13",
+      "name": "Justificativa é obrigatória",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "id": "R07N-14",
+      "name": "Avaliação concorrente obsoleta é recusada",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "id": "R07N-15",
+      "name": "Cobertura ou solução fora do domínio é recusada",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "id": "R07N-16",
+      "name": "Solução já executada impede revisão da avaliação",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "id": "R07N-17",
+      "name": "Avaliação não altera andamento, cobrança, entrega nem origem",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "id": "R07N-18",
+      "name": "Retorno cancelado não aceita avaliação",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "id": "R07N-19",
+      "name": "Origem com derivado não reabre mesmo sem entrega",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "id": "R07N-19b",
+      "name": "Origem com retorno legado (sem warranty) não reabre",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "id": "R07N-19c",
+      "name": "Anterior com derivado por previous não reabre",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "id": "R07N-19d",
+      "name": "Irmão ativo da mesma unidade impede reabrir retorno finalizado",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "id": "R07N-20",
+      "name": "Troca pendente bloqueia conclusão",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "id": "R07N-21",
+      "name": "Devolução pendente bloqueia conclusão",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "id": "R07N-22",
+      "name": "Reparo sem cobrança pode concluir",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "id": "R07N-23",
+      "name": "Troca executada libera conclusão",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "id": "R07N-24",
+      "name": "Custo zero e tempo zero são rejeitados",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "id": "R07N-25",
+      "name": "Custo acima do limite é rejeitado",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "id": "R07N-26",
+      "name": "Custo fracionário, negativo ou sem confirmação é rejeitado",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "id": "R07N-27",
+      "name": "Correção de custo inexistente é rejeitada",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "id": "R07N-28",
+      "name": "Segunda correção do mesmo custo é rejeitada",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "id": "R07N-29",
+      "name": "Correção preserva o registro original e zera o líquido",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "id": "R07N-30",
+      "name": "Rascunho sem decisão de novo orçamento é rejeitado",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "id": "R07N-31",
+      "name": "Publicação sem decisão de novo orçamento é rejeitada",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "id": "R07N-32",
+      "name": "Faturamento sem versão vigente aprovada é rejeitado",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "id": "R07N-32b",
+      "name": "Faturamento com versão vigente recusada é rejeitado",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "id": "R07N-33",
+      "name": "Faturamento com itens alterados após aprovação é rejeitado",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "id": "R07N-34",
+      "name": "Faturamento com desconto alterado após aprovação é rejeitado",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "id": "R07N-35",
+      "name": "Faturamento com publicação retirada é rejeitado",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "id": "R07N-36",
+      "name": "Faturamento com itens e valores idênticos é aceito e não movimenta a origem",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "id": "R07N-37",
+      "name": "Segundo faturamento do mesmo retorno é rejeitado",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "id": "R07N-38",
+      "name": "Publicação com equipamento entregue é rejeitada",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "id": "R07N-39",
+      "name": "Edição após entrega é rejeitada",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "id": "R07N-40",
+      "name": "Avaliação nova sem novo orçamento fecha a edição",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "id": "R07N-41",
+      "name": "Projeção pública não expõe garantia nem avaliação privada",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "id": "R07N-42",
+      "name": "Valor negativo ou valor zero no orçamento é rejeitado",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "id": "R07N-44",
+      "name": "Último retorno finalizado da unidade é o de maior id",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "id": "R07N-46",
+      "name": "Último finalizado considera o próprio retorno quando ele é o mais recente",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "id": "R07N-45",
+      "name": "Retorno ativo não conta como último finalizado",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "id": "R07N-47",
+      "name": "Custo e tempo exatamente no teto são aceitos",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "id": "R07N-48",
+      "name": "Retorno cancelado não é escolhido como último finalizado",
+      "status": "PASS",
+      "detail": ""
+    }
+  ]
+}

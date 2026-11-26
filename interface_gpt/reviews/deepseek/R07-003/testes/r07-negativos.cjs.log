@@ -1,0 +1,55 @@
+PASS R07N-01 — Retorno duplicado da mesma unidade é rejeitado
+PASS R07N-02 — Origem sem conclusão real é rejeitada
+PASS R07N-02b — Origem cancelada com data de conclusão não gera retorno
+PASS R07N-03 — Unidade sem identificação é rejeitada
+PASS R07N-04 — Cliente divergente é rejeitado
+PASS R07N-05 — Defeito vazio é rejeitado
+PASS R07N-06 — Confirmação física é obrigatória
+PASS R07N-07 — Unidade diferente não bloqueia retorno legítimo
+PASS R07N-07b — Mesmo cliente com unidade divergente é rejeitado
+PASS R07N-07c — Origem de retorno precisa estar finalizada no momento do novo retorno
+PASS R07N-08 — Retorno não copia laudo, itens, financeiro, token nem orçamento
+PASS R07N-09 — Prazo desconhecido não é inventado
+PASS R07N-10 — Prazo vencido não presume cobertura
+PASS R07N-11 — Cobertura pendente não aceita solução
+PASS R07N-12 — Diagnóstico é obrigatório com cobertura concluída
+PASS R07N-13 — Justificativa é obrigatória
+PASS R07N-14 — Avaliação concorrente obsoleta é recusada
+PASS R07N-15 — Cobertura ou solução fora do domínio é recusada
+PASS R07N-16 — Solução já executada impede revisão da avaliação
+PASS R07N-17 — Avaliação não altera andamento, cobrança, entrega nem origem
+PASS R07N-18 — Retorno cancelado não aceita avaliação
+PASS R07N-19 — Origem com derivado não reabre mesmo sem entrega
+PASS R07N-19b — Origem com retorno legado (sem warranty) não reabre
+PASS R07N-19c — Anterior com derivado por previous não reabre
+PASS R07N-19d — Irmão ativo da mesma unidade impede reabrir retorno finalizado
+PASS R07N-20 — Troca pendente bloqueia conclusão
+PASS R07N-21 — Devolução pendente bloqueia conclusão
+PASS R07N-22 — Reparo sem cobrança pode concluir
+PASS R07N-23 — Troca executada libera conclusão
+PASS R07N-24 — Custo zero e tempo zero são rejeitados
+PASS R07N-25 — Custo acima do limite é rejeitado
+PASS R07N-26 — Custo fracionário, negativo ou sem confirmação é rejeitado
+PASS R07N-27 — Correção de custo inexistente é rejeitada
+PASS R07N-28 — Segunda correção do mesmo custo é rejeitada
+PASS R07N-29 — Correção preserva o registro original e zera o líquido
+PASS R07N-30 — Rascunho sem decisão de novo orçamento é rejeitado
+PASS R07N-31 — Publicação sem decisão de novo orçamento é rejeitada
+PASS R07N-32 — Faturamento sem versão vigente aprovada é rejeitado
+PASS R07N-32b — Faturamento com versão vigente recusada é rejeitado
+PASS R07N-33 — Faturamento com itens alterados após aprovação é rejeitado
+PASS R07N-34 — Faturamento com desconto alterado após aprovação é rejeitado
+PASS R07N-35 — Faturamento com publicação retirada é rejeitado
+PASS R07N-36 — Faturamento com itens e valores idênticos é aceito e não movimenta a origem
+PASS R07N-37 — Segundo faturamento do mesmo retorno é rejeitado
+PASS R07N-38 — Publicação com equipamento entregue é rejeitada
+PASS R07N-39 — Edição após entrega é rejeitada
+PASS R07N-40 — Avaliação nova sem novo orçamento fecha a edição
+PASS R07N-41 — Projeção pública não expõe garantia nem avaliação privada
+PASS R07N-42 — Valor negativo ou valor zero no orçamento é rejeitado
+PASS R07N-44 — Último retorno finalizado da unidade é o de maior id
+PASS R07N-46 — Último finalizado considera o próprio retorno quando ele é o mais recente
+PASS R07N-45 — Retorno ativo não conta como último finalizado
+PASS R07N-47 — Custo e tempo exatamente no teto são aceitos
+PASS R07N-48 — Retorno cancelado não é escolhido como último finalizado
+TOTAL 54 · PASS 54 · FAIL 0

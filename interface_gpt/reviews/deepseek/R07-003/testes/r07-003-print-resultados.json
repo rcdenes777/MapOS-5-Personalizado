@@ -1,0 +1,58 @@
+{
+  "generatedAt": "2026-11-26T16:51:56.320Z",
+  "codeSha": "a35b6749f1918af87b75bffa7000832c559b9736",
+  "total": 5,
+  "summary": {
+    "PASS": 5
+  },
+  "pdfs": [
+    {
+      "file": "origem-preservada-a4.pdf",
+      "bytes": 30694
+    },
+    {
+      "file": "recibo-original.pdf",
+      "bytes": 36857
+    },
+    {
+      "file": "retorno-substituta-a4.pdf",
+      "bytes": 31753
+    },
+    {
+      "file": "retorno-substituta-cupom.pdf",
+      "bytes": 28966
+    }
+  ],
+  "results": [
+    {
+      "id": "R07P3-01",
+      "desc": "A4 do retorno mostra a substituta e o prazo original sem custo/motivo",
+      "status": "PASS",
+      "detail": "Minha oficina · Demonstração Ordem de serviço #026 Cliente Equipamento Clima Sul Serviços LG · Inverter Substituta em garantia Entrada Substituta em garantia · Placa eletrônica · 26/11/2026 Midea · Substituta · Selo NOVA-1 · Série SERIE-1 Andamento Entrega Finalizado Não registrada Defeito Defeito público do retorno Total cobrado Pago R$ 0,00 R$ 0,00 Saldo Situação financeira R$ 0,00 Sem cobrança Protótipo — sem validade comercial. "
+    },
+    {
+      "id": "R07P3-02",
+      "desc": "Cupom 80 mm do retorno identifica a substituta e não vaza custo/motivo",
+      "status": "PASS",
+      "detail": "{\"info\":{\"pages\":1,\"size\":\"227.04 x 425.04 pts\"},\"text\":\"Minha oficina · Demonstração Ordem de serviço #026 Cliente Equipamento Clima Sul Serviços LG · Inverter Substituta em garantia Entrada Substituta em 26/11/2026 garantia · Placa eletrônica · Midea · Substituta · Selo NOVA-1 · Série SERIE- 1 Andamento Entrega Finalizado Não registrada Defeito Defeito \"}"
+    },
+    {
+      "id": "R07P3-03",
+      "desc": "A4 da origem preserva 500/200/300 e a identificação original, sem substituta",
+      "status": "PASS",
+      "detail": "Minha oficina · Demonstração Ordem de serviço #025 Cliente Equipamento Clima Sul Serviços LG · Inverter Entrada Andamento 20/08/2026 Finalizado Entrega Defeito Não registrada Não informado Total cobrado Pago R$ 500,00 R$ 200,00 Saldo Situação financeira R$ 300,00 Parcial Protótipo — sem validade comercial. "
+    },
+    {
+      "id": "R07P3-04",
+      "desc": "Recibo original da cobrança preservada continua emitido",
+      "status": "PASS",
+      "detail": "MINHA OFICINA · DEMONSTRAÇÃO Recibo #25 / 1 Recebimento registrado R$ 200,00 OS Cliente #025 Clima Sul Serviços Equipamento Data do recebimento LG · Inverter 25/11/2026 Forma Pix Protótipo — sem validade comercial. Não comprova movimentação bancária. "
+    },
+    {
+      "id": "R07P3-05",
+      "desc": "Sem erros de página ou console na impressão",
+      "status": "PASS",
+      "detail": "{\"errors\":[],\"consoleErrors\":[]}"
+    }
+  ]
+}

@@ -1,0 +1,167 @@
+{
+  "generatedAt": "2026-11-26T16:49:10.051Z",
+  "codeSha": "a35b6749f1918af87b75bffa7000832c559b9736",
+  "total": 20,
+  "captures": [
+    {
+      "file": "capturas/desktop/01-os18-garantia-avaliacao-troca-1440.png",
+      "sha256": "239d37e80305c28f25cce4421bddab86cc26b96eb11e6feafd42090e0ddc9d24",
+      "bytes": 211595,
+      "width": 1440,
+      "w": 1440,
+      "h": 1800
+    },
+    {
+      "file": "capturas/mobile/13-os18-garantia-avaliacao-troca-390.png",
+      "sha256": "a62979df7fa2781e5cec44bb0aa3b951f0cdef8ae5a9a999ec0a72a22e1710eb",
+      "bytes": 175221,
+      "width": 390,
+      "w": 390,
+      "h": 2673
+    },
+    {
+      "file": "capturas/desktop/02-modal-troca-vazio-1440.png",
+      "sha256": "cabd29a6722fdaabf7e7a8589bc94ae2f9b15ad51ae766927ebe96053c0e94c1",
+      "bytes": 243692,
+      "width": 1440,
+      "w": 1440,
+      "h": 1800
+    },
+    {
+      "file": "capturas/mobile/14-modal-troca-vazio-390.png",
+      "sha256": "0d2f5b0e31e2d0749b4c8ab26d6f7010702abaecf4d028c0c51a9d917dda2972",
+      "bytes": 155928,
+      "width": 390,
+      "w": 390,
+      "h": 2673
+    },
+    {
+      "file": "capturas/mobile320/19-modal-troca-vazio-320.png",
+      "sha256": "589c050ec65cab5c74403fccdd65c63a51469f813497715f83b706b8d8205e1b",
+      "bytes": 167858,
+      "width": 320,
+      "w": 320,
+      "h": 2953
+    },
+    {
+      "file": "capturas/desktop/03-modal-troca-preenchido-1440.png",
+      "sha256": "6a12dd443b90a53e7c6923aff33aea91a53fe4a26e70722dae614a29ef27b005",
+      "bytes": 247910,
+      "width": 1440,
+      "w": 1440,
+      "h": 1800
+    },
+    {
+      "file": "capturas/desktop/04-modal-troca-erro-selo-1440.png",
+      "sha256": "2ad5b0f0dd1b035929741550a69cacc7c00e94a5f59e4b133ce4da4e06f35c22",
+      "bytes": 251138,
+      "width": 1440,
+      "w": 1440,
+      "h": 1800
+    },
+    {
+      "file": "capturas/mobile/15-modal-troca-erro-selo-390.png",
+      "sha256": "a003eefff0eb7156cdedab676908f2e8a221da2b7b0b9b302765f11430e75e2c",
+      "bytes": 156006,
+      "width": 390,
+      "w": 390,
+      "h": 2673
+    },
+    {
+      "file": "capturas/desktop/05-modal-troca-estoque-1440.png",
+      "sha256": "22fda2bd001a94423637df338d4261791ebd02505bc5178389b99680f89a1fb3",
+      "bytes": 247911,
+      "width": 1440,
+      "w": 1440,
+      "h": 1800
+    },
+    {
+      "file": "capturas/desktop/06-garantia-substituicao-registrada-1440.png",
+      "sha256": "df1c83aef9daf75d14389c371eba17e5b4864792ca99fd4bd8033417c2b933c2",
+      "bytes": 206301,
+      "width": 1440,
+      "w": 1440,
+      "h": 1800
+    },
+    {
+      "file": "capturas/mobile/16-garantia-substituicao-registrada-390.png",
+      "sha256": "892ce475a0f1bb923213874b617db76b48e43c0f0022fbb4032d7bdf55965029",
+      "bytes": 171290,
+      "width": 390,
+      "w": 390,
+      "h": 2673
+    },
+    {
+      "file": "capturas/desktop/07-estoque-apos-baixa-1440.png",
+      "sha256": "fa7ef70da84d4993c196254e3dd05d4ae1327d3d245212756d11cd24e0356248",
+      "bytes": 75648,
+      "width": 1440,
+      "w": 1440,
+      "h": 900
+    },
+    {
+      "file": "capturas/desktop/08-origem-link-retorno-ativo-1440.png",
+      "sha256": "373f6234082b698a31ce5391d9baf22c0834a70de0ae513dfd4fe7372d9c933e",
+      "bytes": 128293,
+      "width": 1440,
+      "w": 1440,
+      "h": 900
+    },
+    {
+      "file": "capturas/desktop/09-impressao-substituta-a4-1440.png",
+      "sha256": "e549cccb8400a929fe8096163221e7949c80dd0b7d12bea5a2bfb210bcb36ac8",
+      "bytes": 96731,
+      "width": 1440,
+      "w": 1440,
+      "h": 900
+    },
+    {
+      "file": "capturas/tablet/21-impressao-substituta-a4-768.png",
+      "sha256": "3a1de94305b50edf53082ae58117023fe55a5d0da22478dec0e02df35fcbefc6",
+      "bytes": 64225,
+      "width": 768,
+      "w": 768,
+      "h": 1024
+    },
+    {
+      "file": "capturas/desktop/10-portal-substituta-1440.png",
+      "sha256": "86091760bc8a0f23c09966a914636e98ed57afc44f82a9dee7f443e3361a4aea",
+      "bytes": 57948,
+      "width": 1440,
+      "w": 1440,
+      "h": 900
+    },
+    {
+      "file": "capturas/mobile/17-portal-substituta-390.png",
+      "sha256": "1881fec3cf825e467f4f4cbb397f7767ca2c1586c98b609544d766b11cf3378a",
+      "bytes": 51171,
+      "width": 390,
+      "w": 390,
+      "h": 844
+    },
+    {
+      "file": "capturas/desktop/11-retorno-substituto-form-1440.png",
+      "sha256": "3399f00e923e8a41ca514df5113d4d0b89ed78daa3eba7b0b43d95399da6b733",
+      "bytes": 93354,
+      "width": 1440,
+      "w": 1440,
+      "h": 900
+    },
+    {
+      "file": "capturas/mobile/18-retorno-substituto-form-390.png",
+      "sha256": "3aaca36c41db7e5c25925a7648f999b535382427f36d56eb9b322dd45422e33e",
+      "bytes": 56491,
+      "width": 390,
+      "w": 390,
+      "h": 970
+    },
+    {
+      "file": "capturas/desktop/12-garantia-sem-troca-1440.png",
+      "sha256": "993fb452e58f01664120a732cc34cec1f3394b787675678669997d7eecd26d68",
+      "bytes": 191627,
+      "width": 1440,
+      "w": 1440,
+      "h": 1603
+    }
+  ]
+}

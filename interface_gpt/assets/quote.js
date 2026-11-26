@@ -20,8 +20,14 @@ const BancadaQuote = (() => {
     assert(gross<=999999999&&discount<=gross,'Confira o total e o desconto.');
     return {parts,services,gross,discount,total:gross-discount};
   }
+  // IDs are local to the OS. Upgrade only the current draft; never rewrite published/billed/history snapshots.
+  function identify(q){
+    const used=new Set();let next=Math.max(1,Number.isSafeInteger(q.nextLineId)?q.nextLineId:1,...q.draft.items.filter(i=>Number.isSafeInteger(i.lineId)&&i.lineId>0).map(i=>i.lineId+1));
+    for(const i of q.draft.items){if(!Number.isSafeInteger(i.lineId)||i.lineId<=0||used.has(i.lineId))i.lineId=next++;used.add(i.lineId)}
+    q.nextLineId=next;return q;
+  }
   function init(o) {
-    if(o.quote)return o.quote;
+    if(o.quote)return identify(o.quote);
     const amount=o.proposal||o.total||0;
     const items=amount?[{type:'Serviço',name:'Serviço de reparo (demonstração inicial)',quantity:1,unit:amount}]:[];
     const q={draft:{items,discount:0,terms:{payment:'',deadline:'',warranty:'',diagnosis:''}},versions:[],current:null,active:false};
@@ -29,11 +35,12 @@ const BancadaQuote = (() => {
       q.current=1;q.active=true;
       q.versions.push({number:1,items:copy(items),discount:0,terms:copy(q.draft.terms),total:amount,created:o.entry,decision:['Aprovado','Recusado'].includes(o.approval)?{answer:o.approval,name:'Cliente de demonstração',channel:'presencial',date:o.entry}:null,source:'seed'});
     }
-    o.quote=q;return q;
+    o.quote=q;return identify(q);
   }
   const validDay=v=>{if(typeof v!=='string'||!/^\d{4}-\d{2}-\d{2}$/.test(v))return false;const d=new Date(v+'T00:00:00Z');return !Number.isNaN(d.getTime())&&d.toISOString().slice(0,10)===v};
-  const snapshotKey=d=>JSON.stringify([d.items.map(i=>[i.type,i.name,i.quantity,i.unit]),d.discount]);
-  function vigente(o){const v=active(o);return o.status!=='Cancelado'&&v&&snapshotKey(v)===snapshotKey(init(o).draft)?v:null}
+  // Legacy snapshots did not record line IDs. Preserve their original content comparison.
+  const snapshotKey=(d,ids=false)=>JSON.stringify([d.items.map(i=>[...(ids?[i.lineId]:[]),i.type,i.name,i.quantity,i.unit]),d.discount]);
+  function vigente(o){const v=active(o);if(o.status==='Cancelado'||!v)return null;const ids=v.items.every(i=>Number.isSafeInteger(i.lineId));return snapshotKey(v,ids)===snapshotKey(init(o).draft,ids)?v:null}
   function label(o){const q=init(o),v=active(o);if(!v)return q.versions.length?'Publicação retirada':q.draft.items.length?'Rascunho':'Sem orçamento';if(!vigente(o))return 'Itens alterados';return v.decision?.answer||'Aguardando resposta'}
   function sync(o){o.approval=label(o);o.proposal=totals(init(o).draft.items,o.quote.draft.discount).total}
   const returnAllowed=o=>!o.origin||o.warranty?.events?.filter(e=>e.type==='avaliar').at(-1)?.solution==='novo_orcamento';
@@ -43,7 +50,14 @@ const BancadaQuote = (() => {
     assert(editable(o),'Edição de itens indisponível neste atendimento.');
     totals(draft.items,draft.discount);
     const terms={};for(const k of ['payment','deadline','warranty','diagnosis','equipment','defect']){const v=String(draft.terms?.[k]||'');assert(v.length<=2000,'Texto muito longo.');terms[k]=v}
-    init(o).draft={items:copy(draft.items),discount:draft.discount,terms};sync(o);
+    const q=init(o),seen=new Set();let next=q.nextLineId;
+    const items=draft.items.map(i=>{
+      const prior=i.lineId===undefined||i.lineId===null?null:q.draft.items.find(x=>x.lineId===i.lineId);
+      assert(i.lineId===undefined||i.lineId===null||prior&&!seen.has(i.lineId),'O item mudou ou não pertence a esta OS. Reabra o orçamento.');
+      if(prior)seen.add(i.lineId);
+      return {...copy(i),lineId:prior&&prior.type===i.type?prior.lineId:next++};
+    });
+    q.draft={items,discount:draft.discount,terms};q.nextLineId=next;sync(o);
   }
   function publish(o,when,{source='publicar',internal=false}={}) {
     assert(returnAllowed(o)&&o.status!=='Cancelado'&&(!o.delivery||internal),'Publicação indisponível neste atendimento.');

@@ -147,6 +147,7 @@ const BancadaWarranty=(()=>{
    return a;
  }
  const normalizeSeal=v=>String(v||'').replace(/\s+/g,'').toUpperCase();
+ const sealInUse=(v,orders)=>{const seal=normalizeSeal(v);return !!seal&&orders.some(x=>normalizeSeal(x.seal)===seal||normalizeSeal(swapEvent(x)?.replacement.seal)===seal)};
  function swap(o,orders,stock,d,when,actor){
    const a=swapEligibility(o,orders);
    ensure(Number(d.assessment)===a.id,'A avaliação mudou ou não permite esta solução. Reabra e confira.');
@@ -155,8 +156,7 @@ const BancadaWarranty=(()=>{
    const replacement={type:text(d.type,100),brand:text(d.brand,100),model:text(d.model,100),seal:text(d.seal||'',100,false),serial:text(d.serial||'',100,false),imei:text(d.imei||'',100,false)};
    const reason=text(d.reason,2000);
    ensure(replacement.seal||replacement.serial||replacement.imei,'Identifique a nova unidade por selo, série ou IMEI.');
-   const seal=normalizeSeal(replacement.seal);
-   ensure(!seal||!orders.some(x=>normalizeSeal(x.seal)===seal||normalizeSeal(swapEvent(x)?.replacement.seal)===seal),'Selo já cadastrado. Identifique outra unidade física.');
+   ensure(!sealInUse(replacement.seal,orders),'Selo já cadastrado. Identifique outra unidade física.');
    const used=orders.flatMap(x=>[x.id,unit(x),swapEvent(x)?.replacement.unit||0]);
    replacement.unit=Math.max(0,...used)+1;
    let product=null,cost=null;
@@ -173,5 +173,5 @@ const BancadaWarranty=(()=>{
    (o.warranty.operations??=[]).push(e);return e;
  }
  function days(v){ensure(/^\d{1,4}$/.test(String(v))&&Number(v)<=9999,'Confira o prazo concedido na OS.');return Number(v)}
- return {coverage,solutions,unit,same,derived,reference,active,lastFinalized,create,binding,assessment,events,executed,assess,cost,correctCost,costs,transition,days,refundOrigin,refundEligibility,refundKey,refundEvents,refundCorrected,refund,correctRefund,swapEvent,physical,replaced,lineage,currentUnit,swapEligibility,swap};
+ return {coverage,solutions,unit,same,derived,reference,active,lastFinalized,create,binding,assessment,events,executed,assess,cost,correctCost,costs,transition,days,refundOrigin,refundEligibility,refundKey,refundEvents,refundCorrected,refund,correctRefund,swapEvent,physical,replaced,lineage,currentUnit,swapEligibility,swap,sealInUse};
 })();

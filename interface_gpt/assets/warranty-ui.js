@@ -7,7 +7,7 @@ function warrantyRef(o){try{return BancadaWarranty.reference(o,db.orders)}catch{
 // Referência read-only da própria raiz: preserva conclusão/prazo mesmo quando a unidade
 // original foi substituída e `reference` passa a recusá-la de propósito.
 function warrantyOriginRef(o){
- if(o.origin||!BancadaFinance.dayValid(o.conclusion))return null;
+ if(o.origin||o.status!=='Finalizado'||!BancadaFinance.dayValid(o.conclusion))return null;
  const days=Number.isInteger(o.warrantyDays)&&o.warrantyDays>=0&&o.warrantyDays<=9999?o.warrantyDays:null;
  let end=null;if(days>0){const d=new Date(o.conclusion+'T00:00:00Z');d.setUTCDate(d.getUTCDate()+days);end=d.toISOString().slice(0,10)}
  return {root:o.id,previous:o.id,unit:o.unit||o.id,client:o.client,conclusion:o.conclusion,days,end};
@@ -18,7 +18,7 @@ function warrantyBase(o){return o.status!=='Finalizado'?o:(BancadaWarranty.lastF
 function warrantyReturnLink(o){
  const base=warrantyBase(o);if(!can('return'))return '';
  const a=BancadaWarranty.active(base,db.orders);
- if(a)return link('Abrir retorno em andamento '+num(a),'#os/'+a.id+'/garantia','btn');
+ if(a)return link((a.origin===(o.origin||o.id)?'Abrir retorno em andamento ':'Retorno ativo da unidade · outra origem ')+num(a),'#os/'+a.id+'/garantia','btn');
  const w=warrantyRef(base);if(!w)return '';
  return link('Registrar retorno','#retorno/'+base.id,'btn');
 }
@@ -78,7 +78,7 @@ function warrantyModal(kind,o,id){
  const a=BancadaWarranty.assessment(o);
  if(kind==='warrantySwap'&&can('settings')){
    try{BancadaWarranty.swapEligibility(o,db.orders)}catch{return null}
-   return ['Registrar troca em garantia','<p class="note">Entrada preservada: '+esc(equipment(o))+'</p><input type="hidden" name="assessment" value="'+a.id+'">'+select('Origem da substituta','source',[['','Selecione'],['externa','Externa'],['estoque','Estoque']],'','required')+'<div id="swap-stock" hidden>'+select('Produto de estoque','sku',[['','Selecione'],...db.stock.map(p=>[p.sku,p.name+' · '+p.quantity+' disponíveis'])],'')+'</div><div id="swap-external">'+field('Custo externo (R$, opcional)','cost','','type="number" min="0" max="9999999.99" step="0.01"')+'</div>'+field('Tipo *','type',o.type||'','required maxlength="100"')+field('Marca *','brand',o.brand||'','required maxlength="100"')+field('Modelo *','model',o.model||'','required maxlength="100"')+field('Selo','seal','','maxlength="100"')+field('Série','serial','','maxlength="100"')+field('IMEI','imei','','maxlength="100"')+select('Destino da antiga','destination',[['','Selecione'],['retida_assistencia','Retida na assistência'],['devolvida_cliente','Devolvida ao cliente']],'','required')+textarea('Motivo *','reason','','required maxlength="2000"')+'<p class="note warn">Identifique outra unidade por selo, série ou IMEI. A troca preserva o prazo, não movimenta dinheiro e não pode ser repetida.</p>'+check('Confirmo a substituição física e o destino da unidade antiga.'),'Registrar troca'];
+   return ['Registrar troca em garantia','<p class="note">Entrada preservada: '+esc(equipment(o))+'</p><input type="hidden" name="assessment" value="'+a.id+'">'+select('Origem da substituta','source',[['','Selecione'],['externa','Externa'],['estoque','Estoque']],'','required')+'<div id="swap-stock" hidden>'+select('Produto de estoque','sku',[['','Selecione'],...db.stock.filter(p=>p.quantity>0).map(p=>[p.sku,p.name+' · '+p.quantity+' disponíveis'])],'')+'</div><div id="swap-external">'+field('Custo externo (R$, opcional)','cost','','type="number" min="0" max="9999999.99" step="0.01"')+'</div>'+field('Tipo *','type',o.type||'','required maxlength="100"')+field('Marca *','brand',o.brand||'','required maxlength="100"')+field('Modelo *','model',o.model||'','required maxlength="100"')+field('Selo','seal','','maxlength="100"')+field('Série','serial','','maxlength="100"')+field('IMEI','imei','','maxlength="100"')+select('Destino da antiga','destination',[['','Selecione'],['retida_assistencia','Retida na assistência'],['devolvida_cliente','Devolvida ao cliente']],'','required')+textarea('Motivo *','reason','','required maxlength="2000"')+'<p class="note warn">Identifique outra unidade por selo, série ou IMEI. A troca preserva o prazo, não movimenta dinheiro e não pode ser repetida.</p>'+check('Confirmo a substituição física e o destino da unidade antiga.'),'Registrar troca'];
  }
  if(kind==='warrantyRefund'&&warrantyRefundAllowed()){
    let origin;try{({origin}=BancadaWarranty.refundEligibility(o,db.orders))}catch{return null}

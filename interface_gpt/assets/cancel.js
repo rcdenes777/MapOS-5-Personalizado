@@ -14,7 +14,8 @@ const BancadaCancel=(()=>{
  const guard=(o,orders)=>ensure(!blockers(o,orders).length,blockers(o,orders).join(' '));
  const requestId=o=>{const p=state(o);ensure(p?.type==='request','Não há pedido pendente.');return p.id};
  const add=(o,type,data,when)=>{const e={id:events(o).length+1,type,when,...copy(data)};events(o).push(e);return e};
- const technicalKey=o=>JSON.stringify([o.status,lines(o).map(i=>[i.type,i.name,i.quantity,i.unit])]);
+ const itemKey=(o,i)=>JSON.stringify([o.id,state(o)?.id,i.lineId,i.type,i.name,i.quantity,i.unit]);
+ const technicalKey=o=>JSON.stringify([o.status,lines(o).map(i=>[i.lineId,i.type,i.name,i.quantity,i.unit])]);
  const financialKey=o=>JSON.stringify([technicalKey(o),BancadaQuote.init(o).draft.discount,o.total,o.paid,o.billing?.due||'',BancadaFinance.events(o),!!o.delivery,o.conclusion||null]);
  const technical=o=>pending(o)&&!lines(o).some(i=>i.type==='Peça')&&events(o).filter(e=>e.type==='technical'&&e.request===state(o).id).at(-1)?.key===technicalKey(o);
  function request(o,origin,reason,when,orders=[]){
@@ -22,9 +23,10 @@ const BancadaCancel=(()=>{
    return add(o,'request',{origin,reason:text(reason,2000),status:o.status},when)
  }
  function withdraw(o,reason,when){return add(o,'withdraw',{request:requestId(o),reason:text(reason,2000)},when)}
- function remove(o,index,quantity,disposition,reason,when,orders=[]){
-   guard(o,orders);const request=requestId(o),q=BancadaQuote.init(o),item=q.draft.items[index];
-   ensure(Number.isInteger(index)&&item,'Item não encontrado.');
+ function remove(o,lineId,quantity,disposition,reason,when,orders=[],expected){
+   guard(o,orders);const request=requestId(o),q=BancadaQuote.init(o),index=q.draft.items.findIndex(i=>i.lineId===lineId),item=q.draft.items[index];
+   ensure(Number.isSafeInteger(lineId)&&lineId>0&&item,'Item não encontrado.');
+   ensure(expected===itemKey(o,item),'O item ou pedido mudou. Reabra a conferência.');
    ensure(Number.isInteger(quantity)&&quantity>0&&quantity<=item.quantity,'Quantidade inválida.');
    ensure(item.type==='Peça'?['unused','lost'].includes(disposition):disposition==='notdone'&&quantity===item.quantity,'Destino inválido para este item.');
    const why=disposition==='lost'?text(reason,2000):'';
@@ -64,5 +66,5 @@ const BancadaCancel=(()=>{
    const e=add(o,'confirm',{request,reason,settlement:a,before,refund,day},when);
    o.status='Cancelado';o.cancelRequested=false;return e;
  }
- return {events,state,pending,lines,blockers,technical,financialKey,request,withdraw,remove,confer,calculate,confirm};
+ return {events,state,pending,lines,blockers,technical,financialKey,itemKey,request,withdraw,remove,confer,calculate,confirm};
 })();

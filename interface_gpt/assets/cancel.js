@@ -10,7 +10,7 @@ const BancadaCancel=(()=>{
  const state=o=>events(o).filter(e=>['request','withdraw','confirm'].includes(e.type)).at(-1)||null;
  const pending=o=>state(o)?.type==='request';
  const lines=o=>BancadaQuote.init(o).draft.items;
- const blockers=(o,orders=[])=>[...(['Cancelado','Finalizado','Faturado'].includes(o.status)||o.conclusion?['Atendimento concluído, cancelado ou faturado legado. Concilie antes.']:[]),...(o.delivery?['Há entrega física registrada.']:[]),...(o.origin||orders.some(x=>x.origin===o.id)?['Há vínculo de garantia; conciliação de garantia será tratada na R07.']:[])];
+ const blockers=(o,orders=[])=>[...(['Cancelado','Finalizado','Faturado'].includes(o.status)||o.conclusion?['Atendimento concluído, cancelado ou faturado legado. Concilie antes.']:[]),...(o.delivery?['Há entrega física registrada.']:[]),...(orders.some(x=>x.id!==o.id&&(x.origin===o.id||x.warranty?.previous===o.id))||o.warranty?.operations?.some(e=>e.type==='troca'||e.type==='reembolso'&&!o.warranty.operations.some(x=>x.type==='corrigir_reembolso'&&x.reference===e.id))?['Há retorno ou solução de garantia vinculada. Preserve o histórico e concilie a garantia.']:[])];
  const guard=(o,orders)=>ensure(!blockers(o,orders).length,blockers(o,orders).join(' '));
  const requestId=o=>{const p=state(o);ensure(p?.type==='request','Não há pedido pendente.');return p.id};
  const add=(o,type,data,when)=>{const e={id:events(o).length+1,type,when,...copy(data)};events(o).push(e);return e};

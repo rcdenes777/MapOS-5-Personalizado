@@ -1,0 +1,15 @@
+{
+  "generatedAt": "2026-11-26T19:41:44.395Z",
+  "codeSha": "dd0175eff11f9758ba430a37052af0f12bafe997",
+  "opened": true,
+  "modal": true,
+  "error": "Execute a solução de garantia escolhida antes de concluir o retorno.",
+  "toast": "Registro atualizado na demonstração.",
+  "state": {
+    "status": "Aberto",
+    "conclusion": null,
+    "total": 0,
+    "paid": 0
+  },
+  "guardPresent": true
+}

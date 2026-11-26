@@ -1,0 +1,103 @@
+{
+  "codeSha": "dd0175eff11f9758ba430a37052af0f12bafe997",
+  "generatedAt": "2026-11-26T19:28:43.883Z",
+  "suites": [
+    {
+      "file": "tests/cancel-ui.cjs",
+      "exit": 0,
+      "checks": 11,
+      "last": "11 cancellation UI checks passed."
+    },
+    {
+      "file": "tests/cancel.cjs",
+      "exit": 0,
+      "checks": 30,
+      "last": "30 cancellation domain checks passed."
+    },
+    {
+      "file": "tests/finance-ui.cjs",
+      "exit": 0,
+      "checks": 12,
+      "last": "12 finance integration checks passed."
+    },
+    {
+      "file": "tests/finance.cjs",
+      "exit": 0,
+      "checks": 24,
+      "last": "24 financial domain checks passed."
+    },
+    {
+      "file": "tests/line-identity-ui.cjs",
+      "exit": 0,
+      "checks": 6,
+      "last": "6 stable line identity UI checks passed."
+    },
+    {
+      "file": "tests/line-identity.cjs",
+      "exit": 0,
+      "checks": 15,
+      "last": "15 stable line identity domain checks passed."
+    },
+    {
+      "file": "tests/portal-page.cjs",
+      "exit": 0,
+      "checks": 8,
+      "last": "8 portal page render checks passed."
+    },
+    {
+      "file": "tests/portal.cjs",
+      "exit": 0,
+      "checks": 24,
+      "last": "24 portal domain checks passed."
+    },
+    {
+      "file": "tests/quote.cjs",
+      "exit": 0,
+      "checks": 29,
+      "last": "29 quote domain checks passed."
+    },
+    {
+      "file": "tests/smoke.cjs",
+      "exit": 0,
+      "checks": 72,
+      "last": "72 profile/route combinations; queue, financial display and escaping checks passed."
+    },
+    {
+      "file": "tests/warranty-refund-ui.cjs",
+      "exit": 0,
+      "checks": 7,
+      "last": "7 warranty refund UI checks passed."
+    },
+    {
+      "file": "tests/warranty-refund.cjs",
+      "exit": 0,
+      "checks": 30,
+      "last": "30 warranty refund domain checks passed."
+    },
+    {
+      "file": "tests/warranty-swap-ui.cjs",
+      "exit": 0,
+      "checks": 6,
+      "last": "6 warranty swap UI checks passed."
+    },
+    {
+      "file": "tests/warranty-swap.cjs",
+      "exit": 0,
+      "checks": 22,
+      "last": "22 warranty swap domain checks passed."
+    },
+    {
+      "file": "tests/warranty-ui.cjs",
+      "exit": 0,
+      "checks": 9,
+      "last": "9 warranty UI checks passed."
+    },
+    {
+      "file": "tests/warranty.cjs",
+      "exit": 0,
+      "checks": 22,
+      "last": "22 warranty domain checks passed."
+    }
+  ],
+  "totalChecks": 327
+}

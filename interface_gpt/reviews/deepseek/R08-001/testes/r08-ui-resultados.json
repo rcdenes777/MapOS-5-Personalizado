@@ -1,0 +1,36 @@
+{
+  "generatedAt": "2026-11-26T19:28:44.809Z",
+  "codeSha": "dd0175eff11f9758ba430a37052af0f12bafe997",
+  "source": "/home/dragonblue/workspace/interface-gpt-lab/repo/interface_gpt/assets",
+  "total": 4,
+  "summary": {
+    "PASS": 4,
+    "FAIL": 0
+  },
+  "results": [
+    {
+      "id": "U01",
+      "name": "editor carrega identidade e linha nova em branco",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "id": "U02",
+      "name": "conferência identifica a linha exata e recusa índice como ID",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "id": "U03",
+      "name": "N5 seletor de troca exclui produto zerado e mantém o disponível",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "id": "U04",
+      "name": "N1 fallback apenas em raiz finalizada",
+      "status": "PASS",
+      "detail": ""
+    }
+  ]
+}

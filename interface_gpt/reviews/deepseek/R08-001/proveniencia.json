@@ -1,0 +1,147 @@
+{
+  "generatedAt": "2026-11-26T20:02:15.304Z",
+  "reference": "8c256cae4ddaeefad68922abddbb8addfe37c99d",
+  "baseR07": "cc738622436d3df1224df700916970570eb0bd40",
+  "candidatoInicial": "3a2a80c8abf436414528d2061f68652942da6ac4",
+  "candidatoCorretivo1": "93dc628dbc47c890c2700ee246318585d10820a5",
+  "candidatoFinal": "dd0175eff11f9758ba430a37052af0f12bafe997",
+  "candidatoFinalTree": "ee7a91bbebb01cb08081b04d9d97db04ea952728",
+  "remoteHeadAtStart": "8e14333ab70436d0ba5e7d6d49b5a2e92667868b",
+  "ackCommit": "06cdb1c7",
+  "assets": {
+    "assets/quote.js": {
+      "working": "02358d8ba5354264415595bc9949bc233d3ea8fd1110f3bae3147b53d98c6c27",
+      "committed": "02358d8ba5354264415595bc9949bc233d3ea8fd1110f3bae3147b53d98c6c27",
+      "match": true
+    },
+    "assets/quote-ui.js": {
+      "working": "4b64ac5781ba4bf9bb1aeb17d076aa8f40c849a4a9c9abf5a652a6327622b20a",
+      "committed": "4b64ac5781ba4bf9bb1aeb17d076aa8f40c849a4a9c9abf5a652a6327622b20a",
+      "match": true
+    },
+    "assets/cancel.js": {
+      "working": "81c3336300b1dc8d48d391df2249a4e673d1fd9a14119e46529b2c5c29486c6d",
+      "committed": "81c3336300b1dc8d48d391df2249a4e673d1fd9a14119e46529b2c5c29486c6d",
+      "match": true
+    },
+    "assets/cancel-ui.js": {
+      "working": "f0d593951fece1792f9a5b5086f090cbdd37b931883654941310a55a4a0af58e",
+      "committed": "f0d593951fece1792f9a5b5086f090cbdd37b931883654941310a55a4a0af58e",
+      "match": true
+    },
+    "assets/warranty.js": {
+      "working": "8ad7cfa500f58a8bb2cdbca405641fc96e51ca337c3e6d1cf77b8f3696c732ee",
+      "committed": "8ad7cfa500f58a8bb2cdbca405641fc96e51ca337c3e6d1cf77b8f3696c732ee",
+      "match": true
+    },
+    "assets/warranty-ui.js": {
+      "working": "0eba7c2b702a5f9473b76f8f506ea0689e9bd3f8c149210870ab65715fed3d38",
+      "committed": "0eba7c2b702a5f9473b76f8f506ea0689e9bd3f8c149210870ab65715fed3d38",
+      "match": true
+    },
+    "assets/app.js": {
+      "working": "b69c0cbd0d2cb1a53c397a49d1c420aeb8c6ac684fe3eb079337a4d37791e933",
+      "committed": "b69c0cbd0d2cb1a53c397a49d1c420aeb8c6ac684fe3eb079337a4d37791e933",
+      "match": true
+    },
+    "assets/finance.js": {
+      "working": "0929532d945fb2d29af9dfa23463bb79cfa7d645f432a6de518a9096e7b565ed",
+      "committed": "0929532d945fb2d29af9dfa23463bb79cfa7d645f432a6de518a9096e7b565ed",
+      "match": true
+    },
+    "assets/finance-ui.js": {
+      "working": "15a746dc8c1852b1a009b98c6fa20c459134a4312ee92842c895fab0b65fbe4e",
+      "committed": "15a746dc8c1852b1a009b98c6fa20c459134a4312ee92842c895fab0b65fbe4e",
+      "match": true
+    },
+    "assets/portal.js": {
+      "working": "9f4fc3b04d638b3a74d0707c199f87b580fbcb49e62ce3018ba6ba8f5f2a8fe5",
+      "committed": "9f4fc3b04d638b3a74d0707c199f87b580fbcb49e62ce3018ba6ba8f5f2a8fe5",
+      "match": true
+    },
+    "assets/portal-page.js": {
+      "working": "a3a76b09fb7871be59537cb1c5832cdf21c226557511550b3579bc50980c7e6c",
+      "committed": "a3a76b09fb7871be59537cb1c5832cdf21c226557511550b3579bc50980c7e6c",
+      "match": true
+    },
+    "index.html": {
+      "working": "729ec588be7420a83a7bec95e1b58f57618751a8329b6b881f84a1484ac89305",
+      "committed": "729ec588be7420a83a7bec95e1b58f57618751a8329b6b881f84a1484ac89305",
+      "match": true
+    },
+    "portal.html": {
+      "working": "ff57603e06d930282dfb64c5045d35f17e7b2f86bcd97cd2d6eb2b88649d4e5f",
+      "committed": "ff57603e06d930282dfb64c5045d35f17e7b2f86bcd97cd2d6eb2b88649d4e5f",
+      "match": true
+    }
+  },
+  "suites": {
+    "tests/cancel-ui.cjs": "12a01ee293be946b59970e48a80a691186e6b5b45130bc33cc9c0d98f202ec91",
+    "tests/cancel.cjs": "958dad07ea825b3e23c39f39cdf84ca8921c786593cf4df72d83426d958220e5",
+    "tests/finance-ui.cjs": "3a4e2ddc0705f0489043994c1edebe0ad2ab92dcae4100be301250f100c53472",
+    "tests/finance.cjs": "8ecade21938d110fa7824929d416e4a17d26f0a821e6cd0467da31699c915dd8",
+    "tests/line-identity-ui.cjs": "4819c9d1620ecd088cae1921bdff9f69ee0eb12a5d568cd44f149859ce4cb5f5",
+    "tests/line-identity.cjs": "f3fe92bf2965c21a31c8a9a8267ac2fd5ca216be0bbf020452a2b110b11c6ed0",
+    "tests/portal-page.cjs": "fe9441e115c08964f09914a8fe4adc0857dd9b77d2f18c600a26ce59c894d2b0",
+    "tests/portal.cjs": "2f7d0986c5529a0db39e96f902b38f25b0085d51cf42b82ec5e5a4b0a6248216",
+    "tests/quote.cjs": "2ade592415a26f7a3e82b169f267752e30f1d29681828e93e947775c1d138f72",
+    "tests/smoke.cjs": "ad389be649533aa3d876cd7b5fe04c065d3e5b6fb1f48b636263692f29fda81a",
+    "tests/warranty-refund-ui.cjs": "c1246916846d4cbb338c26ca9ce620160f76e752f17bbd493de1bcbf32160fe6",
+    "tests/warranty-refund.cjs": "e7e8471f86492e322880a5368df2070920570809f8c0b798e0220253d2f1644e",
+    "tests/warranty-swap-ui.cjs": "3caa8411f362b7064646acb2579058ce69ec9de06228d15c51360f8b67395e5c",
+    "tests/warranty-swap.cjs": "caf79cbee5a6b349cfa10b7da9dbe8a9bfe14e4f9f60fda4df785c53ab9efeaa",
+    "tests/warranty-ui.cjs": "40c715cafb8d9f23e27a56d541094894a4b2a4c88c928d14882144c33240fe29",
+    "tests/warranty.cjs": "e0cbf1a1cc949a705f5054a31ac6169f66ca7e5b35e510d5f3099c70f4393b01",
+    "R08-001/r08-domain.cjs": "11627fba5afc3aca80f491b00bdc539cfcb425c150533f77acfebd52dc696439",
+    "R08-001/r08-ui.cjs": "ffb36b79e1def53b093020a9d492c62e2c6e784b4c2d1284b78e08682db40ed1",
+    "R08-001/r08-n6.cjs": "d338f5f990bf90b9dce2f10b2f55f7b57da895fc2f514f7da7cf6f3b42fdbc92",
+    "R08-001/r08-mutacoes.cjs": "fa13c7fdd6d9b6efcccc59da844ef2ed2753d5b53cbdf40bf64f8fcf2eb25fd2",
+    "R08-001/r08-browser.cjs": "0520d22e65c924bce3918f0db89cca17337cf95921a6770e54828fe87827ed6b",
+    "R08-001/lib.cjs": "9ff4e1220e5723f81a474a54579f54110eda86529347499903060ecf91f18070",
+    "R08-001/r06-002/lib.cjs": "0ed10fcde5976c42021d58bfa912a155733224864d5cbde7da8a62f941231b5c"
+  },
+  "evidence": {
+    "testes/a11y-resultados.json": "c9c8b2357211b3d07d864bc11f8ccc00db0d80aad7be701af8508ce04b6079b6",
+    "testes/browser-resultados.json": "80ff1ce77ccd09768df8256d6d959e4421957e0c375e3e4eb120baeae7abe967",
+    "testes/edge-resultados.json": "c9f2a6d60f5d798b9b307628993c4bfb1882275fb593c33ca3c1e80b8b2c8e37",
+    "testes/handler-tech-resultados.json": "d91658523410238531b0aa6ed6f5cdc909bd006e988ca5fe6cf5389104a3738e",
+    "testes/print-resultados.json": "0f2627470554d4d4c5e530209c2724e605be2d2e59212c00b4663c62804ace00",
+    "testes/r07-002-browser-resultados.json": "01b7a1f352ae75679c021e234c199ae301ec173c78c63e3e4c7b2e165ad56c2b",
+    "testes/r07-002-domain-resultados.json": "11f8be77409320d7d26a89fa7afcf25f9a7d69b5ae3f96fd9fd9f4f1e2548b3d",
+    "testes/r07-002-edge-resultados.json": "92c0485e87dde566c1ad2c2d81046d45db4d7d8ddeb30c5082770d747cf9f156",
+    "testes/r07-002-mutacoes-resultados.json": "d3b7e67176a955f7d6c0468a9daa1ac7974c6541b0e7c703ab94886c4cc16643",
+    "testes/r07-002-negativos-resultados.json": "e23ec4d45cf61f017f65464f23314970886eeb90fcfeb7a9042f3d79df549b89",
+    "testes/r07-002-print-resultados.json": "82766a46125c2373f66b3a4697f3cf315f3d2d041d65048b7578f34df7d33c7b",
+    "testes/r07-003-browser-resultados.json": "b974766583543ae0521cf5c88ffea612bd95615e674a31b1eb16a230836ac091",
+    "testes/r07-003-domain-resultados.json": "f29160fc6ad3ef1f93a98995f59f3603e7ec66104a61c44c7413a961adcc74eb",
+    "testes/r07-003-edge-resultados.json": "ebadd7bbbe956582217a654aa35b56715ac78493c87da9fd0acc43b3e7308e22",
+    "testes/r07-003-mutacoes-resultados.json": "422e80e12fad6ee964ebe4cfd8d6f9eb790232898a191c558e94b155c207d61f",
+    "testes/r07-003-print-resultados.json": "787f3dcd43b2517bdc99bebc57aa70fbff00b4a0eb4b56cff2a45ca954a6c5e5",
+    "testes/r07-browser-resultados.json": "0701226b499ded1a05a3a44af2e6b574f0e6d6dcf94c13877ddbfb034853475c",
+    "testes/r07-edge-resultados.json": "71afeab27827678085c220f2257acda518b5ce743701c2667712b13b438df85f",
+    "testes/r07-mutacoes-resultados.json": "717ec55401d3ac6d45284871752e8346024d782409c149395a6cb22fd869a8c3",
+    "testes/r07-negativos-resultados.json": "32e3dca52bdc75d5f6ad4646ed9c72774338a31bf8d8e1c1b605d92a6ac9c86e",
+    "testes/r07-print-resultados.json": "87ceb05d19582ae20747c2371bc832f57fec1be65731655f37b2b5ed869eed30",
+    "testes/r08-browser-resultados.json": "20728f25807d7974a7d3fb589dabff302fa300f5af1eff8713f845764ba0e264",
+    "testes/r08-domain-resultados.json": "10ef6823027e8e4a5a42c58e31f695c834680fe4737e8e9f72c97d927399ca61",
+    "testes/r08-mutacoes-resultados.json": "71b5026c6633a6a0c251f6e05e233ff9fa3f3f22d54bf6825765c6d099cc8fae",
+    "testes/r08-n6-resultados.json": "9a6074e69df96c08a9855cc84f88efa6934c529029b8049923ecd9ef2da19cba",
+    "testes/r08-node-suites.json": "a3705119b0db3395dd2f65634e91ae921b42a06c94083b36c82d0b22c605ef46",
+    "testes/r08-ui-resultados.json": "66e29ad2edf753e21e233e6db2e127671e997edae738348d6d3c0a09cca8be60",
+    "testes/regressao-r02-resultados.json": "e497f8fbd6f78b74d76e734ae110db6932d91d1b218b0421f7774fde9c6a9375",
+    "testes/regressao-r04-browser-resultados.json": "5fe0640df3c9c545815ec5bf6548803b37b29e9b2befbbb7f26b24e440254ed9",
+    "testes/regressao-r04-edge-resultados.json": "7cfe9ce1228f9e3fee62e834ca64d9268b6267ea0032564c65a4d611b027159f",
+    "testes/regressao-r05-browser-resultados.json": "70f9a0569ab0ee6212271995cf208a4144992da81487768207be660028cf59f0",
+    "testes/regressao-r05-edge-resultados.json": "f930c9bb86a7fef87fb92122a142ac54b3933da1160f32abb70deb44dcab1414",
+    "testes/regressao/regressao-r02.r08.log": "bb5a9b020aa33dc02c3a0e92949cde4a069d25de2146b828868aebcc452d40a0",
+    "testes/regressao/regressao-r03-audit.r08.log": "1ea5ababc84e69a6468e5e1e480f06d186afd1622cad8eb6c5bf51f3b3865f8b",
+    "testes/regressao/regressao-r04-browser.r08.log": "8a29589aba3a38bbf1bc8b7b3706e74754b77ed97f9c15f568c16ad41049360a",
+    "testes/regressao/regressao-r04-edge.r08.log": "5efb87df85e3a983d2bea23ee28fc64b9dfc70348a322a274e144dfac5a54726",
+    "testes/regressao/regressao-r05-browser.r08.log": "b7181cc92ac92583d098656628446e77570b315b00adcea98fc2597b860aa7d2",
+    "testes/regressao/regressao-r05-edge.r08.log": "9226ebf1af62c647a7576c63a4a72f800bb1609fe57c754979d631efe83c3a89",
+    "testes/r06-002/mutacoes-resultados.json": "f8e50d22d7e9a44e46bfdf1ca423d1c17c01de28dd8cd8187b4e043da8f56374",
+    "testes/r06-002/negativos-resultados.json": "f88beef53b096fd499e7013111021436029c82dada7c3cb8413ddc5d8a6148c1"
+  },
+  "v5trifase": "8c256cae4ddaeefad68922abddbb8addfe37c99d\trefs/heads/v5-trifase",
+  "allAssetsMatch": true
+}

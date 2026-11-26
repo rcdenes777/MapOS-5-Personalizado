@@ -1,0 +1,157 @@
+{
+  "generatedAt": "2026-11-26T19:29:12.992Z",
+  "codeSha": "dd0175eff11f9758ba430a37052af0f12bafe997",
+  "incrementSha": "",
+  "results": [
+    {
+      "id": "R06-E01",
+      "desc": "Pedido rejeita origem inválida e motivo acima de 2000",
+      "status": "PASS",
+      "detail": "{\"origin\":\"Selecione quem solicitou.\",\"reason2001\":\"Confira o motivo ou as observações.\",\"qty0\":\"Quantidade inválida.\",\"qty-1\":\"Quantidade inválida.\",\"qty1.5\":\"Quantidade inválida.\",\"qty3\":\"Quantidade inválida.\",\"qty9999\":\"Quantidade inválida.\",\"disposition\":\"Destino inválido para este item.\",\"servicePartial\":\"Destino inválido para este item.\",\"lostReason2001\":\"Confira o motivo ou as observações.\",\"conferNoPieces\":\"Concilie todas as peças antes.\"}"
+    },
+    {
+      "id": "R06-E02",
+      "desc": "Quantidade inválida e destino inválido são rejeitados",
+      "status": "PASS",
+      "detail": "{\"origin\":\"Selecione quem solicitou.\",\"reason2001\":\"Confira o motivo ou as observações.\",\"qty0\":\"Quantidade inválida.\",\"qty-1\":\"Quantidade inválida.\",\"qty1.5\":\"Quantidade inválida.\",\"qty3\":\"Quantidade inválida.\",\"qty9999\":\"Quantidade inválida.\",\"disposition\":\"Destino inválido para este item.\",\"servicePartial\":\"Destino inválido para este item.\",\"lostReason2001\":\"Confira o motivo ou as observações.\",\"conferNoPieces\":\"Concilie todas as peças antes.\"}"
+    },
+    {
+      "id": "R06-E03",
+      "desc": "Motivo de perda acima de 2000 é rejeitado",
+      "status": "PASS",
+      "detail": "{\"lost\":\"Confira o motivo ou as observações.\"}"
+    },
+    {
+      "id": "R06-E04",
+      "desc": "Observação técnica acima de 2000 é rejeitada e a conferência válida é concluída",
+      "status": "PASS",
+      "detail": "{\"notes2001\":{\"err\":\"Confira o motivo ou as observações.\",\"before\":3,\"after\":3},\"tech\":true}"
+    },
+    {
+      "id": "R06-E05",
+      "desc": "Cálculo rejeita desconto negativo/maior e valor fora do limite",
+      "status": "PASS",
+      "detail": "{\"negativeDiscount\":\"Valor devido ou desconto inválido.\",\"discountAboveGross\":\"Valor devido ou desconto inválido.\",\"fraction\":\"Valor devido ou desconto inválido.\",\"tooLarge\":\"Valor devido ou desconto inválido.\",\"zero\":{\"gross\":0,\"discount\":0,\"total\":0,\"paid\":0,\"refund\":0,\"balance\":0,\"result\":\"sem_pendencias\"},\"full\":{\"gross\":999999999,\"discount\":0,\"total\":999999999,\"paid\":0,\"refund\":0,\"balance\":999999999,\"result\":\"a_receber\"}}"
+    },
+    {
+      "id": "R06-E06",
+      "desc": "Confirmação exige justificativa e rejeita valor/desconto fora do limite",
+      "status": "PASS",
+      "detail": "{\"out\":{\"noReason\":\"Confira o motivo ou as observações.\",\"reason2001\":\"Confira o motivo ou as observações.\",\"grossTooLarge\":\"Valor devido ou desconto inválido.\",\"discountAboveGross\":\"Valor devido ou desconto inválido.\"},\"status\":\"Negociação\",\"events\":[\"request\",\"item\",\"item\",\"technical\"]}"
+    },
+    {
+      "id": "R06-E07",
+      "desc": "Motivo de 2000 caracteres não cria overflow em 320 px",
+      "status": "PASS",
+      "detail": "{\"doc\":320,\"win\":320,\"main\":320,\"mainClient\":320}"
+    },
+    {
+      "id": "R06-E08",
+      "desc": "Motivo é escapado e não executa HTML",
+      "status": "PASS",
+      "detail": "{\"escaped\":true}"
+    },
+    {
+      "id": "R06-E09",
+      "desc": "Cancelamento e detalhe não têm overflow horizontal em 320/390/768/1440",
+      "status": "PASS",
+      "detail": "[]"
+    },
+    {
+      "id": "R06-E10",
+      "desc": "Sem exceções ou erros de console nas bordas E1",
+      "status": "PASS",
+      "detail": "{\"errors\":[],\"consoleErrors\":[]}"
+    },
+    {
+      "id": "R06-E11",
+      "desc": "Bordas E1 não fizeram requisições externas",
+      "status": "PASS",
+      "detail": "[]"
+    },
+    {
+      "id": "R06-E12",
+      "desc": "Cancelamento sem pendência confirmado para a prova de privacidade",
+      "status": "PASS",
+      "detail": "{\"status\":\"Cancelado\",\"total\":10000,\"paid\":10000}"
+    },
+    {
+      "id": "R06-E13",
+      "desc": "Técnico não vê justificativa financeira nem valores do acerto",
+      "status": "PASS",
+      "detail": "ATENDIMENTO / #025\nPrivacidade · R06\n\nClima Sul Serviços · Entrada em 26/11/2026\n\nVoltar\nImprimir\nANDAMENTO TÉCNICO\nCancelado\nConclusão não registrada\nFINANCEIRO\nAcesso restrito\nValores ocultos neste perfil\nRETIRADA\nNão "
+    },
+    {
+      "id": "R06-E14",
+      "desc": "Financeiro vê a justificativa e os valores do acerto",
+      "status": "PASS",
+      "detail": "ATENDIMENTO / #025\nPrivacidade · R06\n\nClima Sul Serviços · Entrada em 26/11/2026\n\nVoltar\nImprimir\nANDAMENTO TÉCNICO\nCancelado\nConclusão não registrada\nFINANCEIRO\nSem pendência\nSaldo: R$ 0,00\nRETIRADA\nNão entregue\nRegistro independente do pagamento\nVisão geral\n"
+    },
+    {
+      "id": "R06-E15",
+      "desc": "Estorno normal é bloqueado em acerto sem pendência; só a retificação é oferecida",
+      "status": "PASS",
+      "detail": "{\"normalReverse\":{\"err\":\"Confirme a correção autorizada.\",\"before\":1,\"after\":1},\"legacyReverse\":{\"err\":\"Use retificação financeira autorizada.\",\"before\":1,\"after\":1}}"
+    },
+    {
+      "id": "R06-E15-B",
+      "desc": "Recebimento direto é bloqueado para Técnico e Atendente",
+      "status": "PASS",
+      "detail": "{\"payTech\":{\"err\":\"Operação não autorizada ou confirmação ausente.\",\"before\":1,\"after\":1,\"modal\":false},\"payAtt\":{\"err\":\"Operação não autorizada ou confirmação ausente.\",\"before\":1,\"after\":1}}"
+    },
+    {
+      "id": "R06-E16",
+      "desc": "Caso legado não oferece retificação nem estorno sem recibos individuais",
+      "status": "PASS",
+      "detail": "{\"status\":\"Finalizado\",\"ledger\":{\"opening\":20000,\"events\":[]},\"rectify\":0,\"reverse\":0}"
+    },
+    {
+      "id": "R06-E17",
+      "desc": "Sem exceções ou erros de console na E2",
+      "status": "PASS",
+      "detail": "{\"errors\":[],\"consoleErrors\":[]}"
+    },
+    {
+      "id": "R06-E18",
+      "desc": "Acerto aceita o teto de R$ 9.999.999,99 sem overflow de cálculo",
+      "status": "PASS",
+      "detail": "{\"ok\":true,\"total\":999999999,\"paid\":0,\"status\":\"Cancelado\"}"
+    },
+    {
+      "id": "R06-E19",
+      "desc": "Valor extremo não cria overflow em 320 px",
+      "status": "PASS",
+      "detail": "{\"doc\":320,\"win\":320,\"has\":true}"
+    },
+    {
+      "id": "R06-E20",
+      "desc": "Portal mostra o total extremo sem orçamento disponível",
+      "status": "PASS",
+      "detail": "SEU ATENDIMENTO · OS #025\nExtremo · R06\nCancelado\nEntrada\n26/11/2026\nPrevisão\nNão informada\nOrçamento\n\nNão há orçamento publicado disponível para consulta neste momento.\n\nPagamento\nEm aberto\nTotal cobrado\nR$ 9.999.999,99\nPago\nR$ 0,00\nSaldo a pagar\nR$ 9.999.999,99\nArquivos compartilhados\n\nNenhum arquivo compartilhado nesta demonstração.\n\nEste é um link de demonstração. Na versão real, compartilhe o endereço privado apenas com pessoas autorizadas."
+    },
+    {
+      "id": "R06-E21",
+      "desc": "Portal sem exceções",
+      "status": "PASS",
+      "detail": "{\"pErrors\":[],\"errors\":[],\"consoleErrors\":[]}"
+    },
+    {
+      "id": "R06-E22",
+      "desc": "Motivo com exatamente 2000 caracteres é aceito e persistido",
+      "status": "PASS",
+      "detail": "{\"open\":false,\"len\":2000}"
+    },
+    {
+      "id": "R06-E23",
+      "desc": "Pedido e motivo persistem após recarregar",
+      "status": "PASS",
+      "detail": "reload"
+    },
+    {
+      "id": "R06-E24",
+      "desc": "Pedido duplicado após recarregar continua bloqueado",
+      "status": "PASS",
+      "detail": "{\"err\":\"Já existe pedido pendente.\",\"before\":1,\"after\":1}"
+    }
+  ]
+}

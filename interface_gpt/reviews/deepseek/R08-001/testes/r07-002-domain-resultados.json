@@ -1,0 +1,175 @@
+{
+  "generatedAt": "2026-11-26T19:29:13.139Z",
+  "codeSha": "dd0175eff11f9758ba430a37052af0f12bafe997",
+  "assetsDir": "/home/dragonblue/workspace/interface-gpt-lab/repo/interface_gpt/assets",
+  "assets": {
+    "quote.js": "02358d8ba5354264415595bc9949bc233d3ea8fd1110f3bae3147b53d98c6c27",
+    "portal.js": "9f4fc3b04d638b3a74d0707c199f87b580fbcb49e62ce3018ba6ba8f5f2a8fe5",
+    "finance.js": "0929532d945fb2d29af9dfa23463bb79cfa7d645f432a6de518a9096e7b565ed",
+    "cancel.js": "81c3336300b1dc8d48d391df2249a4e673d1fd9a14119e46529b2c5c29486c6d",
+    "warranty.js": "8ad7cfa500f58a8bb2cdbca405641fc96e51ca337c3e6d1cf77b8f3696c732ee"
+  },
+  "total": 31,
+  "summary": {
+    "PASS": 30,
+    "INFO": 1
+  },
+  "results": [
+    {
+      "id": "D01",
+      "name": "Parcial 50 sobre 500/200 preserva cobrança, recibo e histórico da origem",
+      "status": "PASS"
+    },
+    {
+      "id": "D02",
+      "name": "Encerramento total após parcial devolve 150 e abate 450; histórico 200/500",
+      "status": "PASS"
+    },
+    {
+      "id": "D03",
+      "name": "Correção em ordem direta (parcial e depois total) recompõe 50/50/0 e 500/200/300",
+      "status": "PASS"
+    },
+    {
+      "id": "D04",
+      "name": "Correção em ordem inversa (total e depois parcial) também restaura os valores",
+      "status": "PASS"
+    },
+    {
+      "id": "D05",
+      "name": "Encerramento total com zero dinheiro abate 500 sem saída e status Encerrado por garantia",
+      "status": "PASS"
+    },
+    {
+      "id": "D06",
+      "name": "Dado legado com total positivo e sem billing preserva valor e não inventa recibo/obrigação",
+      "status": "PASS"
+    },
+    {
+      "id": "D07",
+      "name": "Pagamento posterior após parcial respeita o saldo líquido e compõe a devolução total",
+      "status": "PASS"
+    },
+    {
+      "id": "D08",
+      "name": "Correção de recebimento bloqueada com devolução ativa e reabilitada após corrigir",
+      "status": "PASS"
+    },
+    {
+      "id": "D09",
+      "name": "Datas da devolução: futura, impossível e anterior ao recibo são recusadas; igual é aceita",
+      "status": "PASS"
+    },
+    {
+      "id": "D10i",
+      "name": "A data da segunda devolução pode anteceder a primeira porque eventos de garantia não são financeiros; o piso continua sendo o recibo original (25/11).",
+      "status": "INFO",
+      "detail": "2026-11-25"
+    },
+    {
+      "id": "D10",
+      "name": "Segunda devolução aceita data anterior à primeira, mas nunca anterior ao recibo (paridade original)",
+      "status": "PASS"
+    },
+    {
+      "id": "D11",
+      "name": "Chave financeira obsoleta e avaliação obsoleta recusam com estado intacto",
+      "status": "PASS"
+    },
+    {
+      "id": "D12",
+      "name": "Cobrança própria do retorno, entrega, finalização e publicação ativa bloqueiam a devolução",
+      "status": "PASS"
+    },
+    {
+      "id": "D13",
+      "name": "Solução diferente de devolução e cobertura em avaliação não permitem executar",
+      "status": "PASS"
+    },
+    {
+      "id": "D14",
+      "name": "Solução executada protege a avaliação até a correção do registro",
+      "status": "PASS"
+    },
+    {
+      "id": "D15",
+      "name": "Correção duplicada, confirmação e motivo obrigatórios são recusados sem estado parcial",
+      "status": "PASS"
+    },
+    {
+      "id": "D16",
+      "name": "Modalidades/valor: zero parcial, modo inválido, acima do recebido e total inexato",
+      "status": "PASS"
+    },
+    {
+      "id": "D17",
+      "name": "Forma inválida, referência/motivo vazios e confirmação ausente",
+      "status": "PASS"
+    },
+    {
+      "id": "D18",
+      "name": "Débito zero não permite nova cobrança nem some do financeiro",
+      "status": "PASS"
+    },
+    {
+      "id": "D19",
+      "name": "F02: retorno sem solução executada percorre solicitar/retirar/conferir/confirmar",
+      "status": "PASS"
+    },
+    {
+      "id": "D20",
+      "name": "F02: solução executada bloqueia cancelamento; correção reabilita",
+      "status": "PASS"
+    },
+    {
+      "id": "D21",
+      "name": "F02: derivado por origem ou anterior, mesmo cancelado, bloqueia o cancelamento",
+      "status": "PASS"
+    },
+    {
+      "id": "D22",
+      "name": "F02: devolução executada com pedido pendente impede confirmação; retirada continua possível",
+      "status": "PASS"
+    },
+    {
+      "id": "D23",
+      "name": "F02: cancelar retorno não altera a obrigação da raiz",
+      "status": "PASS"
+    },
+    {
+      "id": "D24",
+      "name": "Raízes independentes: prazos e vínculo não cruzam entre duas OS da mesma unidade",
+      "status": "PASS"
+    },
+    {
+      "id": "D25",
+      "name": "Raiz com retorno finalizado encadeia o anterior da mesma raiz, não da unidade vizinha",
+      "status": "PASS"
+    },
+    {
+      "id": "D26",
+      "name": "Retorno ativo único por unidade bloqueia entrada em raiz distinta e reabertura indevida",
+      "status": "PASS"
+    },
+    {
+      "id": "D27",
+      "name": "Projeção pública e recibo não vazam comprovante, motivo, retorno ou valores privados",
+      "status": "PASS"
+    },
+    {
+      "id": "D28",
+      "name": "Cancelamento do acerto recusa obrigação de garantia ativa (settle protegido)",
+      "status": "PASS"
+    },
+    {
+      "id": "D29",
+      "name": "Valores extremos mínimos/máximos em centavos permanecem seguros",
+      "status": "PASS"
+    },
+    {
+      "id": "D30",
+      "name": "Parcial múltipla e correções preservam o ledger append-only e o total original",
+      "status": "PASS"
+    }
+  ]
+}

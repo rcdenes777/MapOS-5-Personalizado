@@ -1,0 +1,3 @@
+PASS R07-CAP-01 — Capturas geradas com hashes únicos e dimensões registradas :: {"total":21,"unique":21,"duplicates":[]}
+PASS R07-CAP-02 — Sem erros de página ou console durante as capturas :: {"errors":[],"consoleErrors":[]}
+TOTAL 2 · PASS 2 · FAIL 0 · capturas 21

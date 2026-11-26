@@ -1,0 +1,671 @@
+{
+  "generatedAt": "2026-11-26T11:15:26.300062-03:00",
+  "oldDir": "/home/dragonblue/workspace/interface-gpt-lab/repo/interface_gpt/reviews/deepseek/R06-002/capturas",
+  "newDir": "/home/dragonblue/workspace/interface-gpt-lab/repo/interface_gpt/reviews/deepseek/R07-001/capturas",
+  "summary": {
+    "total": 33,
+    "identical": 1,
+    "textOnlyOrSmall": 27,
+    "larger": 5,
+    "dimensionChanged": 0,
+    "maxDiffPercent": 1.634
+  },
+  "rows": [
+    {
+      "file": "mobile/14-conferencia-pendente-320.png",
+      "old": {
+        "w": 320,
+        "h": 2156
+      },
+      "new": {
+        "w": 320,
+        "h": 2156
+      },
+      "sameDimensions": true,
+      "identical": false,
+      "diffPercent": 1.2161,
+      "diffBBox": [
+        34,
+        142,
+        303,
+        1039
+      ]
+    },
+    {
+      "file": "mobile/14-conferencia-pendente-390.png",
+      "old": {
+        "w": 390,
+        "h": 1930
+      },
+      "new": {
+        "w": 390,
+        "h": 1930
+      },
+      "sameDimensions": true,
+      "identical": false,
+      "diffPercent": 0.4912,
+      "diffBBox": [
+        38,
+        145,
+        342,
+        948
+      ]
+    },
+    {
+      "file": "mobile/15-item-peca-modal-320.png",
+      "old": {
+        "w": 320,
+        "h": 568
+      },
+      "new": {
+        "w": 320,
+        "h": 568
+      },
+      "sameDimensions": true,
+      "identical": true,
+      "diffPercent": 0.0,
+      "diffBBox": null
+    },
+    {
+      "file": "mobile/15-item-peca-modal-390.png",
+      "old": {
+        "w": 390,
+        "h": 844
+      },
+      "new": {
+        "w": 390,
+        "h": 844
+      },
+      "sameDimensions": true,
+      "identical": false,
+      "diffPercent": 0.1072,
+      "diffBBox": [
+        14,
+        4,
+        380,
+        67
+      ]
+    },
+    {
+      "file": "mobile/16-cancelado-320.png",
+      "old": {
+        "w": 320,
+        "h": 1932
+      },
+      "new": {
+        "w": 320,
+        "h": 1932
+      },
+      "sameDimensions": true,
+      "identical": false,
+      "diffPercent": 1.4093,
+      "diffBBox": [
+        60,
+        142,
+        303,
+        1744
+      ]
+    },
+    {
+      "file": "mobile/16-cancelado-390.png",
+      "old": {
+        "w": 390,
+        "h": 1748
+      },
+      "new": {
+        "w": 390,
+        "h": 1748
+      },
+      "sameDimensions": true,
+      "identical": false,
+      "diffPercent": 0.5897,
+      "diffBBox": [
+        64,
+        145,
+        342,
+        1584
+      ]
+    },
+    {
+      "file": "mobile/17-financeiro-320.png",
+      "old": {
+        "w": 320,
+        "h": 1801
+      },
+      "new": {
+        "w": 320,
+        "h": 1801
+      },
+      "sameDimensions": true,
+      "identical": false,
+      "diffPercent": 0.9514,
+      "diffBBox": [
+        34,
+        142,
+        303,
+        1612
+      ]
+    },
+    {
+      "file": "mobile/17-financeiro-390.png",
+      "old": {
+        "w": 390,
+        "h": 1634
+      },
+      "new": {
+        "w": 390,
+        "h": 1634
+      },
+      "sameDimensions": true,
+      "identical": false,
+      "diffPercent": 0.5442,
+      "diffBBox": [
+        51,
+        145,
+        342,
+        1465
+      ]
+    },
+    {
+      "file": "mobile/18-fila-320.png",
+      "old": {
+        "w": 320,
+        "h": 2164
+      },
+      "new": {
+        "w": 320,
+        "h": 2164
+      },
+      "sameDimensions": true,
+      "identical": false,
+      "diffPercent": 0.0495,
+      "diffBBox": [
+        47,
+        631,
+        180,
+        1874
+      ]
+    },
+    {
+      "file": "mobile/18-fila-390.png",
+      "old": {
+        "w": 390,
+        "h": 2211
+      },
+      "new": {
+        "w": 390,
+        "h": 2211
+      },
+      "sameDimensions": true,
+      "identical": false,
+      "diffPercent": 0.0346,
+      "diffBBox": [
+        51,
+        975,
+        215,
+        1921
+      ]
+    },
+    {
+      "file": "mobile/19-portal-320.png",
+      "old": {
+        "w": 320,
+        "h": 897
+      },
+      "new": {
+        "w": 320,
+        "h": 897
+      },
+      "sameDimensions": true,
+      "identical": false,
+      "diffPercent": 0.0247,
+      "diffBBox": [
+        33,
+        251,
+        42,
+        263
+      ]
+    },
+    {
+      "file": "mobile/19-portal-390.png",
+      "old": {
+        "w": 390,
+        "h": 908
+      },
+      "new": {
+        "w": 390,
+        "h": 908
+      },
+      "sameDimensions": true,
+      "identical": false,
+      "diffPercent": 0.02,
+      "diffBBox": [
+        49,
+        252,
+        58,
+        264
+      ]
+    },
+    {
+      "file": "mobile/20-valor-extremo-320.png",
+      "old": {
+        "w": 320,
+        "h": 1530
+      },
+      "new": {
+        "w": 320,
+        "h": 1530
+      },
+      "sameDimensions": true,
+      "identical": false,
+      "diffPercent": 1.634,
+      "diffBBox": [
+        99,
+        142,
+        303,
+        629
+      ]
+    },
+    {
+      "file": "tablet/14-conferencia-pendente-768.png",
+      "old": {
+        "w": 768,
+        "h": 1596
+      },
+      "new": {
+        "w": 768,
+        "h": 1596
+      },
+      "sameDimensions": true,
+      "identical": false,
+      "diffPercent": 1.1424,
+      "diffBBox": [
+        16,
+        161,
+        738,
+        743
+      ]
+    },
+    {
+      "file": "tablet/15-item-peca-modal-768.png",
+      "old": {
+        "w": 768,
+        "h": 1024
+      },
+      "new": {
+        "w": 768,
+        "h": 1024
+      },
+      "sameDimensions": true,
+      "identical": false,
+      "diffPercent": 0.1984,
+      "diffBBox": [
+        34,
+        4,
+        752,
+        187
+      ]
+    },
+    {
+      "file": "tablet/16-cancelado-768.png",
+      "old": {
+        "w": 768,
+        "h": 1534
+      },
+      "new": {
+        "w": 768,
+        "h": 1534
+      },
+      "sameDimensions": true,
+      "identical": false,
+      "diffPercent": 1.216,
+      "diffBBox": [
+        16,
+        161,
+        738,
+        1368
+      ]
+    },
+    {
+      "file": "tablet/17-financeiro-768.png",
+      "old": {
+        "w": 768,
+        "h": 1458
+      },
+      "new": {
+        "w": 768,
+        "h": 1458
+      },
+      "sameDimensions": true,
+      "identical": false,
+      "diffPercent": 0.9842,
+      "diffBBox": [
+        16,
+        161,
+        738,
+        1305
+      ]
+    },
+    {
+      "file": "tablet/18-fila-768.png",
+      "old": {
+        "w": 768,
+        "h": 1793
+      },
+      "new": {
+        "w": 768,
+        "h": 1793
+      },
+      "sameDimensions": true,
+      "identical": false,
+      "diffPercent": 0.0237,
+      "diffBBox": [
+        630,
+        746,
+        637,
+        1478
+      ]
+    },
+    {
+      "file": "tablet/19-portal-768.png",
+      "old": {
+        "w": 768,
+        "h": 1024
+      },
+      "new": {
+        "w": 768,
+        "h": 1024
+      },
+      "sameDimensions": true,
+      "identical": false,
+      "diffPercent": 0.009,
+      "diffBBox": [
+        65,
+        281,
+        74,
+        293
+      ]
+    },
+    {
+      "file": "desktop/01-pedido-modal-1440.png",
+      "old": {
+        "w": 1440,
+        "h": 900
+      },
+      "new": {
+        "w": 1440,
+        "h": 900
+      },
+      "sameDimensions": true,
+      "identical": false,
+      "diffPercent": 0.938,
+      "diffBBox": [
+        471,
+        176,
+        1168,
+        433
+      ]
+    },
+    {
+      "file": "desktop/02-pedido-modal-preenchido-1440.png",
+      "old": {
+        "w": 1440,
+        "h": 900
+      },
+      "new": {
+        "w": 1440,
+        "h": 900
+      },
+      "sameDimensions": true,
+      "identical": false,
+      "diffPercent": 0.6465,
+      "diffBBox": [
+        464,
+        169,
+        1170,
+        441
+      ]
+    },
+    {
+      "file": "desktop/03-fila-cancelamentos-1440.png",
+      "old": {
+        "w": 1440,
+        "h": 1231
+      },
+      "new": {
+        "w": 1440,
+        "h": 1231
+      },
+      "sameDimensions": true,
+      "identical": false,
+      "diffPercent": 0.0181,
+      "diffBBox": [
+        844,
+        661,
+        1218,
+        1121
+      ]
+    },
+    {
+      "file": "desktop/04-fila-os-pendente-1440.png",
+      "old": {
+        "w": 1440,
+        "h": 900
+      },
+      "new": {
+        "w": 1440,
+        "h": 900
+      },
+      "sameDimensions": true,
+      "identical": false,
+      "diffPercent": 0.0044,
+      "diffBBox": [
+        1286,
+        412,
+        1293,
+        421
+      ]
+    },
+    {
+      "file": "desktop/05-conferencia-pendente-1440.png",
+      "old": {
+        "w": 1440,
+        "h": 1509
+      },
+      "new": {
+        "w": 1440,
+        "h": 1509
+      },
+      "sameDimensions": true,
+      "identical": false,
+      "diffPercent": 0.5768,
+      "diffBBox": [
+        292,
+        176,
+        1168,
+        694
+      ]
+    },
+    {
+      "file": "desktop/06-item-perda-modal-1440.png",
+      "old": {
+        "w": 1440,
+        "h": 900
+      },
+      "new": {
+        "w": 1440,
+        "h": 900
+      },
+      "sameDimensions": true,
+      "identical": false,
+      "diffPercent": 0.1191,
+      "diffBBox": [
+        284,
+        186,
+        429,
+        212
+      ]
+    },
+    {
+      "file": "desktop/07-conferencia-historico-item-1440.png",
+      "old": {
+        "w": 1440,
+        "h": 1743
+      },
+      "new": {
+        "w": 1440,
+        "h": 1743
+      },
+      "sameDimensions": true,
+      "identical": false,
+      "diffPercent": 0.5181,
+      "diffBBox": [
+        292,
+        176,
+        1168,
+        1618
+      ]
+    },
+    {
+      "file": "desktop/08-acerto-devolucao-modal-1440.png",
+      "old": {
+        "w": 1440,
+        "h": 900
+      },
+      "new": {
+        "w": 1440,
+        "h": 900
+      },
+      "sameDimensions": true,
+      "identical": false,
+      "diffPercent": 0.1247,
+      "diffBBox": [
+        284,
+        233,
+        493,
+        535
+      ]
+    },
+    {
+      "file": "desktop/09-cancelado-historico-1440.png",
+      "old": {
+        "w": 1440,
+        "h": 1458
+      },
+      "new": {
+        "w": 1440,
+        "h": 1458
+      },
+      "sameDimensions": true,
+      "identical": false,
+      "diffPercent": 0.6124,
+      "diffBBox": [
+        318,
+        176,
+        1168,
+        1334
+      ]
+    },
+    {
+      "file": "desktop/10-financeiro-devolucao-1440.png",
+      "old": {
+        "w": 1440,
+        "h": 986
+      },
+      "new": {
+        "w": 1440,
+        "h": 986
+      },
+      "sameDimensions": true,
+      "identical": false,
+      "diffPercent": 0.6756,
+      "diffBBox": [
+        305,
+        176,
+        1221,
+        895
+      ]
+    },
+    {
+      "file": "desktop/11-entrega-modal-1440.png",
+      "old": {
+        "w": 1440,
+        "h": 900
+      },
+      "new": {
+        "w": 1440,
+        "h": 900
+      },
+      "sameDimensions": true,
+      "identical": false,
+      "diffPercent": 0.6373,
+      "diffBBox": [
+        485,
+        4,
+        1366,
+        239
+      ]
+    },
+    {
+      "file": "desktop/12-portal-cancelado-1440.png",
+      "old": {
+        "w": 1440,
+        "h": 900
+      },
+      "new": {
+        "w": 1440,
+        "h": 900
+      },
+      "sameDimensions": true,
+      "identical": false,
+      "diffPercent": 0.0055,
+      "diffBBox": [
+        401,
+        281,
+        410,
+        293
+      ]
+    },
+    {
+      "file": "desktop/13-acerto-sem-obrigacao-modal-1440.png",
+      "old": {
+        "w": 1440,
+        "h": 900
+      },
+      "new": {
+        "w": 1440,
+        "h": 900
+      },
+      "sameDimensions": true,
+      "identical": false,
+      "diffPercent": 0.6056,
+      "diffBBox": [
+        284,
+        0,
+        1184,
+        296
+      ]
+    },
+    {
+      "file": "desktop/21-financeiro-lista-canceladas-1440.png",
+      "old": {
+        "w": 1440,
+        "h": 1480
+      },
+      "new": {
+        "w": 1440,
+        "h": 1480
+      },
+      "sameDimensions": true,
+      "identical": false,
+      "diffPercent": 0.0067,
+      "diffBBox": [
+        757,
+        609,
+        766,
+        739
+      ]
+    }
+  ],
+  "codeSha": "f46ad182bcb7fb067d68c335369640c82bccba1d"
+}

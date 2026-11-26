@@ -1,0 +1,25 @@
+PASS R06-AXE-inicio-1440x900 — axe sem violações: inicio :: []
+PASS R06-AXE-pedido-vazio-1440x900 — axe sem violações: pedido-vazio :: []
+PASS R06-KB-01 — Modal de pedido prende o foco, fecha com Escape e devolve o foco ao acionador :: {"opened":true,"initial":{"tag":"BUTTON","name":null,"inDialog":true,"labelled":"modal-title"},"inside":true,"escaped":{"open":false,"active":"modal:cancelrequest:23"}}
+PASS R06-KB-02 — Campos de devolução ficam habilitados e alcançáveis por teclado :: {"reachable":[{"n":"gross","exists":true,"disabled":false,"visible":true},{"n":"discount","exists":true,"disabled":false,"visible":true},{"n":"refund","exists":true,"disabled":false,"visible":true},{"n":"date","exists":true,"disabled":false
+PASS R06-AXE-pedido-pendente-1440x900 — axe sem violações: pedido-pendente :: []
+PASS R06-AXE-conferencia-tecnica-modal-1440x900 — axe sem violações: conferencia-tecnica-modal :: []
+PASS R06-AXE-item-peca-modal-1440x900 — axe sem violações: item-peca-modal :: []
+PASS R06-AXE-acerto-devolucao-modal-1440x900 — axe sem violações: acerto-devolucao-modal :: []
+PASS R06-AXE-cancelado-concluido-historico-1440x900 — axe sem violações: cancelado-concluido-historico :: []
+PASS R06-AXE-financeiro-cancelado-1440x900 — axe sem violações: financeiro-cancelado :: []
+PASS R06-AXE-entrega-modal-1440x900 — axe sem violações: entrega-modal :: []
+PASS R06-AXE-portal-cancelado-1440x900 — axe sem violações: portal-cancelado :: []
+PASS R06-AXE-portal-cancelado-390x844 — axe sem violações: portal-cancelado :: []
+PASS R06-AXE-pedido-pendente-pecas-320x568 — axe sem violações: pedido-pendente-pecas :: []
+PASS R06-AXE-item-peca-modal-320x568 — axe sem violações: item-peca-modal :: []
+PASS R06-AXE-cancelado-concluido-320x568 — axe sem violações: cancelado-concluido :: []
+PASS R06-AXE-pedido-pendente-pecas-390x844 — axe sem violações: pedido-pendente-pecas :: []
+PASS R06-AXE-item-peca-modal-390x844 — axe sem violações: item-peca-modal :: []
+PASS R06-AXE-cancelado-concluido-390x844 — axe sem violações: cancelado-concluido :: []
+PASS R06-AXE-pedido-pendente-pecas-768x1024 — axe sem violações: pedido-pendente-pecas :: []
+PASS R06-AXE-item-peca-modal-768x1024 — axe sem violações: item-peca-modal :: []
+PASS R06-AXE-cancelado-concluido-768x1024 — axe sem violações: cancelado-concluido :: []
+PASS R06-AXE-impressao-cancelada-1440x900 — axe sem violações: impressao-cancelada :: []
+
+TOTAL 23 · PASS 23 · FAIL 0 · SCANS 21

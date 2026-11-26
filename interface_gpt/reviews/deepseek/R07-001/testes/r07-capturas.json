@@ -1,0 +1,171 @@
+{
+  "generatedAt": "2026-11-26T14:12:04.680Z",
+  "codeSha": "f46ad182bcb7fb067d68c335369640c82bccba1d",
+  "total": 21,
+  "summary": {
+    "PASS": 2
+  },
+  "manifest": [
+    {
+      "file": "capturas/desktop/01-os18-garantia-1440.png",
+      "sha256": "14a65dd7887add1ea8a33a31c7bcc9cec7a0921e18af6079e0e9082c2844781c",
+      "bytes": 222218,
+      "width": 1440,
+      "height": 1885
+    },
+    {
+      "file": "capturas/desktop/02-os16-origem-1440.png",
+      "sha256": "59178baa2131fe7b2e30433a0c5e990fa8508a83b9f1a49b53073ad7c9d1ba21",
+      "bytes": 139316,
+      "width": 1440,
+      "height": 975
+    },
+    {
+      "file": "capturas/desktop/03-retorno20-bloqueado-1440.png",
+      "sha256": "fc4c3e1e40cb83ce3e205b3690a42e54441bfefdece75f78553a2bd72dc6a80d",
+      "bytes": 53353,
+      "width": 1440,
+      "height": 900
+    },
+    {
+      "file": "capturas/desktop/04-os18-orcamento-1440.png",
+      "sha256": "e8a8e0e7dea892121fe5a79f1674c5e8e832468e1fa6300ad5f1881b8c2183d8",
+      "bytes": 179055,
+      "width": 1440,
+      "height": 1234
+    },
+    {
+      "file": "capturas/desktop/05-retorno-novo-garantia-1440.png",
+      "sha256": "72dd06d30b818d3660e49bd20fd847395864fbee9a750d0c34dd391ddde418eb",
+      "bytes": 180567,
+      "width": 1440,
+      "height": 1473
+    },
+    {
+      "file": "capturas/desktop/06-fila-retornos-1440.png",
+      "sha256": "f083353e7a74c250befc26bf6b53efce3cc43871f506f595b4e3c181dcbef65d",
+      "bytes": 185665,
+      "width": 1440,
+      "height": 1174
+    },
+    {
+      "file": "capturas/desktop/07-fila-retornos-filtrada-1440.png",
+      "sha256": "e56c2122314806341323c1e01e8b2aefbc6330afa86408a353780e587e1def15",
+      "bytes": 87791,
+      "width": 1440,
+      "height": 900
+    },
+    {
+      "file": "capturas/desktop/08-modal-avaliacao-1440.png",
+      "sha256": "9e1e91b3263182bbd9e2dca963e9c0281b5bb2846dab662eead4110f23ab57ee",
+      "bytes": 181206,
+      "width": 1440,
+      "height": 900
+    },
+    {
+      "file": "capturas/desktop/09-modal-custo-1440.png",
+      "sha256": "4c638a597b4477498157799cfb35c742f699911e0cc8c451a73da912e2172cb0",
+      "bytes": 144947,
+      "width": 1440,
+      "height": 900
+    },
+    {
+      "file": "capturas/desktop/10-portal-retorno-1440.png",
+      "sha256": "0a916fa0e0e55d9fabe8dbe45274c0840f9988ee91f21ecc95b90a2bc53702c7",
+      "bytes": 108981,
+      "width": 1440,
+      "height": 1379
+    },
+    {
+      "file": "capturas/tablet/11-os18-garantia-768.png",
+      "sha256": "ec2ed860ec4118d5b2763d582dd1d49cf9121a3e0766ef112f9c99c637309df6",
+      "bytes": 188888,
+      "width": 768,
+      "height": 2312
+    },
+    {
+      "file": "capturas/tablet/12-retorno20-bloqueado-768.png",
+      "sha256": "56cabb85ec44d4dca6c4e2d953a00736866704b7be4181d0f6dd9db5a309d603",
+      "bytes": 26018,
+      "width": 768,
+      "height": 1024
+    },
+    {
+      "file": "capturas/mobile/13-os18-garantia-390.png",
+      "sha256": "decfaf7b76becf2a6ff3f9576a7d9e66cba7c1c02c6fdb914ed022ec92c9d2cb",
+      "bytes": 185351,
+      "width": 390,
+      "height": 2817
+    },
+    {
+      "file": "capturas/mobile/14-retorno-novo-garantia-390.png",
+      "sha256": "fef0c0cd02b2a6056a56e2a31d08ae907dd09e522a45aa69bc381333346d7e74",
+      "bytes": 146223,
+      "width": 390,
+      "height": 2223
+    },
+    {
+      "file": "capturas/mobile/15-retorno20-bloqueado-390.png",
+      "sha256": "d8813810ee5b9ef1a0606056150bfcfde4ae1db4c86a01fc2a992a49bb7cbde4",
+      "bytes": 22248,
+      "width": 390,
+      "height": 844
+    },
+    {
+      "file": "capturas/mobile/16-os18-orcamento-390.png",
+      "sha256": "6dca420c9c7bf8e2d1090dd6c0bf615dcccdbfcbbc5af1af5828bd9f375cbef0",
+      "bytes": 145770,
+      "width": 390,
+      "height": 2178
+    },
+    {
+      "file": "capturas/mobile/17-modal-avaliacao-390.png",
+      "sha256": "b5422b47f3bcb99c6bda12e8d25f7b8b4a0e72a3f67acfc4e0f074ec4ee5f211",
+      "bytes": 48100,
+      "width": 390,
+      "height": 844
+    },
+    {
+      "file": "capturas/mobile/18-modal-custo-390.png",
+      "sha256": "fffd72b55a743ed7a31ef018ef90c9e819953f510c62566f5c30c6e890712b1b",
+      "bytes": 50954,
+      "width": 390,
+      "height": 844
+    },
+    {
+      "file": "capturas/mobile320/19-os18-garantia-320.png",
+      "sha256": "2d702ae6a970fd3c0b2680de9dd9648cc313f590bf42a9f2fc6afd8b0b228073",
+      "bytes": 183655,
+      "width": 320,
+      "height": 3079
+    },
+    {
+      "file": "capturas/mobile320/20-retorno20-bloqueado-320.png",
+      "sha256": "864a788f7701e27cb7fa39d71e2ee8884332dd5d973e6d6107c0796af7bb2e5d",
+      "bytes": 19365,
+      "width": 320,
+      "height": 568
+    },
+    {
+      "file": "capturas/mobile320/21-modal-avaliacao-320.png",
+      "sha256": "ecc61a919feefc127389b50fea41f024395ed3682a7528936730959d5efb92b5",
+      "bytes": 29991,
+      "width": 320,
+      "height": 568
+    }
+  ],
+  "results": [
+    {
+      "id": "R07-CAP-01",
+      "desc": "Capturas geradas com hashes únicos e dimensões registradas",
+      "status": "PASS",
+      "detail": "{\"total\":21,\"unique\":21,\"duplicates\":[]}"
+    },
+    {
+      "id": "R07-CAP-02",
+      "desc": "Sem erros de página ou console durante as capturas",
+      "status": "PASS",
+      "detail": "{\"errors\":[],\"consoleErrors\":[]}"
+    }
+  ]
+}

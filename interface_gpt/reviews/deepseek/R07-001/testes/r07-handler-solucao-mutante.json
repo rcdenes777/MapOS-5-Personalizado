@@ -1,0 +1,15 @@
+{
+  "generatedAt": "2026-11-26T14:15:51.110Z",
+  "codeSha": "f46ad182bcb7fb067d68c335369640c82bccba1d",
+  "opened": true,
+  "modal": true,
+  "error": "",
+  "toast": "Registro atualizado na demonstração.",
+  "state": {
+    "status": "Finalizado",
+    "conclusion": "2026-11-26",
+    "total": 0,
+    "paid": 0
+  },
+  "guardPresent": false
+}

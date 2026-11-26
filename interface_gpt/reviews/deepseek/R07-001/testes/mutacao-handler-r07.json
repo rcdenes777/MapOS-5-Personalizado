@@ -1,0 +1,40 @@
+{
+  "generatedAt": "2026-11-26T14:16:00-03:00",
+  "codeSha": "f46ad182bcb7fb067d68c335369640c82bccba1d",
+  "mutation": "remover a chamada `BancadaWarranty.transition(o,db.orders,d.status)` do handler tech de app.js em cópia scratch",
+  "classification": "detectado",
+  "pristine": {
+    "generatedAt": "2026-11-26T14:15:29.708Z",
+    "codeSha": "f46ad182bcb7fb067d68c335369640c82bccba1d",
+    "opened": true,
+    "modal": true,
+    "error": "Execute a solução de garantia escolhida antes de concluir o retorno.",
+    "toast": "Registro atualizado na demonstração.",
+    "state": {
+      "status": "Aberto",
+      "conclusion": null,
+      "total": 0,
+      "paid": 0
+    },
+    "guardPresent": true
+  },
+  "mutant": {
+    "generatedAt": "2026-11-26T14:15:51.110Z",
+    "codeSha": "f46ad182bcb7fb067d68c335369640c82bccba1d",
+    "opened": true,
+    "modal": true,
+    "error": "",
+    "toast": "Registro atualizado na demonstração.",
+    "state": {
+      "status": "Finalizado",
+      "conclusion": "2026-11-26",
+      "total": 0,
+      "paid": 0
+    },
+    "guardPresent": false
+  },
+  "pristineAppSha256": "71260d41880000d30ed46d95dacbdba5a6dacc08c0c2cdf03209321210315355",
+  "mutantAppSha256": "8a89e8e53cc32ba6f29f7c0e8730ec9578f69928343ce521e770b39fc1ac4873",
+  "mutantLocation": "/home/dragonblue/.hermes/cache/scratch/r07-handler-warranty (fora do repositório; não publicado)",
+  "note": "No código entregue o handler bloqueia a conclusão com troca pendente; na cópia mutada a OS conclui (status Finalizado, conclusão gravada), provando que o teste exerce o handler real e não só o domínio."
+}

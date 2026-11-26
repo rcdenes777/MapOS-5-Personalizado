@@ -1,0 +1,342 @@
+{
+  "generatedAt": "2026-11-26T14:11:34.463Z",
+  "source": "/home/dragonblue/workspace/interface-gpt-lab/repo/interface_gpt/assets",
+  "scratch": "/home/dragonblue/.hermes/cache/scratch/r07-mutacoes",
+  "total": 21,
+  "summary": {
+    "DETECTADA": 20,
+    "EQUIVALENTE": 1
+  },
+  "results": [
+    {
+      "id": "R07M-01",
+      "file": "warranty.js",
+      "guard": "retorno ativo único",
+      "expect": [
+        "R07N-01"
+      ],
+      "failed": [
+        "R07N-01"
+      ],
+      "extra": [],
+      "status": "DETECTADA",
+      "detail": "falhas: R07N-01"
+    },
+    {
+      "id": "R07M-02",
+      "file": "warranty.js",
+      "guard": "origem com conclusão real",
+      "expect": [
+        "R07N-02",
+        "R07N-02b"
+      ],
+      "failed": [
+        "R07N-02b"
+      ],
+      "extra": [],
+      "status": "DETECTADA",
+      "detail": "falhas: R07N-02b"
+    },
+    {
+      "id": "R07M-03",
+      "file": "warranty.js",
+      "guard": "mesma unidade e cliente",
+      "expect": [
+        "R07N-04"
+      ],
+      "failed": [
+        "R07N-04",
+        "R07N-07b"
+      ],
+      "extra": [
+        "R07N-07b"
+      ],
+      "status": "DETECTADA",
+      "detail": "falhas: R07N-04, R07N-07b"
+    },
+    {
+      "id": "R07M-04",
+      "file": "warranty.js",
+      "guard": "defeito obrigatório",
+      "expect": [
+        "R07N-05"
+      ],
+      "failed": [
+        "R07N-05",
+        "R07N-12",
+        "R07N-13"
+      ],
+      "extra": [
+        "R07N-12",
+        "R07N-13"
+      ],
+      "status": "DETECTADA",
+      "detail": "falhas: R07N-05, R07N-12, R07N-13"
+    },
+    {
+      "id": "R07M-05",
+      "file": "warranty.js",
+      "guard": "confirmação da entrada",
+      "expect": [
+        "R07N-06"
+      ],
+      "failed": [
+        "R07N-06"
+      ],
+      "extra": [],
+      "status": "DETECTADA",
+      "detail": "falhas: R07N-06"
+    },
+    {
+      "id": "R07M-06",
+      "file": "warranty.js",
+      "guard": "solução exige cobertura concluída",
+      "expect": [
+        "R07N-11"
+      ],
+      "failed": [
+        "R07N-11"
+      ],
+      "extra": [],
+      "status": "DETECTADA",
+      "detail": "falhas: R07N-11"
+    },
+    {
+      "id": "R07M-07",
+      "file": "warranty.js",
+      "guard": "avaliação stale",
+      "expect": [
+        "R07N-14"
+      ],
+      "failed": [
+        "R07N-14"
+      ],
+      "extra": [],
+      "status": "DETECTADA",
+      "detail": "falhas: R07N-14"
+    },
+    {
+      "id": "R07M-08",
+      "file": "warranty.js",
+      "guard": "solução executada não é revista",
+      "expect": [
+        "R07N-16"
+      ],
+      "failed": [
+        "R07N-16"
+      ],
+      "extra": [],
+      "status": "DETECTADA",
+      "detail": "falhas: R07N-16"
+    },
+    {
+      "id": "R07M-09",
+      "file": "warranty.js",
+      "guard": "origem com derivado não reabre",
+      "expect": [
+        "R07N-19"
+      ],
+      "failed": [
+        "R07N-19",
+        "R07N-19b",
+        "R07N-19c",
+        "R07N-19d"
+      ],
+      "extra": [
+        "R07N-19b",
+        "R07N-19c",
+        "R07N-19d"
+      ],
+      "status": "DETECTADA",
+      "detail": "falhas: R07N-19, R07N-19b, R07N-19c, R07N-19d"
+    },
+    {
+      "id": "R07M-10",
+      "file": "warranty.js",
+      "guard": "troca/devolução pendente bloqueia conclusão",
+      "expect": [
+        "R07N-20",
+        "R07N-21"
+      ],
+      "failed": [
+        "R07N-20",
+        "R07N-21"
+      ],
+      "extra": [],
+      "status": "DETECTADA",
+      "detail": "falhas: R07N-20, R07N-21"
+    },
+    {
+      "id": "R07M-11",
+      "file": "warranty.js",
+      "guard": "custo zero/tempo zero",
+      "expect": [
+        "R07N-24"
+      ],
+      "failed": [
+        "R07N-24"
+      ],
+      "extra": [],
+      "status": "DETECTADA",
+      "detail": "falhas: R07N-24"
+    },
+    {
+      "id": "R07M-12",
+      "file": "warranty.js",
+      "guard": "teto do custo",
+      "expect": [
+        "R07N-25"
+      ],
+      "failed": [
+        "R07N-25"
+      ],
+      "extra": [],
+      "status": "DETECTADA",
+      "detail": "falhas: R07N-25"
+    },
+    {
+      "id": "R07M-13",
+      "file": "warranty.js",
+      "guard": "correção única",
+      "expect": [
+        "R07N-28"
+      ],
+      "failed": [
+        "R07N-28"
+      ],
+      "extra": [],
+      "status": "DETECTADA",
+      "detail": "falhas: R07N-28"
+    },
+    {
+      "id": "R07M-14",
+      "file": "quote.js",
+      "guard": "edição/publicação só com decisão de novo orçamento",
+      "expect": [
+        "R07N-30",
+        "R07N-31"
+      ],
+      "failed": [
+        "R07N-30",
+        "R07N-31",
+        "R07N-40"
+      ],
+      "extra": [
+        "R07N-40"
+      ],
+      "status": "DETECTADA",
+      "detail": "falhas: R07N-30, R07N-31, R07N-40"
+    },
+    {
+      "id": "R07M-15",
+      "file": "quote.js",
+      "guard": "faturar exige aprovação vigente",
+      "expect": [
+        "R07N-32"
+      ],
+      "failed": [
+        "R07N-32",
+        "R07N-32b",
+        "R07N-33",
+        "R07N-34",
+        "R07N-35"
+      ],
+      "extra": [
+        "R07N-32b",
+        "R07N-33",
+        "R07N-34",
+        "R07N-35"
+      ],
+      "status": "DETECTADA",
+      "detail": "falhas: R07N-32, R07N-32b, R07N-33, R07N-34, R07N-35"
+    },
+    {
+      "id": "R07M-16",
+      "file": "quote.js",
+      "guard": "faturar exige itens/valores idênticos",
+      "expect": [
+        "R07N-33",
+        "R07N-34",
+        "R07N-35"
+      ],
+      "failed": [],
+      "extra": [],
+      "status": "EQUIVALENTE",
+      "detail": "vigente() já exige snapshotKey igual (itens e desconto), e o total é derivado desses mesmos campos; a igualdade de total é redundante por construção."
+    },
+    {
+      "id": "R07M-17",
+      "file": "quote.js",
+      "guard": "publicação pública com entrega",
+      "expect": [
+        "R07N-38"
+      ],
+      "failed": [
+        "R07N-38"
+      ],
+      "extra": [],
+      "status": "DETECTADA",
+      "detail": "falhas: R07N-38"
+    },
+    {
+      "id": "R07M-18",
+      "file": "quote.js",
+      "guard": "edição após entrega",
+      "expect": [
+        "R07N-39"
+      ],
+      "failed": [
+        "R07N-39"
+      ],
+      "extra": [],
+      "status": "DETECTADA",
+      "detail": "falhas: R07N-39"
+    },
+    {
+      "id": "R07M-19",
+      "file": "warranty.js",
+      "guard": "irmão ativo não reabre",
+      "expect": [
+        "R07N-19d"
+      ],
+      "failed": [
+        "R07N-19d"
+      ],
+      "extra": [],
+      "status": "DETECTADA",
+      "detail": "falhas: R07N-19d"
+    },
+    {
+      "id": "R07M-20",
+      "file": "warranty.js",
+      "guard": "último finalizado por id",
+      "expect": [
+        "R07N-44"
+      ],
+      "failed": [
+        "R07N-44"
+      ],
+      "extra": [],
+      "status": "DETECTADA",
+      "detail": "falhas: R07N-44"
+    },
+    {
+      "id": "R07M-21",
+      "file": "warranty.js",
+      "guard": "último finalizado exige status Finalizado",
+      "expect": [
+        "R07N-45"
+      ],
+      "failed": [
+        "R07N-45",
+        "R07N-48"
+      ],
+      "extra": [
+        "R07N-48"
+      ],
+      "status": "DETECTADA",
+      "detail": "falhas: R07N-45, R07N-48"
+    }
+  ],
+  "codeSha": "f46ad182bcb7fb067d68c335369640c82bccba1d"
+}

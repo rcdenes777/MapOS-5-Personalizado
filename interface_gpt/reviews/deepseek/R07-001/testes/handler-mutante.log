@@ -1,0 +1,34 @@
+PASS R06B-01 — OS aprovada recebe pedido de cancelamento pendente :: {"open":false,"error":"","toast":"Registro atualizado na demonstração."}
+PASS R06B-02 — Conferência técnica concluída antes do teste do handler :: {"open":false,"error":"","toast":"Registro atualizado na demonstração."}
+PASS R06B-03 — Modal de acerto abre após a conferência técnica :: true
+PASS R06B-04 — cancelLive calcula saldo a receber sem bloco de devolução :: {"text":"Recebido\nR$ 100,00\nTotal final devido\nR$ 320,00\nA receber: R$ 220,00","hidden":true,"refundDisabled":true}
+PASS R06B-05 — cancelLive calcula devolução e habilita data/forma/referência :: {"text":"Recebido\nR$ 100,00\nTotal final devido\nR$ 0,00\nA devolver: R$ 100,00","hidden":false,"refundDisabled":false,"dateRequired":true,"refRequired":true}
+PASS R06B-06 — cancelLive rejeita valor não monetário e volta a ocultar a devolução :: {"text":"Confira valor e desconto.","hidden":true,"refundDisabled":true}
+FAIL R06B-07 — Handler real rejeita Finalizado com pedido pendente e mensagem original exata :: {"open":false,"toast":"Registro atualizado na demonstração.","error":""}
+FAIL R06B-08 — Finalização bloqueada não altera status, conclusão, histórico, financeiro ou pedido :: {"before":{"status":"Em Andamento","conclusion":null,"total":32000,"paid":10000,"approval":"Aprovado","delivery":null,"history":["Entrada registrada","Cancelamento: Pedido registrado","Cancelamento: Conferência técnica"],"cancellation":{"ev
+FAIL R06B-09 — Finalização bloqueada não grava no localStorage :: stored bytes 4986
+PASS R06B-10 — Controle positivo: pedido retirado deixa a OS sem pendência :: {"open":false,"error":"","toast":"Registro atualizado na demonstração."}
+PASS R06B-11 — Controle positivo: após a retirada, Finalizado é aceito e grava conclusão :: {"ui":{"open":false,"toast":"Registro atualizado na demonstração.","error":""},"status":"Finalizado","conclusion":"2026-11-26","last":"Andamento: Finalizado"}
+PASS R06B-12 — OS #021 recebe pedido pendente para o fluxo completo :: {"open":false,"error":"","toast":"Registro atualizado na demonstração."}
+PASS R06B-13 — Conferência técnica da OS #021 concluída :: {"open":false,"error":"","toast":"Registro atualizado na demonstração."}
+PASS R06B-14 — Confirmação de cancelamento continua possível após a correção :: {"status":"Cancelado","last":"confirm","total":28000}
+PASS R06B-15 — Painel concluído exibe o acerto e mantém a retirada independente :: ATENDIMENTO / #021
+Philco · PAC 12000
+
+Paulo Lima · Entrada em 21/11/2026
+
+Voltar
+Imprimir
+ANDAMENTO TÉCNICO
+Cancelado
+Conclusão não registrada
+FINANCEIRO
+Em aberto
+Saldo: R$ 280,00
+Registrar pagamento
+RETIRADA
+Não entregue
+Registro indepen
+PASS R06B-16 — Sem exceções, erros de console ou requisições externas no handler R06-002 :: {"errors":[],"consoleErrors":[],"external":[]}
+
+TOTAL 16 · PASS 13 · FAIL 3

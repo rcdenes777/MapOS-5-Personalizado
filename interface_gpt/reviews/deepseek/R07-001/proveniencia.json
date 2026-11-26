@@ -1,0 +1,75 @@
+{
+  "round": "R07-001",
+  "candidateSha": "91a29b799ded6a436312e6ff53c702d7a640b742",
+  "codeShaTested": "f46ad182bcb7fb067d68c335369640c82bccba1d",
+  "fixCommits": [
+    "39a4212696792d38bafb99f442f59028fcf4241a",
+    "42f1733e6f59e352513c10aec77c0620723f3f5d",
+    "5ed6e3fc4e278a20fbc1f80ba8fb018cc7ace02f",
+    "f46ad182bcb7fb067d68c335369640c82bccba1d"
+  ],
+  "baseExperimental": "033fdc47c09796a584cf9782324fc7c08394ce74",
+  "immutableReference": "8c256cae4ddaeefad68922abddbb8addfe37c99d",
+  "generatedAt": "2026-11-26T11:31:23-03:00",
+  "environment": {
+    "node": "v26.12.1",
+    "chromium": "1248",
+    "playwrightCore": true,
+    "axeCore": true
+  },
+  "server": "http://127.0.0.1:8130 (static; localStorage fictional data)",
+  "assets": {
+    "app.js": "71260d41880000d30ed46d95dacbdba5a6dacc08c0c2cdf03209321210315355",
+    "quote.js": "c531f9c607fc1d424f6b1ccbbeb70892cabf7c984c4c1510df062dfe0dac73f9",
+    "quote-ui.js": "072ccc6dfee5be8b8cf8390a235a908e16f1599c52906f6efeed8db3d835b6eb",
+    "warranty.js": "f6d5547e51de132cbec1b0c7161c2e5f1b2c73c99fd0ea4669cf8fefd13f155c",
+    "warranty-ui.js": "e68b9234020da0c449a1b9cd56524aab9208d4666311f28794c6802750473367",
+    "portal.js": "044529bd4930e232fd86304d6090ee107f85c59da3cc969962788a6ef7742140",
+    "finance.js": "0e5872f457d2c2b2f8c915cfde715257f686700c6794c6b49ced289263fffd6a",
+    "cancel.js": "0b9d998e6b7cabe962aad6bba6b9b31fe14a8032963d4ffebf9b47c41438e408",
+    "style.css": "3204920031da8aff6840030d94e51c24955941ea9d063ec08908ff971c252752",
+    "portal.css": "8af2307a369535e46f1c425675ab2d1afcf38ef518541a2f4ea2287a31e642e7"
+  },
+  "scripts": {
+    "r07-browser.cjs": "9d2464a0f0418c68ddea76396849d9861cd8b54dfea6c42251a5630c94577e58",
+    "r07-edge.cjs": "21bd7c99035d7b129f939a7201726ca9df2b273a39142a50313c6f6a0f1783e2",
+    "r07-negativos.cjs": "47b74c5afe821791f3c70c4f8e4ba9f1d0c296aa3ab436740c97baf40441ea75",
+    "r07-mutacoes.cjs": "9f3dae8cff40cb2646354b612cd93afa14f69da706cf63d5609d42847db9cdc4",
+    "r07-handler-check.cjs": "263bd278518fc6097b4ae995b2e4bbde690856c1bbc7b133a7a99b184a85e59f",
+    "r07-print.cjs": "24f490b66672fcfd444cb2e43763be92ee26a00d8a9c12608ee815b8798cb792",
+    "r07-capture.cjs": "96f0cae06c2e9986237707c5dc8fd6250b113a9b99806d516df1764c12211a65",
+    "delta-capturas.py": "ef6662a9c80d76af675d2fb8d3390ae1f0e905937e6ea89cfe3ee82264bb0600",
+    "lib.cjs": "9461a184613a51248b5ebacd3fb9b5d0a8584fdf5a298defa3311750c1f8e9e0",
+    "browser.cjs": "7f505810121d389105182f1d786f8724727b6126985718b7a80b127a3f77fb6f",
+    "edge.cjs": "8531ce3d65c18634860a65357e7891b703157e87255321ef61fdce5072dd95b7",
+    "axe.cjs": "d05cb56211c9e28aa1e55e16f28c4f0bbf3d9041179ec2e6b50e4783854aa665",
+    "capture.cjs": "096eb48bb5982d260692f362fdaf16ba18a1c153342a14ea58a125cec0645be9",
+    "print.cjs": "b596418ffe8f987d7f0bfe6e9ad0d5b5b349a0866cc5118183df16de1cdff519",
+    "handler-tech.cjs": "b35a1a200d7f627b919a8a6ad60780b44abff2c36480df212085679935795ff8",
+    "negativos.cjs": "188679e2d5f5ef480d7df7bba362867a22b7b3c43312c82602eafc648231b373",
+    "mutacoes.cjs": "3aca7f6fb32f2502a40c838c181bbd1b870b00c50b1af824ef8eadd9c8858392",
+    "regressao/regressao-r02.cjs": "28c919818c52c07014ef4f74fead62ee2969af454026e0f46ec4e4401af292e5",
+    "regressao/regressao-r03-audit.cjs": "2458501fabc133324c3197faaec1126b78f77636188ebeef2d2c775b887c3c24",
+    "regressao/regressao-r04-browser.cjs": "2633577ebf78dc269678ebeb248ebe0d290b8701d603dc6e82e09afb77e4d407",
+    "regressao/regressao-r04-edge.cjs": "670020eb6b0dd3b0ba2bed278af4c8d6eb0d48fe505a8a1731787e1383bad48c",
+    "regressao/regressao-r05-browser.cjs": "ffd0786c5acd324292ec7d05d056718fe817f16fd22e69a1d449dc8f25417f83",
+    "regressao/regressao-r05-edge.cjs": "b5b4f88d99b8059f0d9955e783589f6232a43c4db11cfedbe9b918f292537588"
+  },
+  "totals": {
+    "checks": 908,
+    "pass": 904,
+    "fail": 0,
+    "info": 4,
+    "mutations": 21,
+    "mutationsDetected": 20,
+    "mutationsEquivalent": 1,
+    "mutationsSurvivors": 0,
+    "screenshots": 21,
+    "regressionR06Screenshots": 33
+  },
+  "scopeProof": {
+    "diff": "259654c7..91a29b79 (candidato) + 91a29b79..f46ad182 (correções somente em interface_gpt/assets)",
+    "filesOutsideInterfaceGpt": [],
+    "productionUntouched": true
+  }
+}

@@ -1,0 +1,11 @@
+PASS R06-PR-01 — Mídia de impressão oculta casca e navegação :: {"sidebar":"none","top":"none","nav":"none","sheet":"block"}
+PASS R06-PR-02 — PDF A4 da OS cancelada tem uma página e dados financeiros finais :: {"info":{"pages":1,"size":"594.96 x 841.92 pts (A4)","raw":"Title:           MapOS · Bancada\nCreator:         Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.0.0 Safari/537.36\nProducer:        S
+PASS R06-PR-03 — PDF A4 não contém justificativa nem referência privada da devolução :: privacy
+PASS R06-PR-04 — PDF de impressão não contém casca, cabeçalho de tela ou navegação :: {"top":"none","nav":"none","head":"none","toast":"none"}
+PASS R06-PR-05 — Cupom usa largura de 80 mm e mantém os valores finais :: {"info":{"pages":2,"size":"227.04 x 426 pts","raw":"Title:           MapOS · Bancada\nCreator:         Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.0.0 Safari/537.36\nProducer:        Skia/PDF 
+INFO R06-PR-06 — Limitação de impressão: cupom de 80 mm ocupa 2 páginas em 150 mm, também nas OS #020/#019 antes do R06 (INFO) :: {"pages":2,"size":"227.04 x 426 pts"}
+PASS R06-PR-06-B — Cupom das OS legadas #020/#019 também tem 2 páginas em 80×150 mm :: [{"id":20,"pages":2,"widthMm":80,"file":"impressos/os020-cupom.pdf"},{"id":19,"pages":2,"widthMm":80,"file":"impressos/os019-cupom.pdf"}]
+PASS R06-PR-07 — Recibo original é impresso sem ESTORNADO e com o valor recebido :: {"info":{"pages":1,"size":"594.96 x 841.92 pts (A4)","raw":"Title:           MapOS · Bancada\nCreator:         Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.0.0 Safari/537.36\nProducer:        S
+PASS R06-PR-08 — Impressão sem exceções, erros de console ou requisições externas :: {"errors":[],"consoleErrors":[],"external":[]}
+
+TOTAL 9 · PASS 8 · FAIL 0

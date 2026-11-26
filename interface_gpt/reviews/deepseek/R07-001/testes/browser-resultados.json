@@ -1,0 +1,625 @@
+{
+  "generatedAt": "2026-11-26T14:09:26.752Z",
+  "codeSha": "f46ad182bcb7fb067d68c335369640c82bccba1d",
+  "incrementSha": "",
+  "results": [
+    {
+      "id": "R06-S1-01",
+      "desc": "OS #023 começa sem pedido, sem cobrança e com ação disponível",
+      "status": "PASS",
+      "detail": "{\"status\":\"Orçamento\",\"total\":0,\"paid\":0,\"delivery\":null,\"cancel\":{\"events\":[]}}"
+    },
+    {
+      "id": "R06-S1-02",
+      "desc": "Pedido sem solicitante é bloqueado e não grava evento",
+      "status": "PASS",
+      "detail": "{\"open\":true,\"error\":\"\",\"toast\":\"\"}"
+    },
+    {
+      "id": "R06-S1-03",
+      "desc": "Pedido sem motivo é bloqueado e não grava evento",
+      "status": "PASS",
+      "detail": "{\"open\":true,\"error\":\"\",\"toast\":\"\"}"
+    },
+    {
+      "id": "R06-S1-04",
+      "desc": "Pedido preserva andamento, cobrança e entrega",
+      "status": "PASS",
+      "detail": "{\"status\":\"Orçamento\",\"total\":0,\"paid\":0,\"delivery\":null,\"events\":[{\"id\":1,\"type\":\"request\",\"when\":\"2026-11-26T14:06:55.275Z\",\"origin\":\"cliente\",\"reason\":\"Cliente solicitou o cancelamento na bancada R06.\",\"status\":\"Orçamento\"}]}"
+    },
+    {
+      "id": "R06-S1-05",
+      "desc": "Pedido guarda origem, motivo e registro imutável",
+      "status": "PASS",
+      "detail": "{\"id\":1,\"type\":\"request\",\"when\":\"2026-11-26T14:06:55.275Z\",\"origin\":\"cliente\",\"reason\":\"Cliente solicitou o cancelamento na bancada R06.\",\"status\":\"Orçamento\"}"
+    },
+    {
+      "id": "R06-S1-06",
+      "desc": "Fila de cancelamentos pendentes conta o pedido",
+      "status": "PASS",
+      "detail": "Cancelamentos pendentes | 1 | Resolver →"
+    },
+    {
+      "id": "R06-S1-07",
+      "desc": "Cartão da OS mostra “Cancelamento pendente” na fila",
+      "status": "PASS",
+      "detail": "cards=1 Samsung · Digital Inverter | Marina Alves | #023 | Orçamento | Cancelamento pendente | Não entregue | Sem cobrança | 21/11/2026"
+    },
+    {
+      "id": "R06-S1-08",
+      "desc": "Pedido pendente oculta nova solicitação e oferece retirada",
+      "status": "PASS",
+      "detail": "actions"
+    },
+    {
+      "id": "R06-S1-09",
+      "desc": "Pedido duplicado é rejeitado sem novo evento",
+      "status": "PASS",
+      "detail": "{\"err\":\"Já existe pedido pendente.\",\"before\":1,\"after\":1}"
+    },
+    {
+      "id": "R06-S1-10",
+      "desc": "Retirada encerra a pendência sem desfazer o pedido anterior",
+      "status": "PASS",
+      "detail": "{\"open\":false,\"error\":\"\",\"toast\":\"Registro atualizado na demonstração.\"}"
+    },
+    {
+      "id": "R06-S1-11",
+      "desc": "Retirada devolve a ação de solicitar",
+      "status": "PASS",
+      "detail": "request visible"
+    },
+    {
+      "id": "R06-S1-12",
+      "desc": "Novo pedido após retirada registra nova origem",
+      "status": "PASS",
+      "detail": "[[\"request\",\"cliente\"],[\"withdraw\",null],[\"request\",\"assistencia\"]]"
+    },
+    {
+      "id": "R06-S1-13-20",
+      "desc": "OS #020 bloqueada (concluído, cancelado ou )",
+      "status": "PASS",
+      "detail": "{\"btn\":0,\"blocked\":true,\"err\":\"Atendimento concluído, cancelado ou faturado legado. Concilie antes.\"}"
+    },
+    {
+      "id": "R06-S1-13-19",
+      "desc": "OS #019 bloqueada (entrega física registrad)",
+      "status": "PASS",
+      "detail": "{\"btn\":0,\"blocked\":true,\"err\":\"Atendimento concluído, cancelado ou faturado legado. Concilie antes. Há entrega física registrada.\"}"
+    },
+    {
+      "id": "R06-S1-13-18",
+      "desc": "OS #018 bloqueada (vínculo de garantia)",
+      "status": "PASS",
+      "detail": "{\"btn\":0,\"blocked\":true,\"err\":\"Há vínculo de garantia; conciliação de garantia será tratada na R07.\"}"
+    },
+    {
+      "id": "R06-S1-13-16",
+      "desc": "OS #016 bloqueada (vínculo de garantia)",
+      "status": "PASS",
+      "detail": "{\"btn\":0,\"blocked\":true,\"err\":\"Atendimento concluído, cancelado ou faturado legado. Concilie antes. Há entrega física registrada. Há vínculo de garantia; conciliação de garantia será tratada na R07.\"}"
+    },
+    {
+      "id": "R06-S1-14",
+      "desc": "Técnico solicita/retira/conferem e não vê valores",
+      "status": "PASS",
+      "detail": "ATENDIMENTO / #023\nSamsung · Digital Inverter\n\nMarina Alves · Entrada em 21/11/2026\n\nVoltar\nImprimir\nANDAMENTO TÉCNICO\nOrçamento\nConclusão não registrada\nAtualizar andamento\nFINANC"
+    },
+    {
+      "id": "R06-S1-15",
+      "desc": "Atendente apenas consulta o cancelamento",
+      "status": "PASS",
+      "detail": "ATENDIMENTO / #023\nSamsung · Digital Inverter\n\nMarina Alves · Entrada em 21/11/2026\n\nVoltar\nImprimir\nANDAMENTO TÉCNICO\nOrçamento\nConclusão não registrada\nFINANCEIRO\nAcesso restrito"
+    },
+    {
+      "id": "R06-S1-16",
+      "desc": "Financeiro não solicita/retira/conferem e aguarda conferência",
+      "status": "PASS",
+      "detail": "ATENDIMENTO / #023\nSamsung · Digital Inverter\n\nMarina Alves · Entrada em 21/11/2026\n\nVoltar\nImprimir\nANDAMENTO TÉCNICO\nOrçamento\nConclusão não registrada\nFINANCEIRO\nSem cobrança\nSaldo: R$ 0,00\nRETIRAD"
+    },
+    {
+      "id": "R06-S1-17",
+      "desc": "Administrador recupera todas as ações de cancelamento",
+      "status": "PASS",
+      "detail": "admin"
+    },
+    {
+      "id": "R06-S1-18",
+      "desc": "Sem exceções, erros de console ou requisições externas na S1",
+      "status": "PASS",
+      "detail": "{\"errors\":[],\"consoleErrors\":[],\"external\":[]}"
+    },
+    {
+      "id": "R06-S2-01",
+      "desc": "Orçamento publicado com 3 peças, 2 serviços e desconto",
+      "status": "PASS",
+      "detail": "{\"status\":\"Negociação\",\"version\":{\"total\":23500,\"items\":5,\"discount\":1000}}"
+    },
+    {
+      "id": "R06-S2-02",
+      "desc": "Pedido mantém orçamento, andamento e entrega",
+      "status": "PASS",
+      "detail": "{\"open\":false,\"error\":\"\",\"toast\":\"Registro atualizado na demonstração.\"}"
+    },
+    {
+      "id": "R06-S2-03",
+      "desc": "Peça não utilizada conciliada em quantidade parcial sem entrada em estoque",
+      "status": "PASS",
+      "detail": "{\"e1\":{\"id\":2,\"type\":\"item\",\"when\":\"2026-11-26T14:07:06.297Z\",\"request\":1,\"item\":{\"name\":\"IGBT 650 V\",\"type\":\"Peça\",\"quantity\":1,\"unit\":3000},\"disposition\":\"unused\",\"reason\":\"\",\"stockReturned\":0,\"stockNote\":\"Baixa não comprovada; sem entrada no estoque.\"},\"qty\":2}"
+    },
+    {
+      "id": "R06-S2-04",
+      "desc": "Consumo/perda exige motivo",
+      "status": "PASS",
+      "detail": "{\"open\":true,\"error\":\"Confira o motivo ou as observações.\",\"toast\":\"Registro atualizado na demonstração.\"}"
+    },
+    {
+      "id": "R06-S2-05",
+      "desc": "Peça consumida é registrada sem retorno ao estoque",
+      "status": "PASS",
+      "detail": "{\"e2\":{\"id\":3,\"type\":\"item\",\"when\":\"2026-11-26T14:07:08.133Z\",\"request\":1,\"item\":{\"name\":\"IGBT 650 V\",\"type\":\"Peça\",\"quantity\":2,\"unit\":3000},\"disposition\":\"lost\",\"reason\":\"Peça consumida em teste de bancada R06.\",\"stockReturned\":0,\"stockNote\":\"Consumo/perda registrado; não retorna ao estoque.\"},\"items\":[[\"Optoacoplador PC817\",2],[\"Capacitor 450 V\",1],[\"Diagnóstico\",1],[\"Reparo\",1]]}"
+    },
+    {
+      "id": "R06-S2-06",
+      "desc": "Segunda peça consumida também não movimenta estoque",
+      "status": "PASS",
+      "detail": "{\"items\":[\"Capacitor 450 V\",\"Diagnóstico\",\"Reparo\"],\"st\":{\"open\":false,\"error\":\"\",\"toast\":\"Registro atualizado na demonstração.\"}}"
+    },
+    {
+      "id": "R06-S2-07",
+      "desc": "Conferência bloqueada enquanto há peça pendente",
+      "status": "PASS",
+      "detail": "{\"techBtn\":0,\"directTech\":{\"err\":\"Concilie todas as peças antes.\",\"before\":4,\"after\":4}}"
+    },
+    {
+      "id": "R06-S2-08",
+      "desc": "Quantidade acima do saldo é rejeitada no modelo",
+      "status": "PASS",
+      "detail": "{\"err\":\"Quantidade inválida.\",\"before\":4,\"after\":4}"
+    },
+    {
+      "id": "R06-S2-09",
+      "desc": "Peças restantes conciliadas sem movimentar estoque",
+      "status": "PASS",
+      "detail": "[\"Diagnóstico\",\"Reparo\"]"
+    },
+    {
+      "id": "R06-S2-10",
+      "desc": "Serviço não executado é retirado e o realizado permanece",
+      "status": "PASS",
+      "detail": "[\"Reparo\"]"
+    },
+    {
+      "id": "R06-S2-11",
+      "desc": "Desconto do rascunho é zerado sem obrigação formalizada",
+      "status": "PASS",
+      "detail": "discount=0"
+    },
+    {
+      "id": "R06-S2-12",
+      "desc": "Conferência técnica concluída com peças zeradas e serviço executado",
+      "status": "PASS",
+      "detail": "{\"open\":false,\"error\":\"\",\"toast\":\"Registro atualizado na demonstração.\"}"
+    },
+    {
+      "id": "R06-S2-13",
+      "desc": "Mudança de andamento invalida a conferência técnica",
+      "status": "PASS",
+      "detail": "{\"st\":{\"open\":false,\"error\":\"\",\"toast\":\"Registro atualizado na demonstração.\"},\"invalidByStatus\":false}"
+    },
+    {
+      "id": "R06-S2-14",
+      "desc": "Reconferência restabelece a conferência",
+      "status": "PASS",
+      "detail": "technical again"
+    },
+    {
+      "id": "R06-S2-15",
+      "desc": "Alteração de item invalida a conferência e bloqueia o acerto",
+      "status": "PASS",
+      "detail": "{\"invalidByItem\":false}"
+    },
+    {
+      "id": "R06-S2-16",
+      "desc": "Remover o item acrescentado restabelece o estado conferido",
+      "status": "PASS",
+      "detail": "{\"open\":false,\"error\":\"\",\"toast\":\"Registro atualizado na demonstração.\"}"
+    },
+    {
+      "id": "R06-S2-17",
+      "desc": "Limitação registrada: a conferência é uma chave do estado atual; voltar ao estado idêntico reativa a chave (INFO)",
+      "status": "INFO",
+      "detail": "technicalKey compara status+itens; não há evento de revogação. Encaminhado ao GPT como limite, sem alteração de regra."
+    },
+    {
+      "id": "R06-S2-18",
+      "desc": "Retirar o pedido não restaura os itens removidos",
+      "status": "PASS",
+      "detail": "{\"items\":[\"Reparo\"],\"versions\":5}"
+    },
+    {
+      "id": "R06-S2-19",
+      "desc": "Nenhuma entrada em estoque durante toda a conferência",
+      "status": "PASS",
+      "detail": "{\"before\":[{\"name\":\"IGBT 650 V\",\"quantity\":8},{\"name\":\"Optoacoplador PC817\",\"quantity\":3},{\"name\":\"Capacitor 450 V\",\"quantity\":16}],\"after\":[{\"name\":\"IGBT 650 V\",\"quantity\":8},{\"name\":\"Optoacoplador PC817\",\"quantity\":3},{\"name\":\"Capacitor 450 V\",\"quantity\":16}]}"
+    },
+    {
+      "id": "R06-S2-20",
+      "desc": "Sem exceções ou erros de console na S2",
+      "status": "PASS",
+      "detail": "{\"errors\":[],\"consoleErrors\":[]}"
+    },
+    {
+      "id": "R06-S3-01",
+      "desc": "Técnico solicita e não vê valores",
+      "status": "PASS",
+      "detail": "ATENDIMENTO / #024\nLG · Dual Inverter\n\nClima Sul Serviços · Entrada em 26/11/2026\n\nVoltar\nImprimir\nANDAMENTO TÉCNICO\nAberto\nConclusão não registrada\nAtualizar a"
+    },
+    {
+      "id": "R06-S3-02",
+      "desc": "Pedido não altera andamento nem cria cobrança",
+      "status": "PASS",
+      "detail": "{\"status\":\"Aberto\",\"total\":0,\"billing\":null}"
+    },
+    {
+      "id": "R06-S3-03",
+      "desc": "Técnico conclui a conferência sem valores",
+      "status": "PASS",
+      "detail": "{\"open\":false,\"error\":\"\",\"toast\":\"Registro atualizado na demonstração.\"}"
+    },
+    {
+      "id": "R06-S3-04",
+      "desc": "Técnico não confirma acerto nem por chamada direta",
+      "status": "PASS",
+      "detail": "{\"err\":\"Operação não autorizada ou confirmação ausente.\",\"before\":2,\"after\":2}"
+    },
+    {
+      "id": "R06-S3-05",
+      "desc": "Financeiro vê o acerto após a conferência",
+      "status": "PASS",
+      "detail": "ATENDIMENTO / #024\nLG · Dual Inverter\n\nClima Sul Serviços · Entrada em 26/11/2026\n\nVoltar\nImprimir\nANDAMENTO TÉCNICO\nAberto\nConclusão não registrada\nFINANCEIRO\nSem cobrança\nSaldo: R$ 0,00\nRETIRADA\nNão entregue\nRegistro i"
+    },
+    {
+      "id": "R06-S3-06",
+      "desc": "Acerto sem cobrança cria obrigação de R$ 70,00 e cancela",
+      "status": "PASS",
+      "detail": "{\"status\":\"Cancelado\",\"total\":7000,\"paid\":0,\"billing\":{\"due\":\"2026-11-26\",\"items\":[],\"settlement\":{\"gross\":8000,\"discount\":1000}},\"delivery\":null}"
+    },
+    {
+      "id": "R06-S3-07",
+      "desc": "Fila de cancelamentos fica vazia após confirmar",
+      "status": "PASS",
+      "detail": "queue=0"
+    },
+    {
+      "id": "R06-S3-08",
+      "desc": "Recebimento após cancelado é permitido no saldo a receber",
+      "status": "PASS",
+      "detail": "{\"paid\":7000,\"status\":\"Cancelado\",\"events\":1}"
+    },
+    {
+      "id": "R06-S3-09",
+      "desc": "Estorno corrige o recebimento e preserva o valor devido",
+      "status": "PASS",
+      "detail": "{\"paid\":0,\"total\":7000,\"events\":[\"receive\",\"reverse\"]}"
+    },
+    {
+      "id": "R06-S3-10",
+      "desc": "Novo recebimento quita o saldo recomposto",
+      "status": "PASS",
+      "detail": "{\"paid\":7000,\"events\":3,\"status\":\"Cancelado\"}"
+    },
+    {
+      "id": "R06-S3-11",
+      "desc": "Portal do cancelado oculta o orçamento e mostra a projeção financeira",
+      "status": "PASS",
+      "detail": "SEU ATENDIMENTO · OS #024\nLG · Dual Inverter\nCancelado\nEntrada\n26/11/2026\nPrevisão\nNão informada\nOrçamento\n\nNão há orçamento publicado disponível para consulta neste momento.\n\nPagamento\nQuitada\nTotal cobrado\nR$ 70,00\nPago\nR$ 70,00\nSaldo a pagar\nR$ 0,00\nArquivos compartilhados\n\nNenhum arquivo compartilhado nesta demonstração.\n\nEste é um link de demonstração. Na versão real, compartilhe o endereço privado apenas com pessoas autorizadas."
+    },
+    {
+      "id": "R06-S3-12",
+      "desc": "Portal não expõe motivos internos do cancelamento",
+      "status": "PASS",
+      "detail": "privacy"
+    },
+    {
+      "id": "R06-S3-13",
+      "desc": "Atendente consulta e pode registrar a entrega sem valores",
+      "status": "PASS",
+      "detail": "ATENDIMENTO / #024\nLG · Dual Inverter\n\nClima Sul Serviços · Entrada em 26/11/2026\n\nVoltar\nImprimir\nANDAMENTO TÉCNICO\nCancelado\nConclusão não registrada\nFINANCEIRO\nAcesso restrito\nV"
+    },
+    {
+      "id": "R06-S3-14",
+      "desc": "Entrega é operação independente e não altera o cancelamento",
+      "status": "PASS",
+      "detail": "{\"status\":\"Cancelado\",\"delivery\":{\"date\":\"2026-11-26\",\"receiver\":\"Clima Sul Serviços\",\"third\":false,\"items\":\"Equipamento e itens fictícios R06\",\"authorization\":\"\",\"registered\":\"2026-11-26T14:07:31.614Z\"}}"
+    },
+    {
+      "id": "R06-S3-15",
+      "desc": "OS cancelada e entregue sai da fila de retirada",
+      "status": "PASS",
+      "detail": "retirada"
+    },
+    {
+      "id": "R06-S3-16",
+      "desc": "Sem exceções, erros de console ou páginas externas na S3",
+      "status": "PASS",
+      "detail": "{\"errors\":[],\"consoleErrors\":[],\"portal\":[[],[]]}"
+    },
+    {
+      "id": "R06-S4-01",
+      "desc": "Duas entradas somam R$ 240,00 antes do cancelamento",
+      "status": "PASS",
+      "detail": "{\"total\":24000,\"paid\":24000}"
+    },
+    {
+      "id": "R06-S4-02",
+      "desc": "Conferência técnica pronta para o acerto",
+      "status": "PASS",
+      "detail": "[\"request\",\"technical\"]"
+    },
+    {
+      "id": "R06-S4-03",
+      "desc": "Devolução com valor divergente é rejeitada",
+      "status": "PASS",
+      "detail": "{\"open\":true,\"error\":\"O valor devolvido deve ser exatamente o valor calculado.\",\"toast\":\"Registro atualizado na demonstração.\"}"
+    },
+    {
+      "id": "R06-S4-04",
+      "desc": "Devolução sem comprovante/referência é bloqueada no formulário",
+      "status": "PASS",
+      "detail": "{\"st\":{\"open\":true,\"error\":\"\",\"toast\":\"Registro atualizado na demonstração.\"},\"refInvalid\":{\"message\":\"Preencha este campo.\",\"valid\":false}}"
+    },
+    {
+      "id": "R06-S4-05",
+      "desc": "Data da devolução anterior aos recebimentos é rejeitada",
+      "status": "PASS",
+      "detail": "{\"open\":true,\"error\":\"Data anterior aos registros financeiros.\",\"toast\":\"Registro atualizado na demonstração.\"}"
+    },
+    {
+      "id": "R06-S4-06",
+      "desc": "Data inválida e forma inválida são rejeitadas no modelo",
+      "status": "PASS",
+      "detail": "{\"err\":\"Informe data e forma da devolução.\",\"before\":2,\"after\":2}"
+    },
+    {
+      "id": "R06-S4-07",
+      "desc": "Confirmação calcula total devido de R$ 80,00 e devolução de R$ 160,00",
+      "status": "PASS",
+      "detail": "{\"status\":\"Cancelado\",\"total\":8000,\"paid\":8000,\"settle\":{\"gross\":10000,\"discount\":2000,\"total\":8000,\"paid\":24000,\"refund\":16000,\"balance\":0,\"result\":\"a_devolver\"}}"
+    },
+    {
+      "id": "R06-S4-08",
+      "desc": "Devolução é evento separado com valor, data, forma e referência",
+      "status": "PASS",
+      "detail": "{\"id\":3,\"type\":\"refund\",\"amount\":16000,\"date\":\"2026-11-26\",\"method\":\"Pix\",\"reference\":\"Comprovante fictício R06 S4\",\"registered\":\"2026-11-26T14:07:45.313Z\"}"
+    },
+    {
+      "id": "R06-S4-09",
+      "desc": "Recibos originais permanecem e não são marcados como estornados",
+      "status": "PASS",
+      "detail": "{\"events\":[\"receive\",\"receive\",\"refund\"]}"
+    },
+    {
+      "id": "R06-S4-10",
+      "desc": "Recibo original continua acessível e sem ESTORNADO",
+      "status": "PASS",
+      "detail": "DOCUMENTO\nRecibo de recebimento\n\nPrévia de demonstração, sem validade comercial.\n\nVoltar\nImprimir\n\nMINHA OFICINA · DEMONSTRAÇÃO\n\nRecibo #25 / 1\n\nRecebimento registrado\n\nR$ 100,00\n\n"
+    },
+    {
+      "id": "R06-S4-11",
+      "desc": "Financeiro mostra a devolução e bloqueia correções posteriores",
+      "status": "PASS",
+      "detail": "ATENDIMENTO / #025\nMidea · Bancada R06 S4\n\nClima Sul Serviços · Entrada em 26/11/2026\n\nVoltar\nImprimir\nANDAMENTO TÉCNICO\nCancelado\nConclusão não registrada\nFINANCEIRO\nSem pendência\nSaldo: R$ 0,00\nRETIRADA\nNão entregue\nRegistro independente do pagamento\nRegistrar entrega\nVisão geral\nAtendimento\nOrçamento e link\nEntrega\nAnexos\nHistórico\nGarantia\nCancelamento\nFinanceiro\nRecebimentos e correções\nDevolução registrada\n− R$ 160,00\n\n26/11/2026 · Pix · Registro #3\n\nComprovante: Comprovante fictício R06 S4\n\nRecebimento\nR$ 140,00\n\n26/11/2026 · Dinheiro · Registro #2\n\nRecibo\nRecebimento\nR$ 100,00\n\n26/11/2026 · Pix · Registro #1\n\nRecibo\nResumo da cobrança\nSem pendência\nTotal cobrado\nR$ 80,00\nRecebido líq"
+    },
+    {
+      "id": "R06-S4-12",
+      "desc": "Correção após devolução é bloqueada no modelo",
+      "status": "PASS",
+      "detail": "{\"err\":\"Há devolução registrada ou não há obrigação; confira o histórico.\",\"before\":3,\"after\":3}"
+    },
+    {
+      "id": "R06-S4-13",
+      "desc": "Projeção do portal reflete o líquido de R$ 80,00 e não contém referência privada",
+      "status": "PASS",
+      "detail": "{\"id\":25,\"status\":\"Cancelado\",\"entry\":\"2026-11-26\",\"forecast\":\"\",\"equipment\":\"Midea · Bancada R06 S4\",\"finance\":{\"total\":8000,\"paid\":8000,\"balance\":0,\"status\":\"Quitada\"},\"quote\":null,\"attachments\":[]}"
+    },
+    {
+      "id": "R06-S4-14",
+      "desc": "Portal cancelado não mostra orçamento nem comprovante interno",
+      "status": "PASS",
+      "detail": "SEU ATENDIMENTO · OS #025\nMidea · Bancada R06 S4\nCancelado\nEntrada\n26/11/2026\nPrevisão\nNão informada\nOrçamento\n\nNão há orçamento publicado disponível para consulta neste momento.\n\nPagamento\nQuitada\nTotal cobrado\nR$ 80,00\nPago\nR$ 80,00\nSaldo a pagar\nR$ 0,00\nArquivos compartilhados\n\nNenhum arquivo compartilhado nesta demonstração.\n\nEste é um link de demonstração. Na versão real, compartilhe o endereço privado apenas com pessoas autorizadas."
+    },
+    {
+      "id": "R06-S4-15",
+      "desc": "Impressão da OS cancelada não expõe a referência privada",
+      "status": "PASS",
+      "detail": "DOCUMENTO\nImpressão da OS #025\n\nPrévia fictícia para avaliação do formato.\n\nVoltar\nCupom 80 mm\nImprimir\nMinha oficina · Demonstração\nOrdem de serviço #025\nCliente\nClima Sul Serviços\nEquipamento\nMidea · Bancada R06 S4\nEntrada\n26/11/2026\nAndamento\nCancelado\nEntr"
+    },
+    {
+      "id": "R06-S4-16",
+      "desc": "Sem exceções, erros de console ou páginas externas na S4",
+      "status": "PASS",
+      "detail": "{\"errors\":[],\"consoleErrors\":[],\"portal\":[[],[]],\"external\":[]}"
+    },
+    {
+      "id": "R06-S5-01",
+      "desc": "Acerto sem pendência mantém total igual ao pago",
+      "status": "PASS",
+      "detail": "{\"status\":\"Cancelado\",\"total\":10000,\"paid\":10000,\"settle\":{\"gross\":10000,\"discount\":0,\"total\":10000,\"paid\":10000,\"refund\":0,\"balance\":0,\"result\":\"sem_pendencias\"}}"
+    },
+    {
+      "id": "R06-S5-01-B",
+      "desc": "Cancelamento sem devolução não anuncia “Devolução registrada”",
+      "status": "PASS",
+      "detail": "ATENDIMENTO / #025\nLG · Bancada R06 S5\n\nClima Sul Serviços · Entrada em 26/11/2026\n\nVoltar\nImprimir\nANDAMENTO TÉCNICO\nCancelado\nConclusão não registrada\nFINANCEIRO\nSem pendência\nSaldo: R$ 0,00\nRETIRADA\nNão entregue\nRegistro independente do "
+    },
+    {
+      "id": "R06-S5-02",
+      "desc": "Financeiro não recebe ação de retificação",
+      "status": "PASS",
+      "detail": "ATENDIMENTO / #025\nLG · Bancada R06 S5\n\nClima Sul Serviços · Entrada em 26/11/2026\n\nVoltar\nImprimir\nANDAMENTO TÉCNICO\nCancelado\nConclusão não registrada\nFINANCEIRO\nSem pendência\nSaldo: R$ 0,00\nRETIRAD"
+    },
+    {
+      "id": "R06-S5-03",
+      "desc": "Retificação sem permissão é bloqueada",
+      "status": "PASS",
+      "detail": "{\"err\":\"Confirme a correção autorizada.\",\"before\":1,\"after\":1}"
+    },
+    {
+      "id": "R06-S5-04",
+      "desc": "Administrador vê a retificação autorizada",
+      "status": "PASS",
+      "detail": "rectify button"
+    },
+    {
+      "id": "R06-S5-05",
+      "desc": "Retificação exige tipo explícito",
+      "status": "PASS",
+      "detail": "Corrige um recebimento registrado indevidamente. Não realiza reembolso, transferência ou devolução.\n\nRecebimento #1\nR$ 100,00\nData\n25/11/2026\nForma\nPix\nSaldo após correção\nR$ 100,00\nData da correção\nTipo de retificação\nSelecione\nLançamento "
+    },
+    {
+      "id": "R06-S5-06",
+      "desc": "Data anterior à confirmação do acerto é rejeitada",
+      "status": "PASS",
+      "detail": "{\"open\":true,\"error\":\"Data fora do período de retificação.\",\"toast\":\"Registro atualizado na demonstração.\"}"
+    },
+    {
+      "id": "R06-S5-07",
+      "desc": "Retificação autorizada recompõe o saldo e registra o tipo",
+      "status": "PASS",
+      "detail": "{\"id\":2,\"type\":\"reverse\",\"reference\":1,\"amount\":10000,\"date\":\"2026-11-26\",\"method\":\"Pix\",\"reason\":\"Retificação autorizada após conferência R06.\",\"registered\":\"2026-11-26T14:07:57.639Z\",\"rectification\":\"lancamento_incorreto\"}"
+    },
+    {
+      "id": "R06-S5-08",
+      "desc": "Recibo retificado permanece e é marcado ESTORNADO",
+      "status": "PASS",
+      "detail": "receipt marked"
+    },
+    {
+      "id": "R06-S5-09",
+      "desc": "Retificação duplicada não oferece ação",
+      "status": "PASS",
+      "detail": "no duplicate"
+    },
+    {
+      "id": "R06-S5-10",
+      "desc": "Retificação duplicada é rejeitada no modelo",
+      "status": "PASS",
+      "detail": "{\"err\":\"Recebimento inexistente ou já estornado.\",\"before\":2,\"after\":2}"
+    },
+    {
+      "id": "R06-S5-11",
+      "desc": "Saldo recomposto autoriza novo recebimento",
+      "status": "PASS",
+      "detail": "{\"paid\":10000,\"events\":3}"
+    },
+    {
+      "id": "R06-S5-12",
+      "desc": "Financeiro não abre retificação do novo recebimento",
+      "status": "PASS",
+      "detail": "direct modal"
+    },
+    {
+      "id": "R06-S5-13",
+      "desc": "Total zero com obrigação registra devolução integral",
+      "status": "PASS",
+      "detail": "{\"status\":\"Cancelado\",\"total\":0,\"paid\":0,\"billing\":{\"due\":\"2026-11-26\",\"items\":[{\"name\":\"Reparo zerado\",\"type\":\"Serviço\",\"quantity\":1,\"unit\":10000}],\"discount\":0,\"settlement\":{\"gross\":0,\"discount\":0}}}"
+    },
+    {
+      "id": "R06-S5-14",
+      "desc": "Portal do total zero com obrigação mostra Sem cobrança",
+      "status": "PASS",
+      "detail": "{\"total\":0,\"paid\":0,\"balance\":0,\"status\":\"Sem cobrança\"}"
+    },
+    {
+      "id": "R06-S5-15-A",
+      "desc": "Bloco de devolução fica oculto quando não há valor a devolver",
+      "status": "PASS",
+      "detail": "{\"hidden\":true,\"display\":\"none\",\"height\":0}"
+    },
+    {
+      "id": "R06-S5-15",
+      "desc": "Total zero sem obrigação cancela sem criar cobrança",
+      "status": "PASS",
+      "detail": "{\"status\":\"Cancelado\",\"total\":0,\"billing\":null}"
+    },
+    {
+      "id": "R06-S5-15-B",
+      "desc": "Concluído sem devolução não exibe a linha “Devolução registrada”",
+      "status": "PASS",
+      "detail": "ATENDIMENTO / #027\nPhilco · Bancada R06 S5 livre\n\nClima Sul Serviços · Entrada em 26/11/2026\n\nVoltar\nImprimir\nANDAMENTO TÉCNICO\nCancelado\nConclusão não registrada\nFINANCEIRO\nSem pendência\nSaldo: R$ 0,"
+    },
+    {
+      "id": "R06-S5-16",
+      "desc": "Portal sem obrigação não exibe bloco financeiro",
+      "status": "PASS",
+      "detail": "{\"id\":27,\"status\":\"Cancelado\",\"entry\":\"2026-11-26\",\"forecast\":\"\",\"equipment\":\"Philco · Bancada R06 S5 livre\",\"finance\":null,\"quote\":null,\"attachments\":[]}"
+    },
+    {
+      "id": "R06-S5-17",
+      "desc": "Sem exceções, erros de console ou páginas externas na S5",
+      "status": "PASS",
+      "detail": "{\"errors\":[],\"consoleErrors\":[]}"
+    },
+    {
+      "id": "R06-S6-01",
+      "desc": "Segunda aba altera o saldo e a primeira anuncia o conflito",
+      "status": "PASS",
+      "detail": "{\"toastA\":\"Dados alterados em outra aba. Confira antes de salvar.\",\"stillOpen\":true}"
+    },
+    {
+      "id": "R06-S6-02",
+      "desc": "Confirmação obsoleta é abortada e não grava cancelamento",
+      "status": "PASS",
+      "detail": "{\"st\":{\"open\":false,\"error\":\"\",\"toast\":\"Dados alterados em outra aba. Reabra a operação para evitar sobrescrever a atualização.\"},\"status\":\"Negociação\",\"paid\":15000,\"events\":[\"request\",\"technical\"]}"
+    },
+    {
+      "id": "R06-S6-03",
+      "desc": "Acerto recalculado confirma o cancelamento com devolução de R$ 70,00",
+      "status": "PASS",
+      "detail": "{\"status\":\"Cancelado\",\"total\":8000,\"paid\":8000,\"events\":[\"receive\",\"receive\",\"refund\"]}"
+    },
+    {
+      "id": "R06-S6-04",
+      "desc": "Segunda aba atualiza para o cancelamento confirmado",
+      "status": "PASS",
+      "detail": "ATENDIMENTO / #025\nDaikin · Bancada R06 S6\n\nClima Sul Serviços · Entrada em 26/11/2026\n\nVoltar\nImprimir\nANDAMENTO TÉCNICO\nCancelado\nConclusão não registrada\nFINANCEIRO\nSem pendência\nSaldo: R$ 0,00\nRETIRADA\nNão entregue\nR"
+    },
+    {
+      "id": "R06-S6-05",
+      "desc": "Cancelamento e devolução persistem após recarregar",
+      "status": "PASS",
+      "detail": "{\"status\":\"Cancelado\",\"events\":3,\"hist\":\"ATENDIMENTO / #025\\nDaikin · Bancada R06 S6\\n\\nClima Sul Serviços · Entrada em 26/11/2026\\n\\nVoltar\\nImprimir\\nANDAMENTO TÉCNICO\\nCancelado\\nConclusão não registrada\\nFINANCEIRO\\nSem pendência\\nSaldo: R$ 0,00\\nRETIRADA\\nNão entregue\\nRegistro independente do pagamento\\nRegistrar entrega\\nVisão geral\\nAtendimento\\nOrça\"}"
+    },
+    {
+      "id": "R06-S6-06",
+      "desc": "Chave financeira obsoleta é rejeitada no modelo",
+      "status": "PASS",
+      "detail": "{\"err\":\"A OS mudou. Reabra o acerto.\",\"key\":true,\"confirmed\":false}"
+    },
+    {
+      "id": "R06-S6-07",
+      "desc": "Técnico não abre nem executa o acerto",
+      "status": "PASS",
+      "detail": "{\"modal\":false,\"err\":\"Operação não autorizada ou confirmação ausente.\"}"
+    },
+    {
+      "id": "R06-S6-08",
+      "desc": "Financeiro não solicita cancelamento nem por chamada direta",
+      "status": "PASS",
+      "detail": "{\"modal\":false,\"err\":\"Operação não autorizada ou confirmação ausente.\"}"
+    },
+    {
+      "id": "R06-S6-09",
+      "desc": "Atendente não confere itens nem por chamada direta",
+      "status": "PASS",
+      "detail": "{\"modal\":false,\"err\":\"Operação não autorizada ou confirmação ausente.\"}"
+    },
+    {
+      "id": "R06-S6-10",
+      "desc": "Sem exceções, erros de console ou requisições externas na S6",
+      "status": "PASS",
+      "detail": "{\"errors\":[],\"consoleErrors\":[],\"external\":[]}"
+    }
+  ]
+}

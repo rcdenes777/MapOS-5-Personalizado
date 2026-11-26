@@ -1,0 +1,10 @@
+72 profile/route combinations; queue, financial display and escaping checks passed.
+29 quote domain checks passed.
+24 portal domain checks passed.
+8 portal page render checks passed.
+24 financial domain checks passed.
+12 finance integration checks passed.
+30 cancellation domain checks passed.
+11 cancellation UI checks passed.
+22 warranty domain checks passed.
+9 warranty UI checks passed.

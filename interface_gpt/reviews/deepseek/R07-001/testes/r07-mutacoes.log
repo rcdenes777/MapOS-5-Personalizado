@@ -1,0 +1,22 @@
+DETECTADA R07M-01 — retorno ativo único :: R07N-01
+DETECTADA R07M-02 — origem com conclusão real :: R07N-02b
+DETECTADA R07M-03 — mesma unidade e cliente :: R07N-04, R07N-07b
+DETECTADA R07M-04 — defeito obrigatório :: R07N-05, R07N-12, R07N-13
+DETECTADA R07M-05 — confirmação da entrada :: R07N-06
+DETECTADA R07M-06 — solução exige cobertura concluída :: R07N-11
+DETECTADA R07M-07 — avaliação stale :: R07N-14
+DETECTADA R07M-08 — solução executada não é revista :: R07N-16
+DETECTADA R07M-09 — origem com derivado não reabre :: R07N-19, R07N-19b, R07N-19c, R07N-19d
+DETECTADA R07M-10 — troca/devolução pendente bloqueia conclusão :: R07N-20, R07N-21
+DETECTADA R07M-11 — custo zero/tempo zero :: R07N-24
+DETECTADA R07M-12 — teto do custo :: R07N-25
+DETECTADA R07M-13 — correção única :: R07N-28
+DETECTADA R07M-14 — edição/publicação só com decisão de novo orçamento :: R07N-30, R07N-31, R07N-40
+DETECTADA R07M-15 — faturar exige aprovação vigente :: R07N-32, R07N-32b, R07N-33, R07N-34, R07N-35
+EQUIVALENTE R07M-16 — faturar exige itens/valores idênticos :: sem falhas
+DETECTADA R07M-17 — publicação pública com entrega :: R07N-38
+DETECTADA R07M-18 — edição após entrega :: R07N-39
+DETECTADA R07M-19 — irmão ativo não reabre :: R07N-19d
+DETECTADA R07M-20 — último finalizado por id :: R07N-44
+DETECTADA R07M-21 — último finalizado exige status Finalizado :: R07N-45, R07N-48
+TOTAL 21 · DETECTADA 20 · FORA_DO_ALVO 0 · SOBREVIVENTE 0 · EQUIVALENTE 1 · INCONCLUSIVO 0

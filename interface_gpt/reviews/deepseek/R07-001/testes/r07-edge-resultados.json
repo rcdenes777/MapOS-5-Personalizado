@@ -1,0 +1,399 @@
+{
+  "generatedAt": "2026-11-26T14:14:19.296Z",
+  "codeSha": "f46ad182bcb7fb067d68c335369640c82bccba1d",
+  "baseUrl": "http://127.0.0.1:8130",
+  "total": 56,
+  "summary": {
+    "PASS": 56
+  },
+  "scans": [
+    {
+      "label": "garantia",
+      "viewport": 390,
+      "violations": []
+    },
+    {
+      "label": "garantia",
+      "viewport": 1440,
+      "violations": []
+    },
+    {
+      "label": "origem",
+      "viewport": 390,
+      "violations": []
+    },
+    {
+      "label": "origem",
+      "viewport": 1440,
+      "violations": []
+    },
+    {
+      "label": "orcamento",
+      "viewport": 390,
+      "violations": []
+    },
+    {
+      "label": "orcamento",
+      "viewport": 1440,
+      "violations": []
+    },
+    {
+      "label": "retorno-bloqueado",
+      "viewport": 390,
+      "violations": []
+    },
+    {
+      "label": "retorno-bloqueado",
+      "viewport": 1440,
+      "violations": []
+    },
+    {
+      "label": "modal-avaliacao",
+      "viewport": 390,
+      "violations": []
+    },
+    {
+      "label": "modal-custo",
+      "viewport": 390,
+      "violations": []
+    }
+  ],
+  "results": [
+    {
+      "id": "R07-E-garantia-retorno-320",
+      "desc": "garantia-retorno sem overflow em 320",
+      "status": "PASS",
+      "detail": "{\"over\":0,\"h1\":1}"
+    },
+    {
+      "id": "R07-E-garantia-retorno-390",
+      "desc": "garantia-retorno sem overflow em 390",
+      "status": "PASS",
+      "detail": "{\"over\":0,\"h1\":1}"
+    },
+    {
+      "id": "R07-E-garantia-retorno-768",
+      "desc": "garantia-retorno sem overflow em 768",
+      "status": "PASS",
+      "detail": "{\"over\":0,\"h1\":1}"
+    },
+    {
+      "id": "R07-E-garantia-retorno-1440",
+      "desc": "garantia-retorno sem overflow em 1440",
+      "status": "PASS",
+      "detail": "{\"over\":0,\"h1\":1}"
+    },
+    {
+      "id": "R07-E-origem-resumo-320",
+      "desc": "origem-resumo sem overflow em 320",
+      "status": "PASS",
+      "detail": "{\"over\":0,\"h1\":1}"
+    },
+    {
+      "id": "R07-E-origem-resumo-390",
+      "desc": "origem-resumo sem overflow em 390",
+      "status": "PASS",
+      "detail": "{\"over\":0,\"h1\":1}"
+    },
+    {
+      "id": "R07-E-origem-resumo-768",
+      "desc": "origem-resumo sem overflow em 768",
+      "status": "PASS",
+      "detail": "{\"over\":0,\"h1\":1}"
+    },
+    {
+      "id": "R07-E-origem-resumo-1440",
+      "desc": "origem-resumo sem overflow em 1440",
+      "status": "PASS",
+      "detail": "{\"over\":0,\"h1\":1}"
+    },
+    {
+      "id": "R07-E-orcamento-retorno-320",
+      "desc": "orcamento-retorno sem overflow em 320",
+      "status": "PASS",
+      "detail": "{\"over\":0,\"h1\":1}"
+    },
+    {
+      "id": "R07-E-orcamento-retorno-390",
+      "desc": "orcamento-retorno sem overflow em 390",
+      "status": "PASS",
+      "detail": "{\"over\":0,\"h1\":1}"
+    },
+    {
+      "id": "R07-E-orcamento-retorno-768",
+      "desc": "orcamento-retorno sem overflow em 768",
+      "status": "PASS",
+      "detail": "{\"over\":0,\"h1\":1}"
+    },
+    {
+      "id": "R07-E-orcamento-retorno-1440",
+      "desc": "orcamento-retorno sem overflow em 1440",
+      "status": "PASS",
+      "detail": "{\"over\":0,\"h1\":1}"
+    },
+    {
+      "id": "R07-E-retorno-bloqueado-320",
+      "desc": "retorno-bloqueado sem overflow em 320",
+      "status": "PASS",
+      "detail": "{\"over\":0,\"h1\":1}"
+    },
+    {
+      "id": "R07-E-retorno-bloqueado-390",
+      "desc": "retorno-bloqueado sem overflow em 390",
+      "status": "PASS",
+      "detail": "{\"over\":0,\"h1\":1}"
+    },
+    {
+      "id": "R07-E-retorno-bloqueado-768",
+      "desc": "retorno-bloqueado sem overflow em 768",
+      "status": "PASS",
+      "detail": "{\"over\":0,\"h1\":1}"
+    },
+    {
+      "id": "R07-E-retorno-bloqueado-1440",
+      "desc": "retorno-bloqueado sem overflow em 1440",
+      "status": "PASS",
+      "detail": "{\"over\":0,\"h1\":1}"
+    },
+    {
+      "id": "R07-E-retorno-novo-320",
+      "desc": "retorno-novo sem overflow em 320",
+      "status": "PASS",
+      "detail": "{\"over\":0,\"h1\":1}"
+    },
+    {
+      "id": "R07-E-retorno-novo-390",
+      "desc": "retorno-novo sem overflow em 390",
+      "status": "PASS",
+      "detail": "{\"over\":0,\"h1\":1}"
+    },
+    {
+      "id": "R07-E-retorno-novo-768",
+      "desc": "retorno-novo sem overflow em 768",
+      "status": "PASS",
+      "detail": "{\"over\":0,\"h1\":1}"
+    },
+    {
+      "id": "R07-E-retorno-novo-1440",
+      "desc": "retorno-novo sem overflow em 1440",
+      "status": "PASS",
+      "detail": "{\"over\":0,\"h1\":1}"
+    },
+    {
+      "id": "R07-E-retorno-novo-resumo-320",
+      "desc": "retorno-novo-resumo sem overflow em 320",
+      "status": "PASS",
+      "detail": "{\"over\":0,\"h1\":1}"
+    },
+    {
+      "id": "R07-E-retorno-novo-resumo-390",
+      "desc": "retorno-novo-resumo sem overflow em 390",
+      "status": "PASS",
+      "detail": "{\"over\":0,\"h1\":1}"
+    },
+    {
+      "id": "R07-E-retorno-novo-resumo-768",
+      "desc": "retorno-novo-resumo sem overflow em 768",
+      "status": "PASS",
+      "detail": "{\"over\":0,\"h1\":1}"
+    },
+    {
+      "id": "R07-E-retorno-novo-resumo-1440",
+      "desc": "retorno-novo-resumo sem overflow em 1440",
+      "status": "PASS",
+      "detail": "{\"over\":0,\"h1\":1}"
+    },
+    {
+      "id": "R07-E-impressao-retorno-320",
+      "desc": "impressao-retorno sem overflow em 320",
+      "status": "PASS",
+      "detail": "{\"over\":0,\"h1\":1}"
+    },
+    {
+      "id": "R07-E-impressao-retorno-390",
+      "desc": "impressao-retorno sem overflow em 390",
+      "status": "PASS",
+      "detail": "{\"over\":0,\"h1\":1}"
+    },
+    {
+      "id": "R07-E-impressao-retorno-768",
+      "desc": "impressao-retorno sem overflow em 768",
+      "status": "PASS",
+      "detail": "{\"over\":0,\"h1\":1}"
+    },
+    {
+      "id": "R07-E-impressao-retorno-1440",
+      "desc": "impressao-retorno sem overflow em 1440",
+      "status": "PASS",
+      "detail": "{\"over\":0,\"h1\":1}"
+    },
+    {
+      "id": "R07-E-modal-avaliacao-320",
+      "desc": "Modal de avaliação cabe em 320",
+      "status": "PASS",
+      "detail": "{\"over\":0,\"dialog\":{\"open\":true,\"left\":19,\"right\":301,\"width\":282,\"viewport\":320}}"
+    },
+    {
+      "id": "R07-E-modal-custo-320",
+      "desc": "Modal de custo cabe em 320",
+      "status": "PASS",
+      "detail": "{\"overCost\":0,\"costDialog\":{\"open\":true,\"left\":19,\"right\":301,\"width\":282,\"viewport\":320}}"
+    },
+    {
+      "id": "R07-E-modal-avaliacao-390",
+      "desc": "Modal de avaliação cabe em 390",
+      "status": "PASS",
+      "detail": "{\"over\":0,\"dialog\":{\"open\":true,\"left\":19,\"right\":371,\"width\":352,\"viewport\":390}}"
+    },
+    {
+      "id": "R07-E-modal-custo-390",
+      "desc": "Modal de custo cabe em 390",
+      "status": "PASS",
+      "detail": "{\"overCost\":0,\"costDialog\":{\"open\":true,\"left\":19,\"right\":371,\"width\":352,\"viewport\":390}}"
+    },
+    {
+      "id": "R07-E-modal-avaliacao-768",
+      "desc": "Modal de avaliação cabe em 768",
+      "status": "PASS",
+      "detail": "{\"over\":0,\"dialog\":{\"open\":true,\"left\":104,\"right\":664,\"width\":560,\"viewport\":768}}"
+    },
+    {
+      "id": "R07-E-modal-custo-768",
+      "desc": "Modal de custo cabe em 768",
+      "status": "PASS",
+      "detail": "{\"overCost\":0,\"costDialog\":{\"open\":true,\"left\":104,\"right\":664,\"width\":560,\"viewport\":768}}"
+    },
+    {
+      "id": "R07-E-modal-avaliacao-1440",
+      "desc": "Modal de avaliação cabe em 1440",
+      "status": "PASS",
+      "detail": "{\"over\":0,\"dialog\":{\"open\":true,\"left\":440,\"right\":1000,\"width\":560,\"viewport\":1440}}"
+    },
+    {
+      "id": "R07-E-modal-custo-1440",
+      "desc": "Modal de custo cabe em 1440",
+      "status": "PASS",
+      "detail": "{\"overCost\":0,\"costDialog\":{\"open\":true,\"left\":440,\"right\":1000,\"width\":560,\"viewport\":1440}}"
+    },
+    {
+      "id": "R07-KB-01",
+      "desc": "Modal de avaliação prende o foco, fecha com Escape e devolve o foco",
+      "status": "PASS",
+      "detail": "{\"initial\":{\"tag\":\"BUTTON\",\"name\":null,\"inDialog\":true,\"labelled\":\"modal-title\"},\"inside\":true,\"escaped\":{\"open\":false,\"active\":\"modal:warrantyAssess:18\"}}"
+    },
+    {
+      "id": "R07-KB-02",
+      "desc": "Todos os campos do modal têm rótulo acessível e os obrigatórios são explícitos",
+      "status": "PASS",
+      "detail": "[{\"name\":\"coverage\",\"labelled\":true,\"required\":false},{\"name\":\"solution\",\"labelled\":true,\"required\":false},{\"name\":\"diagnosis\",\"labelled\":true,\"required\":false},{\"name\":\"reason\",\"labelled\":true,\"required\":true},{\"name\":\"confirm\",\"labelled\":true,\"required\":true}]"
+    },
+    {
+      "id": "R07-E-EXT-01",
+      "desc": "Defeito de 1.200 caracteres não cria overflow em 390",
+      "status": "PASS",
+      "detail": "{\"over390\":0}"
+    },
+    {
+      "id": "R07-E-EXT-02",
+      "desc": "Diagnóstico de 20.000 e justificativa de 10.000 são aceitos, escapados e sem overflow",
+      "status": "PASS",
+      "detail": "{\"overLong\":0,\"longStored\":{\"diagnosis\":20000,\"reason\":10000,\"raw\":false}}"
+    },
+    {
+      "id": "R07-E-EXT-03",
+      "desc": "Defeito com HTML é escapado na tela de garantia",
+      "status": "PASS",
+      "detail": "{\"html\":false,\"text\":true}"
+    },
+    {
+      "id": "R07-AXE-garantia-390",
+      "desc": "axe sem violações: garantia 390",
+      "status": "PASS",
+      "detail": "[]"
+    },
+    {
+      "id": "R07-AXE-garantia-1440",
+      "desc": "axe sem violações: garantia 1440",
+      "status": "PASS",
+      "detail": "[]"
+    },
+    {
+      "id": "R07-AXE-origem-390",
+      "desc": "axe sem violações: origem 390",
+      "status": "PASS",
+      "detail": "[]"
+    },
+    {
+      "id": "R07-AXE-origem-1440",
+      "desc": "axe sem violações: origem 1440",
+      "status": "PASS",
+      "detail": "[]"
+    },
+    {
+      "id": "R07-AXE-orcamento-390",
+      "desc": "axe sem violações: orcamento 390",
+      "status": "PASS",
+      "detail": "[]"
+    },
+    {
+      "id": "R07-AXE-orcamento-1440",
+      "desc": "axe sem violações: orcamento 1440",
+      "status": "PASS",
+      "detail": "[]"
+    },
+    {
+      "id": "R07-AXE-retorno-bloqueado-390",
+      "desc": "axe sem violações: retorno-bloqueado 390",
+      "status": "PASS",
+      "detail": "[]"
+    },
+    {
+      "id": "R07-AXE-retorno-bloqueado-1440",
+      "desc": "axe sem violações: retorno-bloqueado 1440",
+      "status": "PASS",
+      "detail": "[]"
+    },
+    {
+      "id": "R07-AXE-modal-avaliacao-390",
+      "desc": "axe sem violações: modal-avaliacao 390",
+      "status": "PASS",
+      "detail": "[]"
+    },
+    {
+      "id": "R07-AXE-modal-custo-390",
+      "desc": "axe sem violações: modal-custo 390",
+      "status": "PASS",
+      "detail": "[]"
+    },
+    {
+      "id": "R07-E-PORTAL-01",
+      "desc": "Portal do orçamento do retorno não cria overflow em 390",
+      "status": "PASS",
+      "detail": "{\"pOver\":0,\"token\":true,\"text\":\"SEU ATENDIMENTO · OS #018\\nDaikin · EcoSwing\\nNegociação\\nEntrada\\n21/11/2026\\nPrevisão\\nNão informada\\nSeu orçamento\\nVersão 1\\n\\nTotal da proposta\\n\\nR$ 45,00\\n\\nPeças e se\"}"
+    },
+    {
+      "id": "R07-E-PORTAL-02",
+      "desc": "Portal do retorno não exibe avaliação, custo, origem nem laudo",
+      "status": "PASS",
+      "detail": "SEU ATENDIMENTO · OS #018\nDaikin · EcoSwing\nNegociação\nEntrada\n21/11/2026\nPrevisão\nNão informada\nSeu orçamento\nVersão 1\n\nTotal da proposta\n\nR$ 45,00\n\nPeças e serviços\nReparo do retorno R07\nServiço · 1 × R$ 45,00\nR$ 45,00\nPeças\nR$ 0,00\nServiços\nR$ 45,00\nDesconto\nR$ 0,00\n\nCondições de pagamento, prazo"
+    },
+    {
+      "id": "R07-E-PORTAL-03",
+      "desc": "axe sem violações no portal do retorno em 390",
+      "status": "PASS",
+      "detail": "[]"
+    },
+    {
+      "id": "R07-E-PORTAL-04",
+      "desc": "Portal sem exceções de página",
+      "status": "PASS",
+      "detail": "[]"
+    },
+    {
+      "id": "R07-E-HOST-01",
+      "desc": "Sem erros de página ou console no host",
+      "status": "PASS",
+      "detail": "{\"errors\":[],\"consoleErrors\":[]}"
+    }
+  ]
+}

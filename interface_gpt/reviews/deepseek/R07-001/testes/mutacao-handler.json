@@ -1,0 +1,26 @@
+{
+  "generatedAt": "2026-11-26T14:16:00-03:00",
+  "codeSha": "f46ad182bcb7fb067d68c335369640c82bccba1d",
+  "mutation": "remover a guarda `if(d.status==='Finalizado'&&BancadaCancel.pending(o))` do handler tech de app.js em cópia scratch",
+  "expectedTest": "R06B-07",
+  "classification": "detectado",
+  "failedTests": [
+    "R06B-07",
+    "R06B-08",
+    "R06B-09"
+  ],
+  "detail": [
+    "{\"open\":false,\"toast\":\"Registro atualizado na demonstração.\",\"error\":\"\"}",
+    "status/conclusão/histórico/pedido/localStorage alterados pela finalização indevida"
+  ],
+  "pristineAppSha256": "71260d41880000d30ed46d95dacbdba5a6dacc08c0c2cdf03209321210315355",
+  "mutantAppSha256": "2e78813f3be7818d58729272eb5f662b2cbe858cf98a2167f5484187e8714c1a",
+  "mutantLocation": "/home/dragonblue/.hermes/cache/scratch/r07-handler-mutante (fora do repositório; não publicado)",
+  "run": {
+    "server": "http://127.0.0.1:8131 (cópia estática)",
+    "total": 16,
+    "pass": 13,
+    "fail": 3
+  },
+  "note": "O checkout do laboratório não foi alterado; o mutante existiu apenas na cópia sob scratch e foi descartado após a execução."
+}

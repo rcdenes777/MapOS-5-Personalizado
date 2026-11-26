@@ -35,7 +35,7 @@ PASS R07-S3-03 — Avaliação sem cobertura concluída não escolhe solução :
 PASS R07-S3-04 — Diagnóstico é obrigatório quando a cobertura é concluída :: {"opened":true,"previous":"0","open":true,"error":"Confira os textos obrigatórios e seus limites.","toast":""}
 PASS R07-S3-05 — Avaliação registrada não muda andamento, cobrança, entrega nem histórico financeiro :: {"events":1,"coverage":"Coberto","status":"Aberto","total":0,"paid":0,"delivery":null}
 PASS R07-S3-06 — Avaliação com versão anterior obsoleta é recusada e não altera o histórico :: {"opened":true,"previous":"0","open":true,"error":"Outra avaliação foi registrada. Recarregue antes de decidir.","toast":"Registro atualizado na demonstração."}
-PASS R07-S3-07 — Revisão cria novo evento e preserva o anterior imutável :: [{"id":1,"type":"avaliar","coverage":"coberto","solution":"reparo_sem_cobranca","diagnosis":"Falha do reparo original.","reason":"Conferido na bancada.","when":"2026-11-26T16:17:14.336Z","actor":"Administrador"},{"id":2,"type":"avaliar","co
+PASS R07-S3-07 — Revisão cria novo evento e preserva o anterior imutável :: [{"id":1,"type":"avaliar","coverage":"coberto","solution":"reparo_sem_cobranca","diagnosis":"Falha do reparo original.","reason":"Conferido na bancada.","when":"2026-11-26T17:25:18.505Z","actor":"Administrador"},{"id":2,"type":"avaliar","co
 PASS R07-S3-08 — Duas abas na avaliação: segunda gravação bloqueada, sem evento extra :: {"toast":"Dados alterados em outra aba. Reabra a operação para evitar sobrescrever a atualização.","events":3}
 PASS R07-S3-09 — Concluir reparo sem cobrança grava conclusão e não concede nova garantia :: {"status":"Finalizado","conclusion":"2026-11-26","total":0,"paid":0,"days":0,"st":{"opened":true,"open":false,"error":"","toast":"Registro atualizado na demonstração."}}
 PASS R07-S3-10a — Origem com retorno finalizado aponta para o atendimento anterior, não cria irmão :: {"link16":["#retorno/18"],"formBase":"18"}
@@ -106,16 +106,16 @@ RETIRADA
 Não entregue
 Registr
 PASS R07-S6-03 — Rascunho salvo mantém total zero e origem intocada :: {"items":[{"name":"Reparo adicional fictício","type":"Serviço","quantity":1,"unit":5000}],"discount":0,"terms":{"payment":"","deadline":"","warranty":"","diagnosis":"","equipment":"","defect":""}}
-PASS R07-S6-04 — Publicação cria versão 1 e registra a operação privada :: {"current":1,"ops":[{"type":"orcamento","version":1,"when":"2026-11-26T16:18:36.357Z"}]}
+PASS R07-S6-04 — Publicação cria versão 1 e registra a operação privada :: {"current":1,"ops":[{"type":"orcamento","version":1,"when":"2026-11-26T17:26:40.369Z"}]}
 PASS R07-S6-05 — Cobrança antes da aprovação vigente é bloqueada :: {"opened":false}
-PASS R07-S6-06 — Decisão interna aprovada não fatura sozinha :: {"decision":{"answer":"Aprovado","name":"Cliente Fictício R07","channel":"presencial","date":"2026-11-26","note":"","registered":"2026-11-26T16:18:37.538Z","afterDelivery":false},"total":0}
+PASS R07-S6-06 — Decisão interna aprovada não fatura sozinha :: {"decision":{"answer":"Aprovado","name":"Cliente Fictício R07","channel":"presencial","date":"2026-11-26","note":"","registered":"2026-11-26T17:26:41.518Z","afterDelivery":false},"total":0}
 PASS R07-S6-07 — Itens alterados após a aprovação impedem faturar a versão antiga :: {"r":{"opened":false},"domBilling":"Fature o retorno somente com novo orçamento vigente, aprovado e sem alterações nos itens ou valores."}
 PASS R07-S6-08 — Nova versão ainda sem aprovação não fatura :: {"opened":false}
 PASS R07-S6-09 — Cobrança explícita usa a versão vigente e não movimenta a origem :: {"total":7000,"paid":0,"billing":{"due":"2026-11-26","items":[{"name":"Reparo adicional fictício","type":"Serviço","quantity":1,"unit":7000}],"discount":0}}
-PASS R07-S6-10 — Recusa não fatura e exige nova versão aprovada :: {"total":0,"last":{"answer":"Recusado","name":"Cliente Fictício R07","channel":"presencial","date":"2026-11-26","note":"","registered":"2026-11-26T16:18:49.600Z","afterDelivery":false}}
+PASS R07-S6-10 — Recusa não fatura e exige nova versão aprovada :: {"total":0,"last":{"answer":"Recusado","name":"Cliente Fictício R07","channel":"presencial","date":"2026-11-26","note":"","registered":"2026-11-26T17:26:53.452Z","afterDelivery":false}}
 PASS R07-S6-11 — Nova versão aprovada após recusa fatura o valor vigente :: [{"n":1,"d":"Recusado"},{"n":2,"d":"Aprovado"}]
-PASS R07-S6-12 — Projeção pública não expõe garantia, origem, avaliação, custos nem laudo :: {"id":26,"status":"Negociação","entry":"2026-11-26","forecast":"","equipment":"Electrolux · Color Adapt","finance":null,"quote":{"number":1,"created":"2026-11-26T16:18:59.487Z","items":[{"type":"Serviço","name":"Reparo público fictício","qu
-PASS R07-S6-13 — Resposta pública registra decisão, não fatura e não vaza informação privada :: {"pub":{"total":0,"paid":0,"decision":{"answer":"Aprovado","name":"Cliente Portal Fictício","channel":"link simulado","date":"2026-11-26","note":"","registered":"2026-11-26T16:19:01.415Z","afterDelivery":false},"delivery":null,"err":""},"pr
+PASS R07-S6-12 — Projeção pública não expõe garantia, origem, avaliação, custos nem laudo :: {"id":26,"status":"Negociação","entry":"2026-11-26","forecast":"","equipment":"Electrolux · Color Adapt","finance":null,"quote":{"number":1,"created":"2026-11-26T17:27:03.268Z","items":[{"type":"Serviço","name":"Reparo público fictício","qu
+PASS R07-S6-13 — Resposta pública registra decisão, não fatura e não vaza informação privada :: {"pub":{"total":0,"paid":0,"decision":{"answer":"Aprovado","name":"Cliente Portal Fictício","channel":"link simulado","date":"2026-11-26","note":"","registered":"2026-11-26T17:27:05.185Z","afterDelivery":false},"delivery":null,"err":""},"pr
 PASS R07-S6-14 — Cobrança do retorno é explícita, separada da decisão e não movimenta a origem :: {"total":6000,"paid":0,"billing":{"due":"2026-11-26","items":[{"name":"Reparo público fictício","type":"Serviço","quantity":1,"unit":6000}],"discount":0}}
 PASS R07-S6-15 — Sem erros de página ou console no orçamento :: {"errors":[],"consoleErrors":[],"perrs":[]}
 TOTAL 65 · PASS 65 · FAIL 0 · INFO 0

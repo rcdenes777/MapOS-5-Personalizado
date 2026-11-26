@@ -1,6 +1,6 @@
 # Resultados automatizados — R03
 
-Gerado em 2026-11-26T16:40:20.665Z
+Gerado em 2026-11-26T17:33:46.565Z
 
 PASS: 116 · FAIL: 0 · INFO: 2 · Total: 118
 
@@ -57,7 +57,7 @@ PASS: 116 · FAIL: 0 · INFO: 2 · Total: 118
 | PASS | perfis | ADM-financeiro | Administrador vê valores e ações financeiras | ANDAMENTO TÉCNICO \| Finalizado \| Conclusão: 24/11/2026 \| Atualizar andamento \| FINANCEIRO \| Parcial \| Saldo: R$ 150,00 \| Registrar pagamento \| RETIRADA \| Não en |
 | PASS | fluxoA | A01 | Nova OS de equipamento novo criada | hash=#os/25, ordens=9 |
 | PASS | fluxoA | A02 | OS criada preserva equipamento, cliente e defeito | Marca Teste · Modelo Alfa |
-| PASS | fluxoA | A03 | Histórico registra a entrada | Entrada registrada \| 26/11/2026 · 13:39 |
+| PASS | fluxoA | A03 | Histórico registra a entrada | Entrada registrada \| 26/11/2026 · 14:32 |
 | PASS | fluxoB | B01 | Unidades do cliente listadas para reutilização | LG · Dual Inverter · #024 \| Midea · Xtreme Save · #020 \| Marca Teste · Modelo Alfa · #025 |
 | PASS | fluxoB | B02 | Nova OS vinculada à unidade existente | {"brand":"Midea","model":"Xtreme Save","unit":20} |
 | PASS | fluxoB | B03 | Nova OS herda a identificação e mantém o defeito novo | Midea · Xtreme Save |
@@ -66,14 +66,14 @@ PASS: 116 · FAIL: 0 · INFO: 2 · Total: 118
 | PASS | fluxoD | D01 | Aprovação fictícia registra decisão sem criar cobrança | {"total":0,"paid":0,"approval":"Aprovado","status":"Aprovado"} |
 | PASS | fluxoD | D02 | Andamento técnico alterado para Em Andamento | ANDAMENTO TÉCNICO Em Andamento Conclusão não registrada Atualizar andamento |
 | PASS | fluxoD | D03 | OS finalizada com conclusão registrada | ANDAMENTO TÉCNICO \| Finalizado \| Conclusão: 26/11/2026 \| Atualizar andamento |
-| PASS | fluxoD | D04 | Histórico registra versão, aprovação e andamento | Andamento: Finalizado \| 26/11/2026 · 13:39 \| Andamento: Em Andamento \| 26/11/2026 · 13:39 \| Orçamento: versão 1 — Aprovado \| 26/11/2026 · 13:39 \| Entrada registrada \| 21/11/2026 |
+| PASS | fluxoD | D04 | Histórico registra versão, aprovação e andamento | Andamento: Finalizado \| 26/11/2026 · 14:33 \| Andamento: Em Andamento \| 26/11/2026 · 14:33 \| Orçamento: versão 1 — Aprovado \| 26/11/2026 · 14:33 \| Entrada registrada \| 21/11/2026 |
 | PASS | fluxoD | D05 | Cobrança formalizada separadamente após aprovação e finalização | {"total":24000,"paid":0,"status":"Finalizado","billing":{"due":"2026-12-01","items":[{"type":"Serviço","name":"Serviço de reparo (demonstração inicial)","quantity":1,"unit":24000}],"discount":0}} |
 | PASS | fluxoE | E01 | Pagamento parcial atualiza pago e saldo | FINANCEIRO \| Parcial \| Saldo: R$ 120,00 \| Registrar pagamento |
-| PASS | fluxoE | E02 | Entrega registrada com saldo pendente | {"date":"2026-11-26","receiver":"Refrigeração Horizonte","third":false,"items":"Gree · G-Top Inverter","authorization":"","registered":"2026-11-26T16:39:38.247Z"} |
+| PASS | fluxoE | E02 | Entrega registrada com saldo pendente | {"date":"2026-11-26","receiver":"Refrigeração Horizonte","third":false,"items":"Gree · G-Top Inverter","authorization":"","registered":"2026-11-26T17:33:04.169Z"} |
 | INFO | fluxoE | E03 | Entrega independente do andamento (comportamento intencional) | status na entrega="ANDAMENTO TÉCNICO Em Andamento Conclusão não registrada Atualizar andamento"; entrega registrada=true |
 | PASS | fluxoE | E04 | Quitação posterior zera o saldo | FINANCEIRO \| Quitado \| Saldo: R$ 0,00 |
 | PASS | fluxoF | F01 | Entrega para terceiro exige autorização | authorization visível=true |
-| PASS | fluxoF | F02 | Entrega registra terceiro, recebedor e autorização | {"date":"2026-11-26","receiver":"Carlos Entregador (fictício)","third":true,"items":"Midea · Xtreme Save","authorization":"Autorizado por telefone, protocolo fictício 123.","registered":"2026-11-26T16:39:39.246Z"} |
+| PASS | fluxoF | F02 | Entrega registra terceiro, recebedor e autorização | {"date":"2026-11-26","receiver":"Carlos Entregador (fictício)","third":true,"items":"Midea · Xtreme Save","authorization":"Autorizado por telefone, protocolo fictício 123.","registered":"2026-11-26T17:33:05.169Z"} |
 | PASS | fluxoF | F03 | Aba Entrega exibe vínculo de terceiro e autorização | Pular para o conteúdo \| M \| mapos \| BANCADA / EXPERIMENTAL \| B \| Minha oficina \| Ambiente de demonstração \| Hoje \| Ordens de serviço \| Clientes \| Estoque \| Financeiro \| Relatórios \| Configurações \| Dados fictícios · offl |
 | PASS | fluxoG | G01 | OS finalizada oferece registrar retorno | links=1 |
 | PASS | fluxoG | G02 | Retorno abre nova OS sem itens/estado informados | {"id":27,"origin":20,"items":"","condition":""} |

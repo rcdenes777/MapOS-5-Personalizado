@@ -27,7 +27,7 @@ Aprovado
 PASS R04-X05 — Token válido em formato, mas inexistente, mostra link indisponível :: bad token
 PASS R04-X06 — JSON local corrompido não quebra a página :: []
 PASS R04-X07 — Formulário inválido não registra decisão e não tem escolha inicial :: {"invalid":5,"decision":null}
-PASS R04-X08 — Endereço local contém portal.html e o token ativo :: http://127.0.0.1:8130/portal.html#789af304c6546c1fa391993368daf3cc5feb09966fdc5b…
+PASS R04-X08 — Endereço local contém portal.html e o token ativo :: http://127.0.0.1:8130/portal.html#fb130d0cf3149479ad00ae87cef3db231704a5216e4add…
 PASS R04-X15 — Escape no modal de renovação fecha e devolve foco ao gatilho :: {"open":false,"active":"modal:renewlink:23"}
 PASS R04-X09 — Administrativo não oferece mais “Simular resposta pelo link” :: legacy removed
 PASS R04-X10 — Técnico não vê nem abre o gerador de link :: {"techBtn":0,"techModal":false}

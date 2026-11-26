@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-11-26T16:35:22.934Z",
-  "codeSha": "",
+  "generatedAt": "2026-11-26T17:35:14.255Z",
+  "codeSha": "cc738622436d3df1224df700916970570eb0bd40",
   "incrementSha": "",
   "results": [
     {
@@ -43,7 +43,7 @@
       "id": "R04-L07",
       "desc": "Renovar mantém o endereço e estende a validade",
       "status": "PASS",
-      "detail": "{\"same\":true,\"delta\":1481}"
+      "detail": "{\"same\":true,\"delta\":1483}"
     },
     {
       "id": "R04-L08",
@@ -79,7 +79,7 @@
       "id": "R04-B02",
       "desc": "Aprovação pelo portal grava decisão e não cria cobrança",
       "status": "PASS",
-      "detail": "{\"status\":\"Aprovado\",\"total\":0,\"paid\":0,\"approval\":\"Aprovado\",\"link\":{\"token\":\"d8ae63274270d07b728ce0b60de48c111f511bb0a487ff26c90b76b8398a1166\",\"expires\":1806078863303},\"versions\":1,\"current\":1,\"decision\":{\"answer\":\"Aprovado\",\"name\":\"Marina Alves (fictícia)\",\"channel\":\"link simulado\",\"date\":\"2026-11-26\",\"note\":\"\",\"registered\":\"2026-11-26T16:34:24.678Z\",\"afterDelivery\":false},\"delivery\":false}"
+      "detail": "{\"status\":\"Aprovado\",\"total\":0,\"paid\":0,\"approval\":\"Aprovado\",\"link\":{\"token\":\"09a0fc4bc45f69a0f0df068af8ec84af8b9941412485434c35e6fbb6b689e350\",\"expires\":1806082454534},\"versions\":1,\"current\":1,\"decision\":{\"answer\":\"Aprovado\",\"name\":\"Marina Alves (fictícia)\",\"channel\":\"link simulado\",\"date\":\"2026-11-26\",\"note\":\"\",\"registered\":\"2026-11-26T17:34:15.934Z\",\"afterDelivery\":false},\"delivery\":false}"
     },
     {
       "id": "R04-B03",
@@ -103,7 +103,7 @@
       "id": "R04-B06",
       "desc": "Recusa pelo portal registra Orçamento recusado e total zero",
       "status": "PASS",
-      "detail": "{\"status\":\"Orçamento recusado\",\"total\":0,\"paid\":0,\"approval\":\"Recusado\",\"link\":{\"token\":\"6f6387682c6fb931cd99d3f93df749f7aab4acb5bb1db8eb57e7ad6ca21ae0c9\",\"expires\":1806078867468},\"versions\":1,\"current\":1,\"decision\":{\"answer\":\"Recusado\",\"name\":\"Cliente Fictício\",\"channel\":\"link simulado\",\"date\":\"2026-11-26\",\"note\":\"\",\"registered\":\"2026-11-26T16:34:28.628Z\",\"afterDelivery\":false},\"delivery\":false}"
+      "detail": "{\"status\":\"Orçamento recusado\",\"total\":0,\"paid\":0,\"approval\":\"Recusado\",\"link\":{\"token\":\"1474d91a62b1a8a09e1354c97177d0a3681bed80ff3a1558e376f6f443521708\",\"expires\":1806082458740},\"versions\":1,\"current\":1,\"decision\":{\"answer\":\"Recusado\",\"name\":\"Cliente Fictício\",\"channel\":\"link simulado\",\"date\":\"2026-11-26\",\"note\":\"\",\"registered\":\"2026-11-26T17:34:19.901Z\",\"afterDelivery\":false},\"delivery\":false}"
     },
     {
       "id": "R04-B07",
@@ -145,7 +145,7 @@
       "id": "R04-C06",
       "desc": "Retirar publicação esconde orçamento mas mantém o link",
       "status": "PASS",
-      "detail": "{\"status\":\"Negociação\",\"total\":0,\"paid\":0,\"approval\":\"Publicação retirada\",\"link\":{\"token\":\"8a90f45dc7fa6cfd0dba4906cc5ff55f103fe55f3469b7cb9e1913629ad6a349\",\"expires\":1806078870687},\"versions\":2,\"current\":2,\"decision\":null,\"delivery\":false}"
+      "detail": "{\"status\":\"Negociação\",\"total\":0,\"paid\":0,\"approval\":\"Publicação retirada\",\"link\":{\"token\":\"acf703ffef1f92e39adc2696c7173bb794396ef8500a85dc83ebe4ab50d64daa\",\"expires\":1806082461950},\"versions\":2,\"current\":2,\"decision\":null,\"delivery\":false}"
     },
     {
       "id": "R04-C07",
@@ -157,7 +157,7 @@
       "id": "R04-D01",
       "desc": "Após entrega o portal fica somente consulta, sem formulário",
       "status": "PASS",
-      "detail": "{\"status\":\"Aprovado\",\"total\":0,\"paid\":0,\"approval\":\"Aprovado\",\"link\":{\"token\":\"5a37e6cd1ef590cf19675baa8ae6aec6f075ddae423b6ada9f7d0cbb2b72d45c\",\"expires\":1806078891099},\"versions\":1,\"current\":1,\"decision\":{\"answer\":\"Aprovado\",\"name\":\"Marina Alves (fictícia)\",\"channel\":\"link simulado\",\"date\":\"2026-11-26\",\"note\":\"\",\"registered\":\"2026-11-26T16:34:52.261Z\",\"afterDelivery\":false},\"delivery\":true}"
+      "detail": "{\"status\":\"Aprovado\",\"total\":0,\"paid\":0,\"approval\":\"Aprovado\",\"link\":{\"token\":\"f381968f8c4e3272c5e75d213c99254882dfddd028f01c6536d9f2872d5345cb\",\"expires\":1806082482387},\"versions\":1,\"current\":1,\"decision\":{\"answer\":\"Aprovado\",\"name\":\"Marina Alves (fictícia)\",\"channel\":\"link simulado\",\"date\":\"2026-11-26\",\"note\":\"\",\"registered\":\"2026-11-26T17:34:43.550Z\",\"afterDelivery\":false},\"delivery\":true}"
     },
     {
       "id": "R04-D02",

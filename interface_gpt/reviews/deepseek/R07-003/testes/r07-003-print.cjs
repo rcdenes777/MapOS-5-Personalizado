@@ -58,7 +58,7 @@ async function makePdfAt(a, hash, file) {
     });
 
     const retA4 = await makePrint(a, ids.r, 'retorno-substituta-a4.pdf');
-    rec('R07P3-01', 'A4 do retorno mostra a substituta e o prazo original sem custo/motivo', retA4.info.pages === 1 && /A4/.test(retA4.info.size) && /Substituta em garantia/.test(retA4.flat) && /Midea/.test(retA4.flat) && /Substituta/.test(retA4.flat) && /NOVA-1/.test(retA4.flat) && !retA4.flat.includes('MOTIVO-PRIVADO-R07') && !retA4.flat.includes('DIAGNOSTICO-PRIVADO-R07') && !retA4.flat.includes('45,00'), retA4.flat.slice(0, 700));
+    rec('R07P3-01', 'A4 do retorno mostra a substituta e a identificação física sem custo/motivo', retA4.info.pages === 1 && /A4/.test(retA4.info.size) && /Substituta em garantia/.test(retA4.flat) && /Midea/.test(retA4.flat) && /NOVA-1/.test(retA4.flat) && !retA4.flat.includes('MOTIVO-PRIVADO-R07') && !retA4.flat.includes('DIAGNOSTICO-PRIVADO-R07') && !retA4.flat.includes('45,00'), retA4.flat.slice(0, 700));
 
     const retCupom = await makePrint(a, ids.r, 'retorno-substituta-cupom.pdf', true);
     const cupomW = Number((retCupom.info.size.match(/^([\d.]+)/) || [])[1] || 0);

@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-11-26T16:38:42.270Z",
-  "codeSha": "",
+  "generatedAt": "2026-11-26T17:27:07.808Z",
+  "codeSha": "cc738622436d3df1224df700916970570eb0bd40",
   "baseUrl": "http://127.0.0.1:8130",
   "total": 65,
   "summary": {
@@ -35,7 +35,7 @@
       "id": "R07-S1-05",
       "desc": "Retorno criado preserva origem e não copia financeiro, laudo, anexos, token ou orçamento",
       "status": "PASS",
-      "detail": "{\"created\":{\"id\":25,\"status\":\"Aberto\",\"origin\":20,\"unit\":20,\"client\":1,\"brand\":\"Midea\",\"model\":\"Xtreme Save\",\"total\":0,\"paid\":0,\"approval\":\"Sem orçamento\",\"conclusion\":null,\"warrantyDays\":0,\"defect\":\"Placa voltou a falhar após o reparo.\",\"items\":\"Cabo de força\",\"condition\":\"Embalagem amassada\",\"report\":null,\"publicLink\":null,\"quote\":null,\"delivery\":null,\"warranty\":{\"root\":20,\"previous\":20,\"unit\":20,\"client\":1,\"conclusion\":\"2026-11-24\",\"days\":90,\"end\":\"2027-02-22\",\"events\":[],\"operations\":[]},\"history\":[{\"time\":\"2026-11-26T16:36:25.442Z\",\"text\":\"Retorno registrado; origem preservada\"}]},\"unchanged\":true}"
+      "detail": "{\"created\":{\"id\":25,\"status\":\"Aberto\",\"origin\":20,\"unit\":20,\"client\":1,\"brand\":\"Midea\",\"model\":\"Xtreme Save\",\"total\":0,\"paid\":0,\"approval\":\"Sem orçamento\",\"conclusion\":null,\"warrantyDays\":0,\"defect\":\"Placa voltou a falhar após o reparo.\",\"items\":\"Cabo de força\",\"condition\":\"Embalagem amassada\",\"report\":null,\"publicLink\":null,\"quote\":null,\"delivery\":null,\"warranty\":{\"root\":20,\"previous\":20,\"unit\":20,\"client\":1,\"conclusion\":\"2026-11-24\",\"days\":90,\"end\":\"2027-02-22\",\"events\":[],\"operations\":[]},\"history\":[{\"time\":\"2026-11-26T17:24:51.058Z\",\"text\":\"Retorno registrado; origem preservada\"}]},\"unchanged\":true}"
     },
     {
       "id": "R07-S1-06",
@@ -143,7 +143,7 @@
       "id": "R07-S3-07",
       "desc": "Revisão cria novo evento e preserva o anterior imutável",
       "status": "PASS",
-      "detail": "[{\"id\":1,\"type\":\"avaliar\",\"coverage\":\"coberto\",\"solution\":\"reparo_sem_cobranca\",\"diagnosis\":\"Falha do reparo original.\",\"reason\":\"Conferido na bancada.\",\"when\":\"2026-11-26T16:36:52.853Z\",\"actor\":\"Administrador\"},{\"id\":2,\"type\":\"avaliar\",\"coverage\":\"nao_coberto\",\"solution\":\"novo_orcamento\",\"diagnosis\":\"Falha nova fora da cobertura.\",\"reason\":\"Revisão da decisão.\",\"when\":\"2026-11-26T16:36:54.655Z\",\"actor\":\"Administrador\"}]"
+      "detail": "[{\"id\":1,\"type\":\"avaliar\",\"coverage\":\"coberto\",\"solution\":\"reparo_sem_cobranca\",\"diagnosis\":\"Falha do reparo original.\",\"reason\":\"Conferido na bancada.\",\"when\":\"2026-11-26T17:25:18.505Z\",\"actor\":\"Administrador\"},{\"id\":2,\"type\":\"avaliar\",\"coverage\":\"nao_coberto\",\"solution\":\"novo_orcamento\",\"diagnosis\":\"Falha nova fora da cobertura.\",\"reason\":\"Revisão da decisão.\",\"when\":\"2026-11-26T17:25:20.287Z\",\"actor\":\"Administrador\"}]"
     },
     {
       "id": "R07-S3-08",
@@ -329,7 +329,7 @@
       "id": "R07-S6-04",
       "desc": "Publicação cria versão 1 e registra a operação privada",
       "status": "PASS",
-      "detail": "{\"current\":1,\"ops\":[{\"type\":\"orcamento\",\"version\":1,\"when\":\"2026-11-26T16:38:14.803Z\"}]}"
+      "detail": "{\"current\":1,\"ops\":[{\"type\":\"orcamento\",\"version\":1,\"when\":\"2026-11-26T17:26:40.369Z\"}]}"
     },
     {
       "id": "R07-S6-05",
@@ -341,7 +341,7 @@
       "id": "R07-S6-06",
       "desc": "Decisão interna aprovada não fatura sozinha",
       "status": "PASS",
-      "detail": "{\"decision\":{\"answer\":\"Aprovado\",\"name\":\"Cliente Fictício R07\",\"channel\":\"presencial\",\"date\":\"2026-11-26\",\"note\":\"\",\"registered\":\"2026-11-26T16:38:15.950Z\",\"afterDelivery\":false},\"total\":0}"
+      "detail": "{\"decision\":{\"answer\":\"Aprovado\",\"name\":\"Cliente Fictício R07\",\"channel\":\"presencial\",\"date\":\"2026-11-26\",\"note\":\"\",\"registered\":\"2026-11-26T17:26:41.518Z\",\"afterDelivery\":false},\"total\":0}"
     },
     {
       "id": "R07-S6-07",
@@ -365,7 +365,7 @@
       "id": "R07-S6-10",
       "desc": "Recusa não fatura e exige nova versão aprovada",
       "status": "PASS",
-      "detail": "{\"total\":0,\"last\":{\"answer\":\"Recusado\",\"name\":\"Cliente Fictício R07\",\"channel\":\"presencial\",\"date\":\"2026-11-26\",\"note\":\"\",\"registered\":\"2026-11-26T16:38:27.938Z\",\"afterDelivery\":false}}"
+      "detail": "{\"total\":0,\"last\":{\"answer\":\"Recusado\",\"name\":\"Cliente Fictício R07\",\"channel\":\"presencial\",\"date\":\"2026-11-26\",\"note\":\"\",\"registered\":\"2026-11-26T17:26:53.452Z\",\"afterDelivery\":false}}"
     },
     {
       "id": "R07-S6-11",
@@ -377,13 +377,13 @@
       "id": "R07-S6-12",
       "desc": "Projeção pública não expõe garantia, origem, avaliação, custos nem laudo",
       "status": "PASS",
-      "detail": "{\"id\":26,\"status\":\"Negociação\",\"entry\":\"2026-11-26\",\"forecast\":\"\",\"equipment\":\"Electrolux · Color Adapt\",\"finance\":null,\"quote\":{\"number\":1,\"created\":\"2026-11-26T16:38:37.768Z\",\"items\":[{\"type\":\"Serviço\",\"name\":\"Reparo público fictício\",\"quantity\":1,\"unit\":6000}],\"discount\":0,\"total\":6000,\"terms\":{\"payment\":\"\",\"deadline\":\"\",\"warranty\":\"\",\"diagnosis\":\"\",\"equipment\":\"\",\"defect\":\"\"},\"decision\":null,\"readOnly\":false},\"at"
+      "detail": "{\"id\":26,\"status\":\"Negociação\",\"entry\":\"2026-11-26\",\"forecast\":\"\",\"equipment\":\"Electrolux · Color Adapt\",\"finance\":null,\"quote\":{\"number\":1,\"created\":\"2026-11-26T17:27:03.268Z\",\"items\":[{\"type\":\"Serviço\",\"name\":\"Reparo público fictício\",\"quantity\":1,\"unit\":6000}],\"discount\":0,\"total\":6000,\"terms\":{\"payment\":\"\",\"deadline\":\"\",\"warranty\":\"\",\"diagnosis\":\"\",\"equipment\":\"\",\"defect\":\"\"},\"decision\":null,\"readOnly\":false},\"at"
     },
     {
       "id": "R07-S6-13",
       "desc": "Resposta pública registra decisão, não fatura e não vaza informação privada",
       "status": "PASS",
-      "detail": "{\"pub\":{\"total\":0,\"paid\":0,\"decision\":{\"answer\":\"Aprovado\",\"name\":\"Cliente Portal Fictício\",\"channel\":\"link simulado\",\"date\":\"2026-11-26\",\"note\":\"\",\"registered\":\"2026-11-26T16:38:39.651Z\",\"afterDelivery\":false},\"delivery\":null,\"err\":\"\"},\"preview\":\"SEU ATENDIMENTO · OS #026\\nElectrolux · Color Adapt\\nNegociação\\nEntrada\\n26/11/2026\\nPrevisão\\nNão informada\\nSeu orçamento\\nVersão 1\\n\\nTotal da proposta\\n\\nR$ 60,00\\n\\nPeças e serviços\\nReparo público fictício\\nSe\"}"
+      "detail": "{\"pub\":{\"total\":0,\"paid\":0,\"decision\":{\"answer\":\"Aprovado\",\"name\":\"Cliente Portal Fictício\",\"channel\":\"link simulado\",\"date\":\"2026-11-26\",\"note\":\"\",\"registered\":\"2026-11-26T17:27:05.185Z\",\"afterDelivery\":false},\"delivery\":null,\"err\":\"\"},\"preview\":\"SEU ATENDIMENTO · OS #026\\nElectrolux · Color Adapt\\nNegociação\\nEntrada\\n26/11/2026\\nPrevisão\\nNão informada\\nSeu orçamento\\nVersão 1\\n\\nTotal da proposta\\n\\nR$ 60,00\\n\\nPeças e serviços\\nReparo público fictício\\nSe\"}"
     },
     {
       "id": "R07-S6-14",

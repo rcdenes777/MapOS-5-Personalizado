@@ -1,0 +1,234 @@
+PASS R07B-01 — Retorno #018 abre a garantia com referência à origem #016 e prazo :: ATENDIMENTO / #018
+Daikin · EcoSwing
+
+Refrigeração Horizonte · Entrada em 21/11/2026
+
+Voltar
+Imprimir
+ANDAMENTO TÉCNICO
+Aberto
+Conclusão não registrada
+Atualizar andamento
+FINANCEI
+PASS R07B-02 — Avaliação devolucao_valor registrada sem mover a origem #016 :: {"total":41000,"paid":41000}
+PASS R07B-03 — Painel exibe a devolução pendente e o botão de registro :: R$ 0,00
+Tempo de trabalho
+0 min
+
+Não são cobrança, despesa paga ou movimentação de estoque.
+
+Registrar custo
+Histórico privado da garantia
+Avaliação Coberto
+26/11/2026 · 14:23 · Administrador
+Solução
+Devolução de dinheiro
+Diagnóstico
+Falha 
+PASS R07B-04 — Modal abre sem modalidade/forma pré-escolhidas, campos vazios e confirmação desmarcada :: {"mode":"","method":"","amount":"","amountReadOnly":false,"amountMax":"410","date":"2026-11-26","dateMax":"2026-11-26","dateMin":"1900-01-01","reference":"","reason":"","confirm":false,"preview":"Selecione a modalidade e confira o valor."}
+PASS R07B-05 — Data limitada a hoje (piso conservador sem ledger) e valor limitado ao recebido (410,00) :: {"date":"2026-11-26","max":"2026-11-26","min":"1900-01-01","amountMax":"410"}
+PASS R07B-06 — Modo total calcula o recebido líquido e trava o valor (readOnly) :: {"amount":"410.00","ro":true,"preview":"Abatimento: R$ 410,00 · Saldo após registro: R$ 0,00"}
+PASS R07B-07 — Modo parcial libera o valor e atualiza a prévia :: {"ro":false,"preview":"Abatimento: R$ 410,00 · Saldo após registro: R$ 0,00"}
+PASS R07B-08 — Parcial de 50,00 em 500/200 resulta 450/150/saldo 300 :: {"total":45000,"paid":15000,"balance":30000,"originalTotal":50000,"originalPaid":20000,"status":"Parcial","billing":{"due":"2026-12-20","items":[{"type":"Serviço","name":"Serviço original","quantity":1,"unit":50000}],"discount":0},"ledger":
+PASS R07B-09 — Cobrança, histórico e recibo originais preservados após a parcial :: {"billing":{"due":"2026-12-20","items":[{"type":"Serviço","name":"Serviço original","quantity":1,"unit":50000}],"discount":0},"originalTotal":50000,"originalPaid":20000}
+PASS R07B-10 — Retorno permanece sem cobrança própria e com histórico do registro :: {"total":0,"paid":0}
+PASS R07B-11 — Financeiro lista a devolução com valor, abatimento e link do retorno :: ATENDIMENTO / #025
+LG · Inverter
+
+Clima Sul Serviços · Entrada em 20/08/2026
+
+Voltar
+Imprimir
+ANDAMENTO TÉCNICO
+Finalizado
+Conclusão: 01/09/2026
+Atualizar andamento
+FINANCEIRO
+Parcial
+Saldo: R$ 300,00
+Registrar pagamento
+RETIRADA
+Não entreg
+PASS R07B-12 — Financeiro preserva cobrança original, recebido original e saldo :: ATENDIMENTO / #025
+LG · Inverter
+
+Clima Sul Serviços · Entrada em 20/08/2026
+
+Voltar
+Imprimir
+ANDAMENTO TÉCNICO
+Finalizado
+Conclusão: 01/09/2026
+Atualizar andamento
+FINANCEIRO
+Parcial
+Saldo: R$ 300,00
+Registrar pagamento
+RETIRADA
+Não entreg
+PASS R07B-13 — Resumo do retorno continua sem cobrança (zero à vista) :: {"total":0,"paid":0,"balance":0,"originalTotal":null,"originalPaid":null,"status":"Sem cobrança","billing":null,"ledger":null}
+PASS R07B-14 — Segundo registro calcula 150,00 e abatimento de 450,00 :: {"amount":"150.00","ro":true,"preview":"Abatimento: R$ 450,00 · Saldo após registro: R$ 0,00"}
+PASS R07B-15 — Encerramento total deixa 0/0/0 e status Reembolsado :: {"total":0,"paid":0,"balance":0,"originalTotal":50000,"originalPaid":20000,"status":"Reembolsado","billing":{"due":"2026-12-20","items":[{"type":"Serviço","name":"Serviço original","quantity":1,"unit":50000}],"discount":0},"ledger":{"openin
+PASS R07B-16 — Ledger preserva o recibo original e os dois eventos de devolução :: ["receive","warranty_refund","warranty_refund"]
+PASS R07B-17 — Financeiro mostra Reembolsado, zero e a composição 200/500 :: ATENDIMENTO / #025
+LG · Inverter
+
+Clima Sul Serviços · Entrada em 20/08/2026
+
+Voltar
+Imprimir
+ANDAMENTO TÉCNICO
+Finalizado
+Conclusão: 01/09/2026
+Atualizar andamento
+FINANCEIRO
+Reembolsado
+Saldo: R$ 0,00
+RETIRADA
+Não entregue
+Registro indepe
+PASS R07B-18 — Zero não oferece nova cobrança no orçamento nem pagamento no financeiro :: sem botões de faturar/pagar
+PASS R07B-19 — Lista financeira mantém a OS zerada com status Reembolsado :: CONTAS DA OFICINA
+Financeiro
+
+Acompanhe cobranças e recebimentos vinculados às ordens de serviço.
+
+A RECEBER
+R$ 3.950,00
+13 cobranças com saldo
+VENCIDO
+R$ 0,00
+Saldo com vencimento anterior a hoje
+RECEBIDO LÍQUIDO
+R$ 2.830,00
+Recebimentos m
+PASS R07B-20 — Painel e agregado financeiro usam o mesmo saldo líquido (OS zerada contribui 0) :: {"sum":395000,"agg":395000}
+PASS R07B-21 — Impressão A4 da origem zerada mantém totais, saldo e situação :: DOCUMENTO
+Impressão da OS #025
+
+Prévia fictícia para avaliação do formato.
+
+Voltar
+Cupom 80 mm
+Imprimir
+Minha oficina · Demonstração
+Ordem de serviço #025
+Cliente
+Clima Sul Serviços
+Equipamento
+LG · Inverter
+Entrada
+20/08/2026
+Andamento
+Fin
+PASS R07B-22 — Recibo original continua válido, sem estorno :: DOCUMENTO
+Recibo de recebimento
+
+Prévia de demonstração, sem validade comercial.
+
+Voltar
+Imprimir
+
+MINHA OFICINA · DEMONSTRAÇÃO
+
+Recibo #25 / 1
+
+Recebimento registrado
+
+R$ 200,00
+
+OS
+#025
+Cliente
+Clima Sul Serviços
+Equipamento
+LG · Inverter
+PASS R07B-23 — Portal do cliente mostra Reembolsada 0/0/0 sem dados privados :: {"total":0,"paid":0,"balance":0,"status":"Reembolsada"}
+PASS R07B-24 — Corrigir o total primeiro restaura 450/150/saldo 300 :: {"total":45000,"paid":15000,"balance":30000,"originalTotal":50000,"originalPaid":20000,"status":"Parcial","billing":{"due":"2026-12-20","items":[{"type":"Serviço","name":"Serviço original","quantity":1,"unit":50000}],"discount":0},"ledger":
+PASS R07B-25 — Corrigir a parcial depois restaura 500/200/saldo 300 :: {"total":50000,"paid":20000,"balance":30000,"originalTotal":50000,"originalPaid":20000,"status":"Parcial","billing":{"due":"2026-12-20","items":[{"type":"Serviço","name":"Serviço original","quantity":1,"unit":50000}],"discount":0},"ledger":
+PASS R07B-26 — Histórico mantém os quatro registros e nenhum botão de correção ativo :: quatro operações
+PASS R07B-27 — Status volta a Parcial após as correções :: Parcial
+PASS R07B-28 — Ordem inversa: após parcial e total a origem fica zerada :: {"total":0,"paid":0,"balance":0,"originalTotal":50000,"originalPaid":20000,"status":"Reembolsado","billing":{"due":"2026-12-20","items":[{"type":"Serviço","name":"Serviço original","quantity":1,"unit":50000}],"discount":0},"ledger":{"openin
+PASS R07B-29 — Ordem inversa: corrigir o total primeiro restaura 450/150/300 :: {"total":45000,"paid":15000,"balance":30000,"originalTotal":50000,"originalPaid":20000,"status":"Parcial","billing":{"due":"2026-12-20","items":[{"type":"Serviço","name":"Serviço original","quantity":1,"unit":50000}],"discount":0},"ledger":
+PASS R07B-29b — Ordem inversa: corrigir a parcial depois restaura 500/200/300 :: {"total":50000,"paid":20000,"balance":30000,"originalTotal":50000,"originalPaid":20000,"status":"Parcial","billing":{"due":"2026-12-20","items":[{"type":"Serviço","name":"Serviço original","quantity":1,"unit":50000}],"discount":0},"ledger":
+PASS R07B-30 — Total com zero recebido calcula 0,00 e abatimento integral :: {"amount":"0.00","ro":true,"preview":"Abatimento: R$ 500,00 · Saldo após registro: R$ 0,00"}
+PASS R07B-31 — Encerramento sem dinheiro abate 500 sem criar recibo :: {"total":0,"paid":0,"balance":0,"originalTotal":50000,"originalPaid":0,"status":"Encerrado por garantia","billing":{"due":"2026-12-20","items":[{"type":"Serviço","name":"Serviço original","quantity":1,"unit":50000}],"discount":0},"ledger":{
+PASS R07B-32 — Portal do zero sem caixa mostra Encerrada por garantia
+PASS R07B-33 — Correção do zero restaura 500/0/500 :: {"total":50000,"paid":0,"balance":50000,"originalTotal":50000,"originalPaid":0,"status":"Em aberto","billing":{"due":"2026-12-20","items":[{"type":"Serviço","name":"Serviço original","quantity":1,"unit":50000}],"discount":0},"ledger":{"open
+PASS R07B-34 — Legado 500/200 sem billing preserva valores originais e não cria billing :: {"total":0,"paid":0,"balance":0,"originalTotal":50000,"originalPaid":20000,"status":"Reembolsado","billing":null,"ledger":{"opening":20000,"events":[{"amount":20000,"credit":50000,"date":"2026-11-26","method":"Pix","reference":"COMPROVANTE 
+PASS R07B-35 — OS legada zerada permanece na lista financeira :: presente
+PASS R07B-36 — Legado não inventa recibos: apenas o evento de devolução :: um evento
+PASS R07B-37 — Orçamento original do legado continua projetado e sem formalizar nova cobrança :: versão preservada
+PASS R07B-38 — Pagamento posterior de 300 quita o saldo líquido (450/450) :: {"total":45000,"paid":45000,"balance":0,"originalTotal":50000,"originalPaid":50000,"status":"Quitado","billing":{"due":"2026-12-20","items":[{"type":"Serviço","name":"Serviço original","quantity":1,"unit":50000}],"discount":0},"ledger":{"op
+PASS R07B-39 — Encerramento posterior devolve 450 e abate 450 :: {"total":0,"paid":0,"balance":0,"originalTotal":50000,"originalPaid":50000,"status":"Reembolsado","billing":{"due":"2026-12-20","items":[{"type":"Serviço","name":"Serviço original","quantity":1,"unit":50000}],"discount":0},"ledger":{"openin
+PASS R07B-40 — Com devolução ativa não há botão de estorno :: sem botão
+PASS R07B-41 — Handler real recusa estorno com devolução ativa e não muda o estado :: {"err":"Há devolução ou abatimento registrado nesta OS. Confira o histórico antes de corrigir o recebimento.","same":true}
+PASS R07B-42 — Após corrigir, o estorno volta a ser oferecido :: botão presente
+PASS R07B-43 — Excesso de valor é recusado no handler com estado intacto :: {"open":true,"error":"A devolução deve respeitar o recebido líquido; no encerramento total, devolva exatamente esse valor.","toast":"Registro atualizado na demonstração."}
+PASS R07B-44 — Data futura é recusada no handler com estado intacto :: {"open":true,"error":"Informe a data real da devolução, sem data futura.","toast":"Registro atualizado na demonstração."}
+PASS R07B-45 — Data anterior ao recibo é recusada no handler :: {"open":true,"error":"Data anterior aos registros financeiros da origem.","toast":"Registro atualizado na demonstração."}
+PASS R07B-46 — Referência vazia é recusada no handler :: {"open":true,"error":"Confira os textos obrigatórios e seus limites.","toast":"Registro atualizado na demonstração."}
+PASS R07B-47 — Motivo vazio é recusado no handler :: {"open":true,"error":"Confira os textos obrigatórios e seus limites.","toast":"Registro atualizado na demonstração."}
+PASS R07B-48 — Sem confirmação o navegador bloqueia o envio e o estado fica intacto :: {"open":true,"invalid":true}
+PASS R07B-49 — Cobrança própria do retorno bloqueia no handler :: {"open":true,"error":"Concilie a cobrança própria deste retorno antes de executar outra solução.","toast":""}
+PASS R07B-50 — Entrega registrada bloqueia no handler :: {"open":true,"error":"Corrija a entrega antes de executar outra solução.","toast":""}
+PASS R07B-51 — Chave financeira obsoleta é recusada no handler :: {"open":true,"error":"O financeiro mudou. Recarregue e confira novamente o valor.","toast":""}
+PASS R07B-52 — Duas abas: envio antigo do refund é abortado com aviso e sem lançamento :: {"e":{"open":false,"error":"","toast":"Dados alterados em outra aba. Reabra a operação para evitar sobrescrever a atualização."},"nfAfterTab":{"total":50000,"paid":30000,"balance":20000,"originalTotal":null,"originalPaid":null,"status":"Par
+PASS R07B-52b — Duas abas: correção concorrente mantém uma única correção e aborta o envio antigo :: {"rB":{"open":false,"error":"","toast":"Registro atualizado na demonstração."},"eCorr":{"open":false,"error":"","toast":"Dados alterados em outra aba. Reabra a operação para evitar sobrescrever a atualização."},"corrCount":1,"nCorr":{"total
+PASS R07B-53 — F02: retorno sem solução executada pode solicitar cancelamento :: true
+PASS R07B-54 — F02: retirada do pedido funciona :: retirado
+PASS R07B-55 — F02: confirmação encerra o retorno sem tocar a origem #016 :: {"r":{"open":false,"error":"","toast":"Registro atualizado na demonstração."},"n16":{"total":41000,"paid":41000,"balance":0,"originalTotal":null,"originalPaid":null,"status":"Quitado","billing":null,"ledger":null}}
+PASS R07B-56 — F02: solução executada remove a ação e o handler recusa o pedido :: {"req":false,"blockedMsg":"Há retorno ou solução de garantia vinculada. Preserve o histórico e concilie a garantia."}
+PASS R07B-57 — F02: após corrigir a devolução o pedido volta a ser oferecido :: oferta restaurada
+PASS R07B-58 — F02: devolução com pedido pendente impede a confirmação :: Há retorno ou solução de garantia vinculada. Preserve o histórico e concilie a garantia.
+PASS R07B-59 — F02: retirada continua possível após a devolução :: retirado
+PASS R07B-60 — F02: origem com derivado (mesmo finalizado) não oferece cancelamento :: bloqueado
+PASS R07B-61 — Raiz B oferece Registrar retorno apontando para ela mesma :: ["#retorno/47"]
+PASS R07B-62 — Formulário da raiz B mantém data-origin da raiz B :: {"origin":"47","text":"RECEPÇÃO\nRetorno em garantia\n\nCrie outro atendimento para a mesma unidade, sem alterar a origem.\n\nVoltar\n#047 · Daikin · EcoSwing\n\nRefrigeração Horizonte\n\nRetorno começa em avaliação, sem cobrança e sem rein
+PASS R07B-63 — Submit da raiz B cria retorno com origem/anterior/prazo da raiz B (180 dias) :: {"id":48,"origin":47,"previous":47,"days":180,"unit":40}
+PASS R07B-64 — Retorno finalizado da raiz A permanece intacto e não foi escolhido :: raiz A intacta
+PASS R07B-65 — Raiz A com retorno finalizado encadeia o atendimento anterior da mesma raiz :: ["#retorno/46"]
+PASS R07B-66 — Financeiro consulta valores da devolução, sem botão de registro :: ATENDIMENTO / #038
+LG · Inverter
+
+Clima Sul Serviços · Entrada em 26/11/2026
+
+Voltar
+Imprimir
+ANDAMENTO TÉCNICO
+Aberto
+Conclusão não registrada
+FINANCEIRO
+Sem cobrança
+Saldo: R$ 0,00
+RETIRADA
+Não entregue
+Registro independente do pagamento
+
+PASS R07B-67 — Financeiro não executa devolução nem por handler direto :: {"err":"Ação indisponível neste perfil.","same":true}
+PASS R07B-68-Técnico — Técnico não vê valores, comprovante nem motivo financeiro :: <div class="stack"><div class="grid split"><section class="panel form-section"><div class="section-head"><h2>Referência original</h2><span class="pill blue"><span class="dot"></span>Retorno</span></div><dl class="facts"><div><dt>OS de orige
+PASS R07B-68-Atendente — Atendente não vê valores, comprovante nem motivo financeiro :: <div class="stack"><div class="grid split"><section class="panel form-section"><div class="section-head"><h2>Referência original</h2><span class="pill blue"><span class="dot"></span>Retorno</span></div><dl class="facts"><div><dt>OS de orige
+PASS R07B-69 — Portal real mostra o resumo financeiro líquido sem dados privados :: M
+Minha oficina
+Acompanhamento de serviço
+Demonstração
+
+SEU ATENDIMENTO · OS #031
+LG · Inverter
+Finalizado
+Entrada
+20/08/2026
+Previsão
+Não informada
+Seu orçamento
+Versão 1
+
+Total da proposta
+
+R$ 500,00
+
+Peças e serviços
+Serviço de reparo (d
+PASS R07B-70 — Sem erros de página ou console no fluxo completo :: {"errors":[],"consoleErrors":[],"errorsB":[]}
+PASS R07B-71 — Nenhuma requisição externa durante o fluxo :: []
+TOTAL 74 · PASS 74 · FAIL 0 · INFO 0

@@ -51,7 +51,7 @@ Orçamento
 Não há orçamento publicado disponível para consulta neste mo
 PASS R07-003-B17 — Sem erros de página ou console no fluxo externo :: {"errors":[],"consoleErrors":[]}
 PASS R07-003-B18 — Troca de estoque baixa exatamente 1 unidade, custo desconhecido e sem cobrança :: {"stk":[{"name":"IGBT 650 V","quantity":8},{"name":"Optoacoplador PC817","quantity":2},{"name":"Capacitor 450 V","quantity":16}],"ev":{"id":1,"type":"troca","assessment":1,"origin":16,"oldUnit":16,"replacement":{"type":"Placa","brand":"Mide
-PASS R07-003-B19 — Movimento de saída vinculado ao retorno e à operação :: [{"type":"troca_saida","quantity":1,"returnId":18,"operationId":1,"cost":null,"when":"2026-11-26T16:47:56.030Z","reason":"MOTIVO PRIVADO R07-003"}]
+PASS R07-003-B19 — Movimento de saída vinculado ao retorno e à operação :: [{"type":"troca_saida","quantity":1,"returnId":18,"operationId":1,"cost":null,"when":"2026-11-26T17:20:16.297Z","reason":"MOTIVO PRIVADO R07-003"}]
 PASS R07-003-B20 — Painel de estoque mostra custo não informado para Admin :: ATENDIMENTO / #018
 Daikin · EcoSwing
 
@@ -69,29 +69,7 @@ Saldo: R$ 0,00
 RETIRADA
 Não entregue
 Registr
-PASS R07-003-B21 — Tela de estoque reflete a baixa de 1 e mantém os demais produtos :: PEÇAS
-Estoque
-
-Consulta de demonstração. Baixa de substituta em garantia simulada; demais movimentos na R08.
-
-P-001
-IGBT 650 V
-
-8 unidades
-
-Disponível
-P-002
-Optoacoplador PC817
-
-2 unidades
-
-Estoque baixo
-P-003
-Capacitor 450 V
-
-16 unidades
-
-
+PASS R07-003-B21 — Tela de estoque reflete a baixa de 1 e mantém os demais produtos :: ["P-001IGBT 650 V8 unidadesDisponível","P-002Optoacoplador PC8172 unidadesEstoque baixo","P-003Capacitor 450 V16 unidadesDisponível"]
 PASS R07-003-B22 — Troca de estoque não altera a cobrança da origem nem cria dívida no retorno :: {"fin":"{\"s\":{\"total\":41000,\"paid\":41000,\"balance\":0,\"due\":\"\",\"opening\":41000},\"l\":null}","total":0}
 PASS R07-003-B23 — Origem com retorno aberto mostra o vínculo ativo e não permite duplicar :: ATENDIMENTO / #016
 Daikin · EcoSwing
@@ -117,6 +95,11 @@ PASS R07-003-B26 — Retorno da substituta mantém raiz, atendimento anterior e 
 PASS R07-003-B27 — Nova OS comum não oferece a unidade antiga e oferece a substituta :: [{"v":"22","t":"Gree · G-Top Inverter · #022"},{"v":"18","t":"Midea · Nova · #018"}]
 PASS R07-003-B28 — Handler direto recusa a unidade antiga e não cria OS :: {"n":9,"toast":"Unidade substituída. Selecione a substituta."}
 PASS R07-003-B29 — Sem erros de página ou console no fluxo de estoque :: {"errors":[],"consoleErrors":[]}
+PASS R07-003-B18b — Estoque zerado recusa no navegador com motivo e estado intacto :: {"st":{"open":true,"error":"Produto inexistente ou sem estoque disponível.","title":"Registrar troca em garantia"},"before":"{\"stock\":[{\"name\":\"IGBT 650 V\",\"sku\":\"P-001\",\"quantity\":8,\"min\":5},{\"name\":\"Optoacoplador PC817\",
+PASS R07-003-B18c — SKU inexistente recusa no navegador sem baixa :: {"st":{"open":true,"error":"Produto inexistente ou sem estoque disponível.","title":"Registrar troca em garantia"}}
+PASS R07-003-B18d — Custo externo zero é aceito e registrado como zero :: {"z":{"opened":true,"open":false,"error":"","toast":"Registro atualizado na demonstração."},"cost":0}
+PASS R07-003-B18e — Custo externo ausente é aceito como desconhecido :: {"n":{"opened":true,"open":false,"error":"","toast":"Registro atualizado na demonstração."},"cost":null}
+PASS R07-003-B18f — Sem erros de página ou console nos negativos de estoque/custo :: {"errors":[],"consoleErrors":[]}
 PASS R07-003-B30 — Solução diferente de troca não oferece a ação :: ATENDIMENTO / #018
 Daikin · EcoSwing
 
@@ -275,4 +258,4 @@ RETIRADA
 Não entregue
 Registr
 PASS R07-003-B57 — Sem erros de página ou console nas permissões :: {"errors":[],"consoleErrors":[]}
-TOTAL 59 · PASS 59 · FAIL 0 · INFO 0
+TOTAL 64 · PASS 64 · FAIL 0 · INFO 0

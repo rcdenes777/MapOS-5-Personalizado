@@ -39,11 +39,11 @@ test('D02 estoque: baixa exata de 1, custo do produto, sem tocar outro produto n
  eq(snap(x.stock[1]),other);eq(snap(x.stock[2]),p2);eq(snap(F.summary(x.o)),fin);eq(e.sku,'P1');
 });
 test('D03 estoque vazio/inexistente/quantidade inválida rejeitados sem baixa',()=>{
- const x=setup();
+ const x=setup(),fin=snap(F.summary(x.o)),ledger=snap(x.o.financeLedger||null);
  for(const sku of ['P0','missing'])reject(()=>swap(x,{source:'estoque',sku}),'Produto inexistente ou sem estoque disponível.',state(x));
  reject(()=>swap(x,{source:'estoque',sku:'P2'}),'Produto inexistente ou sem estoque disponível.',state(x));
- eq(x.stock[0].quantity,2);ok(!x.stock[0].movements);eq(snap(F.summary(x.o)),snap(F.summary(x.o)));
- swap(x,{source:'estoque',sku:'P1'});eq(x.stock[0].quantity,1);
+ eq(x.stock[0].quantity,2);ok(!x.stock[0].movements);eq(snap(F.summary(x.o)),fin);eq(snap(x.o.financeLedger||null),ledger);
+ swap(x,{source:'estoque',sku:'P1'});eq(x.stock[0].quantity,1);eq(snap(F.summary(x.o)),fin);
 });
 test('D04 custo externo: zero e ausente válidos, negativos/extremos/fracionários rejeitados',()=>{
  const a=setup();eq(swap(a,{cost:null}).cost,null);

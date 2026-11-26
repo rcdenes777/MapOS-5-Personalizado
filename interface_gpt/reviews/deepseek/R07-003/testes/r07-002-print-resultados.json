@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-11-26T16:13:28.874Z",
-  "codeSha": "",
+  "generatedAt": "2026-11-26T17:24:48.175Z",
+  "codeSha": "cc738622436d3df1224df700916970570eb0bd40",
   "total": 8,
   "summary": {
     "PASS": 8
@@ -19,6 +19,10 @@
       "bytes": 28005
     },
     {
+      "file": "origem-preservada-a4.pdf",
+      "bytes": 30694
+    },
+    {
       "file": "origem-reembolsada-a4.pdf",
       "bytes": 30452
     },
@@ -27,8 +31,28 @@
       "bytes": 36857
     },
     {
+      "file": "regressao-r06-002",
+      "bytes": 4096
+    },
+    {
+      "file": "regressao-r07-001",
+      "bytes": 4096
+    },
+    {
+      "file": "regressao-r07-002",
+      "bytes": 4096
+    },
+    {
       "file": "retorno-a4.pdf",
       "bytes": 30690
+    },
+    {
+      "file": "retorno-substituta-a4.pdf",
+      "bytes": 31821
+    },
+    {
+      "file": "retorno-substituta-cupom.pdf",
+      "bytes": 28865
     }
   ],
   "results": [

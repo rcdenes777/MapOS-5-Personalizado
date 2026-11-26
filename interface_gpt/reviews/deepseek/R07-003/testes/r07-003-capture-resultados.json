@@ -1,11 +1,23 @@
 {
-  "generatedAt": "2026-11-26T16:49:10.051Z",
-  "codeSha": "a35b6749f1918af87b75bffa7000832c559b9736",
-  "total": 2,
+  "generatedAt": "2026-11-26T17:21:37.616Z",
+  "codeSha": "cc738622436d3df1224df700916970570eb0bd40",
+  "total": 4,
   "summary": {
-    "PASS": 2
+    "PASS": 4
   },
   "results": [
+    {
+      "id": "R07C3-03",
+      "desc": "A troca das capturas foi realmente gravada (operação, baixa e modal fechado)",
+      "status": "PASS",
+      "detail": "{\"ops\":1,\"qty\":2,\"mov\":1,\"toast\":\"Registro atualizado na demonstração.\",\"modal\":false}"
+    },
+    {
+      "id": "R07C3-04",
+      "desc": "Painel pós-troca mostra substituição registrada, origem estoque e custo privado",
+      "status": "PASS",
+      "detail": "ATENDIMENTO / #018\nDaikin · EcoSwing\n\nRefrigeração Horizonte · Entrada em 21/11/2026\n\nVoltar\nImprimir\nANDAMENTO TÉCNICO\nAberto\nConclusão não registrada\nAtualizar andamento\nFINANCEIRO\nSem cobrança\nSaldo: R$ 0,00\nRETIRADA\nNão entregue\nRegistro independente do pagamento\nRegistrar entrega\nVisão geral\nAtendimento\nOrçamento e link\nEntrega\nAnexos\nHistórico\nGarantia\nCancelamento\nFinanceiro\nReferência original\nRetorno\nOS de origem\n#016\nAtendimento anterior\n#016\nConclusão original\n17/11/2026\nPrazo origina"
+    },
     {
       "id": "R07C3-01",
       "desc": "Capturei as telas novas/modificadas e estados de erro",

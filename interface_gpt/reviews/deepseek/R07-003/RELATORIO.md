@@ -10,7 +10,7 @@
 
 - Candidato inicial: `b619ceb8fe27b56df8aeac4fbb7c9e46d99a61f8` (`test(r07): cover replacement identity, stock debit and successor returns`), sobre o código `91db100f`.
 - Base experimental aprovada R07-002: `e04bb4059282197a0ce98e10d1715379433b5084`.
-- **Código final testado:** `a35b6749f1918af87b75bffa7000832c559b9736` — candidato + uma correção objetiva (`fix(r07-003): keep active return link across replacement lineage`, apenas `interface_gpt/assets/{app.js,warranty-ui.js,warranty.js}`).
+- **Código final testado:** `cc738622436d3df1224df700916970570eb0bd40` — candidato + uma correção objetiva (`fix(r07-003): keep active return link across replacement lineage`, apenas `interface_gpt/assets/{app.js,warranty-ui.js,warranty.js}`).
 - Referência funcional imutável: `8c256cae4ddaeefad68922abddbb8addfe37c99d`; `git ls-remote origin refs/heads/v5-trifase` = `8c256cae…` (intacta).
 - Branch exclusiva: `interface-gpt`. `git diff --name-only 8c256cae..HEAD -- . ':(exclude)interface_gpt'` vazio.
 - Evidências: `interface_gpt/reviews/deepseek/R07-003/` (este relatório, `RESUMO.md`, `INDICE.md`, `MATRIZ-F04.md`, `AUDITORIA-INDEPENDENTE.md`, `proveniencia.json`, `testes/`, `capturas/`, `impressos/`).
@@ -26,17 +26,17 @@
 
 ## Resultados
 
-**1.281 checagens funcionais executadas no código final: 1.276 PASS, 0 FAIL, 5 INFO.**
+**1.288 checagens funcionais executadas no código final: 1.283 PASS, 0 FAIL, 5 INFO.**
 **91 mutantes: 90 detectados, 1 equivalente justificado, 0 sobreviventes, 0 inconclusivos.**
 
 | Suíte | Total | PASS | FAIL | INFO |
 | --- | ---: | ---: | ---: | ---: |
 | 14 suítes Node do GPT | 306 | 306 | 0 | 0 |
 | R07-003 domínio (`r07-003-domain.cjs`) | 33 | 33 | 0 | 0 |
-| R07-003 navegador real (`r07-003-browser.cjs`) | 59 | 59 | 0 | 0 |
+| R07-003 navegador real (`r07-003-browser.cjs`) | 64 | 64 | 0 | 0 |
 | R07-003 bordas/axe/teclado (`r07-003-edge.cjs`) | 30 | 30 | 0 | 0 |
 | R07-003 impressão (`r07-003-print.cjs`) | 5 | 5 | 0 | 0 |
-| R07-003 capturas (`r07-003-capture.cjs`) | 2 | 2 | 0 | 0 (20 PNG) |
+| R07-003 capturas (`r07-003-capture.cjs`) | 4 | 4 | 0 | 0 (20 PNG) |
 | R07-002 domínio | 31 | 30 | 0 | 1 |
 | R07-002 negativos isolados | 38 | 38 | 0 | 0 |
 | R07-002 navegador real | 74 | 74 | 0 | 0 |
@@ -55,7 +55,7 @@
 | R06-002 impressão | 9 | 8 | 0 | 1 |
 | R02 / R03 / R04 / R05 | 37 / 118 / 61 / 74 | 37 / 116 / 61 / 74 | 0 | 0 / 2 / 0 / 0 |
 
-A tabela soma **1.281 checagens** (1.276 PASS + 5 INFO). Mutações, à parte:
+A tabela soma **1.288 checagens** (1.283 PASS + 5 INFO). Mutações, à parte:
 
 | Mutação | Total | Detectadas | Equivalentes | Sobreviventes | Inconclusivas |
 | --- | ---: | ---: | ---: | ---: | ---: |
@@ -110,7 +110,7 @@ Nenhum mutante foi publicado; cópias apenas em `~/.hermes/cache/scratch/`. A cl
 - Admin executa e vê custo; Financeiro/Técnico/Atendente consultam sem custo e não executam, nem por handler direto (R07-003-B55-*, B56; R07E3-P-03).
 - Nenhuma permissão foi ampliada; a simulação não presume direitos pelo nome do perfil.
 
-## Correção de produto nesta rodada
+## Correções de produto nesta rodada
 
 **`a35b6749f1918af87b75bffa7000832c559b9736` — vínculo do retorno ativo após a troca.**
 
@@ -118,6 +118,12 @@ Nenhum mutante foi publicado; cópias apenas em `~/.hermes/cache/scratch/`. A cl
 - **Correção:** `active()` compara a unidade física (`physical(x).unit`) e exclui o próprio registro; `warrantyReturnLink()` consulta o retorno ativo antes da referência; `newOrder()` mostra “Retorno em andamento” antes de validar a referência.
 - **Cobertura:** R07-003-B12, B13, B23 e D11; a regressão R07-002 (74), R07-001 (65+54+56+6) e R06 (103+25+23+9+15+16) permaneceu verde.
 - **Escopo:** item 5 da tarefa (“link da origem enquanto substituta ainda não concluída e existência de retorno ativo, sem criar outro”).
+
+**`cc738622436d3df1224df700916970570eb0bd40` — ressalvas N1/N3 da revisão independente.**
+
+- **N1:** a origem substituída perdia conclusão/prazo no painel porque `reference` recusa a unidade antiga. `warrantyOriginRef()` (read-only) repõe a referência da própria raiz em `warrantySummary`/`warrantyPanel`; a origem #016 volta a mostrar conclusão 17/11/2026, prazo 90 dias e vencimento 15/02/2027.
+- **N3:** a impressão não repete o rótulo “Substituta em garantia” (o prefixo de `deliveryEquipment` é removido no `printView`).
+- **Cobertura:** captura 08 (origem com prazo e link #018) e 09 (rótulo único), R07P3-01 e a suíte de impressão.
 
 ## Adaptações de teste (nenhuma asserção enfraquecida)
 

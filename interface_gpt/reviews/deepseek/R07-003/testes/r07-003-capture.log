@@ -1,3 +1,21 @@
+PASS R07C3-03 — A troca das capturas foi realmente gravada (operação, baixa e modal fechado) :: {"ops":1,"qty":2,"mov":1,"toast":"Registro atualizado na demonstração.","modal":false}
+PASS R07C3-04 — Painel pós-troca mostra substituição registrada, origem estoque e custo privado :: ATENDIMENTO / #018
+Daikin · EcoSwing
+
+Refrigeração Horizonte · Entrada em 21/11/2026
+
+Voltar
+Imprimir
+ANDAMENTO TÉCNICO
+Aberto
+Conclusão não registrada
+Atualizar andamento
+FINANCEIRO
+Sem cobrança
+Saldo: R$ 0,00
+RETIRADA
+Não entregue
+Registr
 PASS R07C3-01 — Capturei as telas novas/modificadas e estados de erro :: 20 PNG
 PASS R07C3-02 — Manifesto sem arquivos duplicados e com SHA-256 :: 20 arquivos
-TOTAL 2 · PASS 2 · FAIL 0 · PNG 20
+TOTAL 4 · PASS 4 · FAIL 0 · PNG 20

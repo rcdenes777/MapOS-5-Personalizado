@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-11-26T16:49:10.051Z",
-  "codeSha": "a35b6749f1918af87b75bffa7000832c559b9736",
+  "generatedAt": "2026-11-26T17:21:37.615Z",
+  "codeSha": "cc738622436d3df1224df700916970570eb0bd40",
   "total": 20,
   "captures": [
     {
@@ -45,16 +45,16 @@
     },
     {
       "file": "capturas/desktop/03-modal-troca-preenchido-1440.png",
-      "sha256": "6a12dd443b90a53e7c6923aff33aea91a53fe4a26e70722dae614a29ef27b005",
-      "bytes": 247910,
+      "sha256": "3fa3fd011f43583923b1274ffdc98bbb8904fd6c0a9146479e33b0066771160a",
+      "bytes": 246853,
       "width": 1440,
       "w": 1440,
       "h": 1800
     },
     {
       "file": "capturas/desktop/04-modal-troca-erro-selo-1440.png",
-      "sha256": "2ad5b0f0dd1b035929741550a69cacc7c00e94a5f59e4b133ce4da4e06f35c22",
-      "bytes": 251138,
+      "sha256": "40f0015790cb81aff020fc5a390d9e122772a87c169cf72d82d1c4341e61ea83",
+      "bytes": 250621,
       "width": 1440,
       "w": 1440,
       "h": 1800
@@ -69,91 +69,91 @@
     },
     {
       "file": "capturas/desktop/05-modal-troca-estoque-1440.png",
-      "sha256": "22fda2bd001a94423637df338d4261791ebd02505bc5178389b99680f89a1fb3",
-      "bytes": 247911,
+      "sha256": "089f5db71b1dfcb1b3620642df0c2425d6939f33893d202d635d93959c2d694f",
+      "bytes": 246855,
       "width": 1440,
       "w": 1440,
       "h": 1800
     },
     {
       "file": "capturas/desktop/06-garantia-substituicao-registrada-1440.png",
-      "sha256": "df1c83aef9daf75d14389c371eba17e5b4864792ca99fd4bd8033417c2b933c2",
-      "bytes": 206301,
+      "sha256": "0077354e9da2e6bc5a445968a2f5facdfa24217925365b0863615add823fa040",
+      "bytes": 241889,
       "width": 1440,
       "w": 1440,
-      "h": 1800
+      "h": 2042
     },
     {
       "file": "capturas/mobile/16-garantia-substituicao-registrada-390.png",
-      "sha256": "892ce475a0f1bb923213874b617db76b48e43c0f0022fbb4032d7bdf55965029",
-      "bytes": 171290,
+      "sha256": "45c0a7f5fef5918cfe6f20d4c4f4e721f5f575da1ca625e11573ffb4e453c070",
+      "bytes": 199129,
       "width": 390,
       "w": 390,
-      "h": 2673
+      "h": 3002
     },
     {
       "file": "capturas/desktop/07-estoque-apos-baixa-1440.png",
-      "sha256": "fa7ef70da84d4993c196254e3dd05d4ae1327d3d245212756d11cd24e0356248",
-      "bytes": 75648,
+      "sha256": "2a1d4af206621cebde1253575188ea66b5fc5c03c9bb73adf43e3a4514e79aa6",
+      "bytes": 81729,
       "width": 1440,
       "w": 1440,
       "h": 900
     },
     {
       "file": "capturas/desktop/08-origem-link-retorno-ativo-1440.png",
-      "sha256": "373f6234082b698a31ce5391d9baf22c0834a70de0ae513dfd4fe7372d9c933e",
-      "bytes": 128293,
+      "sha256": "74f0ccd8359c0390a386276faaaa86d243569275764adbfee00060a102a0dabe",
+      "bytes": 134242,
       "width": 1440,
       "w": 1440,
       "h": 900
     },
     {
       "file": "capturas/desktop/09-impressao-substituta-a4-1440.png",
-      "sha256": "e549cccb8400a929fe8096163221e7949c80dd0b7d12bea5a2bfb210bcb36ac8",
-      "bytes": 96731,
+      "sha256": "ae612020a3763c1803667ddf2a944a899ce5be046dc9757c7c3a78fda63cec86",
+      "bytes": 108965,
       "width": 1440,
       "w": 1440,
       "h": 900
     },
     {
       "file": "capturas/tablet/21-impressao-substituta-a4-768.png",
-      "sha256": "3a1de94305b50edf53082ae58117023fe55a5d0da22478dec0e02df35fcbefc6",
-      "bytes": 64225,
+      "sha256": "e0e774795c5944bfcfb57abcd06aefb69b434b3bd69fe6fa0bad772d2ddcde82",
+      "bytes": 75540,
       "width": 768,
       "w": 768,
       "h": 1024
     },
     {
       "file": "capturas/desktop/10-portal-substituta-1440.png",
-      "sha256": "86091760bc8a0f23c09966a914636e98ed57afc44f82a9dee7f443e3361a4aea",
-      "bytes": 57948,
+      "sha256": "ce16b6533780540997f458763d0ba091e997ba6ec3a87bb8b27065dc70836903",
+      "bytes": 62099,
       "width": 1440,
       "w": 1440,
       "h": 900
     },
     {
       "file": "capturas/mobile/17-portal-substituta-390.png",
-      "sha256": "1881fec3cf825e467f4f4cbb397f7767ca2c1586c98b609544d766b11cf3378a",
-      "bytes": 51171,
+      "sha256": "f6d45207b34bbe46ea0646bd23272f7a9eaa45cf68f10819ab830b0c3013e9ce",
+      "bytes": 54259,
       "width": 390,
       "w": 390,
       "h": 844
     },
     {
       "file": "capturas/desktop/11-retorno-substituto-form-1440.png",
-      "sha256": "3399f00e923e8a41ca514df5113d4d0b89ed78daa3eba7b0b43d95399da6b733",
-      "bytes": 93354,
+      "sha256": "5249aa15cd2b12531364a652f2ddd912b866cfabd0958f68a6f61d2b2f6de95b",
+      "bytes": 97472,
       "width": 1440,
       "w": 1440,
       "h": 900
     },
     {
       "file": "capturas/mobile/18-retorno-substituto-form-390.png",
-      "sha256": "3aaca36c41db7e5c25925a7648f999b535382427f36d56eb9b322dd45422e33e",
-      "bytes": 56491,
+      "sha256": "26f3a3ac94071d1d2715d42e5fad4300a4e56283cc4c472a27b1bf93b6a70b23",
+      "bytes": 57093,
       "width": 390,
       "w": 390,
-      "h": 970
+      "h": 998
     },
     {
       "file": "capturas/desktop/12-garantia-sem-troca-1440.png",

@@ -1,6 +1,6 @@
 # axe-core R06
 
-Gerado: 2026-11-26T16:44:16.514Z
+Gerado: 2026-11-26T17:31:59.314Z
 
 | Varredura | Estados | Violações |
 | --- | --- | --- |

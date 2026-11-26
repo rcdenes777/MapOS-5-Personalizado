@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-11-26T16:35:52.711Z",
-  "codeSha": "",
+  "generatedAt": "2026-11-26T17:35:44.102Z",
+  "codeSha": "cc738622436d3df1224df700916970570eb0bd40",
   "incrementSha": "",
   "results": [
     {
@@ -49,7 +49,7 @@
       "id": "R04-X08",
       "desc": "Endereço local contém portal.html e o token ativo",
       "status": "PASS",
-      "detail": "http://127.0.0.1:8130/portal.html#789af304c6546c1fa391993368daf3cc5feb09966fdc5b…"
+      "detail": "http://127.0.0.1:8130/portal.html#fb130d0cf3149479ad00ae87cef3db231704a5216e4add…"
     },
     {
       "id": "R04-X15",

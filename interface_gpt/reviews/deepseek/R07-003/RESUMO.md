@@ -3,12 +3,12 @@
 **Status:** APTO COM RESSALVAS no escopo experimental (revisão independente em `AUDITORIA-INDEPENDENTE.md`; 0 bloqueantes).
 
 **Candidato:** `b619ceb8fe27b56df8aeac4fbb7c9e46d99a61f8`
-**Código final testado:** `a35b6749f1918af87b75bffa7000832c559b9736` (candidato + correção do vínculo do retorno ativo após a troca)
+**Código final testado:** `cc738622436d3df1224df700916970570eb0bd40` (candidato + correção do vínculo do retorno ativo após a troca)
 **Referência funcional:** `8c256cae4ddaeefad68922abddbb8addfe37c99d` (`v5-trifase` intacta)
 
 ## Números
 
-- **1.281 checagens funcionais: 1.276 PASS, 0 FAIL, 5 INFO.**
+- **1.288 checagens funcionais: 1.283 PASS, 0 FAIL, 5 INFO.**
 - **91 mutantes: 90 detectados, 1 equivalente, 0 sobreviventes, 0 inconclusivos.**
 - **20 capturas** reais (1440/768/390/320), **4 PDFs novos** (A4/cupom do retorno substituto, A4 da origem preservada, recibo original) + PDFs de regressão preservados em `impressos/regressao-*`.
 - 14 suítes Node do GPT: **306/306**.

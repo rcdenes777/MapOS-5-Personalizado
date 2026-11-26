@@ -229,7 +229,10 @@ async function makeRefundOrigin(a) {
       rec('R07-003-B20', 'Painel de estoque mostra custo não informado para Admin', /Troca em garantia/.test(await (async () => { await goto(a, '#os/18/garantia'); return mainText(a); })()) && /Custo interno[\s\S]*Não informado/.test(await mainText(a)), (await mainText(a)).slice(0, 900));
 
       await goto(a, '#estoque');
-      rec('R07-003-B21', 'Tela de estoque reflete a baixa de 1 e mantém os demais produtos', (await mainText(a)).includes('2') && (await mainText(a)).includes('8') && (await mainText(a)).includes('16'), (await mainText(a)).slice(0, 500));
+      const stockRows = await a.evaluate(() => [...document.querySelectorAll('.directory article')].map(x => x.textContent.replace(/\s+/g, ' ')));
+      const opto = stockRows.find(x => x.includes('Optoacoplador PC817')) || '';
+      const igbt = stockRows.find(x => x.includes('IGBT 650 V')) || '';
+      rec('R07-003-B21', 'Tela de estoque reflete a baixa de 1 e mantém os demais produtos', /2\s*unidades?/.test(opto) && /8\s*unidades?/.test(igbt) && /16\s*unidades?/.test(stockRows.find(x => x.includes('Capacitor 450 V')) || ''), stockRows);
 
       const finBefore = await financeSnapshot(a, 16);
       const r = await orderJson(a, 18);
@@ -282,6 +285,43 @@ async function makeRefundOrigin(a) {
       rec('R07-003-B28', 'Handler direto recusa a unidade antiga e não cria OS', afterInjected.n === injected && /Unidade substituída/.test(afterInjected.toast), JSON.stringify(afterInjected));
 
       rec('R07-003-B29', 'Sem erros de página ou console no fluxo de estoque', errors.length === 0 && consoleErrors.length === 0, JSON.stringify({ errors, consoleErrors }));
+      await ctx.close();
+    }
+
+    /* ================= S2b — negativos de estoque e custo no navegador ================= */
+    {
+      const { ctx, a, errors, consoleErrors } = await session(browser, 1440, 900, 'r07-003s2b');
+      await assessTroca(a, 18);
+      const before = await a.evaluate(() => JSON.stringify({ stock: db.stock, ops: db.orders.find(x => x.id === 18).warranty.operations || [], raw: localStorage.getItem('mapos-bancada-prototype-v1') }));
+      await a.evaluate(() => { db.stock.find(x => x.sku === 'P-002').quantity = 0; save(); });
+      const beforeFail = await a.evaluate(() => JSON.stringify({ stock: db.stock, ops: db.orders.find(x => x.id === 18).warranty.operations || [], raw: localStorage.getItem('mapos-bancada-prototype-v1') }));
+      await openSwap(a, 18);
+      await fillSwap(a, { source: 'estoque', sku: 'P-002' });
+      await a.check('#action-form input[name=confirm]');
+      let st = await submitRaw(a);
+      const afterZero = await a.evaluate(() => JSON.stringify({ stock: db.stock, ops: db.orders.find(x => x.id === 18).warranty.operations || [], raw: localStorage.getItem('mapos-bancada-prototype-v1') }));
+      rec('R07-003-B18b', 'Estoque zerado recusa no navegador com motivo e estado intacto', /Produto inexistente ou sem estoque disponível/.test(st.error) && afterZero === beforeFail && JSON.parse(afterZero).stock.find(x => x.sku === 'P-002').quantity === 0 && JSON.parse(afterZero).ops.length === 0, { st, before, beforeFail });
+
+      await a.evaluate(() => {
+        const f = document.querySelector('#action-form');
+        f.elements.sku.insertAdjacentHTML('beforeend', '<option value="missing">missing</option>');
+        f.elements.sku.value = 'missing';
+      });
+      st = await submitRaw(a);
+      const afterMissing = await a.evaluate(() => JSON.stringify({ stock: db.stock, ops: db.orders.find(x => x.id === 18).warranty.operations || [], raw: localStorage.getItem('mapos-bancada-prototype-v1') }));
+      rec('R07-003-B18c', 'SKU inexistente recusa no navegador sem baixa', /Produto inexistente ou sem estoque disponível/.test(st.error) && afterMissing === beforeFail, { st });
+      await closeModal(a);
+
+      await reset(a); await assessTroca(a, 18);
+      const z = await swapUI(a, 18, { source: 'externa', cost: '0.00' });
+      const zops = await ops(a, 18);
+      rec('R07-003-B18d', 'Custo externo zero é aceito e registrado como zero', z.open === false && zops.length === 1 && zops[0].cost === 0, { z, cost: zops[0]?.cost });
+
+      await reset(a); await assessTroca(a, 18);
+      const n = await swapUI(a, 18, { source: 'externa', cost: '' });
+      const nops = await ops(a, 18);
+      rec('R07-003-B18e', 'Custo externo ausente é aceito como desconhecido', n.open === false && nops.length === 1 && nops[0].cost === null, { n, cost: nops[0]?.cost });
+      rec('R07-003-B18f', 'Sem erros de página ou console nos negativos de estoque/custo', errors.length === 0 && consoleErrors.length === 0, { errors, consoleErrors });
       await ctx.close();
     }
 

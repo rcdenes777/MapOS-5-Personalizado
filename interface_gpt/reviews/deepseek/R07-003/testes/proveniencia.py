@@ -7,7 +7,7 @@ REPO = os.path.abspath(os.path.join(BASE, '..', '..', '..', '..'))
 ASSETS = os.path.join(REPO, 'interface_gpt', 'assets')
 TESTS = os.path.join(REPO, 'interface_gpt', 'tests')
 CANDIDATE = 'b619ceb8fe27b56df8aeac4fbb7c9e46d99a61f8'
-FINAL_CODE = os.environ.get('FINAL_CODE_SHA', 'a35b6749f1918af87b75bffa7000832c559b9736')
+FINAL_CODE = os.environ.get('FINAL_CODE_SHA', 'cc738622436d3df1224df700916970570eb0bd40')
 REFERENCE = '8c256cae4ddaeefad68922abddbb8addfe37c99d'
 
 def sha(p):
@@ -29,7 +29,7 @@ def remote_tip(ref):
 
 # Resolve o SHA completo do commit de código desta rodada
 try:
-    final_code = git('rev-parse', '--verify', 'a35b6749')
+    final_code = git('rev-parse', '--verify', 'cc738622')
 except Exception:
     final_code = FINAL_CODE
 
@@ -52,7 +52,7 @@ data = {
     'baseR07002': 'e04bb4059282197a0ce98e10d1715379433b5084',
     'finalCodeTested': final_code,
     'finalCodeCommit': git('log', '-1', '--format=%s', final_code),
-    'codeChangesAfterCandidate': git('diff', '--name-status', CANDIDATE + '..' + final_code, '--', 'interface_gpt'),
+    'codeChangesAfterCandidate': git('diff', '--name-status', CANDIDATE + '..' + final_code, '--', 'interface_gpt/assets', 'interface_gpt/tests'),
     'functionalReference': REFERENCE,
     'v5TrifaseTip': v5_remote or REFERENCE,
     'v5TrifaseRemoteTip': v5_remote,

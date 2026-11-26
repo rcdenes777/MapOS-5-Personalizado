@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-11-26T16:36:57.886Z",
-  "codeSha": "",
+  "generatedAt": "2026-11-26T17:36:49.176Z",
+  "codeSha": "cc738622436d3df1224df700916970570eb0bd40",
   "incrementSha": "",
   "results": [
     {
@@ -115,7 +115,7 @@
       "id": "R05-B06",
       "desc": "Recebimento parcial de R$ 100,00 (Pix) cria evento e saldo R$ 140,00",
       "status": "PASS",
-      "detail": "{\"opening\":0,\"events\":[{\"id\":1,\"type\":\"receive\",\"amount\":10000,\"date\":\"2026-11-26\",\"method\":\"Pix\",\"registered\":\"2026-11-26T16:36:09.207Z\"}]}"
+      "detail": "{\"opening\":0,\"events\":[{\"id\":1,\"type\":\"receive\",\"amount\":10000,\"date\":\"2026-11-26\",\"method\":\"Pix\",\"registered\":\"2026-11-26T17:36:00.497Z\"}]}"
     },
     {
       "id": "R05-B07",
@@ -151,13 +151,13 @@
       "id": "R05-B12",
       "desc": "Estorno preserva obrigação de R$ 240,00 e recompõe saldo para R$ 100,00",
       "status": "PASS",
-      "detail": "{\"opening\":0,\"events\":[{\"id\":1,\"type\":\"receive\",\"amount\":10000,\"date\":\"2026-11-26\",\"method\":\"Pix\",\"registered\":\"2026-11-26T16:36:09.207Z\"},{\"id\":2,\"type\":\"receive\",\"amount\":14000,\"date\":\"2026-11-26\",\"method\":\"Dinheiro\",\"registered\":\"2026-11-26T16:36:13.308Z\"},{\"id\":3,\"type\":\"reverse\",\"reference\":1,\"amount\":10000,\"date\":\"2026-11-26\",\"method\":\"Pix\",\"reason\":\"Lançamento incorreto na demonstração\",\"registered\":\"2026-11-26T16:36:19.958Z\"}]}"
+      "detail": "{\"opening\":0,\"events\":[{\"id\":1,\"type\":\"receive\",\"amount\":10000,\"date\":\"2026-11-26\",\"method\":\"Pix\",\"registered\":\"2026-11-26T17:36:00.497Z\"},{\"id\":2,\"type\":\"receive\",\"amount\":14000,\"date\":\"2026-11-26\",\"method\":\"Dinheiro\",\"registered\":\"2026-11-26T17:36:04.597Z\"},{\"id\":3,\"type\":\"reverse\",\"reference\":1,\"amount\":10000,\"date\":\"2026-11-26\",\"method\":\"Pix\",\"reason\":\"Lançamento incorreto na demonstração\",\"registered\":\"2026-11-26T17:36:11.246Z\"}]}"
     },
     {
       "id": "R05-B13",
       "desc": "Evento de estorno referencia o recebimento original, mantém valor e justificativa",
       "status": "PASS",
-      "detail": "{\"id\":3,\"type\":\"reverse\",\"reference\":1,\"amount\":10000,\"date\":\"2026-11-26\",\"method\":\"Pix\",\"reason\":\"Lançamento incorreto na demonstração\",\"registered\":\"2026-11-26T16:36:19.958Z\"}"
+      "detail": "{\"id\":3,\"type\":\"reverse\",\"reference\":1,\"amount\":10000,\"date\":\"2026-11-26\",\"method\":\"Pix\",\"reason\":\"Lançamento incorreto na demonstração\",\"registered\":\"2026-11-26T17:36:11.246Z\"}"
     },
     {
       "id": "R05-B14",
@@ -235,7 +235,7 @@
       "id": "R05-R04",
       "desc": "Ação de copiar abre endereço local e seleciona o campo",
       "status": "PASS",
-      "detail": "{\"open\":true,\"value\":\"http://127.0.0.1:8130/portal.html#5c0ffbc4ca79520f95262a3b244272bd7be48e3d0bbc3b71dc418efffdac18fa\",\"selected\":true}"
+      "detail": "{\"open\":true,\"value\":\"http://127.0.0.1:8130/portal.html#10d46b0ead8fbd4b44f5c32cc7eb7b7e14bea0e7a943fb8bbac1a2992457c858\",\"selected\":true}"
     },
     {
       "id": "R05-L01",
@@ -313,7 +313,7 @@
       "id": "R05-P07",
       "desc": "Troca de perfil remove conteúdo financeiro sem expor valores",
       "status": "PASS",
-      "detail": "{\"url\":\"http://127.0.0.1:8130/?r05=1795710994598#os/20/financeiro\",\"text\":\"ATENDIMENTO / #020\\nMidea · Xtreme Save\\n\\nClima Sul Serviços · Entrada em 21/11/2026\\n\\nVoltar\\nImprimir\\nANDAMENTO TÉCNICO\\nFi\"}"
+      "detail": "{\"url\":\"http://127.0.0.1:8130/?r05=1795714585912#os/20/financeiro\",\"text\":\"ATENDIMENTO / #020\\nMidea · Xtreme Save\\n\\nClima Sul Serviços · Entrada em 21/11/2026\\n\\nVoltar\\nImprimir\\nANDAMENTO TÉCNICO\\nFi\"}"
     },
     {
       "id": "R05-T01",
@@ -337,7 +337,7 @@
       "id": "R05-T04",
       "desc": "Recebimentos persistem após recarregar",
       "status": "PASS",
-      "detail": "{\"id\":20,\"status\":\"Finalizado\",\"total\":35000,\"paid\":30000,\"delivery\":null,\"ledger\":{\"opening\":20000,\"events\":[{\"id\":1,\"type\":\"receive\",\"amount\":5000,\"date\":\"2026-11-26\",\"method\":\"Pix\",\"registered\":\"2026-11-26T16:36:44.590Z\"},{\"id\":2,\"type\":\"receive\",\"amount\":5000,\"date\":\"2026-11-26\",\"method\":\"Dinheiro\",\"registered\":\"2026-11-26T16:36:56.190Z\"}]},\"publicLink\":{\"token\":\"afdf9eeb4de61ebef807fcc4f592652f5acf3a310bee70d324c1877d5605bd50\",\"expires\":1806079011757},\"quote\":{\"draft\":{\"items\":[{\"type\":\"Serviço\",\"name\":\"Serviço de reparo (demonstração inicial)\",\"quantity\":1,\"unit\":35000}],\"discount\":0,\"terms\":{\"payment\":\"\",\"deadline\":\"\",\"warranty\":\"\",\"diagnosis\":\"\"}},\"versions\":[{\"number\":1,\"items\":[{\"type\":\"Serviço\",\"name\":\"Serviço de reparo (demonstração inicial)\",\"quantity\":1,\"unit\":35000}],\"discount\":0,\"terms\":{\"payment\":\"\",\"deadline\":\"\",\"warranty\":\"\",\"diagnosis\":\"\"},\"total\":35000,\"created\":\"2026-11-21\",\"decision\":{\"answer\":\"Aprovado\",\"name\":\"Cliente de demonstração\",\"channel\":\"presencial\",\"date\":\"2026-11-21\"},\"source\":\"seed\"}],\"current\":1,\"active\":true}}"
+      "detail": "{\"id\":20,\"status\":\"Finalizado\",\"total\":35000,\"paid\":30000,\"delivery\":null,\"ledger\":{\"opening\":20000,\"events\":[{\"id\":1,\"type\":\"receive\",\"amount\":5000,\"date\":\"2026-11-26\",\"method\":\"Pix\",\"registered\":\"2026-11-26T17:36:35.897Z\"},{\"id\":2,\"type\":\"receive\",\"amount\":5000,\"date\":\"2026-11-26\",\"method\":\"Dinheiro\",\"registered\":\"2026-11-26T17:36:47.478Z\"}]},\"publicLink\":{\"token\":\"6c4c0809c3e3da828ed91ef7f364676ab418cf3c9559aff7385e199cbf1d6574\",\"expires\":1806082603063},\"quote\":{\"draft\":{\"items\":[{\"type\":\"Serviço\",\"name\":\"Serviço de reparo (demonstração inicial)\",\"quantity\":1,\"unit\":35000}],\"discount\":0,\"terms\":{\"payment\":\"\",\"deadline\":\"\",\"warranty\":\"\",\"diagnosis\":\"\"}},\"versions\":[{\"number\":1,\"items\":[{\"type\":\"Serviço\",\"name\":\"Serviço de reparo (demonstração inicial)\",\"quantity\":1,\"unit\":35000}],\"discount\":0,\"terms\":{\"payment\":\"\",\"deadline\":\"\",\"warranty\":\"\",\"diagnosis\":\"\"},\"total\":35000,\"created\":\"2026-11-21\",\"decision\":{\"answer\":\"Aprovado\",\"name\":\"Cliente de demonstração\",\"channel\":\"presencial\",\"date\":\"2026-11-21\"},\"source\":\"seed\"}],\"current\":1,\"active\":true}}"
     }
   ]
 }

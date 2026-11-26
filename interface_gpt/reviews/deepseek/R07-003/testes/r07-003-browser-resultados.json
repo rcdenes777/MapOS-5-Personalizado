@@ -1,9 +1,9 @@
 {
-  "generatedAt": "2026-11-26T16:48:45.244Z",
-  "codeSha": "a35b6749f1918af87b75bffa7000832c559b9736",
-  "total": 59,
+  "generatedAt": "2026-11-26T17:21:12.842Z",
+  "codeSha": "cc738622436d3df1224df700916970570eb0bd40",
+  "total": 64,
   "summary": {
-    "PASS": 59
+    "PASS": 64
   },
   "results": [
     {
@@ -64,7 +64,7 @@
       "id": "R07-003-B10",
       "desc": "Troca externa grava uma operação, custo privado e não move estoque nem financeiro",
       "status": "PASS",
-      "detail": "{\"ok\":{\"opened\":true,\"open\":false,\"error\":\"\",\"toast\":\"Registro atualizado na demonstração.\"},\"ev\":{\"id\":1,\"type\":\"troca\",\"assessment\":1,\"origin\":16,\"oldUnit\":16,\"replacement\":{\"type\":\"Placa\",\"brand\":\"Midea\",\"model\":\"Nova\",\"seal\":\"NOVA-1\",\"serial\":\"\",\"imei\":\"\",\"unit\":25},\"source\":\"externa\",\"destination\":\"retida_assistencia\",\"sku\":null,\"cost\":4500,\"reason\":\"MOTIVO PRIVADO R07-003\",\"when\":\"2026-11-26T16:47:50.462Z\",\"actor\":\"Administrador\"},\"afterSwap\":{\"o16\":\"{\\\"id\\\":16,\\\"client\\\":3,\\\"brand\\\":\\\"Daikin\\\",\\\"model\\\":\\\"EcoSwing\\\",\\\"type\\\":\\\"Placa eletrônica\\\",\\\"defect\\\":\\\"Equipamento não liga.\\\",\\\"entry\\\":\\\"2026-11-12\\\",\\\"items\\\":\\\"\\\",\\\"condition\\\":\\\"\\\",\\\"status\\\":\\\"Finalizado\\\",\\\"total\\\":41000,\\\"paid\\\":41000,\\\"approval\\\":\\\"Aprovado\\\",\\\"delivery\\\":{\\\"date\\\":\\\"2026-11-18\\\",\\\"receiver\\\":\\\"Refrigeração Horizonte\\\",\\\"items\\\":\\\"Placa eletrônica\\\"},\\\"conclusion\\\":\\\"2026-11-17\\\",\\\"warrantyDays\\\":90,\\\"history\\\":[{\\\"time\\\":\\\"2026-11-21\\\",\\\"text\\\":\\\"Entrada registrada\\\"}],\\\"cancellation\\\":{\\\"events\\\":[]},\\\"seal\\\":\\\"ANT-1\\\"}\",\"stock\":\"[{\\\"name\\\":\\\"IGBT 650 V\\\",\\\"sku\\\":\\\"P-001\\\",\\\"quantity\\\":8,\\\"min\\\":5},{\\\"name\\\":\\\"Optoacoplador PC817\\\",\\\"sku\\\":\\\"P-002\\\",\\\"quantity\\\":3,\\\"min\\\":10},{\\\"name\\\":\\\"Capaci"
+      "detail": "{\"ok\":{\"opened\":true,\"open\":false,\"error\":\"\",\"toast\":\"Registro atualizado na demonstração.\"},\"ev\":{\"id\":1,\"type\":\"troca\",\"assessment\":1,\"origin\":16,\"oldUnit\":16,\"replacement\":{\"type\":\"Placa\",\"brand\":\"Midea\",\"model\":\"Nova\",\"seal\":\"NOVA-1\",\"serial\":\"\",\"imei\":\"\",\"unit\":25},\"source\":\"externa\",\"destination\":\"retida_assistencia\",\"sku\":null,\"cost\":4500,\"reason\":\"MOTIVO PRIVADO R07-003\",\"when\":\"2026-11-26T17:20:10.620Z\",\"actor\":\"Administrador\"},\"afterSwap\":{\"o16\":\"{\\\"id\\\":16,\\\"client\\\":3,\\\"brand\\\":\\\"Daikin\\\",\\\"model\\\":\\\"EcoSwing\\\",\\\"type\\\":\\\"Placa eletrônica\\\",\\\"defect\\\":\\\"Equipamento não liga.\\\",\\\"entry\\\":\\\"2026-11-12\\\",\\\"items\\\":\\\"\\\",\\\"condition\\\":\\\"\\\",\\\"status\\\":\\\"Finalizado\\\",\\\"total\\\":41000,\\\"paid\\\":41000,\\\"approval\\\":\\\"Aprovado\\\",\\\"delivery\\\":{\\\"date\\\":\\\"2026-11-18\\\",\\\"receiver\\\":\\\"Refrigeração Horizonte\\\",\\\"items\\\":\\\"Placa eletrônica\\\"},\\\"conclusion\\\":\\\"2026-11-17\\\",\\\"warrantyDays\\\":90,\\\"history\\\":[{\\\"time\\\":\\\"2026-11-21\\\",\\\"text\\\":\\\"Entrada registrada\\\"}],\\\"cancellation\\\":{\\\"events\\\":[]},\\\"seal\\\":\\\"ANT-1\\\"}\",\"stock\":\"[{\\\"name\\\":\\\"IGBT 650 V\\\",\\\"sku\\\":\\\"P-001\\\",\\\"quantity\\\":8,\\\"min\\\":5},{\\\"name\\\":\\\"Optoacoplador PC817\\\",\\\"sku\\\":\\\"P-002\\\",\\\"quantity\\\":3,\\\"min\\\":10},{\\\"name\\\":\\\"Capaci"
     },
     {
       "id": "R07-003-B11",
@@ -88,7 +88,7 @@
       "id": "R07-003-B14",
       "desc": "A4 e cupom mostram a substituta sem custo/motivo privados",
       "status": "PASS",
-      "detail": "{\"a4\":\"DOCUMENTO\\nImpressão da OS #018\\n\\nPrévia fictícia para avaliação do formato.\\n\\nVoltar\\nCupom 80 mm\\nImprimir\\nMinha oficina · Demonstração\\nOrdem de serviço #018\\nCliente\\nRefrigeração Horizonte\\nEquipamento\\nDaikin · EcoSwing\\nSubstituta em garantia\\nSubstituta em garanti\"}"
+      "detail": "{\"a4\":\"DOCUMENTO\\nImpressão da OS #018\\n\\nPrévia fictícia para avaliação do formato.\\n\\nVoltar\\nCupom 80 mm\\nImprimir\\nMinha oficina · Demonstração\\nOrdem de serviço #018\\nCliente\\nRefrigeração Horizonte\\nEquipamento\\nDaikin · EcoSwing\\nSubstituta em garantia\\nPlaca · Midea · Nova \"}"
     },
     {
       "id": "R07-003-B15",
@@ -112,13 +112,13 @@
       "id": "R07-003-B18",
       "desc": "Troca de estoque baixa exatamente 1 unidade, custo desconhecido e sem cobrança",
       "status": "PASS",
-      "detail": "{\"stk\":[{\"name\":\"IGBT 650 V\",\"quantity\":8},{\"name\":\"Optoacoplador PC817\",\"quantity\":2},{\"name\":\"Capacitor 450 V\",\"quantity\":16}],\"ev\":{\"id\":1,\"type\":\"troca\",\"assessment\":1,\"origin\":16,\"oldUnit\":16,\"replacement\":{\"type\":\"Placa\",\"brand\":\"Midea\",\"model\":\"Nova\",\"seal\":\"NOVA-1\",\"serial\":\"\",\"imei\":\"\",\"unit\":25},\"source\":\"estoque\",\"destination\":\"retida_assistencia\",\"sku\":\"P-002\",\"cost\":null,\"reason\":\"MOTIVO PRIVADO R07-003\",\"when\":\"2026-11-26T16:47:56.030Z\",\"actor\":\"Administrador\"}}"
+      "detail": "{\"stk\":[{\"name\":\"IGBT 650 V\",\"quantity\":8},{\"name\":\"Optoacoplador PC817\",\"quantity\":2},{\"name\":\"Capacitor 450 V\",\"quantity\":16}],\"ev\":{\"id\":1,\"type\":\"troca\",\"assessment\":1,\"origin\":16,\"oldUnit\":16,\"replacement\":{\"type\":\"Placa\",\"brand\":\"Midea\",\"model\":\"Nova\",\"seal\":\"NOVA-1\",\"serial\":\"\",\"imei\":\"\",\"unit\":25},\"source\":\"estoque\",\"destination\":\"retida_assistencia\",\"sku\":\"P-002\",\"cost\":null,\"reason\":\"MOTIVO PRIVADO R07-003\",\"when\":\"2026-11-26T17:20:16.297Z\",\"actor\":\"Administrador\"}}"
     },
     {
       "id": "R07-003-B19",
       "desc": "Movimento de saída vinculado ao retorno e à operação",
       "status": "PASS",
-      "detail": "[{\"type\":\"troca_saida\",\"quantity\":1,\"returnId\":18,\"operationId\":1,\"cost\":null,\"when\":\"2026-11-26T16:47:56.030Z\",\"reason\":\"MOTIVO PRIVADO R07-003\"}]"
+      "detail": "[{\"type\":\"troca_saida\",\"quantity\":1,\"returnId\":18,\"operationId\":1,\"cost\":null,\"when\":\"2026-11-26T17:20:16.297Z\",\"reason\":\"MOTIVO PRIVADO R07-003\"}]"
     },
     {
       "id": "R07-003-B20",
@@ -130,7 +130,7 @@
       "id": "R07-003-B21",
       "desc": "Tela de estoque reflete a baixa de 1 e mantém os demais produtos",
       "status": "PASS",
-      "detail": "PEÇAS\nEstoque\n\nConsulta de demonstração. Baixa de substituta em garantia simulada; demais movimentos na R08.\n\nP-001\nIGBT 650 V\n\n8 unidades\n\nDisponível\nP-002\nOptoacoplador PC817\n\n2 unidades\n\nEstoque baixo\nP-003\nCapacitor 450 V\n\n16 unidades\n\nDisponível"
+      "detail": "[\"P-001IGBT 650 V8 unidadesDisponível\",\"P-002Optoacoplador PC8172 unidadesEstoque baixo\",\"P-003Capacitor 450 V16 unidadesDisponível\"]"
     },
     {
       "id": "R07-003-B22",
@@ -177,6 +177,36 @@
     {
       "id": "R07-003-B29",
       "desc": "Sem erros de página ou console no fluxo de estoque",
+      "status": "PASS",
+      "detail": "{\"errors\":[],\"consoleErrors\":[]}"
+    },
+    {
+      "id": "R07-003-B18b",
+      "desc": "Estoque zerado recusa no navegador com motivo e estado intacto",
+      "status": "PASS",
+      "detail": "{\"st\":{\"open\":true,\"error\":\"Produto inexistente ou sem estoque disponível.\",\"title\":\"Registrar troca em garantia\"},\"before\":\"{\\\"stock\\\":[{\\\"name\\\":\\\"IGBT 650 V\\\",\\\"sku\\\":\\\"P-001\\\",\\\"quantity\\\":8,\\\"min\\\":5},{\\\"name\\\":\\\"Optoacoplador PC817\\\",\\\"sku\\\":\\\"P-002\\\",\\\"quantity\\\":3,\\\"min\\\":10},{\\\"name\\\":\\\"Capacitor 450 V\\\",\\\"sku\\\":\\\"P-003\\\",\\\"quantity\\\":16,\\\"min\\\":5}],\\\"ops\\\":[],\\\"raw\\\":\\\"{\\\\\\\"clients\\\\\\\":[{\\\\\\\"id\\\\\\\":1,\\\\\\\"name\\\\\\\":\\\\\\\"Clima Sul Serviços\\\\\\\",\\\\\\\"phone\\\\\\\":\\\\\\\"(45) 90000-0101\\\\\\\"},{\\\\\\\"id\\\\\\\":2,\\\\\\\"name\\\\\\\":\\\\\\\"Marina Alves\\\\\\\",\\\\\\\"phone\\\\\\\":\\\\\\\"(45) 90000-0102\\\\\\\"},{\\\\\\\"id\\\\\\\":3,\\\\\\\"name\\\\\\\":\\\\\\\"Refrigeração Horizonte\\\\\\\",\\\\\\\"phone\\\\\\\":\\\\\\\"(45) 90000-0103\\\\\\\"},{\\\\\\\"id\\\\\\\":4,\\\\\\\"name\\\\\\\":\\\\\\\"Paulo Lima\\\\\\\",\\\\\\\"phone\\\\\\\":\\\\\\\"(45) 90000-0104\\\\\\\"}],\\\\\\\"orders\\\\\\\":[{\\\\\\\"id\\\\\\\":24,\\\\\\\"client\\\\\\\":1,\\\\\\\"brand\\\\\\\":\\\\\\\"LG\\\\\\\",\\\\\\\"model\\\\\\\":\\\\\\\"Dual Inverter\\\\\\\",\\\\\\\"type\\\\\\\":\\\\\\\"Placa eletrônica\\\\\\\",\\\\\\\"defect\\\\\\\":\\\\\\\"Sem comunicação com a condensadora.\\\\\\\",\\\\\\\"entry\\\\\\\":\\\\\\\"2026-11-26\\\\\\\",\\\\\\\"items\\\\\\\":\\\\\\\"\\\\\\\",\\\\\\\"condition\\\\\\\":\\\\\\\"\\\\\\\",\\\\\\\"status\\\\\\\":\\\\\\\"Aberto\\\\\\\",\\\\\\\"total\\\\\\\":0,\\\\\\\"paid\\\\\\\":0,\\\\\\\"approval\\\\\\\":\\\\\\\"Sem orçamento\\\\\\\",\\\\\\\"delivery\\\\\\\":null,\\\\\\\"conclusion\\\\\\\":null,\\\\"
+    },
+    {
+      "id": "R07-003-B18c",
+      "desc": "SKU inexistente recusa no navegador sem baixa",
+      "status": "PASS",
+      "detail": "{\"st\":{\"open\":true,\"error\":\"Produto inexistente ou sem estoque disponível.\",\"title\":\"Registrar troca em garantia\"}}"
+    },
+    {
+      "id": "R07-003-B18d",
+      "desc": "Custo externo zero é aceito e registrado como zero",
+      "status": "PASS",
+      "detail": "{\"z\":{\"opened\":true,\"open\":false,\"error\":\"\",\"toast\":\"Registro atualizado na demonstração.\"},\"cost\":0}"
+    },
+    {
+      "id": "R07-003-B18e",
+      "desc": "Custo externo ausente é aceito como desconhecido",
+      "status": "PASS",
+      "detail": "{\"n\":{\"opened\":true,\"open\":false,\"error\":\"\",\"toast\":\"Registro atualizado na demonstração.\"},\"cost\":null}"
+    },
+    {
+      "id": "R07-003-B18f",
+      "desc": "Sem erros de página ou console nos negativos de estoque/custo",
       "status": "PASS",
       "detail": "{\"errors\":[],\"consoleErrors\":[]}"
     },
@@ -262,13 +292,13 @@
       "id": "R07-003-B43",
       "desc": "Histórico por raiz lista as duas gerações de retorno",
       "status": "PASS",
-      "detail": "ATENDIMENTO / #100\nMarca · Raiz\n\nClima Sul Serviços · Entrada em 01/08/2026\n\nVoltar\nImprimir\nANDAMENTO TÉCNICO\nFinalizado\nConclusão: 10/08/2026\nAtualizar andamento\nFINANCEIRO\nSem cobrança\nSaldo: R$ 0,00\nRETIRADA\nNão entregue\nRegistro independente do pagamento\nRegistrar entrega\nVisão geral\nAtendimento\nOrçamento e link\nEntrega\nAnexos\nHistórico\nGarantia\nCancelamento\nFinanceiro\nReferência original\nAtendimento original\n\nConclusão e identificação da unidade são necessárias.\n\nPrazo é referência temporal; não determina cobertura. Um retorno não concede nova garantia.\n\nAbrir retorno em andamento #102\nHistórico de retornos\n\nCada entrada cria uma OS distinta para a mesma unidade.\n\nMarca · Raiz\nClima Sul Serviços\n#101\nFinalizado\nNão entregue\nSem cobrança\n26/11/2026\nSub · Um\nClima Sul Serviços\n#102\nAberto\nNão entregue\nSem cobrança\n26/11/2026"
+      "detail": "ATENDIMENTO / #100\nMarca · Raiz\n\nClima Sul Serviços · Entrada em 01/08/2026\n\nVoltar\nImprimir\nANDAMENTO TÉCNICO\nFinalizado\nConclusão: 10/08/2026\nAtualizar andamento\nFINANCEIRO\nSem cobrança\nSaldo: R$ 0,00\nRETIRADA\nNão entregue\nRegistro independente do pagamento\nRegistrar entrega\nVisão geral\nAtendimento\nOrçamento e link\nEntrega\nAnexos\nHistórico\nGarantia\nCancelamento\nFinanceiro\nReferência original\nAtendimento original\nOS de origem\n#100\nConclusão original\n10/08/2026\nPrazo original\n90 dias\nVencimento\n08/11/2026 · Prazo expirado\n\nPrazo é referência temporal; não determina cobertura. Um retorno não concede nova garantia.\n\nAbrir retorno em andamento #102\nHistórico de retornos\n\nCada entrada cria uma OS distinta para a mesma unidade.\n\nMarca · Raiz\nClima Sul Serviços\n#101\nFinalizado\nNão entregue\nSem cobrança\n26/11/2026\nSub · Um\nClima Sul Serviços\n#102\nAberto\nNão entregue\nSem cobrança\n26/11/2026"
     },
     {
       "id": "R07-003-B44",
       "desc": "Segunda troca em sequência continua a linhagem e cria unidade 103",
       "status": "PASS",
-      "detail": "{\"id\":1,\"type\":\"troca\",\"assessment\":1,\"origin\":100,\"oldUnit\":102,\"replacement\":{\"type\":\"Placa\",\"brand\":\"Midea\",\"model\":\"Dois\",\"seal\":\"SUB-2\",\"serial\":\"\",\"imei\":\"\",\"unit\":103},\"source\":\"externa\",\"destination\":\"retida_assistencia\",\"sku\":null,\"cost\":4500,\"reason\":\"MOTIVO PRIVADO R07-003\",\"when\":\"2026-11-26T16:48:30.143Z\",\"actor\":\"Administrador\"}"
+      "detail": "{\"id\":1,\"type\":\"troca\",\"assessment\":1,\"origin\":100,\"oldUnit\":102,\"replacement\":{\"type\":\"Placa\",\"brand\":\"Midea\",\"model\":\"Dois\",\"seal\":\"SUB-2\",\"serial\":\"\",\"imei\":\"\",\"unit\":103},\"source\":\"externa\",\"destination\":\"retida_assistencia\",\"sku\":null,\"cost\":4500,\"reason\":\"MOTIVO PRIVADO R07-003\",\"when\":\"2026-11-26T17:20:57.770Z\",\"actor\":\"Administrador\"}"
     },
     {
       "id": "R07-003-B45",

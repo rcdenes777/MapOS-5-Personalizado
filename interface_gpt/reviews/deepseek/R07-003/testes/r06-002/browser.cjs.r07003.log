@@ -1,8 +1,8 @@
 PASS R06-S1-01 — OS #023 começa sem pedido, sem cobrança e com ação disponível :: {"status":"Orçamento","total":0,"paid":0,"delivery":null,"cancel":{"events":[]}}
 PASS R06-S1-02 — Pedido sem solicitante é bloqueado e não grava evento :: {"open":true,"error":"","toast":""}
 PASS R06-S1-03 — Pedido sem motivo é bloqueado e não grava evento :: {"open":true,"error":"","toast":""}
-PASS R06-S1-04 — Pedido preserva andamento, cobrança e entrega :: {"status":"Orçamento","total":0,"paid":0,"delivery":null,"events":[{"id":1,"type":"request","when":"2026-11-26T16:40:38.611Z","origin":"cliente","reason":"Cliente solicitou o cancelamento na bancada R06.","status":"Orçamento"}]}
-PASS R06-S1-05 — Pedido guarda origem, motivo e registro imutável :: {"id":1,"type":"request","when":"2026-11-26T16:40:38.611Z","origin":"cliente","reason":"Cliente solicitou o cancelamento na bancada R06.","status":"Orçamento"}
+PASS R06-S1-04 — Pedido preserva andamento, cobrança e entrega :: {"status":"Orçamento","total":0,"paid":0,"delivery":null,"events":[{"id":1,"type":"request","when":"2026-11-26T17:28:21.591Z","origin":"cliente","reason":"Cliente solicitou o cancelamento na bancada R06.","status":"Orçamento"}]}
+PASS R06-S1-05 — Pedido guarda origem, motivo e registro imutável :: {"id":1,"type":"request","when":"2026-11-26T17:28:21.591Z","origin":"cliente","reason":"Cliente solicitou o cancelamento na bancada R06.","status":"Orçamento"}
 PASS R06-S1-06 — Fila de cancelamentos pendentes conta o pedido :: Cancelamentos pendentes | 1 | Resolver →
 PASS R06-S1-07 — Cartão da OS mostra “Cancelamento pendente” na fila :: cards=1 Samsung · Digital Inverter | Marina Alves | #023 | Orçamento | Cancelamento pendente | Não entregue | Sem cobrança | 21/11/2026
 PASS R06-S1-08 — Pedido pendente oculta nova solicitação e oferece retirada :: actions
@@ -56,9 +56,9 @@ PASS R06-S1-17 — Administrador recupera todas as ações de cancelamento :: ad
 PASS R06-S1-18 — Sem exceções, erros de console ou requisições externas na S1 :: {"errors":[],"consoleErrors":[],"external":[]}
 PASS R06-S2-01 — Orçamento publicado com 3 peças, 2 serviços e desconto :: {"status":"Negociação","version":{"total":23500,"items":5,"discount":1000}}
 PASS R06-S2-02 — Pedido mantém orçamento, andamento e entrega :: {"open":false,"error":"","toast":"Registro atualizado na demonstração."}
-PASS R06-S2-03 — Peça não utilizada conciliada em quantidade parcial sem entrada em estoque :: {"e1":{"id":2,"type":"item","when":"2026-11-26T16:40:49.478Z","request":1,"item":{"name":"IGBT 650 V","type":"Peça","quantity":1,"unit":3000},"disposition":"unused","reason":"","stockReturned":0,"stockNote":"Baixa não comprovada; sem entrad
+PASS R06-S2-03 — Peça não utilizada conciliada em quantidade parcial sem entrada em estoque :: {"e1":{"id":2,"type":"item","when":"2026-11-26T17:28:32.581Z","request":1,"item":{"name":"IGBT 650 V","type":"Peça","quantity":1,"unit":3000},"disposition":"unused","reason":"","stockReturned":0,"stockNote":"Baixa não comprovada; sem entrad
 PASS R06-S2-04 — Consumo/perda exige motivo :: {"open":true,"error":"Confira o motivo ou as observações.","toast":"Registro atualizado na demonstração."}
-PASS R06-S2-05 — Peça consumida é registrada sem retorno ao estoque :: {"e2":{"id":3,"type":"item","when":"2026-11-26T16:40:51.294Z","request":1,"item":{"name":"IGBT 650 V","type":"Peça","quantity":2,"unit":3000},"disposition":"lost","reason":"Peça consumida em teste de bancada R06.","stockReturned":0,"stockNo
+PASS R06-S2-05 — Peça consumida é registrada sem retorno ao estoque :: {"e2":{"id":3,"type":"item","when":"2026-11-26T17:28:34.419Z","request":1,"item":{"name":"IGBT 650 V","type":"Peça","quantity":2,"unit":3000},"disposition":"lost","reason":"Peça consumida em teste de bancada R06.","stockReturned":0,"stockNo
 PASS R06-S2-06 — Segunda peça consumida também não movimenta estoque :: {"items":["Capacitor 450 V","Diagnóstico","Reparo"],"st":{"open":false,"error":"","toast":"Registro atualizado na demonstração."}}
 PASS R06-S2-07 — Conferência bloqueada enquanto há peça pendente :: {"techBtn":0,"directTech":{"err":"Concilie todas as peças antes.","before":4,"after":4}}
 PASS R06-S2-08 — Quantidade acima do saldo é rejeitada no modelo :: {"err":"Quantidade inválida.","before":4,"after":4}
@@ -141,7 +141,7 @@ Conclusão não registrada
 FINANCEIRO
 Acesso restrito
 V
-PASS R06-S3-14 — Entrega é operação independente e não altera o cancelamento :: {"status":"Cancelado","delivery":{"date":"2026-11-26","receiver":"Clima Sul Serviços","third":false,"items":"Equipamento e itens fictícios R06","authorization":"","registered":"2026-11-26T16:41:14.529Z"}}
+PASS R06-S3-14 — Entrega é operação independente e não altera o cancelamento :: {"status":"Cancelado","delivery":{"date":"2026-11-26","receiver":"Clima Sul Serviços","third":false,"items":"Equipamento e itens fictícios R06","authorization":"","registered":"2026-11-26T17:28:57.697Z"}}
 PASS R06-S3-15 — OS cancelada e entregue sai da fila de retirada :: retirada
 PASS R06-S3-16 — Sem exceções, erros de console ou páginas externas na S3 :: {"errors":[],"consoleErrors":[],"portal":[[],[]]}
 PASS R06-S4-01 — Duas entradas somam R$ 240,00 antes do cancelamento :: {"total":24000,"paid":24000}
@@ -151,7 +151,7 @@ PASS R06-S4-04 — Devolução sem comprovante/referência é bloqueada no formu
 PASS R06-S4-05 — Data da devolução anterior aos recebimentos é rejeitada :: {"open":true,"error":"Data anterior aos registros financeiros.","toast":"Registro atualizado na demonstração."}
 PASS R06-S4-06 — Data inválida e forma inválida são rejeitadas no modelo :: {"err":"Informe data e forma da devolução.","before":2,"after":2}
 PASS R06-S4-07 — Confirmação calcula total devido de R$ 80,00 e devolução de R$ 160,00 :: {"status":"Cancelado","total":8000,"paid":8000,"settle":{"gross":10000,"discount":2000,"total":8000,"paid":24000,"refund":16000,"balance":0,"result":"a_devolver"}}
-PASS R06-S4-08 — Devolução é evento separado com valor, data, forma e referência :: {"id":3,"type":"refund","amount":16000,"date":"2026-11-26","method":"Pix","reference":"Comprovante fictício R06 S4","registered":"2026-11-26T16:41:28.145Z"}
+PASS R06-S4-08 — Devolução é evento separado com valor, data, forma e referência :: {"id":3,"type":"refund","amount":16000,"date":"2026-11-26","method":"Pix","reference":"Comprovante fictício R06 S4","registered":"2026-11-26T17:29:11.229Z"}
 PASS R06-S4-09 — Recibos originais permanecem e não são marcados como estornados :: {"events":["receive","receive","refund"]}
 PASS R06-S4-10 — Recibo original continua acessível e sem ESTORNADO :: DOCUMENTO
 Recibo de recebimento
@@ -272,7 +272,7 @@ Tipo de retificação
 Selecione
 Lançamento 
 PASS R06-S5-06 — Data anterior à confirmação do acerto é rejeitada :: {"open":true,"error":"Data fora do período de retificação.","toast":"Registro atualizado na demonstração."}
-PASS R06-S5-07 — Retificação autorizada recompõe o saldo e registra o tipo :: {"id":2,"type":"reverse","reference":1,"amount":10000,"date":"2026-11-26","method":"Pix","reason":"Retificação autorizada após conferência R06.","registered":"2026-11-26T16:41:40.863Z","rectification":"lancamento_incorreto"}
+PASS R06-S5-07 — Retificação autorizada recompõe o saldo e registra o tipo :: {"id":2,"type":"reverse","reference":1,"amount":10000,"date":"2026-11-26","method":"Pix","reason":"Retificação autorizada após conferência R06.","registered":"2026-11-26T17:29:23.512Z","rectification":"lancamento_incorreto"}
 PASS R06-S5-08 — Recibo retificado permanece e é marcado ESTORNADO :: receipt marked
 PASS R06-S5-09 — Retificação duplicada não oferece ação :: no duplicate
 PASS R06-S5-10 — Retificação duplicada é rejeitada no modelo :: {"err":"Recebimento inexistente ou já estornado.","before":2,"after":2}

@@ -32,6 +32,7 @@ async function fillSwap(a, o = {}) {
   for (const k of ['type', 'brand', 'model', 'seal', 'serial', 'imei']) await a.fill(`#action-form input[name=${k}]`, v[k] || '');
   await a.selectOption('#action-form select[name=destination]', v.destination);
   await a.fill('#action-form textarea[name=reason]', v.reason);
+  await a.check('#action-form input[name=confirm]');
 }
 
 (async () => {
@@ -81,13 +82,23 @@ async function fillSwap(a, o = {}) {
     await open(a, 'warrantySwap', R);
     await fillSwap(a, { source: 'estoque', sku: 'P-002' });
     await shot(a, 'desktop', '05-modal-troca-estoque-1440.png', 1440);
-    await a.selectOption('#action-form select[name=source]', 'externa');
-    await a.waitForTimeout(120);
-    await a.fill('#action-form input[name=cost]', '45.00');
     await a.locator('#action-form button[type=submit]').click();
     await a.waitForTimeout(420);
+    const post = await a.evaluate(() => {
+      const r = db.orders.find(x => x.id === 18);
+      return {
+        ops: (r.warranty?.operations || []).length,
+        qty: db.stock.find(x => x.sku === 'P-002').quantity,
+        mov: db.stock.find(x => x.sku === 'P-002').movements?.length || 0,
+        toast: (() => { const t = document.querySelector('#toast'); return t && !t.hidden ? t.textContent : ''; })(),
+        modal: document.querySelector('#modal').open
+      };
+    });
+    rec('R07C3-03', 'A troca das capturas foi realmente gravada (operação, baixa e modal fechado)', post.ops === 1 && post.qty === 2 && post.mov === 1 && post.modal === false && /Registro atualizado/.test(post.toast), post);
 
     await goto(a, `#os/${R}/garantia`);
+    const panelAfter = await a.evaluate(() => document.querySelector('#main').innerText);
+    rec('R07C3-04', 'Painel pós-troca mostra substituição registrada, origem estoque e custo privado', /Substituição registrada/.test(panelAfter) && /Midea/.test(panelAfter) && /Estoque/.test(panelAfter) && /Custo interno/.test(panelAfter), panelAfter.slice(0, 500));
     await shot(a, 'desktop', '06-garantia-substituicao-registrada-1440.png', 1440);
     await a.setViewportSize({ width: 390, height: 844 });
     await shot(a, 'mobile', '16-garantia-substituicao-registrada-390.png', 390);

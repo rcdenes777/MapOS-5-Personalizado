@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-11-26T16:43:09.595Z",
-  "codeSha": "a35b6749",
+  "generatedAt": "2026-11-26T17:30:52.429Z",
+  "codeSha": "cc738622436d3df1224df700916970570eb0bd40",
   "incrementSha": "",
   "results": [
     {
@@ -25,13 +25,13 @@
       "id": "R06-S1-04",
       "desc": "Pedido preserva andamento, cobrança e entrega",
       "status": "PASS",
-      "detail": "{\"status\":\"Orçamento\",\"total\":0,\"paid\":0,\"delivery\":null,\"events\":[{\"id\":1,\"type\":\"request\",\"when\":\"2026-11-26T16:40:38.611Z\",\"origin\":\"cliente\",\"reason\":\"Cliente solicitou o cancelamento na bancada R06.\",\"status\":\"Orçamento\"}]}"
+      "detail": "{\"status\":\"Orçamento\",\"total\":0,\"paid\":0,\"delivery\":null,\"events\":[{\"id\":1,\"type\":\"request\",\"when\":\"2026-11-26T17:28:21.591Z\",\"origin\":\"cliente\",\"reason\":\"Cliente solicitou o cancelamento na bancada R06.\",\"status\":\"Orçamento\"}]}"
     },
     {
       "id": "R06-S1-05",
       "desc": "Pedido guarda origem, motivo e registro imutável",
       "status": "PASS",
-      "detail": "{\"id\":1,\"type\":\"request\",\"when\":\"2026-11-26T16:40:38.611Z\",\"origin\":\"cliente\",\"reason\":\"Cliente solicitou o cancelamento na bancada R06.\",\"status\":\"Orçamento\"}"
+      "detail": "{\"id\":1,\"type\":\"request\",\"when\":\"2026-11-26T17:28:21.591Z\",\"origin\":\"cliente\",\"reason\":\"Cliente solicitou o cancelamento na bancada R06.\",\"status\":\"Orçamento\"}"
     },
     {
       "id": "R06-S1-06",
@@ -145,7 +145,7 @@
       "id": "R06-S2-03",
       "desc": "Peça não utilizada conciliada em quantidade parcial sem entrada em estoque",
       "status": "PASS",
-      "detail": "{\"e1\":{\"id\":2,\"type\":\"item\",\"when\":\"2026-11-26T16:40:49.478Z\",\"request\":1,\"item\":{\"name\":\"IGBT 650 V\",\"type\":\"Peça\",\"quantity\":1,\"unit\":3000},\"disposition\":\"unused\",\"reason\":\"\",\"stockReturned\":0,\"stockNote\":\"Baixa não comprovada; sem entrada no estoque.\"},\"qty\":2}"
+      "detail": "{\"e1\":{\"id\":2,\"type\":\"item\",\"when\":\"2026-11-26T17:28:32.581Z\",\"request\":1,\"item\":{\"name\":\"IGBT 650 V\",\"type\":\"Peça\",\"quantity\":1,\"unit\":3000},\"disposition\":\"unused\",\"reason\":\"\",\"stockReturned\":0,\"stockNote\":\"Baixa não comprovada; sem entrada no estoque.\"},\"qty\":2}"
     },
     {
       "id": "R06-S2-04",
@@ -157,7 +157,7 @@
       "id": "R06-S2-05",
       "desc": "Peça consumida é registrada sem retorno ao estoque",
       "status": "PASS",
-      "detail": "{\"e2\":{\"id\":3,\"type\":\"item\",\"when\":\"2026-11-26T16:40:51.294Z\",\"request\":1,\"item\":{\"name\":\"IGBT 650 V\",\"type\":\"Peça\",\"quantity\":2,\"unit\":3000},\"disposition\":\"lost\",\"reason\":\"Peça consumida em teste de bancada R06.\",\"stockReturned\":0,\"stockNote\":\"Consumo/perda registrado; não retorna ao estoque.\"},\"items\":[[\"Optoacoplador PC817\",2],[\"Capacitor 450 V\",1],[\"Diagnóstico\",1],[\"Reparo\",1]]}"
+      "detail": "{\"e2\":{\"id\":3,\"type\":\"item\",\"when\":\"2026-11-26T17:28:34.419Z\",\"request\":1,\"item\":{\"name\":\"IGBT 650 V\",\"type\":\"Peça\",\"quantity\":2,\"unit\":3000},\"disposition\":\"lost\",\"reason\":\"Peça consumida em teste de bancada R06.\",\"stockReturned\":0,\"stockNote\":\"Consumo/perda registrado; não retorna ao estoque.\"},\"items\":[[\"Optoacoplador PC817\",2],[\"Capacitor 450 V\",1],[\"Diagnóstico\",1],[\"Reparo\",1]]}"
     },
     {
       "id": "R06-S2-06",
@@ -331,7 +331,7 @@
       "id": "R06-S3-14",
       "desc": "Entrega é operação independente e não altera o cancelamento",
       "status": "PASS",
-      "detail": "{\"status\":\"Cancelado\",\"delivery\":{\"date\":\"2026-11-26\",\"receiver\":\"Clima Sul Serviços\",\"third\":false,\"items\":\"Equipamento e itens fictícios R06\",\"authorization\":\"\",\"registered\":\"2026-11-26T16:41:14.529Z\"}}"
+      "detail": "{\"status\":\"Cancelado\",\"delivery\":{\"date\":\"2026-11-26\",\"receiver\":\"Clima Sul Serviços\",\"third\":false,\"items\":\"Equipamento e itens fictícios R06\",\"authorization\":\"\",\"registered\":\"2026-11-26T17:28:57.697Z\"}}"
     },
     {
       "id": "R06-S3-15",
@@ -391,7 +391,7 @@
       "id": "R06-S4-08",
       "desc": "Devolução é evento separado com valor, data, forma e referência",
       "status": "PASS",
-      "detail": "{\"id\":3,\"type\":\"refund\",\"amount\":16000,\"date\":\"2026-11-26\",\"method\":\"Pix\",\"reference\":\"Comprovante fictício R06 S4\",\"registered\":\"2026-11-26T16:41:28.145Z\"}"
+      "detail": "{\"id\":3,\"type\":\"refund\",\"amount\":16000,\"date\":\"2026-11-26\",\"method\":\"Pix\",\"reference\":\"Comprovante fictício R06 S4\",\"registered\":\"2026-11-26T17:29:11.229Z\"}"
     },
     {
       "id": "R06-S4-09",
@@ -487,7 +487,7 @@
       "id": "R06-S5-07",
       "desc": "Retificação autorizada recompõe o saldo e registra o tipo",
       "status": "PASS",
-      "detail": "{\"id\":2,\"type\":\"reverse\",\"reference\":1,\"amount\":10000,\"date\":\"2026-11-26\",\"method\":\"Pix\",\"reason\":\"Retificação autorizada após conferência R06.\",\"registered\":\"2026-11-26T16:41:40.863Z\",\"rectification\":\"lancamento_incorreto\"}"
+      "detail": "{\"id\":2,\"type\":\"reverse\",\"reference\":1,\"amount\":10000,\"date\":\"2026-11-26\",\"method\":\"Pix\",\"reason\":\"Retificação autorizada após conferência R06.\",\"registered\":\"2026-11-26T17:29:23.512Z\",\"rectification\":\"lancamento_incorreto\"}"
     },
     {
       "id": "R06-S5-08",

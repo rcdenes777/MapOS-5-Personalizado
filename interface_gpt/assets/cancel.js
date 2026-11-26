@@ -16,7 +16,7 @@ const BancadaCancel=(()=>{
  const add=(o,type,data,when)=>{const e={id:events(o).length+1,type,when,...copy(data)};events(o).push(e);return e};
  const itemKey=(o,i)=>JSON.stringify([o.id,state(o)?.id,i.lineId,i.type,i.name,i.quantity,i.unit]);
  const technicalKey=o=>JSON.stringify([o.status,lines(o).map(i=>[i.lineId,i.type,i.name,i.quantity,i.unit])]);
- const financialKey=o=>JSON.stringify([technicalKey(o),BancadaQuote.init(o).draft.discount,o.total,o.paid,o.billing?.due||'',BancadaFinance.events(o),!!o.delivery,o.conclusion||null]);
+ const financialKey=o=>JSON.stringify([technicalKey(o),state(o)?.id,BancadaQuote.init(o).draft.discount,o.total,o.paid,o.billing?.due||'',BancadaFinance.events(o),!!o.delivery,o.conclusion||null]);
  const technical=o=>pending(o)&&!lines(o).some(i=>i.type==='Peça')&&events(o).filter(e=>e.type==='technical'&&e.request===state(o).id).at(-1)?.key===technicalKey(o);
  function request(o,origin,reason,when,orders=[]){
    guard(o,orders);ensure(!pending(o),'Já existe pedido pendente.');ensure(['cliente','assistencia'].includes(origin),'Selecione quem solicitou.');
@@ -39,6 +39,7 @@ const BancadaCancel=(()=>{
  }
  function confer(o,confirmed,notes,when,orders=[]){
    guard(o,orders);const request=requestId(o);ensure(!lines(o).some(i=>i.type==='Peça'),'Concilie todas as peças antes.');
+   ensure(!technical(o),'Conferência técnica já registrada para este pedido.');
    ensure(confirmed,'Confirme os serviços executados e a conferência das peças.');
    return add(o,'technical',{request,key:technicalKey(o),reason:text(notes,2000,false)},when)
  }

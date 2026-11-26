@@ -36,7 +36,8 @@ const BancadaQuote = (() => {
   function vigente(o){const v=active(o);return o.status!=='Cancelado'&&v&&snapshotKey(v)===snapshotKey(init(o).draft)?v:null}
   function label(o){const q=init(o),v=active(o);if(!v)return q.versions.length?'Publicação retirada':q.draft.items.length?'Rascunho':'Sem orçamento';if(!vigente(o))return 'Itens alterados';return v.decision?.answer||'Aguardando resposta'}
   function sync(o){o.approval=label(o);o.proposal=totals(init(o).draft.items,o.quote.draft.discount).total}
-  function editable(o){return !o.origin&&o.status!=='Cancelado'&&!o.delivery&&!o.total}
+  const returnAllowed=o=>!o.origin||o.warranty?.events?.filter(e=>e.type==='avaliar').at(-1)?.solution==='novo_orcamento';
+  function editable(o){return returnAllowed(o)&&o.status!=='Cancelado'&&!o.delivery&&!o.total}
   function saveDraft(o,draft) {
     assert(editable(o),'Edição de itens indisponível neste atendimento.');
     totals(draft.items,draft.discount);
@@ -44,11 +45,11 @@ const BancadaQuote = (() => {
     init(o).draft={items:copy(draft.items),discount:draft.discount,terms};sync(o);
   }
   function publish(o,when,{source='publicar',internal=false}={}) {
-    assert(!o.origin&&o.status!=='Cancelado'&&(!o.delivery||internal),'Publicação indisponível neste atendimento.');
+    assert(returnAllowed(o)&&o.status!=='Cancelado'&&(!o.delivery||internal),'Publicação indisponível neste atendimento.');
     const q=init(o),d=q.draft,t=totals(d.items,d.discount);
     assert(d.items.length>0,'Adicione peças ou serviços.');
     const v={number:q.versions.length+1,items:copy(d.items),discount:d.discount,terms:copy(d.terms),total:t.total,created:when,decision:null,source};
-    q.versions.push(v);q.current=v.number;q.active=true;
+    q.versions.push(v);q.current=v.number;q.active=true;if(o.origin){o.warranty.operations??=[];o.warranty.operations.push({type:'orcamento',version:v.number,when})}
     if(!internal&&stages.includes(o.status))o.status='Negociação';sync(o);return v;
   }
   function withdraw(o,number){
@@ -73,9 +74,10 @@ const BancadaQuote = (() => {
   }
   function formalize(o,due){
     const q=init(o),t=totals(q.draft.items,q.draft.discount);
-    assert(!o.total&&!o.origin&&!['Cancelado','Faturado'].includes(o.status)&&t.total>0&&validDay(due),'Confira os itens e o vencimento da cobrança.');
+    assert(!o.total&&returnAllowed(o)&&!['Cancelado','Faturado'].includes(o.status)&&t.total>0&&validDay(due),'Confira os itens e o vencimento da cobrança.');
+    if(o.origin){const v=vigente(o);assert(!o.billing&&v?.decision?.answer==='Aprovado'&&v.total===t.total,'Fature o retorno somente com novo orçamento vigente, aprovado e sem alterações nos itens ou valores.')}
     o.total=t.total;o.paid=0;o.billing={due,items:copy(q.draft.items),discount:q.draft.discount};
     return t.total;
   }
-  return {init,totals,active,vigente,label,sync,editable,saveDraft,publish,withdraw,respond,formalize};
+  return {init,totals,active,vigente,label,sync,returnAllowed,editable,saveDraft,publish,withdraw,respond,formalize};
 })();

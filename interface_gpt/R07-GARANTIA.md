@@ -1,0 +1,13 @@
+# R07 — Garantia (incremento R07-001)
+Base funcional: 8c256cae4ddaeefad68922abddbb8addfe37c99d. Base experimental R06-002 código 033fdc47c09796a584cf9782324fc7c08394ce74.
+## Recorte desta entrega
+Nova OS de retorno por unidade e cliente, origem/atendimento anterior/prazo preservados, avaliação versionada, custo/tempo privado e correção, conclusão sem novo prazo, novo orçamento vigente aprovado antes de cobrança própria. Troca e devolução podem ser avaliadas, mas sua execução fica para R07-002; concluir solução pendente é bloqueado. R08 tratará estoque/equipamentos completos.
+## Rastreabilidade
+- Trifase_retorno_model.php referencia/criar/ativoDaUnidade/avaliar/custo/corrigirCusto: conclusão real, mesma unidade e cliente, retorno ativo único, defeito obrigatório, entrada opcional, não copiar laudo/itens/recebimentos/tokens, avaliação e custos históricos, revisão com versão anterior.
+- Trifase_atendimento_model.php prepararTransicao/gravarConclusao: origem/anterior com derivados não reabre; retorno sem novo prazo; troca/devolução selecionada requer execução antes de concluir.
+- Trifase_garantia_model.php avaliacaoExigida/registrarOrcamento e Trifase_financeiro_model.php formalizar: novo orçamento próprio, aprovação vigente e mesmos itens/valores, sem recebimento automático.
+- Trifase_retornos.php: capacidades de consultar, criar, avaliar, custos separadas. Simulação preserva Admin/Técnico para avaliação e Admin/Atendente para entrada (mapa R01), custo interno Admin apenas, não inferir permissões de produção. Nenhuma autenticação real.
+- Prazo dos exemplos novos de OS finalizadas é 90 dias fictícios; dados locais antigos sem prazo conhecido mostram não informado; não inventar prazo retrospectivamente. Para conclusão nova, campo de prazo 0–9999 dias, não alterável depois; retorno sempre zero próprio.
+## Limites
+Sem troca/reembolso/abatimento executados, sem histórico de substituta, sem custos de estoque ou anexos reais, sem garantias de concorrência/atomicidade/idempotência do servidor. A restrição conservadora de cancelamento de retorno permanece até R07-002 (F02). Sem redefinir a política de autorização de execução de OS ordinária. Em retorno a transição técnica segue o modelo original; finalizar em avaliação não concede cobertura nem nova garantia. Avaliar não muda andamento. Não foi feita integração backend, publicação real de link nem operação financeira real.
+A renderização reutiliza as classes existentes; testes de navegador e regressões reais são obrigatórios no laboratório.

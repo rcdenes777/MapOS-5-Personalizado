@@ -1,0 +1,37 @@
+// Run: node tests/warranty.cjs
+const fs=require('node:fs'),path=require('node:path'),vm=require('node:vm');
+const src=['quote.js','finance.js','warranty.js','portal.js'].map(f=>fs.readFileSync(path.join(__dirname,'../assets',f),'utf8')).join('\n');
+const checks=`
+const W=BancadaWarranty,Q=BancadaQuote,now='2026-11-25T12:00:00Z',day='2026-11-25';
+const ok=(x,m)=>{if(!x)throw Error(m||'Assertion failed')},eq=(a,b)=>ok(a===b,a+' != '+b),snap=x=>JSON.stringify(x);
+let count=0;const test=(n,fn)=>{try{fn();count++}catch(e){throw Error(n+': '+e.message)}};
+const reject=(fn,msg,state)=>{const before=snap(state);let e;try{fn()}catch(x){e=x}eq(e?.message,msg);eq(snap(state),before)};
+const origin=()=>({id:1,client:1,unit:7,brand:'LG',model:'Inverter',status:'Finalizado',entry:'2026-10-01',conclusion:'2026-10-05',warrantyDays:90,total:50000,paid:20000,approval:'Aprovado',report:'Laudo original',history:[{text:'Origem'}],publicLink:{token:'privado'},items:'Acessório antigo'});
+const input={defect:'Falha nova',items:'',condition:'',confirm:true};
+const open=(o=origin())=>W.create(o,[o],input,day);
+const av=(extra={})=>({coverage:'coberto',solution:'reparo_sem_cobranca',diagnosis:'Falha do reparo',reason:'Conferido',previous:0,confirm:true,...extra});
+test('new OS preserves origin and no copied financial or private data',()=>{const o=origin(),before=snap(o),r=open(o);eq(snap(o),before);eq(r.unit,7);eq(r.origin,1);eq(r.total,0);eq(r.paid,0);eq(r.items,'');eq(r.report,undefined);eq(r.publicLink,undefined);eq(r.warranty.end,'2027-01-03');eq(r.warrantyDays,0);eq(r.coverage,'Em avaliação')});
+test('not finalized',()=>{const o={...origin(),status:'Aberto'};reject(()=>open(o),'A origem precisa de conclusão real conhecida; não use a previsão para inferir cobertura.',o)});
+test('missing identity',()=>{const o={...origin(),brand:''};reject(()=>open(o),'Identifique a mesma unidade e o cliente na OS de origem antes de registrar retorno.',o)});
+test('confirmation mandatory',()=>{const o=origin();reject(()=>W.create(o,[o],{...input,confirm:false},day),'Confirme o recebimento físico e a abertura de outra OS.',o)});
+test('defect mandatory',()=>{const o=origin();reject(()=>W.create(o,[o],{...input,defect:''},day),'Confira os textos obrigatórios e seus limites.',o)});
+test('duplicate active unit',()=>{const o=origin(),r=open(o),all=[o,r];reject(()=>W.create(o,all,input,day),'Já existe retorno em andamento para esta unidade.',all)});
+test('next return preserves root and period',()=>{const o=origin(),r=open(o);r.status='Finalizado';r.conclusion=day;const next=W.create(r,[o,r],input,day);eq(next.origin,o.id);eq(next.warranty.previous,r.id);eq(next.warranty.end,r.warranty.end)});
+test('expired period not auto denied',()=>{const r=open({...origin(),conclusion:'2020-01-01'});eq(r.coverage,'Em avaliação');eq(r.warranty.end,'2020-03-31')});
+test('unknown old period not invented',()=>{const o=origin();delete o.warrantyDays;eq(open(o).warranty.days,null)});
+test('same client validation',()=>{const o=origin(),r=open(o);r.status='Finalizado';r.conclusion=day;r.client=2;reject(()=>W.create(r,[o,r],input,day),'Identifique a mesma unidade e o cliente na OS de origem antes de registrar retorno.',r)});
+test('assessment no status or money movement',()=>{const o=origin(),r=open(o);W.assess(r,[o,r],av(),now,'Administrador');eq(r.coverage,'Coberto');eq(r.status,'Aberto');eq(r.total,0);eq(r.paid,0);eq(W.assessment(r).id,1)});
+test('stale evaluation',()=>{const o=origin(),r=open(o),all=[o,r];W.assess(r,all,av(),now,'Administrador');reject(()=>W.assess(r,all,av(),now,'Administrador'),'Outra avaliação foi registrada. Recarregue antes de decidir.',all);W.assess(r,all,av({previous:1,coverage:'nao_coberto',solution:'novo_orcamento'}),now,'Administrador');eq(W.events(r).length,2);eq(W.events(r)[0].coverage,'coberto')});
+test('unassessed cannot pick solution',()=>{const o=origin(),r=open(o);reject(()=>W.assess(r,[o,r],av({coverage:'avaliacao'}),now,'Administrador'),'Conclua a avaliação de cobertura antes de escolher a solução.',r)});
+test('diagnosis required',()=>{const o=origin(),r=open(o);reject(()=>W.assess(r,[o,r],av({diagnosis:''}),now,'Administrador'),'Confira os textos obrigatórios e seus limites.',r)});
+test('cost correction preserves original',()=>{const o=origin(),r=open(o),all=[o,r];W.cost(r,all,{amount:2550,minutes:30,reason:'Bancada',confirm:true},now,'Administrador');eq(W.costs(r).amount,2550);W.correctCost(r,all,{reference:1,reason:'Erro',confirm:true},now,'Administrador');eq(W.costs(r).amount,0);eq(W.costs(r).minutes,0);eq(W.events(r)[0].amount,2550);reject(()=>W.correctCost(r,all,{reference:1,reason:'Erro',confirm:true},now,'Administrador'),'Custo inexistente ou já corrigido.',r)});
+test('zero cost and time rejected',()=>{const o=origin(),r=open(o);reject(()=>W.cost(r,[o,r],{amount:0,minutes:0,reason:'Bancada',confirm:true},now,'Administrador'),'Informe custo interno ou tempo de trabalho válido.',r)});
+test('origin cannot reopen after return',()=>{const o=origin(),r=open(o);reject(()=>W.transition(o,[o,r],'Em Andamento'),'Esta OS já originou retorno. Preserve o atendimento encerrado e use a nova OS.',o)});
+test('repair without billing may conclude',()=>{const o=origin(),r=open(o);W.assess(r,[o,r],av(),now,'Administrador');W.transition(r,[o,r],'Finalizado');eq(r.total,0)});
+test('swap pending cannot conclude',()=>{const o=origin(),r=open(o);W.assess(r,[o,r],av({solution:'troca'}),now,'Administrador');reject(()=>W.transition(r,[o,r],'Finalizado'),'Execute a solução de garantia escolhida antes de concluir o retorno.',r)});
+test('refund pending cannot conclude',()=>{const o=origin(),r=open(o);W.assess(r,[o,r],av({solution:'devolucao_valor'}),now,'Administrador');reject(()=>W.transition(r,[o,r],'Finalizado'),'Execute a solução de garantia escolhida antes de concluir o retorno.',r)});
+test('return quote requires assessment and approved current version',()=>{const o=origin(),r=open(o),all=[o,r];const d={items:[{type:'Serviço',name:'Novo reparo',quantity:1,unit:5000}],discount:0,terms:{}};reject(()=>Q.saveDraft(r,d),'Edição de itens indisponível neste atendimento.',r);W.assess(r,all,av({solution:'novo_orcamento'}),now,'Administrador');Q.saveDraft(r,d);const v=Q.publish(r,now);eq(r.warranty.operations[0].version,v.number);reject(()=>Q.formalize(r,day),'Fature o retorno somente com novo orçamento vigente, aprovado e sem alterações nos itens ou valores.',r);Q.respond(r,v.number,{answer:'Aprovado',name:'Cliente fictício',confirm:true},now,false,day);eq(r.total,0);Q.saveDraft(r,{...d,discount:100});reject(()=>Q.formalize(r,day),'Fature o retorno somente com novo orçamento vigente, aprovado e sem alterações nos itens ou valores.',r);const v2=Q.publish(r,now);Q.respond(r,v2.number,{answer:'Aprovado',name:'Cliente fictício',confirm:true},now,false,day);Q.formalize(r,day);eq(r.total,4900);eq(r.paid,0);eq(o.total,50000)});
+test('private evaluation and cost never in portal projection',()=>{const o=origin(),r=open(o);W.assess(r,[o,r],av({diagnosis:'PRIVADO'}),now,'Administrador');W.cost(r,[o,r],{amount:50,minutes:1,reason:'CUSTO PRIVADO',confirm:true},now,'Administrador');const p=snap(BancadaPortal.projection(r));ok(!p.includes('PRIVADO'));ok(!p.includes('warranty'));ok(!p.includes('origin'))});
+count;
+`;
+console.log(vm.runInNewContext(src+'\n'+checks,{})+' warranty domain checks passed.');

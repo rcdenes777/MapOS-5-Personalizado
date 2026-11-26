@@ -7,9 +7,11 @@ function warrantyRef(o){try{return BancadaWarranty.reference(o,db.orders)}catch{
 function warrantyPeriod(w){if(!w)return 'Referência indisponível';if(w.days===null)return 'Prazo não informado';if(!w.days)return 'Sem prazo concedido';return date(w.end)+(w.end<today()?' · Prazo expirado':' · Dentro do prazo')}
 function warrantyBase(o){return o.status!=='Finalizado'?o:(BancadaWarranty.lastFinalized(o,db.orders)||o)}
 function warrantyReturnLink(o){
- const base=warrantyBase(o),w=warrantyRef(base);if(!can('return')||!w)return '';
+ const base=warrantyBase(o);if(!can('return'))return '';
  const a=BancadaWarranty.active(base,db.orders);
- return a?link('Abrir retorno em andamento '+num(a),'#os/'+a.id+'/garantia','btn'):link('Registrar retorno','#retorno/'+base.id,'btn');
+ if(a)return link('Abrir retorno em andamento '+num(a),'#os/'+a.id+'/garantia','btn');
+ const w=warrantyRef(base);if(!w)return '';
+ return link('Registrar retorno','#retorno/'+base.id,'btn');
 }
 function warrantySummary(o){
  const w=BancadaWarranty.binding(o,db.orders)||warrantyRef(o);

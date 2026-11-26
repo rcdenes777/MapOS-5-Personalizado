@@ -34,7 +34,7 @@ const BancadaWarranty=(()=>{
    let end=null;if(days>0){const d=new Date(root.conclusion+'T00:00:00Z');d.setUTCDate(d.getUTCDate()+days);end=d.toISOString().slice(0,10)}
    return {root:root.id,previous:o.id,unit:p.unit,client:root.client,conclusion:root.conclusion,days,end};
  }
- function active(o,orders){const p=currentUnit(o,orders);return orders.find(x=>x.origin&&x.client===o.client&&unit(x)===p.unit&&!['Finalizado','Cancelado'].includes(x.status))||null}
+ function active(o,orders){const p=currentUnit(o,orders);return orders.find(x=>x.id!==o.id&&x.origin&&x.client===o.client&&physical(x).unit===p.unit&&!['Finalizado','Cancelado'].includes(x.status))||null}
  // Latest finalized return of the same unit; used to keep 'atendimento anterior' and single active return.
  function lastFinalized(o,orders){return orders.filter(x=>x.origin===rootId(o)&&x.client===o.client&&physical(x).unit===currentUnit(o,orders).unit&&x.status==='Finalizado').sort((a,b)=>b.id-a.id)[0]||null}
  const activeSibling=(o,orders)=>orders.some(x=>x.id!==o.id&&x.origin&&same(x,o)&&!['Finalizado','Cancelado'].includes(x.status));

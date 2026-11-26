@@ -1,0 +1,19 @@
+// Run: node tests/warranty-refund-ui.cjs (DOM stub, not browser)
+const fs=require('node:fs'),path=require('node:path'),vm=require('node:vm');
+const src=['quote.js','portal.js','quote-ui.js','finance.js','finance-ui.js','cancel.js','cancel-ui.js','warranty.js','warranty-ui.js','app.js'].map(f=>fs.readFileSync(path.join(__dirname,'../assets',f),'utf8')).join('\n');
+const nodes=new Map(),document={querySelector(k){if(k==='#new-form')return null;if(!nodes.has(k))nodes.set(k,{innerHTML:'',textContent:'',focus(){}});return nodes.get(k)},addEventListener(){}};
+const context={document,window:{addEventListener(){},scrollTo(){}},location:{hash:'#inicio'},localStorage:{getItem(){return null},setItem(){}}};
+const checks=`
+let count=0;const ok=(v,m)=>{if(!v)throw Error(m||'Assertion failed')},eq=(a,b)=>ok(a===b,a+' != '+b),test=(n,fn)=>{try{fn();count++}catch(e){throw Error(n+': '+e.message)}};
+const r=db.orders.find(x=>x.id===18),o=db.orders.find(x=>x.id===16);
+role='Administrador';
+test('assess and render explicit refund action',()=>{warrantySubmit('warrantyAssess',r,{coverage:'coberto',solution:'devolucao_valor',diagnosis:'Conferido',reason:'Acordo',previous:0,confirm:true});ok(warrantyPanel(r).includes('Registrar devolução ou encerramento'));ok(warrantyModal('warrantyRefund',r)[1].includes('Selecione'));eq(o.total,41000);eq(r.total,0)});
+test('finance can view but not execute; tech and attendant no values',()=>{role='Financeiro';ok(warrantyPanel(r).includes('Recebido líquido'));eq(warrantyModal('warrantyRefund',r),null);for(const p of ['Técnico','Atendente']){role=p;ok(!warrantyPanel(r).includes('R$'));eq(warrantyModal('warrantyRefund',r),null)}role='Administrador'});
+test('admin partial and financial summary',()=>{warrantySubmit('warrantyRefund',r,{assessment:1,key:BancadaWarranty.refundKey(o),mode:'parcial',amount:'50.00',date:today(),method:'Pix',reference:'PRIVADO',reason:'Acordo privado',confirm:true});eq(o.total,36000);eq(o.paid,36000);eq(r.total,0);ok(financialRows(o).includes('Devolução de garantia'));ok(financialPanel(o).includes('Cobrança original'));ok(warrantyPanel(r).includes('Corrigir devolução'))});
+test('total closure remains visible on finance and portal',()=>{warrantySubmit('warrantyRefund',r,{assessment:1,key:BancadaWarranty.refundKey(o),mode:'total',amount:'360.00',date:today(),method:'Pix',reference:'PRIVADO',reason:'Acordo privado',confirm:true});eq(moneyStatus(o),'Reembolsado');eq(BancadaPortal.projection(o).finance.status,'Reembolsada');ok(financeList().includes('Reembolsado'));eq(quoteModal('billing',o),null);ok(!quotePanel(o).includes('Formalizar cobrança'));ok(!JSON.stringify(BancadaPortal.projection(o)).includes('PRIVADO'))});
+test('correction history and recomposition',()=>{const e=BancadaWarranty.refundEvents(r).find(e=>e.type==='reembolso'&&e.mode==='total');ok(warrantyModal('warrantyRefundCorrect',r,e.id));warrantySubmit('warrantyRefundCorrect',r,{reference:e.id,reason:'Registro errado',confirm:true});eq(o.total,36000);eq(o.paid,36000);ok(financialRows(o).includes('Correção de devolução de garantia'));eq(warrantyModal('warrantyRefundCorrect',r,e.id),null)});
+test('unauthorized direct refund handler leaves state intact',()=>{role='Financeiro';const before=JSON.stringify(db);let msg;try{warrantySubmit('warrantyRefund',r,{assessment:1,key:BancadaWarranty.refundKey(o),mode:'parcial',amount:'1.00',date:today(),method:'Pix',reference:'Teste',reason:'Teste',confirm:true})}catch(e){msg=e.message}eq(msg,'Ação indisponível neste perfil.');eq(JSON.stringify(db),before)});
+test('restricted roles after refund no money or private references',()=>{for(const p of ['Atendente','Técnico']){role=p;const h=warrantyPanel(r);ok(!h.includes('R$'));ok(!h.includes('PRIVADO'));ok(!h.includes('Acordo privado'));eq(warrantyModal('warrantyRefundCorrect',r,1),null)}});
+count;
+`;
+console.log(vm.runInNewContext(src+'\n'+checks,context)+' warranty refund UI checks passed.');

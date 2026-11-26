@@ -8,6 +8,18 @@ const BancadaWarranty=(()=>{
  const text=(v,max,required=true)=>{ensure(typeof v==='string'&&!v.includes('\0')&&v.trim().length<=max&&(!required||v.trim()),'Confira os textos obrigatórios e seus limites.');return v.trim()};
  const unit=o=>o.unit||o.origin||o.id;
  const same=(a,b)=>a.client===b.client&&unit(a)===unit(b);
+ const swapEvent=o=>o.warranty?.operations?.find(e=>e.type==='troca')||null;
+ const physical=o=>swapEvent(o)?.replacement||{unit:unit(o),type:o.type||'',brand:o.brand||'',model:o.model||'',seal:o.seal||'',serial:o.serial||'',imei:o.imei||''};
+ const replaced=(id,orders)=>orders.find(o=>swapEvent(o)?.oldUnit===id)||null;
+ function lineage(root,id,orders){
+   let current=unit(root);const seen=new Set();
+   while(current!==id){if(seen.has(current))return false;seen.add(current);
+     const owner=orders.find(o=>o.origin===root.id&&swapEvent(o)?.oldUnit===current);
+     if(!owner)return false;current=swapEvent(owner).replacement.unit;
+   }return true;
+ }
+ const currentUnit=(o,orders)=>{let p=physical(o);const seen=new Set();while(!seen.has(p.unit)){seen.add(p.unit);const t=orders.find(x=>x.origin===(o.origin||o.id)&&swapEvent(x)?.oldUnit===p.unit);if(!t)break;p=physical(t)}return p};
+ const rootId=o=>o.origin||o.id;
  const derived=(o,orders)=>orders.some(x=>x.id!==o.id&&(x.origin===o.id||x.warranty?.previous===o.id));
  const assessment=o=>o.warranty?.events?.filter(e=>e.type==='avaliar').at(-1)||null;
  const events=o=>o.warranty?.events||[];
@@ -15,20 +27,22 @@ const BancadaWarranty=(()=>{
  function reference(o,orders){
    const root=orders.find(x=>x.id===(o.origin||o.id));
    ensure(root&&!root.origin&&root.status==='Finalizado'&&o.status==='Finalizado'&&BancadaFinance.dayValid(root.conclusion)&&BancadaFinance.dayValid(o.conclusion),'A origem precisa de conclusão real conhecida; não use a previsão para inferir cobertura.');
-   ensure(o.brand&&o.model&&root.brand&&root.model&&same(o,root),'Identifique a mesma unidade e o cliente na OS de origem antes de registrar retorno.');
+   const p=physical(o);
+   ensure(p.brand&&p.model&&root.brand&&root.model&&o.client===root.client&&lineage(root,p.unit,orders),'Identifique a mesma unidade e o cliente na OS de origem antes de registrar retorno.');
+   ensure(!replaced(p.unit,orders),'Unidade substituída. Utilize o atendimento da substituta.');
    const days=Number.isInteger(root.warrantyDays)&&root.warrantyDays>=0&&root.warrantyDays<=9999?root.warrantyDays:null;
    let end=null;if(days>0){const d=new Date(root.conclusion+'T00:00:00Z');d.setUTCDate(d.getUTCDate()+days);end=d.toISOString().slice(0,10)}
-   return {root:root.id,previous:o.id,unit:unit(o),client:root.client,conclusion:root.conclusion,days,end};
+   return {root:root.id,previous:o.id,unit:p.unit,client:root.client,conclusion:root.conclusion,days,end};
  }
- function active(o,orders){return orders.find(x=>x.origin&&same(x,o)&&!['Finalizado','Cancelado'].includes(x.status))||null}
+ function active(o,orders){const p=currentUnit(o,orders);return orders.find(x=>x.origin&&x.client===o.client&&unit(x)===p.unit&&!['Finalizado','Cancelado'].includes(x.status))||null}
  // Latest finalized return of the same unit; used to keep 'atendimento anterior' and single active return.
- function lastFinalized(o,orders){return orders.filter(x=>x.origin===(o.origin||o.id)&&same(x,o)&&x.status==='Finalizado').sort((a,b)=>b.id-a.id)[0]||null}
+ function lastFinalized(o,orders){return orders.filter(x=>x.origin===rootId(o)&&x.client===o.client&&physical(x).unit===currentUnit(o,orders).unit&&x.status==='Finalizado').sort((a,b)=>b.id-a.id)[0]||null}
  const activeSibling=(o,orders)=>orders.some(x=>x.id!==o.id&&x.origin&&same(x,o)&&!['Finalizado','Cancelado'].includes(x.status));
  function create(o,orders,d,day){
-   const ref=reference(o,orders);ensure(!active(o,orders),'Já existe retorno em andamento para esta unidade.');
+   const ref=reference(o,orders),p=physical(o);ensure(!active(o,orders),'Já existe retorno em andamento para esta unidade.');
    ensure(d.confirm,'Confirme o recebimento físico e a abertura de outra OS.');
    const defect=text(d.defect,10000),items=text(d.items||'',10000,false),condition=text(d.condition||'',10000,false);
-   return {id:Math.max(0,...orders.map(x=>x.id))+1,client:ref.client,unit:ref.unit,brand:o.brand,model:o.model,type:o.type||'',seal:o.seal||'',serial:o.serial||'',imei:o.imei||'',defect,items,condition,entry:day,status:'Aberto',total:0,paid:0,approval:'Sem orçamento',delivery:null,conclusion:null,warrantyDays:0,origin:ref.root,coverage:coverage.avaliacao,warranty:{...ref,events:[],operations:[]},history:[]};
+   return {id:Math.max(0,...orders.map(x=>x.id))+1,client:ref.client,unit:ref.unit,brand:p.brand,model:p.model,type:p.type,seal:p.seal,serial:p.serial,imei:p.imei,defect,items,condition,entry:day,status:'Aberto',total:0,paid:0,approval:'Sem orçamento',delivery:null,conclusion:null,warrantyDays:0,origin:ref.root,coverage:coverage.avaliacao,warranty:{...ref,events:[],operations:[]},history:[]};
  }
  // Earlier fictitious returns had only origin/coverage. Resolve without inventing a deadline.
  function binding(o,orders){
@@ -43,7 +57,7 @@ const BancadaWarranty=(()=>{
    const w=binding(o,orders);ensure(w,'Vínculo de garantia inválido.');
    const e={id:Math.max(0,...w.events.map(x=>x.id))+1,type,...data,when,actor};
    if(!o.warranty)o.warranty=clone(w);
-   o.warranty.events.push(e);return e
+   o.warranty.operations??=[];o.warranty.events.push(e);return e
  }
  function assess(o,orders,d,when,actor){
    editable(o,orders);ensure(d.confirm,'Confirme a avaliação registrada.');
@@ -72,8 +86,8 @@ const BancadaWarranty=(()=>{
    ensure(o.status!=='Finalizado'||(!derived(o,orders)&&!activeSibling(o,orders)),'Esta OS já originou retorno. Preserve o atendimento encerrado e use a nova OS.');
    if(status==='Finalizado'&&o.origin){const s=assessment(o)?.solution;ensure(!['troca','devolucao_valor'].includes(s)||executed(o),'Execute a solução de garantia escolhida antes de concluir o retorno.')}
  }
- function refundOrigin(o,orders){
-   editable(o,orders);
+ function refundOrigin(o,orders,readOnly=false){
+   if(!readOnly)editable(o,orders);else ensure(o.origin&&binding(o,orders),'Retorno inexistente.');
    const w=binding(o,orders),origin=orders.find(x=>x.id===w.root);
    ensure(origin&&origin.id===o.origin&&origin.client===o.client&&BancadaFinance.hasObligation(origin),'A origem não possui cobrança de garantia disponível.');
    return origin;
@@ -110,7 +124,7 @@ const BancadaWarranty=(()=>{
    ensure(credit>0,'A cobrança já está encerrada.');
    const id=operationId(o),entry=BancadaFinance.recordWarrantyRefund(origin,{amount:d.amount,credit,date:d.date,method:d.method,reference,reason,registered:when,returnId:o.id,operationId:id});
    const e={id,type:'reembolso',assessment:a.id,ledgerId:entry.id,origin:origin.id,mode:d.mode,amount:d.amount,credit,date:d.date,method:d.method,reference,reason,when,actor};
-   o.warranty.operations.push(e);return e;
+   (o.warranty.operations??=[]).push(e);return e;
  }
  function correctRefund(o,orders,d,when,actor){
    const origin=refundOrigin(o,orders),e=refundEvents(o).find(x=>x.id===Number(d.reference)&&x.type==='reembolso');
@@ -119,8 +133,45 @@ const BancadaWarranty=(()=>{
    const reason=text(d.reason,2000),id=operationId(o);
    const correction=BancadaFinance.correctWarrantyRefund(origin,e.ledgerId,o.id,{reason,registered:when,date:when.slice(0,10),method:e.method,operationId:id});
    const result={id,type:'corrigir_reembolso',reference:e.id,ledgerId:correction.id,amount:e.amount,credit:e.credit,reason,when,actor};
-   o.warranty.operations.push(result);return result;
+   (o.warranty.operations??=[]).push(result);return result;
+ }
+ function swapEligibility(o,orders){
+   editable(o,orders);const a=assessment(o);
+   ensure(a?.solution==='troca'&&a.coverage!=='avaliacao','A avaliação mudou ou não permite esta solução. Reabra e confira.');
+   ensure(!['Cancelado','Finalizado'].includes(o.status),'Execute a solução antes de concluir ou entregar o retorno.');
+   ensure(!BancadaFinance.hasObligation(o),'Concilie a cobrança própria deste retorno antes de executar outra solução.');
+   ensure(!o.delivery,'Corrija a entrega antes de executar outra solução.');
+   ensure(!BancadaQuote.active(o),'Retire a publicação do orçamento antes de executar troca ou devolução.');
+   ensure(!replaced(unit(o),orders)&&!executed(o),'Esta unidade ou retorno já tem solução executada.');
+   ensure(!orders.some(x=>x.id!==o.id&&unit(x)===unit(o)&&!['Finalizado','Cancelado'].includes(x.status)),'Conclua ou confira outros atendimentos abertos desta unidade antes de trocar.');
+   return a;
+ }
+ const normalizeSeal=v=>String(v||'').replace(/\s+/g,'').toUpperCase();
+ function swap(o,orders,stock,d,when,actor){
+   const a=swapEligibility(o,orders);
+   ensure(Number(d.assessment)===a.id,'A avaliação mudou ou não permite esta solução. Reabra e confira.');
+   ensure(d.confirm,'Confirme a substituição física e o destino da unidade antiga.');
+   ensure(['estoque','externa'].includes(d.source)&&['retida_assistencia','devolvida_cliente'].includes(d.destination),'Informe origem da substituta e destino da antiga.');
+   const replacement={type:text(d.type,100),brand:text(d.brand,100),model:text(d.model,100),seal:text(d.seal||'',100,false),serial:text(d.serial||'',100,false),imei:text(d.imei||'',100,false)};
+   const reason=text(d.reason,2000);
+   ensure(replacement.seal||replacement.serial||replacement.imei,'Identifique a nova unidade por selo, série ou IMEI.');
+   const seal=normalizeSeal(replacement.seal);
+   ensure(!seal||!orders.some(x=>normalizeSeal(x.seal)===seal||normalizeSeal(swapEvent(x)?.replacement.seal)===seal),'Selo já cadastrado. Identifique outra unidade física.');
+   const used=orders.flatMap(x=>[x.id,unit(x),swapEvent(x)?.replacement.unit||0]);
+   replacement.unit=Math.max(0,...used)+1;
+   let product=null,cost=null;
+   if(d.source==='estoque'){
+     product=stock.find(x=>x.sku===d.sku);
+     ensure(product&&Number.isSafeInteger(product.quantity)&&product.quantity>0,'Produto inexistente ou sem estoque disponível.');
+     cost=Number.isSafeInteger(product.cost)&&product.cost>=0?product.cost:null;
+   }else if(d.cost!==null&&d.cost!==undefined&&d.cost!==''){
+     ensure(Number.isSafeInteger(d.cost)&&d.cost>=0&&d.cost<=999999999,'Informe um custo externo válido.');cost=d.cost;
+   }
+   const e={id:operationId(o),type:'troca',assessment:a.id,origin:o.origin,oldUnit:unit(o),replacement,source:d.source,destination:d.destination,sku:product?.sku||null,cost,reason,when,actor};
+   // Only a fictional stock debit for the explicit replacement; no native inventory access.
+   if(product){product.quantity--; (product.movements??=[]).push({type:'troca_saida',quantity:1,returnId:o.id,operationId:e.id,cost,when,reason})}
+   (o.warranty.operations??=[]).push(e);return e;
  }
  function days(v){ensure(/^\d{1,4}$/.test(String(v))&&Number(v)<=9999,'Confira o prazo concedido na OS.');return Number(v)}
- return {coverage,solutions,unit,same,derived,reference,active,lastFinalized,create,binding,assessment,events,executed,assess,cost,correctCost,costs,transition,days,refundOrigin,refundEligibility,refundKey,refundEvents,refundCorrected,refund,correctRefund};
+ return {coverage,solutions,unit,same,derived,reference,active,lastFinalized,create,binding,assessment,events,executed,assess,cost,correctCost,costs,transition,days,refundOrigin,refundEligibility,refundKey,refundEvents,refundCorrected,refund,correctRefund,swapEvent,physical,replaced,lineage,currentUnit,swapEligibility,swap};
 })();

@@ -22,7 +22,8 @@ const BancadaPortal = (() => {
   function projection(o){
     BancadaQuote.init(o);
     const v=BancadaQuote.vigente(o);
-    const eq=[o.brand,o.model].filter(Boolean).join(' · ')||o.description||'Identificação pendente';
+    const replacement=o.warranty?.operations?.find(e=>e.type==='troca')?.replacement;
+    const eq=replacement?'Substituta em garantia · '+[replacement.brand,replacement.model].filter(Boolean).join(' · '):[o.brand,o.model].filter(Boolean).join(' · ')||o.description||'Identificação pendente';
     const credits=(o.financeLedger?.events||[]).filter(e=>e.type==='warranty_refund'&&!o.financeLedger.events.some(x=>x.type==='warranty_refund_correction'&&x.reference===e.id));
     const warrantyClosed=o.total===0&&credits.some(e=>e.credit>0)?(credits.some(e=>e.amount>0)?'Reembolsada':'Encerrada por garantia'):null;
     const finance=BancadaQuote.hasObligation(o)?{total:o.total,paid:o.paid,balance:o.total-o.paid,status:warrantyClosed||(o.total===0?'Sem cobrança':o.paid===o.total?'Quitada':o.paid>0?'Parcialmente paga':'Em aberto')}:null;

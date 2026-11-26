@@ -4,7 +4,7 @@ const warrantyKinds=['warrantyAssess','warrantyCost','warrantyCorrect'];
 const warrantyCostAllowed=()=>can('settings'); // conservative demo mapping of distinct native cost permissions
 function warrantyRef(o){try{return BancadaWarranty.reference(o,db.orders)}catch{return null}}
 function warrantyPeriod(w){if(!w)return 'Referência indisponível';if(w.days===null)return 'Prazo não informado';if(!w.days)return 'Sem prazo concedido';return date(w.end)+(w.end<today()?' · Prazo expirado':' · Dentro do prazo')}
-function warrantyBase(o){return o.origin?o:(BancadaWarranty.lastFinalized(o,db.orders)||o)}
+function warrantyBase(o){return BancadaWarranty.lastFinalized(o,db.orders)||o}
 function warrantyReturnLink(o){
  const base=warrantyBase(o),w=warrantyRef(base);if(!can('return')||!w)return '';
  const a=BancadaWarranty.active(base,db.orders);

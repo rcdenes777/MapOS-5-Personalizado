@@ -21,6 +21,9 @@ const BancadaWarranty=(()=>{
    return {root:root.id,previous:o.id,unit:unit(o),client:root.client,conclusion:root.conclusion,days,end};
  }
  function active(o,orders){return orders.find(x=>x.origin&&same(x,o)&&!['Finalizado','Cancelado'].includes(x.status))||null}
+ // Latest finalized return of the same unit; used to keep 'atendimento anterior' and single active return.
+ function lastFinalized(o,orders){return orders.filter(x=>x.id!==o.id&&x.origin&&same(x,o)&&x.status==='Finalizado').sort((a,b)=>b.id-a.id)[0]||null}
+ const activeSibling=(o,orders)=>orders.some(x=>x.id!==o.id&&x.origin&&same(x,o)&&!['Finalizado','Cancelado'].includes(x.status));
  function create(o,orders,d,day){
    const ref=reference(o,orders);ensure(!active(o,orders),'Já existe retorno em andamento para esta unidade.');
    ensure(d.confirm,'Confirme o recebimento físico e a abertura de outra OS.');
@@ -66,9 +69,9 @@ const BancadaWarranty=(()=>{
  function costs(o){return events(o).reduce((s,e)=>{const sign=e.type==='custo'?1:e.type==='corrigir_custo'?-1:0;return {amount:s.amount+sign*(e.amount||0),minutes:s.minutes+sign*(e.minutes||0)}},{amount:0,minutes:0})}
  function transition(o,orders,status){
    if(status===o.status)return;
-   ensure(o.status!=='Finalizado'||!derived(o,orders),'Esta OS já originou retorno. Preserve o atendimento encerrado e use a nova OS.');
+   ensure(o.status!=='Finalizado'||(!derived(o,orders)&&!activeSibling(o,orders)),'Esta OS já originou retorno. Preserve o atendimento encerrado e use a nova OS.');
    if(status==='Finalizado'&&o.origin){const s=assessment(o)?.solution;ensure(!['troca','devolucao_valor'].includes(s)||executed(o),'Execute a solução de garantia escolhida antes de concluir o retorno.')}
  }
  function days(v){ensure(/^\d{1,4}$/.test(String(v))&&Number(v)<=9999,'Confira o prazo concedido na OS.');return Number(v)}
- return {coverage,solutions,unit,same,derived,reference,active,create,binding,assessment,events,executed,assess,cost,correctCost,costs,transition,days};
+ return {coverage,solutions,unit,same,derived,reference,active,lastFinalized,create,binding,assessment,events,executed,assess,cost,correctCost,costs,transition,days};
 })();

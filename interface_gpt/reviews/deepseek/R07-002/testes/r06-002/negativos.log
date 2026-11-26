@@ -1,0 +1,17 @@
+PASS N01 — Devolução com valor divergente e data/forma/referência válidas é rejeitada :: 15999 rejeitado; 16000 confirmado (total 8000, pago 8000, recibo #1 intacto)
+PASS N02 — Forma de devolução inválida é rejeitada com data e referência válidas :: Cheque rejeitado; Pix confirmado
+PASS N03 — Data de devolução inválida é rejeitada com forma e referência válidas :: data 2026-02-30 rejeitada; data válida confirmada
+PASS N04 — Devolução sem comprovante ou referência é rejeitada :: referência vazia rejeitada; referência válida confirmada
+PASS N05 — Confirmação sem conferência financeira é rejeitada e não grava :: financialConfirmed=false rejeitado; true confirmado
+PASS N06 — Confirmação sem conferência do acerto é rejeitada quando há valores :: settlementConfirmed=false rejeitado; true confirmado
+PASS N07 — Justificativa vazia é rejeitada quando o acerto exige justificativa :: justificativa vazia rejeitada; justificativa válida confirmada
+PASS N08 — Remoção parcial de serviço é rejeitada; remoção integral é aceita :: parcial rejeitada; integral removeu só o serviço não executado
+PASS N09 — Peça com destino de serviço é rejeitada; destino de peça é aceito :: peça/notdone rejeitada; peça/unused aceita sem entrada em estoque
+PASS N10 — Serviço com destino de peça é rejeitado; destino de serviço é aceito :: serviço/unused rejeitado; serviço/notdone aceito
+PASS N11 — Retificação após devolução é bloqueada; retificação sem devolução é aceita :: após devolução rejeitada; cancelamento sem devolução retificado
+PASS N12 — Retificação fora da janela (antes da confirmação ou futura) é rejeitada :: 2026-11-24 e 2026-11-26 rejeitadas; data da confirmação aceita
+PASS N13 — Retificação com tipo inválido é rejeitada; tipo permitido é aceito :: outro rejeitado; lancamento_incorreto aceito
+PASS N14 — Valor devido acima do teto é rejeitado; o teto exato é aceito :: 1000000000 rejeitado; 999999999 aceito
+PASS N15 — Devolução com data anterior aos recebimentos é rejeitada :: 2026-11-24 rejeitada; data dos recebimentos aceita
+
+TOTAL 15 · PASS 15 · FAIL 0

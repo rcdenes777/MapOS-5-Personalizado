@@ -1,0 +1,40 @@
+PASS R04-X01 — Revogação chega à outra aba sem reload :: Link indisponível
+
+Este endereço não está ativo neste navegador. Solicite um link atualizado à assistência.
+
+Esta demons
+PASS R04-X02 — Revogação no meio do preenchimento remove o formulário e bloqueia envio :: {"direct":"Link indisponível. Solicite um endereço atualizado à assistência."}
+PASS R04-X03 — Expiração chega à outra aba e remove o formulário :: expired cross-tab
+PASS R04-X04 — Decisão do portal atualiza a aba administrativa :: rança
+Sem cobrança
+Total cobrado
+R$ 0,00
+Pago
+R$ 0,00
+Saldo
+R$ 0,00
+Vencimento
+Não informado
+Formalizar cobrança
+
+A proposta não é um recebimento nem cria automaticamente uma cobrança.
+
+Versões e decisões
+1 versão
+Versão 1
+21/11/2026 · Amostra inicial
+Aprovado
+PASS R04-X05 — Token válido em formato, mas inexistente, mostra link indisponível :: bad token
+PASS R04-X06 — JSON local corrompido não quebra a página :: []
+PASS R04-X07 — Formulário inválido não registra decisão e não tem escolha inicial :: {"invalid":5,"decision":null}
+PASS R04-X08 — Endereço local contém portal.html e o token ativo :: http://127.0.0.1:8130/portal.html#83df44874b473d9119ec031dc6d2837023199c833e16b4…
+PASS R04-X15 — Escape no modal de renovação fecha e devolve foco ao gatilho :: {"open":false,"active":"modal:renewlink:23"}
+PASS R04-X09 — Administrativo não oferece mais “Simular resposta pelo link” :: legacy removed
+PASS R04-X10 — Técnico não vê nem abre o gerador de link :: {"techBtn":0,"techModal":false}
+PASS R04-X11 — Financeiro vê o link do cliente :: finance
+PASS R04-X16 — Modal interno de resposta não pré-seleciona decisão :: {"open":true,"value":"","required":true}
+PASS R04-X17 — Caminho legado publicresponse não abre modal :: false
+PASS R04-X12 — Conteúdo longo do portal não cria overflow em 320 :: {"over":0,"errs":[]}
+PASS R04-X13 — HTML publicado é escapado no portal em 320 :: escaping
+PASS R04-X14 — Diagnóstico longo publicado permanece no HTML :: long diagnosis
+TOTAL 17 · PASS 17 · FAIL 0 · INFO 0

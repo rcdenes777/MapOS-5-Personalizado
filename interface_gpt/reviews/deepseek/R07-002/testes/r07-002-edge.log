@@ -1,0 +1,67 @@
+PASS R07E-R-320 — Garantia e ação de devolução utilizáveis em 320px :: {"over":0,"box":{"x":25,"y":2074.421875,"width":270,"height":64.21875}}
+PASS R07E-M-320 — Modal de devolução cabe na tela e não cria overflow em 320px :: {"open":true,"w":282,"h":544,"vw":320,"vh":568,"sw":280,"cw":280,"sh":1302,"ch":542,"over":0}
+PASS R07E-M-SCROLL — Conteúdo do modal rola verticalmente em 320px quando necessário :: {"sh":1302,"ch":542}
+PASS R07E-M-SCROLL-2 — Rodapé com confirmação e envio alcançável por rolagem :: true
+PASS R07E-C-320 — Modal fecha pelo botão Fechar em 320px :: fechado
+PASS R07E-R-390 — Garantia e ação de devolução utilizáveis em 390px :: {"over":0,"box":{"x":29,"y":23.84375,"width":332,"height":44}}
+PASS R07E-M-390 — Modal de devolução cabe na tela e não cria overflow em 390px :: {"open":true,"w":352,"h":820,"vw":390,"vh":844,"sw":350,"cw":350,"sh":1137,"ch":818,"over":0}
+PASS R07E-C-390 — Modal fecha pelo botão Fechar em 390px :: fechado
+PASS R07E-R-768 — Garantia e ação de devolução utilizáveis em 768px :: {"over":0,"box":{"x":33,"y":157.546875,"width":702,"height":44}}
+PASS R07E-M-768 — Modal de devolução cabe na tela e não cria overflow em 768px :: {"open":true,"w":560,"h":1000,"vw":768,"vh":1024,"sw":558,"cw":558,"sh":1043,"ch":998,"over":0}
+PASS R07E-C-768 — Modal fecha pelo botão Fechar em 768px :: fechado
+PASS R07E-R-1440 — Garantia e ação de devolução utilizáveis em 1440px :: {"over":0,"box":{"x":283,"y":66.3125,"width":1108,"height":44}}
+PASS R07E-M-1440 — Modal de devolução cabe na tela e não cria overflow em 1440px :: {"open":true,"w":560,"h":876,"vw":1440,"vh":900,"sw":558,"cw":558,"sh":1043,"ch":874,"over":0}
+PASS R07E-C-1440 — Modal fecha pelo botão Fechar em 1440px :: fechado
+PASS R07E-K-01 — Foco inicial entra no diálogo de devolução :: {"id":"","tag":"BUTTON","inside":true}
+PASS R07E-K-02 — Tab mantém o foco dentro do diálogo (14 passos) :: true
+PASS R07E-K-03 — Shift+Tab no primeiro campo permanece no diálogo :: true
+PASS R07E-K-04 — Escape fecha o diálogo :: fechado
+PASS R07E-K-05 — Foco retorna ao acionador após fechar :: {"tag":"BUTTON","action":"modal:warrantyRefund:26"}
+PASS R07E-AXE-garantia-390-390 — axe sem violações: garantia-390 390 :: []
+PASS R07E-AXE-modal-devolucao-390-390 — axe sem violações: modal-devolucao-390 390 :: []
+PASS R07E-AXE-garantia-1440-1440 — axe sem violações: garantia-1440 1440 :: []
+PASS R07E-AXE-modal-devolucao-1440-1440 — axe sem violações: modal-devolucao-1440 1440 :: []
+PASS R07E-X-01 — Cobrança de 9.999.999,99 ainda oferece devolução :: presente
+PASS R07E-X-02 — Limite de valor e data extrema não estouram o modal :: {"max":"9999999.99","dateMax":"2026-11-26","dateMin":"2026-11-25","over":0,"amountW":518,"panelW":518}
+PASS R07E-X-03 — Total extremo calculado em centavos e readOnly :: {"v":"9999999.99","ro":true,"preview":"Abatimento: R$ 9.999.999,99 · Saldo após registro: R$ 0,00"}
+PASS R07E-X-04 — Motivo com 2.000 caracteres permanece no limite e sem overflow :: {"longOver":0,"reasonLen":2000}
+PASS R07E-X-05 — Data mínima nativa reflete o último recebimento (25/11) e o handler revalida :: 2026-11-25
+PASS R07E-P-01 — Técnico em 1440 não vê valores/comprovante do reembolso :: ATENDIMENTO / #026
+LG · Inverter
+
+Clima Sul Serviços · Entrada em 26/11/2026
+
+Voltar
+Imprimir
+ANDAMENTO TÉCNICO
+Aberto
+Conclusão não registrada
+Atualizar andamento
+FINANCEIRO
+Acesso restrito
+Valores ocultos neste perfil
+
+PASS R07E-P-02 — Portal em 390 sem overflow, com resumo financeiro e sem dados privados :: M
+Minha oficina
+Acompanhamento de serviço
+Demonstração
+
+SEU ATENDIMENTO · OS #025
+LG · Inverter
+Finalizado
+Entrada
+20/08/2026
+Previsão
+Não informada
+Seu orçamento
+Versão 1
+
+Total da proposta
+
+R$ 500,00
+
+Peças e serviços
+Serviço de reparo (d
+PASS R07E-P-03 — axe sem violações no portal em 390 :: []
+PASS R07E-ERR — Sem erros de página ou console nas bordas :: {"errors":[],"consoleErrors":[]}
+TOTAL 32 · PASS 32 · FAIL 0 · INFO 0

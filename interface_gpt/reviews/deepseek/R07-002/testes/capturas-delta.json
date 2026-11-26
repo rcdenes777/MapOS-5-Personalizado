@@ -1,0 +1,45 @@
+{
+  "generatedAt": "2026-11-26T12:12:09.163845-03:00",
+  "oldDir": "/home/dragonblue/workspace/interface-gpt-lab/repo/interface_gpt/reviews/deepseek/R07-001/capturas",
+  "newDir": "/home/dragonblue/workspace/interface-gpt-lab/repo/interface_gpt/reviews/deepseek/R07-002/capturas",
+  "summary": {
+    "total": 2,
+    "identical": 0,
+    "textOnlyOrSmall": 0,
+    "larger": 0,
+    "dimensionChanged": 2,
+    "maxDiffPercent": 0
+  },
+  "rows": [
+    {
+      "file": "mobile/13-os18-garantia-390.png",
+      "old": {
+        "w": 390,
+        "h": 2817
+      },
+      "new": {
+        "w": 390,
+        "h": 2898
+      },
+      "sameDimensions": false,
+      "identical": false,
+      "diffPercent": null,
+      "diffBBox": null
+    },
+    {
+      "file": "desktop/01-os18-garantia-1440.png",
+      "old": {
+        "w": 1440,
+        "h": 1885
+      },
+      "new": {
+        "w": 1440,
+        "h": 1962
+      },
+      "sameDimensions": false,
+      "identical": false,
+      "diffPercent": null,
+      "diffBBox": null
+    }
+  ]
+}

@@ -1,0 +1,109 @@
+{
+  "generatedAt": "2026-11-26T15:23:56.681Z",
+  "codeSha": "e04bb4059282197a0ce98e10d1715379433b5084",
+  "incrementSha": "",
+  "results": [
+    {
+      "id": "R04-X01",
+      "desc": "Revogação chega à outra aba sem reload",
+      "status": "PASS",
+      "detail": "Link indisponível\n\nEste endereço não está ativo neste navegador. Solicite um link atualizado à assistência.\n\nEsta demons"
+    },
+    {
+      "id": "R04-X02",
+      "desc": "Revogação no meio do preenchimento remove o formulário e bloqueia envio",
+      "status": "PASS",
+      "detail": "{\"direct\":\"Link indisponível. Solicite um endereço atualizado à assistência.\"}"
+    },
+    {
+      "id": "R04-X03",
+      "desc": "Expiração chega à outra aba e remove o formulário",
+      "status": "PASS",
+      "detail": "expired cross-tab"
+    },
+    {
+      "id": "R04-X04",
+      "desc": "Decisão do portal atualiza a aba administrativa",
+      "status": "PASS",
+      "detail": "rança\nSem cobrança\nTotal cobrado\nR$ 0,00\nPago\nR$ 0,00\nSaldo\nR$ 0,00\nVencimento\nNão informado\nFormalizar cobrança\n\nA proposta não é um recebimento nem cria automaticamente uma cobrança.\n\nVersões e decisões\n1 versão\nVersão 1\n21/11/2026 · Amostra inicial\nAprovado"
+    },
+    {
+      "id": "R04-X05",
+      "desc": "Token válido em formato, mas inexistente, mostra link indisponível",
+      "status": "PASS",
+      "detail": "bad token"
+    },
+    {
+      "id": "R04-X06",
+      "desc": "JSON local corrompido não quebra a página",
+      "status": "PASS",
+      "detail": "[]"
+    },
+    {
+      "id": "R04-X07",
+      "desc": "Formulário inválido não registra decisão e não tem escolha inicial",
+      "status": "PASS",
+      "detail": "{\"invalid\":5,\"decision\":null}"
+    },
+    {
+      "id": "R04-X08",
+      "desc": "Endereço local contém portal.html e o token ativo",
+      "status": "PASS",
+      "detail": "http://127.0.0.1:8130/portal.html#83df44874b473d9119ec031dc6d2837023199c833e16b4…"
+    },
+    {
+      "id": "R04-X15",
+      "desc": "Escape no modal de renovação fecha e devolve foco ao gatilho",
+      "status": "PASS",
+      "detail": "{\"open\":false,\"active\":\"modal:renewlink:23\"}"
+    },
+    {
+      "id": "R04-X09",
+      "desc": "Administrativo não oferece mais “Simular resposta pelo link”",
+      "status": "PASS",
+      "detail": "legacy removed"
+    },
+    {
+      "id": "R04-X10",
+      "desc": "Técnico não vê nem abre o gerador de link",
+      "status": "PASS",
+      "detail": "{\"techBtn\":0,\"techModal\":false}"
+    },
+    {
+      "id": "R04-X11",
+      "desc": "Financeiro vê o link do cliente",
+      "status": "PASS",
+      "detail": "finance"
+    },
+    {
+      "id": "R04-X16",
+      "desc": "Modal interno de resposta não pré-seleciona decisão",
+      "status": "PASS",
+      "detail": "{\"open\":true,\"value\":\"\",\"required\":true}"
+    },
+    {
+      "id": "R04-X17",
+      "desc": "Caminho legado publicresponse não abre modal",
+      "status": "PASS",
+      "detail": "false"
+    },
+    {
+      "id": "R04-X12",
+      "desc": "Conteúdo longo do portal não cria overflow em 320",
+      "status": "PASS",
+      "detail": "{\"over\":0,\"errs\":[]}"
+    },
+    {
+      "id": "R04-X13",
+      "desc": "HTML publicado é escapado no portal em 320",
+      "status": "PASS",
+      "detail": "escaping"
+    },
+    {
+      "id": "R04-X14",
+      "desc": "Diagnóstico longo publicado permanece no HTML",
+      "status": "PASS",
+      "detail": "long diagnosis"
+    }
+  ]
+}

@@ -1,0 +1,7 @@
+PASS R07-PR-01 — Mídia de impressão oculta a casca e mantém a folha :: {"sidebar":"none","top":"none","nav":"none","sheet":"block"}
+PASS R07-PR-02 — PDF A4 do retorno tem uma página A4 e identifica OS, cliente, equipamento e defeito :: {"info":{"pages":1,"size":"594.96 x 841.92 pts (A4)"},"text":"Minha oficina · Demonstração\nOrdem de serviço #025\n\nCliente                               Equipamento\n\nClima Sul Serviços                    Midea · Xtreme Save\nEntrada    
+PASS R07-PR-03 — Cupom do retorno fica em 80 mm, uma página, com o mesmo defeito :: {"info":{"pages":1,"size":"227.04 x 425.04 pts"},"widthMm":80}
+PASS R07-PR-04 — Impressão do retorno não vaza diagnóstico, custo, avaliação ou vínculo :: {"a4":"Minha oficina · Demonstração\nOrdem de serviço #025\n\nCliente                               Equipamento\n\nClima Sul Serviços                    Midea · Xtreme Save\nEntrada                               Andamento\n\n26/11/2026     
+PASS R07-PR-05 — Impressão da origem continua válida e não muda com o retorno :: {"info":{"pages":1,"size":"594.96 x 841.92 pts (A4)"},"text":"Minha oficina · Demonstração\nOrdem de serviço #016\n\nCliente                               Equipamento\n\nRefrigeração Horizonte                Daikin · EcoSwing\nEntrada      
+PASS R07-PR-06 — Sem exceções, console ou requisições externas na impressão :: {"errors":[],"consoleErrors":[],"external":[]}
+TOTAL 6 · PASS 6 · FAIL 0 · INFO 0

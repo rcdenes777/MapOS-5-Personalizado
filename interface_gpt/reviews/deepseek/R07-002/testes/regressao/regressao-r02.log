@@ -1,0 +1,39 @@
+PASS G1-01 — Atalho de conteúdo não altera a rota e mantém a tela :: {"before":{"hash":"","href":"#main","cls":"skip"},"after":{"hash":"","h1":"O que precisa de atenção?","focused":"main"}}
+PASS G1-02-1920 — Texto longo sem overflow em 1920x1080 :: detalhe=0, lista=0
+PASS G1-02-1440 — Texto longo sem overflow em 1440x900 :: detalhe=0, lista=0
+PASS G1-02-1366 — Texto longo sem overflow em 1366x768 :: detalhe=0, lista=0
+PASS G1-02-768 — Texto longo sem overflow em 768x1024 :: detalhe=0, lista=0
+PASS G1-02-412 — Texto longo sem overflow em 412x915 :: detalhe=0, lista=0
+PASS G1-02-390 — Texto longo sem overflow em 390x844 :: detalhe=0, lista=0
+PASS G1-02-360 — Texto longo sem overflow em 360x800 :: detalhe=0, lista=0
+PASS G1-02-320 — Texto longo sem overflow em 320x568 :: detalhe=0, lista=0
+PASS G1-03 — Cartão estreito usa uma coluna e não quebra o título :: {"width":387,"height":139,"cols":1,"titleLines":1,"fullCols":3}
+PASS G1-03b — Cartão em contêiner largo mantém três colunas :: fullCols=3
+PASS G1-04 — Tab permanece dentro do modal :: 12 Tabs contidos
+PASS G1-04b — Escape fecha e devolve o foco ao gatilho :: {"open":false,"active":"modal:tech:20"}
+PASS G1-04c — Shift+Tab no primeiro focável volta ao último :: {"inside":true,"text":"Confirmar"}
+PASS G1-05 — Favicon declarado e sem 404 :: []
+PASS G1-06 — Alvos de toque ≥44 px :: []
+PASS G1-07 — Texto auxiliar ≥12 px :: []
+PASS G1-08 — Pluralização "1 atendimento" :: Contatos e atendimentos vinculados. | 2 atendimentos | 2 atendimentos | 3 atendimentos | 1 atendimento
+PASS G1-08b — Consulta com um resultado usa "1 ordem encontrada" :: 1 ordem encontrada
+PASS G1-09 — Placeholder da busca menciona defeito :: Buscar OS, cliente, equipamento ou defeito
+PASS G1-10 — Datas do histórico padronizadas (sem ISO) :: Entrada registrada | 21/11/2026
+PASS G1-11 — Nome acessível da marca contém o texto visível :: aria-label=m. · MapOS Bancada
+PASS G1-12 — Impressão define @page A4 e cupom 80 mm :: {"a4":{"rules":["@page { size: a4; margin: 12mm; }","@page cupom { size: 80mm 150mm; margin: 3mm; }"],"sheet":800},"cupom":{"rules":["@page { size: a4; margin: 12mm; }","@page cupom { size: 80mm 150mm; margin: 3mm; }"],"sheet":302,"page":"cupom"}}
+PASS G1-13 — Troca de perfil preserva rota acessível :: {"hash":"#os/20","h1":"Midea · Xtreme Save"}
+PASS G1-13b — Troca de perfil sai da rota quando o novo perfil não acessa :: {"hash":"#inicio","h1":"O que precisa de atenção?"}
+PASS G2-01 — Painel mobile compacto mostra a primeira OS :: {"hero":130,"metrics":227,"firstTop":656,"firstVisible":true,"queues":6}
+PASS G2-02 — Celular usa seletor de fila e mostra a primeira OS :: {"selectVisible":true,"chipsVisible":false,"firstTop":392,"activeLabel":"Todas as filas"}
+PASS G2-01b — Painel em 320x568 mostra a primeira OS acima do menu :: {"firstTop":460,"firstVisibleAboveNav":true,"navTop":507,"hero":41}
+PASS G2-03 — Detalhe mobile compacta os três estados e aproxima as abas :: {"stats":277,"tabsTop":516,"labels":["ANDAMENTO TÉCNICO","FINANCEIRO","RETIRADA"],"actions":["Atualizar andamento","Registrar pagamento","Registrar entrega"]}
+PASS G2-04 — Barra de ações da Nova OS visível e acima do menu :: {"submitVisible":true,"submitTop":726,"footerBottom":780,"navTop":783,"position":"fixed","optional":[{"summary":"Dados opcionais (selo, série e IMEI)","open":false},{"summary":"Itens, acessórios e estado (opcionais)","open":false}],"requiredVisible":true}
+PASS G2-04b — Campo focado fica acima da barra de ações :: {"fieldBottom":555,"barTop":715,"fieldVisible":true}
+PASS G2-05 — Opcionais (selo/série/IMEI) recolhidos e disponíveis :: [{"summary":"Dados opcionais (selo, série e IMEI)","open":false},{"summary":"Itens, acessórios e estado (opcionais)","open":false}]
+PASS G2-05b — Campos obrigatórios continuam disponíveis :: brand/defect=true
+PASS G2-06 — Somente a aba atual fica ativa (Nova OS) :: ["#nova"]
+PASS G2-06b — Somente a aba atual fica ativa (OS) :: ["#ordens"]
+PASS G3-01 — Entrega não impede finalizar a OS :: {"status":"Finalizado","delivered":true,"conclusion":"2026-11-26"}
+PASS G3-02 — Finalizada e entregue não pode ser reaberta :: {"status":"Finalizado","toast":"Equipamento entregue: registre outro atendimento em vez de reabrir esta OS."}
+
+TOTAL 37 · PASS 37 · FAIL 0

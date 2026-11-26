@@ -1,0 +1,191 @@
+{
+  "generatedAt": "2026-11-26T15:15:12.393Z",
+  "codeSha": "e04bb4059282197a0ce98e10d1715379433b5084",
+  "total": 23,
+  "captures": [
+    {
+      "file": "capturas/desktop/01-os18-garantia-1440.png",
+      "sha256": "114947628d383bb4555aa4ee1d4b43868d34f1e1c5a0abb717c46202d669fcb8",
+      "bytes": 234293,
+      "width": 1440,
+      "w": 1440,
+      "h": 1962
+    },
+    {
+      "file": "capturas/mobile/13-os18-garantia-390.png",
+      "sha256": "dc9f5d186a8d889d5759b8a890fa7ff37eca10ab5c7219572599dcaa8ba0e9d3",
+      "bytes": 194442,
+      "width": 390,
+      "w": 390,
+      "h": 2898
+    },
+    {
+      "file": "capturas/desktop/02-modal-devolucao-vazio-1440.png",
+      "sha256": "85aa68aaf8442168fc43056154128d51d05e089eef6773b2019813d365a9d777",
+      "bytes": 265231,
+      "width": 1440,
+      "w": 1440,
+      "h": 1953
+    },
+    {
+      "file": "capturas/mobile/14-modal-devolucao-vazio-390.png",
+      "sha256": "b4708ff64be1efcb261b6f20dba5c5df99be25f01d67cf731486fcf8cdc23020",
+      "bytes": 174967,
+      "width": 390,
+      "w": 390,
+      "h": 2826
+    },
+    {
+      "file": "capturas/desktop/03-modal-devolucao-total-1440.png",
+      "sha256": "4baf73b85a87dc5d5ec24cc92362c7afde31030d2c7b5552c7ba27bf8190dbc8",
+      "bytes": 268971,
+      "width": 1440,
+      "w": 1440,
+      "h": 1953
+    },
+    {
+      "file": "capturas/mobile/15-modal-devolucao-total-390.png",
+      "sha256": "f0ea4d97a94996e69c2754646ad9ca698d103772c89da6d2ef2e56d4bc5b4979",
+      "bytes": 178306,
+      "width": 390,
+      "w": 390,
+      "h": 2826
+    },
+    {
+      "file": "capturas/mobile320/16-modal-devolucao-total-320.png",
+      "sha256": "7d921f0b4223a0031b94fcd5ccb25ad5c7eb789b49df7ab83363c54da91819ec",
+      "bytes": 190348,
+      "width": 320,
+      "w": 320,
+      "h": 3158
+    },
+    {
+      "file": "capturas/desktop/04-financeiro-parcial-1440.png",
+      "sha256": "6cf97a5b6a2f2394e25cabb61b292975ac58d75250ddfa2066e6ad4919e494a0",
+      "bytes": 157434,
+      "width": 1440,
+      "w": 1440,
+      "h": 926
+    },
+    {
+      "file": "capturas/mobile/17-financeiro-parcial-390.png",
+      "sha256": "4607414fba6b7a04e3832dc912f5b61effb6e70331c9347bc140f1c703f0a030",
+      "bytes": 124727,
+      "width": 390,
+      "w": 390,
+      "h": 1777
+    },
+    {
+      "file": "capturas/desktop/05-modal-correcao-1440.png",
+      "sha256": "b0f175fc396da1e08693a3a07cefad7202fb63595cf2dfbc721947e0ba4b7111",
+      "bytes": 297102,
+      "width": 1440,
+      "w": 1440,
+      "h": 2262
+    },
+    {
+      "file": "capturas/desktop/06-financeiro-reembolsado-1440.png",
+      "sha256": "5b6c823efba7df5f7a3681e5ee9d1729a3815d7eebef9e9b01eeecf331314661",
+      "bytes": 174065,
+      "width": 1440,
+      "w": 1440,
+      "h": 1127
+    },
+    {
+      "file": "capturas/mobile/18-financeiro-reembolsado-390.png",
+      "sha256": "7616b253638a470a2aedaa1cd1d3793070cefe786149b25b658f611db0887ef8",
+      "bytes": 139223,
+      "width": 390,
+      "w": 390,
+      "h": 2007
+    },
+    {
+      "file": "capturas/tablet/19-financeiro-reembolsado-768.png",
+      "sha256": "39f989782029250bf72392fffbbaba3f4ad5ee72e7245188219d54cf8cefcca1",
+      "bytes": 137039,
+      "width": 768,
+      "w": 768,
+      "h": 1765
+    },
+    {
+      "file": "capturas/desktop/07-lista-financeira-1440.png",
+      "sha256": "3388f5bba10d15c5f985662351e004cfb284a788989ab662032241b814381739",
+      "bytes": 228055,
+      "width": 1440,
+      "w": 1440,
+      "h": 1832
+    },
+    {
+      "file": "capturas/mobile320/20-lista-financeira-320.png",
+      "sha256": "d16d4ae2e2949a58b5ff6d8a55ec2320f93c78bc3df508cf677081b44d8233e5",
+      "bytes": 187553,
+      "width": 320,
+      "w": 320,
+      "h": 2955
+    },
+    {
+      "file": "capturas/desktop/08-impressao-reembolsado-1440.png",
+      "sha256": "3bd9ab35c5456fd91a7ada58cc5855b9e305ed9edf10adb92584f8353ce3bf78",
+      "bytes": 100538,
+      "width": 1440,
+      "w": 1440,
+      "h": 900
+    },
+    {
+      "file": "capturas/desktop/09-portal-reembolsada-1440.png",
+      "sha256": "2e0158b212989d68c7156fcba2765749aabe2f2702b2f20dd37c77b3769c5625",
+      "bytes": 118814,
+      "width": 1440,
+      "w": 1440,
+      "h": 1381
+    },
+    {
+      "file": "capturas/mobile/20-portal-reembolsada-390.png",
+      "sha256": "41124529a30625fe81b84515cb937552c1ca4dc9f74a6a7661e375c3ed6e3183",
+      "bytes": 106915,
+      "width": 390,
+      "w": 390,
+      "h": 1502
+    },
+    {
+      "file": "capturas/desktop/10-modal-erro-excesso-1440.png",
+      "sha256": "519ad4627e3a893ed4b79238c169e112e44e67c7c620b77b65c788a81c615108",
+      "bytes": 276506,
+      "width": 1440,
+      "w": 1440,
+      "h": 1953
+    },
+    {
+      "file": "capturas/mobile320/21-modal-erro-excesso-320.png",
+      "sha256": "174989dcdf19181ccf51566298c7176b947a9b03e467d968ff9606d9744baf81",
+      "bytes": 182839,
+      "width": 320,
+      "w": 320,
+      "h": 3158
+    },
+    {
+      "file": "capturas/desktop/11-cancelamento-f02-elegivel-1440.png",
+      "sha256": "a0592a858e1559f22b7af627f3fb33e17bc5802daf967d18b6f880b0579cd63b",
+      "bytes": 103878,
+      "width": 1440,
+      "w": 1440,
+      "h": 900
+    },
+    {
+      "file": "capturas/desktop/12-raiz-b-garantia-1440.png",
+      "sha256": "09cf0bfafa6583cfb58b0aabfd254874f1b5411c88013837f6cff05efeba6f0e",
+      "bytes": 129557,
+      "width": 1440,
+      "w": 1440,
+      "h": 900
+    },
+    {
+      "file": "capturas/tablet/22-raiz-b-garantia-768.png",
+      "sha256": "707d4c58e176b9331dd1780a9ea3158fe092244b944a0d48a1e0fe4095d7ad31",
+      "bytes": 95673,
+      "width": 768,
+      "w": 768,
+      "h": 1155
+    }
+  ]
+}

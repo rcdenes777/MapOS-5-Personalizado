@@ -1,0 +1,32 @@
+PASS D01 — Parcial 50 sobre 500/200 preserva cobrança, recibo e histórico da origem
+PASS D02 — Encerramento total após parcial devolve 150 e abate 450; histórico 200/500
+PASS D03 — Correção em ordem direta (parcial e depois total) recompõe 50/50/0 e 500/200/300
+PASS D04 — Correção em ordem inversa (total e depois parcial) também restaura os valores
+PASS D05 — Encerramento total com zero dinheiro abate 500 sem saída e status Encerrado por garantia
+PASS D06 — Dado legado com total positivo e sem billing preserva valor e não inventa recibo/obrigação
+PASS D07 — Pagamento posterior após parcial respeita o saldo líquido e compõe a devolução total
+PASS D08 — Correção de recebimento bloqueada com devolução ativa e reabilitada após corrigir
+PASS D09 — Datas da devolução: futura, impossível e anterior ao recibo são recusadas; igual é aceita
+INFO D10i — A data da segunda devolução pode anteceder a primeira porque eventos de garantia não são financeiros; o piso continua sendo o recibo original (25/11). :: 2026-11-25
+PASS D10 — Segunda devolução aceita data anterior à primeira, mas nunca anterior ao recibo (paridade original)
+PASS D11 — Chave financeira obsoleta e avaliação obsoleta recusam com estado intacto
+PASS D12 — Cobrança própria do retorno, entrega, finalização e publicação ativa bloqueiam a devolução
+PASS D13 — Solução diferente de devolução e cobertura em avaliação não permitem executar
+PASS D14 — Solução executada protege a avaliação até a correção do registro
+PASS D15 — Correção duplicada, confirmação e motivo obrigatórios são recusados sem estado parcial
+PASS D16 — Modalidades/valor: zero parcial, modo inválido, acima do recebido e total inexato
+PASS D17 — Forma inválida, referência/motivo vazios e confirmação ausente
+PASS D18 — Débito zero não permite nova cobrança nem some do financeiro
+PASS D19 — F02: retorno sem solução executada percorre solicitar/retirar/conferir/confirmar
+PASS D20 — F02: solução executada bloqueia cancelamento; correção reabilita
+PASS D21 — F02: derivado por origem ou anterior, mesmo cancelado, bloqueia o cancelamento
+PASS D22 — F02: devolução executada com pedido pendente impede confirmação; retirada continua possível
+PASS D23 — F02: cancelar retorno não altera a obrigação da raiz
+PASS D24 — Raízes independentes: prazos e vínculo não cruzam entre duas OS da mesma unidade
+PASS D25 — Raiz com retorno finalizado encadeia o anterior da mesma raiz, não da unidade vizinha
+PASS D26 — Retorno ativo único por unidade bloqueia entrada em raiz distinta e reabertura indevida
+PASS D27 — Projeção pública e recibo não vazam comprovante, motivo, retorno ou valores privados
+PASS D28 — Cancelamento do acerto recusa obrigação de garantia ativa (settle protegido)
+PASS D29 — Valores extremos mínimos/máximos em centavos permanecem seguros
+PASS D30 — Parcial múltipla e correções preservam o ledger append-only e o total original
+TOTAL 31 · PASS 30 · FAIL 0 · INFO 1

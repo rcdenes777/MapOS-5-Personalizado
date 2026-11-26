@@ -1,0 +1,39 @@
+PASS N01 — Solução diferente de devolução é recusada e a correta é aceita
+PASS N02 — Avaliação com cobertura em avaliação é recusada
+PASS N03 — Avaliação obsoleta é recusada e a vigente aceita
+PASS N04 — Chave financeira obsoleta é recusada e a atual aceita
+PASS N05 — Valor acima do recebido é recusado e o limite exato aceito
+PASS N06 — Encerramento total inexato é recusado e o exato aceito
+PASS N07 — Parcial zero é recusada e o total zero aceito
+PASS N08 — Modalidade inválida é recusada
+PASS N09 — Forma inválida é recusada e Pix aceito
+PASS N10 — Data futura é recusada e hoje aceito
+PASS N11 — Data impossível é recusada
+PASS N12 — Data anterior ao recibo é recusada e a data do recibo aceita
+PASS N13 — Referência vazia é recusada
+PASS N14 — Motivo vazio é recusado
+PASS N15 — Confirmação ausente é recusada
+PASS N16 — Referência acima do limite é recusada
+PASS N17 — Motivo acima do limite é recusado
+PASS N18 — Cobrança própria do retorno bloqueia e a conciliação libera
+PASS N19 — Entrega registrada bloqueia e a correção libera
+PASS N20 — Retorno finalizado bloqueia
+PASS N21 — Publicação ativa bloqueia e a retirada libera preservando a versão
+PASS N22 — Cobrança já encerrada recusa nova devolução
+PASS N23 — Correção sem confirmação é recusada
+PASS N24 — Correção com motivo vazio é recusada
+PASS N25 — Correção de devolução inexistente é recusada
+PASS N26 — Correção duplicada é recusada
+PASS N27 — Estorno de recebimento bloqueado com devolução ativa e liberado após correção
+PASS N28 — Acerto de cancelamento bloqueado com crédito de garantia
+PASS N29 — Recebimento após encerramento total é recusado
+PASS N30 — Nova cobrança e edição após encerramento total são recusadas
+PASS N31 — F02: pedido de cancelamento bloqueado com solução executada
+PASS N32 — F02: confirmação do cancelamento bloqueada com devolução executada; retirada permitida
+PASS N33 — F02: derivado cancelado por origem bloqueia o cancelamento da origem
+PASS N34 — F02: derivado por anterior cancelado bloqueia o cancelamento do retorno
+PASS N35 — Último finalizado não cruza raízes da mesma unidade
+PASS N36 — Retorno ativo único por unidade entre raízes distintas
+PASS N37 — Reabertura de retorno finalizado com irmão ativo é bloqueada
+PASS N38 — Projeção pública não contém referência, motivo, retorno nem ledger
+TOTAL 38 · PASS 38 · FAIL 0

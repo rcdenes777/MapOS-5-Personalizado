@@ -1,0 +1,27 @@
+DETECTADA R07M2-01 — solução vigente exige devolução :: N01, N02
+DETECTADA R07M2-02 — cobertura concluída :: N02
+DETECTADA R07M2-03 — avaliação esperada (stale) :: N03
+DETECTADA R07M2-04 — chave financeira :: N04
+DETECTADA R07M2-05 — devolução não excede o recebido :: N05, N06
+DETECTADA R07M2-06 — total devolve exatamente o recebido :: N06
+DETECTADA R07M2-07 — modalidade e valor válidos :: N07, N08
+DETECTADA R07M2-08 — forma de devolução permitida :: N09
+DETECTADA R07M2-09 — data não futura :: N10
+DETECTADA R07M2-10 — data não anterior a eventos financeiros :: N12
+DETECTADA R07M2-11 — textos obrigatórios e limites :: N13, N14, N24
+DETECTADA R07M2-12 — confirmação da devolução :: N15
+DETECTADA R07M2-13 — retorno sem cobrança própria :: N18
+DETECTADA R07M2-14 — retorno sem entrega :: N19
+DETECTADA R07M2-15 — retorno aberto (não finalizado/cancelado) :: N20
+DETECTADA R07M2-16 — publicação retirada :: N21
+DETECTADA R07M2-17 — cobrança já encerrada :: N22
+DETECTADA R07M2-18 — confirmação da correção :: N23
+DETECTADA R07M2-19 — correção única por devolução :: N25
+DETECTADA R07M2-20 — último finalizado por raiz :: N35
+DETECTADA R07M2-21 — estorno bloqueado com devolução :: N27
+DETECTADA R07M2-22 — acerto protegido por crédito de garantia :: N28
+DETECTADA R07M2-23 — crédito ignora devolução corrigida :: N26, N27
+DETECTADA R07M2-24 — F02 solução executada bloqueia :: N31, N32
+DETECTADA R07M2-25 — F02 derivado por origem/anterior bloqueia :: N33, N34
+DETECTADA R07M2-26 — edição bloqueada por obrigação encerrada :: N30
+TOTAL 26 · DETECTADA 26 · FORA_DO_ALVO 0 · SOBREVIVENTE 0 · EQUIVALENTE 0 · INCONCLUSIVO 0

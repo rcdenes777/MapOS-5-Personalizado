@@ -22,7 +22,7 @@ const BancadaWarranty=(()=>{
  }
  function active(o,orders){return orders.find(x=>x.origin&&same(x,o)&&!['Finalizado','Cancelado'].includes(x.status))||null}
  // Latest finalized return of the same unit; used to keep 'atendimento anterior' and single active return.
- function lastFinalized(o,orders){return orders.filter(x=>x.id!==o.id&&x.origin&&same(x,o)&&x.status==='Finalizado').sort((a,b)=>b.id-a.id)[0]||null}
+ function lastFinalized(o,orders){return orders.filter(x=>x.origin&&same(x,o)&&x.status==='Finalizado').sort((a,b)=>b.id-a.id)[0]||null}
  const activeSibling=(o,orders)=>orders.some(x=>x.id!==o.id&&x.origin&&same(x,o)&&!['Finalizado','Cancelado'].includes(x.status));
  function create(o,orders,d,day){
    const ref=reference(o,orders);ensure(!active(o,orders),'Já existe retorno em andamento para esta unidade.');

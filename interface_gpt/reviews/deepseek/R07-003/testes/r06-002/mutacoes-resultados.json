@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-11-26T16:29:53.260Z",
-  "codeSha": "",
+  "generatedAt": "2026-11-26T17:54:32.825Z",
+  "codeSha": "cc738622436d3df1224df700916970570eb0bd40",
   "sourceAssets": "/home/dragonblue/workspace/interface-gpt-lab/repo/interface_gpt/assets",
   "pristineHashes": {
     "quote.js": "7f86b84cc3a5a792a08349e2a774abf53cf2e5e91c96d9ef5cf52b4c30936c64",
@@ -8,7 +8,7 @@
     "finance.js": "0929532d945fb2d29af9dfa23463bb79cfa7d645f432a6de518a9096e7b565ed",
     "cancel.js": "17d7e3bc883252daebc304bec5ca0d0382da70c476038afe3f8c7c2f76f2c913"
   },
-  "scratch": "/home/dragonblue/.hermes/cache/scratch/r07-003-mut-r06",
+  "scratch": "/home/dragonblue/.hermes/cache/scratch/r07-003-mut-r06-final",
   "publishedMutants": false,
   "note": "Mutantes aplicados somente em cópias sob o diretório de scratch; nenhum arquivo do checkout foi alterado.",
   "tally": {

@@ -1,7 +1,8 @@
 {
-  "generatedAt": "2026-11-26T16:30:59.310Z",
+  "generatedAt": "2026-11-26T17:54:31.322Z",
+  "codeSha": "cc738622436d3df1224df700916970570eb0bd40",
   "source": "/home/dragonblue/workspace/interface-gpt-lab/repo/interface_gpt/assets",
-  "scratch": "/home/dragonblue/.hermes/cache/scratch/r07-003-mut-regressao",
+  "scratch": "/home/dragonblue/.hermes/cache/scratch/r07-003-mut-regressao-final",
   "total": 26,
   "summary": {
     "DETECTADA": 26

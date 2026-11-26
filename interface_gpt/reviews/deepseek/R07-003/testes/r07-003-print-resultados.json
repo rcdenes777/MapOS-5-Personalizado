@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-26T17:38:14.126Z",
+  "generatedAt": "2026-11-26T17:54:03.809Z",
   "codeSha": "cc738622436d3df1224df700916970570eb0bd40",
   "total": 5,
   "summary": {
@@ -26,15 +26,15 @@
   "results": [
     {
       "id": "R07P3-01",
-      "desc": "A4 do retorno mostra a substituta e a identificação física sem custo/motivo",
+      "desc": "A4 do retorno mostra a substituta e a identificação física uma única vez, sem custo/motivo",
       "status": "PASS",
-      "detail": "Minha oficina · Demonstração Ordem de serviço #026 Cliente Equipamento Clima Sul Serviços LG · Inverter Substituta em garantia Entrada Placa eletrônica · Midea · Substituta · Selo 26/11/2026 NOVA-1 · Série SERIE-1 Andamento Entrega Finalizado Não registrada Defeito Defeito público do retorno Total cobrado Pago R$ 0,00 R$ 0,00 Saldo Situação financeira R$ 0,00 Sem cobrança Protótipo — sem validade comercial. "
+      "detail": "{\"countA4\":1,\"text\":\"Minha oficina · Demonstração Ordem de serviço #026 Cliente Equipamento Clima Sul Serviços LG · Inverter Substituta em garantia Entrada Placa eletrônica · Midea · Substituta · Selo 26/11/2026 NOVA-1 · Série SERIE-1 Andamento Entrega Finalizado Não registrada Defeito Defeito público do retorno Total cobrado Pago R$ 0,00 R$ 0,00 Saldo Situação financeira R$ 0,00 Sem cobrança Protótipo — sem validade comercial. \"}"
     },
     {
       "id": "R07P3-02",
-      "desc": "Cupom 80 mm do retorno identifica a substituta e não vaza custo/motivo",
+      "desc": "Cupom 80 mm do retorno identifica a substituta uma única vez e não vaza custo/motivo",
       "status": "PASS",
-      "detail": "{\"info\":{\"pages\":1,\"size\":\"227.04 x 425.04 pts\"},\"text\":\"Minha oficina · Demonstração Ordem de serviço #026 Cliente Equipamento Clima Sul Serviços LG · Inverter Substituta em garantia Entrada Placa eletrônica · 26/11/2026 Midea · Substituta · Selo NOVA-1 · Série SERIE-1 Andamento Entrega Finalizado Não registrada Defeito Defeito público do retorno Total c\"}"
+      "detail": "{\"countCupom\":1,\"info\":{\"pages\":1,\"size\":\"227.04 x 425.04 pts\"},\"text\":\"Minha oficina · Demonstração Ordem de serviço #026 Cliente Equipamento Clima Sul Serviços LG · Inverter Substituta em garantia Entrada Placa eletrônica · 26/11/2026 Midea · Substituta · Selo NOVA-1 · Série SERIE-1 Andamento Entrega Finalizado Não registrada Defeito Defeito público do retorno Total c\"}"
     },
     {
       "id": "R07P3-03",

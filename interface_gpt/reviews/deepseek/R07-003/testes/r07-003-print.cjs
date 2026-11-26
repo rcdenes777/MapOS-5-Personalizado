@@ -58,11 +58,13 @@ async function makePdfAt(a, hash, file) {
     });
 
     const retA4 = await makePrint(a, ids.r, 'retorno-substituta-a4.pdf');
-    rec('R07P3-01', 'A4 do retorno mostra a substituta e a identificação física sem custo/motivo', retA4.info.pages === 1 && /A4/.test(retA4.info.size) && /Substituta em garantia/.test(retA4.flat) && /Midea/.test(retA4.flat) && /NOVA-1/.test(retA4.flat) && !retA4.flat.includes('MOTIVO-PRIVADO-R07') && !retA4.flat.includes('DIAGNOSTICO-PRIVADO-R07') && !retA4.flat.includes('45,00'), retA4.flat.slice(0, 700));
+    const countA4 = (retA4.flat.match(/Substituta em garantia/g) || []).length;
+    rec('R07P3-01', 'A4 do retorno mostra a substituta e a identificação física uma única vez, sem custo/motivo', countA4 === 1 && retA4.info.pages === 1 && /A4/.test(retA4.info.size) && /Midea/.test(retA4.flat) && /NOVA-1/.test(retA4.flat) && !retA4.flat.includes('MOTIVO-PRIVADO-R07') && !retA4.flat.includes('DIAGNOSTICO-PRIVADO-R07') && !retA4.flat.includes('45,00'), { countA4, text: retA4.flat.slice(0, 700) });
 
     const retCupom = await makePrint(a, ids.r, 'retorno-substituta-cupom.pdf', true);
     const cupomW = Number((retCupom.info.size.match(/^([\d.]+)/) || [])[1] || 0);
-    rec('R07P3-02', 'Cupom 80 mm do retorno identifica a substituta e não vaza custo/motivo', Math.abs(cupomW - 226.77) <= 2 && /Substituta em garantia/.test(retCupom.flat) && /Midea/.test(retCupom.flat) && !retCupom.flat.includes('MOTIVO-PRIVADO-R07') && !retCupom.flat.includes('45,00'), { info: retCupom.info, text: retCupom.flat.slice(0, 300) });
+    const countCupom = (retCupom.flat.match(/Substituta em garantia/g) || []).length;
+    rec('R07P3-02', 'Cupom 80 mm do retorno identifica a substituta uma única vez e não vaza custo/motivo', Math.abs(cupomW - 226.77) <= 2 && countCupom === 1 && /Midea/.test(retCupom.flat) && !retCupom.flat.includes('MOTIVO-PRIVADO-R07') && !retCupom.flat.includes('45,00'), { countCupom, info: retCupom.info, text: retCupom.flat.slice(0, 300) });
 
     const origA4 = await makePrint(a, ids.o, 'origem-preservada-a4.pdf');
     rec('R07P3-03', 'A4 da origem preserva 500/200/300 e a identificação original, sem substituta', /Total cobrado[\s\S]*500,00/.test(origA4.flat) && /Pago[\s\S]*200,00/.test(origA4.flat) && /Saldo[\s\S]*300,00/.test(origA4.flat) && /LG · Inverter/.test(origA4.flat) && !/Substituta em garantia/.test(origA4.flat), origA4.flat.slice(0, 500));

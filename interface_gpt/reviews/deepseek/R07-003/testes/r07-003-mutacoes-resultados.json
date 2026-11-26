@@ -1,7 +1,8 @@
 {
-  "generatedAt": "2026-11-26T17:31:40.731Z",
+  "generatedAt": "2026-11-26T17:54:30.268Z",
+  "codeSha": "cc738622436d3df1224df700916970570eb0bd40",
   "source": "/home/dragonblue/workspace/interface-gpt-lab/repo/interface_gpt/assets",
-  "scratch": "/home/dragonblue/.hermes/cache/scratch/r07-003-mutacoes-final",
+  "scratch": "/home/dragonblue/.hermes/cache/scratch/r07-003-mutacoes-final2",
   "total": 26,
   "summary": {
     "DETECTADA": 24,

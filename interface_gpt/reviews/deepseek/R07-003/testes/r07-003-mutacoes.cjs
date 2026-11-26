@@ -92,6 +92,6 @@ for (const m of mutations) {
 }
 fs.writeFileSync(path.join(pristine, '..', 'fixtures.json'), JSON.stringify({ mutations: mutations.map(m => ({ id: m.id, file: m.fileOverride || m.file, guard: m.guard, expect: m.expect })) }, null, 2));
 const summary = results.reduce((s, r) => { s[r.status] = (s[r.status] || 0) + 1; return s; }, {});
-fs.writeFileSync(OUT, JSON.stringify({ generatedAt: new Date().toISOString(), source: SOURCE, scratch: SCRATCH, total: results.length, summary, results }, null, 2));
+fs.writeFileSync(OUT, JSON.stringify({ generatedAt: new Date().toISOString(), codeSha: process.env.CODE_SHA || '', source: SOURCE, scratch: SCRATCH, total: results.length, summary, results }, null, 2));
 fs.rmSync(work, { recursive: true, force: true });
 console.log(`TOTAL ${results.length} · DETECTADA ${summary.DETECTADA || 0} · FORA_DO_ALVO ${summary.DETECTADA_FORA_DO_ALVO || 0} · SOBREVIVENTE ${summary.SOBREVIVENTE || 0} · INCONCLUSIVO ${summary.INCONCLUSIVO || 0}`);

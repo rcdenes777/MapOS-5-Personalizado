@@ -58,6 +58,31 @@ Sem PHP/PHPUnit/MySQL (comparação estática), sem rede/`ls-remote`, somente Ch
 
 N2/N5/N6 permanecem ressalvas registradas para decisão do GPT (N2 é trade-off de unidade física; N5 é UX; N6 é R08).
 
-## Reauditoria
+## Reauditoria — rodada 2
 
-A ser preenchida pelo segundo subagente independente após a regeneração das evidências e a reexecução no código final `cc738622436d3df1224df700916970570eb0bd40`.
+**Veredito:** **NAO APTO** no pacote; **0 bloqueantes de código**.
+
+O segundo revisor (contexto novo, somente leitura) reexecutou a captura em cópia scratch, as 14 suítes, R07-003 (domínio/browser/edge/print/captura) e amostras R07-002/R07-001/R06, e conferiu os PDFs/índice/proveniência. Resultados: **306/306**, **33/64/30/5/4**, **31 (30+1), 74, 65, 103 (102+1)**; 20/20 hashes do índice e 141/141 da proveniência; 1 ocorrência de “Substituta em garantia” no A4 e no cupom, 0 na origem.
+
+**Bloqueante remanescente (E2 documental):** `RELATORIO.md`/`RESUMO.md` ainda diziam “0 bloqueantes” sem qualificar o bloqueio de evidência da rodada 1; a auditoria afirmava que os arquivos já haviam sido atualizados, o que ainda não era verdade no commit `9f324803`. O código `cc738622` não tinha bloqueante.
+
+**Ressalvas da rodada 2:**
+
+- N7 parcial: D03 e B21 corrigidos, mas B47 continuava citado como prova de raízes e as citações B18/B08 seguiam amplas.
+- N3: comportamento correto, mas os testes de impressão não exigiam unicidade do rótulo.
+- N1: o caminho exigido está correto; `warrantyOriginRef()` ainda exibe período para OS aberta/cancelada com `conclusion` preenchida (estado direto; não habilita retorno).
+- N2: trade-off unit-scoped; não foi observado mislink real após finalizar #018 e criar OS comum #026.
+- Mutações R07-002/R07-001/R06 foram geradas antes de `cc738622`; os arquivos-alvo de `warranty.js`/`finance.js`/`cancel.js`/`quote.js` não mudaram, mas o `codeSha` não estava gravado.
+- Capturas reexecutadas em scratch diferem das publicadas apenas no horário exibido (06/16) e 3 bytes em 19; não é defeito.
+
+## Correções da rodada 2
+
+1. `RELATORIO.md`/`RESUMO.md` passaram a dizer **“0 bloqueantes de código”** e a registrar explicitamente o **BLOQUEADO de evidência** da rodada 1 e as duas rodadas de revisão.
+2. Citações corrigidas: estoque → B18b/B18c; custo → B06/B18d/B18e; raízes independentes → D13/D33 + B41/B42 (B47 deixou de ser citado como prova); identidade anterior → D06 em cadeia.
+3. R07P3-01/02 passaram a exigir **exatamente uma** ocorrência de “Substituta em garantia” no A4 e no cupom.
+4. `AUDITORIA-INDEPENDENTE.md` registra as duas rodadas e o bloqueio documental; não há mais afirmação de “0 bloqueantes” sem qualificação.
+5. N1/N2/N5/N6 permanecem ressalvas registradas (N1 é fallback de estado direto; N2 é trade-off nativo; N5 é UX; N6 é R08).
+
+## Rodada 3 — veredito final
+
+Aguardando o terceiro subagente independente sobre o pacote corrigido (código `cc738622`, evidências `9f324803` + correções documentais).

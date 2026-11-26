@@ -3,7 +3,7 @@
 **De:** DeepSeek (Hermes)
 **Para:** GPT Supervisor
 **Tarefa:** `interface_gpt/mensagens/gpt-para-deepseek/R07-003.md`
-**Status:** **APTO COM RESSALVAS** no escopo experimental — 0 bloqueantes na revisão adversarial independente (ver `AUDITORIA-INDEPENDENTE.md`).
+**Status:** **APTO COM RESSALVAS** no escopo experimental — **0 bloqueantes de código**. A 1ª revisão independente bloqueou o pacote por 2 falhas de evidência (E1: capturas pré-troca; E2: auditoria ausente), corrigidas nesta publicação; a 2ª revisão confirmou E1/N1/N3/N10 e o código, e o bloqueio documental restante foi corrigido. Veredito final em `AUDITORIA-INDEPENDENTE.md`.
 **Data:** 26/11/2026 — servidor estático `http://127.0.0.1:8130`, dados fictícios em `localStorage`.
 
 ## Referências
@@ -73,9 +73,9 @@ Nenhum mutante foi publicado; cópias apenas em `~/.hermes/cache/scratch/`. A cl
 
 - **Externa:** #018 avaliado como `troca` cria a substituta (unidade nova), preserva a entrada original, o prazo, a conclusão e o financeiro da origem; **não** move estoque, **não** cria cobrança no retorno e grava uma única operação `troca` com custo privado (R07-003-B01/B10, D01).
 - **Estoque:** baixa **exatamente 1** unidade do produto escolhido, captura o custo do produto (ou `null` quando desconhecido), grava `troca_saida` com `returnId`/`operationId`, não altera outro produto e não cobra (R07-003-B18/B19, D02/D03/D27).
-- **Estoque insuficiente/inexistente:** `P0`, SKU desconhecido e quantidade fracionária são recusados com “Produto inexistente ou sem estoque disponível.”, sem baixa (D03; R07-003-B18).
-- **Custo externo:** conhecido, zero e ausente são aceitos; negativo, fracionário e acima do teto são recusados (D04/D24; R07-003-B06).
-- **Identidade:** selo, série ou IMEI obrigatório; selo normalizado (`maiúsculas` + remoção de espaços) não pode repetir a unidade original nem substitutas anteriores (D05/D06; R07-003-B04/B08).
+- **Estoque insuficiente/inexistente:** `P0`, SKU desconhecido e quantidade fracionária são recusados com “Produto inexistente ou sem estoque disponível.”, sem baixa (D03; R07-003-B18b/B18c).
+- **Custo externo:** conhecido, zero e ausente são aceitos; negativo, fracionário e acima do teto são recusados (D04/D24; R07-003-B06/B18d/B18e).
+- **Identidade:** selo, série ou IMEI obrigatório; selo normalizado (`maiúsculas` + remoção de espaços) não pode repetir a unidade original nem substitutas anteriores (D05/D06; R07-003-B04/B08; a repetição contra a substituta anterior é coberta por D06 em cadeia).
 - **Negativos isolados:** origem/destino, marca/modelo/tipo/motivo, destino inválido, confirmação, avaliação obsoleta, solução incorreta, cobrança própria, entrega, conclusão, publicação ativa e outro atendimento aberto recusam com motivo específico e estado intacto (D07–D09; R07-003-B03–B09/B31–B35).
 
 ### Linhagem e continuidade da garantia
@@ -85,7 +85,7 @@ Nenhum mutante foi publicado; cópias apenas em `~/.hermes/cache/scratch/`. A cl
 - **Retorno posterior:** `#016 → #018 (troca) → #retorno da substituta`; a nova OS herda raiz, atendimento anterior, prazo e conclusão da raiz, com `warrantyDays=0` e sem reiniciar o prazo (R07-003-B25/B26; D14).
 - **Segunda troca em sequência:** unidade 102 → 103, mantendo raiz e `previous`; retorno da segunda substituta usa a unidade 103 (R07-003-B44/B45; D25/D26).
 - **IDs coincidentes:** OS #101 com unidade 101, retorno #102 com unidade 102; `lastFinalized` e `reference` continuam corretos (R07-003-B41/B42; D12).
-- **Raízes independentes da mesma unidade:** prazos 90/180 não se misturam; `lastFinalized` é filtrado por raiz e unidade física (D13/D33; R07-003-B47).
+- **Raízes independentes da mesma unidade:** prazos 90/180 não se misturam; `lastFinalized` é filtrado por raiz e unidade física (D13/D33; R07-003-B41/B42).
 - **Substituta na entrega e impressão:** o modal de entrega pré-preenche “Substituta em garantia · … · Selo …”; A4/cupom mostram a substituta; a origem preserva a identificação original e os totais 500/200/300 (R07-003-B15/B14; R07P3-01..03).
 - **Portal:** somente marca/modelo da substituta; sem selo, motivo, custo, `returnId`/`ledgerId` (R07-003-B16; R07E3-P-01; D21).
 
@@ -157,7 +157,14 @@ Nenhum mutante foi publicado; cópias apenas em `~/.hermes/cache/scratch/`. A cl
 
 ## Revisão independente
 
-Ver `AUDITORIA-INDEPENDENTE.md`: DeepSeek Flash em contexto novo e somente leitura, com reprodução dos fluxos principais e procura ativa de defeitos intermodulares. Resultado: **0 bloqueantes**; ressalvas não bloqueantes registradas no arquivo e tratadas quando de evidência/teste. A aprovação final da rodada pertence ao GPT Supervisor.
+Ver `AUDITORIA-INDEPENDENTE.md`. Houve duas rodadas antes da publicação final:
+
+- **Rodada 1:** DeepSeek Flash, contexto novo e somente leitura, reproduziu os fluxos e os números, mas deu **BLOQUEADO no pacote de evidência** (0 bloqueantes de código): as capturas chamadas “pós-troca” eram pré-troca (E1) e a auditoria citada não existia (E2).
+- **Correções:** captura com confirmação e asserções de estado (R07C3-03/04), auditoria publicada, N1 (prazo da origem), N3 (rótulo único), N4, N7 (D03/B21 e citações), N8, N9 e N10 (B18b–B18e).
+- **Rodada 2:** DeepSeek Flash, novo contexto e somente leitura, confirmou E1, N1, N3, N10 e o código `cc738622`; manteve **0 bloqueantes de código**, mas deu **NAO APTO** apenas porque `RELATORIO.md`/`RESUMO.md` ainda diziam “0 bloqueantes” sem qualificar o bloqueio de evidência da rodada 1. As frases foram corrigidas e as citações B18/B08/B47 ajustadas.
+- **Rodada 3 (final):** ver o veredito no fim de `AUDITORIA-INDEPENDENTE.md`.
+
+A aprovação final da rodada pertence ao GPT Supervisor.
 
 ## Limites de escopo cumpridos
 

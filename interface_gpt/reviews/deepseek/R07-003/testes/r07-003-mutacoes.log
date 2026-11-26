@@ -1,0 +1,27 @@
+DETECTADA R07M3-01 — solução vigente exige troca :: falha em D07
+DETECTADA R07M3-02 — cobertura concluída na execução :: falha em D31
+DETECTADA R07M3-03 — retorno aberto para executar :: falha em D07
+DETECTADA R07M3-04 — retorno sem cobrança própria :: falha em D08
+DETECTADA R07M3-05 — retorno sem entrega :: falha em D08
+DETECTADA R07M3-06 — publicação de orçamento retirada :: falha em D08
+DETECTADA R07M3-07 — unidade não substituída nem solução executada :: falha em D10
+DETECTADA R07M3-08 — outro atendimento aberto da unidade :: falha em D09
+DETECTADA R07M3-09 — avaliação esperada (stale) :: falha em D07
+DETECTADA R07M3-10 — confirmação da troca :: falha em D07
+DETECTADA R07M3-11 — origem/destino permitidos :: falha em D05
+DETECTADA R07M3-12 — identificação da nova unidade :: falha em D05
+DETECTADA R07M3-13 — selo normalizado não duplicado :: falha em D06
+DETECTADA R07M3-14 — textos obrigatórios e limites :: falha em D05
+DETECTADA R07M3-15 — custo externo válido :: falha em D04
+DETECTADA R07M3-16 — estoque existente e disponível :: falha em D03
+DETECTADA R07M3-17 — baixa de exatamente 1 unidade :: falha em D02
+DETECTADA R07M3-18 — linhagem física na referência :: falha em D32
+DETECTADA R07M3-19 — unidade substituída não referencia retorno :: falha em D10
+DETECTADA_FORA_DO_ALVO R07M3-20 — lastFinalized restrito à raiz e unidade física :: falha em D11
+DETECTADA R07M3-21 — currentUnit percorre a cadeia de trocas :: falha em D11
+DETECTADA R07M3-22 — linhagem restrita à origem :: falha em D13
+DETECTADA R07M3-23 — operações legadas inicializadas só no sucesso :: falha em D19
+DETECTADA_FORA_DO_ALVO R07M3-24 — identidade física preservada na referência :: falha em D06
+DETECTADA R07M3-25 — portal não projeta a unidade antiga depois da troca :: falha em D21
+DETECTADA R07M3-26 — lastFinalized não cruza raízes da mesma unidade :: falha em D33
+TOTAL 26 · DETECTADA 24 · FORA_DO_ALVO 2 · SOBREVIVENTE 0 · INCONCLUSIVO 0

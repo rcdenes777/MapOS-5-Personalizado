@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-26T14:56:07.172284-03:00",
+  "generatedAt": "2026-11-26T14:58:59.196113-03:00",
   "repository": "rcdenes777/MapOS-5-Personalizado",
   "branch": "interface-gpt",
   "candidate": "b619ceb8fe27b56df8aeac4fbb7c9e46d99a61f8",
@@ -52,6 +52,13 @@
     "warranty-ui.cjs": "40c715cafb8d9f23e27a56d541094894a4b2a4c88c928d14882144c33240fe29",
     "warranty.cjs": "e0cbf1a1cc949a705f5054a31ac6169f66ca7e5b35e510d5f3099c70f4393b01"
   },
+  "reviewDocuments": {
+    "RELATORIO.md": "6e4be0f72773713015bbc32eebc560742439ebdcaf33bd1f976bf717646f971b",
+    "RESUMO.md": "9732816488d1cbe56bf3c9c842aa06349a813ddf535fbdaa75fc7db890ae279b",
+    "INDICE.md": "82fe155be2d8055f976e904d60f43b91bab1bd03ab5d9b4ad2efcd0d67c27119",
+    "MATRIZ-F04.md": "e08289dd5fc3a12e8c545060e27b7f0ac4f31103c03b9907a0bff65cb7d47f90",
+    "AUDITORIA-INDEPENDENTE.md": "11553348fd961a2ecf22395e1cb0fc43a0a531d88c0e7630a587614d43ed1a8f"
+  },
   "evidenceScriptsAndLogs": {
     "testes/r07-002-capture.cjs": "15edb2c7a4b858e4da7f38006b841b7f1b8eac71c7bed28a79822f998a9ebd98",
     "testes/r07-negativos.log": "9714be721b2266ac2c644f5b8834cd3d328f89116538438b6c4c3824c482f169",
@@ -93,7 +100,7 @@
     "testes/r07-mutacoes.log": "ec7b1e6eb2559243c259cb9306b48c6ae1bc85b60515697650224bf85a0bb8b2",
     "testes/r07-003-capture-resultados.json": "ef905ffb8993817a662f9957690b6c8a07eafd5375d6aade6466f3263d3895f9",
     "testes/r07-browser.cjs.log": "3df1c072d3a4cd3d8fe0b1941e7766764e57879407af5b8c5721dd45ea60a9bc",
-    "testes/proveniencia.py": "c2da9422c65f4d5fa0f0934b99719e8bf8c2e6c248c828812dac8c852644caee",
+    "testes/proveniencia.py": "f6f08b8b86b04cf6a99c69c119b993da75863569a100da3daefc810ef1ac7354",
     "testes/r07-003-mutacoes.cjs": "6bbb924df6aef61b9f5a46e5a43ca395d30847cb08f05b4ed934e265ee5cf782",
     "testes/r07-003-domain-resultados.json": "544a8b152abec4c8bcb1dda7cedd953cd4ec5c5833ee5bf5cb97481e008717ad",
     "testes/r07-browser-resultados.json": "5cb9c5211ca7833d6214cfc3b4f9727938029db188457d1c11723d0716aabcab",

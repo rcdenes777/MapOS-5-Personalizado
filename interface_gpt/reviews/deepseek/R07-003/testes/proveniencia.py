@@ -43,6 +43,12 @@ for root, _, files in os.walk(os.path.join(BASE, 'testes')):
             p = os.path.join(root, f)
             scripts[os.path.relpath(p, BASE)] = sha(p)
 
+docs = {}
+for f in ['RELATORIO.md', 'RESUMO.md', 'INDICE.md', 'MATRIZ-F04.md', 'AUDITORIA-INDEPENDENTE.md']:
+    p = os.path.join(BASE, f)
+    if os.path.exists(p):
+        docs[f] = sha(p)
+
 data = {
     'generatedAt': datetime.datetime.now().astimezone().isoformat(),
     'repository': 'rcdenes777/MapOS-5-Personalizado',
@@ -68,6 +74,7 @@ data = {
     },
     'assets': assets,
     'gptSuites': suites,
+    'reviewDocuments': docs,
     'evidenceScriptsAndLogs': scripts,
 }
 out = os.path.join(BASE, 'proveniencia.json')

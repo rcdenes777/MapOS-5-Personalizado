@@ -1,6 +1,6 @@
 # R07-003 — Resumo
 
-**Status:** APTO COM RESSALVAS no escopo experimental — **0 bloqueantes de código**; a 1ª revisão bloqueou o pacote por 2 falhas de evidência (E1/E2), corrigidas; a 2ª confirmou o código e apontou apenas a redação do status, corrigida. Veredito final em `AUDITORIA-INDEPENDENTE.md`.
+**Status:** APTO COM RESSALVAS no escopo experimental — **0 bloqueantes de código**; a 1ª revisão bloqueou o pacote por 2 falhas de evidência (E1/E2), corrigidas; a 2ª confirmou o código e apontou ressalvas de redação/teste/proveniência, corrigidas; a 3ª deu **APTO COM RESSALVAS**. Veredito final em `AUDITORIA-INDEPENDENTE.md`.
 
 **Candidato:** `b619ceb8fe27b56df8aeac4fbb7c9e46d99a61f8`
 **Código final testado:** `cc738622436d3df1224df700916970570eb0bd40` (candidato + vínculo do retorno ativo, prazo da origem e rótulo único na impressão)

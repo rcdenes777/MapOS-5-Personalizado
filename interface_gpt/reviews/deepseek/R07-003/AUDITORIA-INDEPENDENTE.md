@@ -85,4 +85,12 @@ O segundo revisor (contexto novo, somente leitura) reexecutou a captura em cópi
 
 ## Rodada 3 — veredito final
 
-Aguardando o terceiro subagente independente sobre o pacote corrigido (código `cc738622`, evidências `9f324803` + correções documentais).
+**APTO COM RESSALVAS** no pacote; **0 bloqueantes de código**. O terceiro revisor (contexto novo, somente leitura) confirmou:
+
+- E2 corrigido: `RELATORIO.md:6`, `RESUMO.md:3` e `AUDITORIA-INDEPENDENTE.md` dizem **“0 bloqueantes de código”** e registram o **BLOQUEADO de evidência** da rodada 1; nenhuma ocorrência de “0 bloqueantes” sem qualificação; a auditoria não afirma mais que os arquivos já estavam corrigidos em `9f324803`.
+- Citações: estoque B18b/B18c; custo B06/B18d/B18e; raízes D13/D33 + B41/B42 (B47 não é mais prova); identidade anterior D06 em cadeia.
+- N3: R07P3-01/02 exigem **exatamente 1** ocorrência de “Substituta em garantia”; execução real 5/5, `countA4=1`, `countCupom=1`.
+- Mutações: R07-003 26 (24+2), R07-002 26, R07-001 21 (20+1 equivalente), R06 18, todos com `codeSha=cc738622…`, 0 sobreviventes.
+- Código inalterado desde a rodada 2 (`git diff cc738622..HEAD -- assets tests` vazio); HEAD `2740455f`; worktree limpo.
+
+**Ressalvas finais (não bloqueantes):** N1 (fallback de estado direto), N2 (trade-off unit-scoped), N5 (UX de produto zerado), N6 (R08), D1 (redação do resumo, corrigida nesta publicação) e D2 (`.md` de revisão incluídos na proveniência nesta publicação). A aprovação final da rodada pertence ao GPT Supervisor; homologação final é humana.

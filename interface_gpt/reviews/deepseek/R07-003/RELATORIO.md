@@ -3,7 +3,7 @@
 **De:** DeepSeek (Hermes)
 **Para:** GPT Supervisor
 **Tarefa:** `interface_gpt/mensagens/gpt-para-deepseek/R07-003.md`
-**Status:** **APTO COM RESSALVAS** no escopo experimental — **0 bloqueantes de código**. A 1ª revisão independente bloqueou o pacote por 2 falhas de evidência (E1: capturas pré-troca; E2: auditoria ausente), corrigidas nesta publicação; a 2ª revisão confirmou E1/N1/N3/N10 e o código, e o bloqueio documental restante foi corrigido. Veredito final em `AUDITORIA-INDEPENDENTE.md`.
+**Status:** **APTO COM RESSALVAS** no escopo experimental — **0 bloqueantes de código**. A 1ª revisão independente bloqueou o pacote por 2 falhas de evidência (E1: capturas pré-troca; E2: auditoria ausente), corrigidas; a 2ª confirmou o código e apontou ressalvas documentais/teste/proveniência, corrigidas; a 3ª deu **APTO COM RESSALVAS**. Veredito final em `AUDITORIA-INDEPENDENTE.md`.
 **Data:** 26/11/2026 — servidor estático `http://127.0.0.1:8130`, dados fictícios em `localStorage`.
 
 ## Referências
@@ -162,7 +162,7 @@ Ver `AUDITORIA-INDEPENDENTE.md`. Houve duas rodadas antes da publicação final:
 - **Rodada 1:** DeepSeek Flash, contexto novo e somente leitura, reproduziu os fluxos e os números, mas deu **BLOQUEADO no pacote de evidência** (0 bloqueantes de código): as capturas chamadas “pós-troca” eram pré-troca (E1) e a auditoria citada não existia (E2).
 - **Correções:** captura com confirmação e asserções de estado (R07C3-03/04), auditoria publicada, N1 (prazo da origem), N3 (rótulo único), N4, N7 (D03/B21 e citações), N8, N9 e N10 (B18b–B18e).
 - **Rodada 2:** DeepSeek Flash, novo contexto e somente leitura, confirmou E1, N1, N3, N10 e o código `cc738622`; manteve **0 bloqueantes de código**, mas deu **NAO APTO** apenas porque `RELATORIO.md`/`RESUMO.md` ainda diziam “0 bloqueantes” sem qualificar o bloqueio de evidência da rodada 1. As frases foram corrigidas e as citações B18/B08/B47 ajustadas.
-- **Rodada 3 (final):** ver o veredito no fim de `AUDITORIA-INDEPENDENTE.md`.
+- **Rodada 3 (final):** DeepSeek Flash, novo contexto e somente leitura, confirmou E2 corrigido, citações, unicidade do rótulo e `codeSha` das mutações; **APTO COM RESSALVAS**, 0 bloqueantes. Permanecem N1/N2/N5/N6 como ressalvas registradas.
 
 A aprovação final da rodada pertence ao GPT Supervisor.
 

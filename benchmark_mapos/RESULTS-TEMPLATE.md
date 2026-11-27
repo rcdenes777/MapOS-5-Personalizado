@@ -1,0 +1,12 @@
+# Campaign report
+- Frozen package SHA / native SHA / schema & fixture hashes / grader hash:
+- Controls: 3 reference pass, 3 starter fail material checks (attach actual results, not assertions).
+- Runtime, model/provider/effort and adapter provenance; exact sandbox and DB isolation proof:
+- Approved budget and resource limits:
+- 24-row attempt table (summarize.py), failures and invalid attempts preserved:
+- Per-task behavior/regression results, critical failures, blinded T03 findings:
+- Cost actual vs API-equivalent, cache accounting, retries/interventions, subscription quota, infra separate:
+- Autonomy observations and limitations:
+- Independent audit of results (assessor and scope):
+- Recommendation by role, supported by observed evidence only:
+- Production and active cron untouched; unresolved issues:

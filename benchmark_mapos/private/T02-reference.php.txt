@@ -1,0 +1,31 @@
+    public function resumosBaixas(array $linhas): array
+    {
+        if (! array_is_list($linhas) || count($linhas) > 100) {
+            throw new DomainException('Lote inválido.');
+        }
+        foreach ($linhas as $l) {
+            if (! is_array($l) || count($l) !== 3) {
+                throw new DomainException('Linha inválida.');
+            }
+            foreach (['os_id', 'os_item_id', 'produto_id'] as $k) {
+                if (! isset($l[$k]) || ! is_int($l[$k]) || $l[$k] <= 0) {
+                    throw new DomainException('Linha inválida.');
+                }
+            }
+        }
+        if ($linhas === []) {
+            return [];
+        }
+        $r = $this->db->select('os_id, os_item_id, produto_id, SUM(quantidade) AS saldo', false)
+            ->where_in('os_id', array_column($linhas, 'os_id'))
+            ->where_in('os_item_id', array_column($linhas, 'os_item_id'))
+            ->where_in('produto_id', array_column($linhas, 'produto_id'))
+            ->where_in('tipo', ['os_saida', 'os_devolucao', 'os_consumo', 'os_conciliacao'])
+            ->group_by(['os_id', 'os_item_id', 'produto_id'])->get('trifase_estoque_eventos')->result_array();
+        $m = [];
+        foreach ($r as $row) {
+            $m[$row['os_id'] . ':' . $row['os_item_id'] . ':' . $row['produto_id']] = max(0, -(int) $row['saldo']);
+        }
+        return array_map(static fn ($l) => $m[$l['os_id'] . ':' . $l['os_item_id'] . ':' . $l['produto_id']] ?? 0, $linhas);
+    }
+

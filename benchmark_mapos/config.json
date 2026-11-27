@@ -1,0 +1,56 @@
+{
+  "native_sha": "8c256cae4ddaeefad68922abddbb8addfe37c99d",
+  "schema_sha": "ae848c5697be755043b7b7b934895efea110da82",
+  "upstream_sha": "08840c888b54be909be73376c0dde26f5ea872e9",
+  "repetitions": 2,
+  "proposed_agent_minutes": 45,
+  "models": [
+    {
+      "id": "luna",
+      "model": "gpt-6-luna",
+      "provider": "openai-codex",
+      "effort": "max"
+    },
+    {
+      "id": "terra",
+      "model": "gpt-6.1-terra",
+      "provider": "openai-codex",
+      "effort": "max"
+    },
+    {
+      "id": "sol",
+      "model": "gpt-6.1-sol",
+      "provider": "openai-codex",
+      "effort": "medium"
+    },
+    {
+      "id": "flash",
+      "model": "deepseek-flash",
+      "provider": "deepseek",
+      "effort": "max"
+    }
+  ],
+  "tasks": [
+    {
+      "id": "T01",
+      "allowed": [
+        "application/models/Trifase_estoque_model.php"
+      ]
+    },
+    {
+      "id": "T02",
+      "allowed": [
+        "application/models/Trifase_estoque_model.php"
+      ]
+    },
+    {
+      "id": "T03",
+      "allowed": [
+        "application/models/Trifase_estoque_model.php",
+        "application/models/Trifase_entrega_model.php",
+        "application/models/Trifase_financeiro_model.php",
+        "REVIEW.md"
+      ]
+    }
+  ]
+}

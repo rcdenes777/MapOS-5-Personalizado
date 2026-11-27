@@ -1,0 +1,27 @@
+{
+  "T01": [
+    {
+      "path": "application/models/Trifase_estoque_model.php",
+      "old": "->where(['os_id' => $os, 'os_item_id' => $item, 'produto_id' => $produto])",
+      "new": "->where(['os_id' => $os, 'produto_id' => $produto])"
+    }
+  ],
+  "T02": [],
+  "T03": [
+    {
+      "path": "application/models/Trifase_entrega_model.php",
+      "old": "->where(['os_id' => $osId, 'id' => $eventoId, 'tipo' => 'registrar'])",
+      "new": "->where(['id' => $eventoId, 'tipo' => 'registrar'])"
+    },
+    {
+      "path": "application/models/Trifase_financeiro_model.php",
+      "old": "->where(['os_id' => $osId, 'id' => $eventoId, 'tipo' => 'receber'])",
+      "new": "->where(['id' => $eventoId, 'tipo' => 'receber'])"
+    },
+    {
+      "path": "application/models/Trifase_estoque_model.php",
+      "old": "if ($tipo === 'os_devolucao' && $saldo < (int) $linha->quantidade) {",
+      "new": "if ($tipo === 'os_devolucao' && $saldo < $quantidade) {"
+    }
+  ]
+}

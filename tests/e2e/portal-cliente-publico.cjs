@@ -45,6 +45,12 @@ const fixture = JSON.parse(cp.execFileSync('docker', ['exec', container, 'php', 
     texto = await page.locator('body').innerText();
     assert.match(texto, new RegExp(`OS #${fixture.ordensA[1]}\\b`));
     assert.doesNotMatch(texto, new RegExp(`OS #${fixture.ordensA[2]}\\b`));
+    response = await page.goto(`${base}/index.php/publico_cliente/os/${fixture.a}/${fixture.ordensA[1]}`);
+    texto = await page.locator('body').innerText();
+    assert.match(texto, /Total cobrado/);
+    assert.match(texto, /R\$ 200,00/);
+    assert.match(texto, /Total pago/);
+    assert.match(texto, /R\$ 50,00/);
     response = await page.goto(`${base}/index.php/publico_cliente/os/${fixture.a}/${fixture.osB}`);
     assert.equal(response.status(), 404, 'other customer order is not accessible');
     response = await page.goto(`${base}/index.php/publico_cliente/os/${fixture.b}/${fixture.osB}`);
@@ -81,6 +87,11 @@ const fixture = JSON.parse(cp.execFileSync('docker', ['exec', container, 'php', 
     assert.equal(revokedResponse.status(), 404, 'revocation immediately invalidates renewed link');
     const otherResponse = await context.request.get(`${base}/index.php/publico_cliente/index/${fixture.b}`);
     assert.equal(otherResponse.status(), 200, 'revocation does not affect another customer');
+    cp.execFileSync('docker', ['exec', '-e', 'PORTAL_MODE=expirar', container, 'php', '-d', 'variables_order=EGPCS', '/var/www/html/tests/Support/portal_cliente_publico.php'], { stdio: 'ignore' });
+    const expired = await context.request.get(`${base}/index.php/publico_cliente/index/${fixture.b}`);
+    assert.equal(expired.status(), 404, 'expired token is denied');
+    assert.match(expired.headers()['cache-control'] || '', /no-store/i);
+    assert.equal(expired.headers()['referrer-policy'], 'no-referrer');
     const restritoContext = await browser.newContext();
     const restritoPage = await restritoContext.newPage();
     await restritoPage.goto(`${base}/index.php/login`);

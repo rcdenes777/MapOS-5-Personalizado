@@ -50,6 +50,10 @@ $filtros += ['entregue' => 'Entregues', 'nao-entregue' => 'Não entregues'];
                     <div><dt class="text-caption text-muted">Equipamento</dt><dd class="break-words"><?= e(osTextoCurto($ordem->descricaoProduto) ?: 'Não informado') ?></dd></div>
                     <div><dt class="text-caption text-muted">Serviço</dt><dd><?= e($ordem->status) ?></dd></div>
                     <div><dt class="text-caption text-muted">Entregue</dt><dd><?= e($ordem->entregue ? 'Sim' : 'Não') ?></dd></div>
+                    <?php if ($detalhe && isset($ordem->financeiro)) { ?>
+                        <div><dt class="text-caption text-muted">Total cobrado</dt><dd><?= e($dinheiro($ordem->financeiro['total_c'])) ?></dd></div>
+                        <div><dt class="text-caption text-muted">Total pago</dt><dd><?= e($dinheiro($ordem->financeiro['pago_c'])) ?></dd></div>
+                    <?php } ?>
                     <div><dt class="text-caption text-muted">Pagamento</dt><dd><?= e($financeiroDisponivel ? ($ordem->financeiro['situacao'] ?? 'Sem cobrança formalizada') : 'Informação financeira indisponível') ?></dd></div>
                     <div><dt class="text-caption text-muted">Saldo a pagar</dt><dd><?= e(isset($ordem->financeiro) ? $dinheiro($ordem->financeiro['saldo_c']) : '—') ?></dd></div>
                 </dl>

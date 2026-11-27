@@ -4,6 +4,10 @@ Este guia leva uma instalação da série 4 (4.55.x, a última) para a v5. Se vo
 
 > A v5 ainda não tem release estável. Faça a migração primeiro numa **cópia** do servidor e do banco, confira o resultado e só então repita em produção.
 
+### Extensão Trifase: portal público do cliente
+
+A migration `20261127010000_trifase_cliente_publico` cria a tabela de links por cliente. A ativação, os caminhos adicionais do proxy, as restrições de logs e os riscos de rollback estão descritos em [Portal público do cliente](trifase/PORTAL_CLIENTE_PUBLICO.md). Aplique primeiro em laboratório isolado; a implementação não autoriza deploy nem alteração do banco ou proxy de produção.
+
 ### Extensão Trifase: respostas e entrega
 
 A atualização de respostas por canal e regularização tardia requer as migrations aditivas `20261119010000` e `20261119020000`. Elas preservam decisões antigas e não concedem permissões. A nova ação `regularizarOrcamento` depende de concessão explícita aos grupos autorizados pelo proprietário. Consulte [Respostas de orçamento e entrega física](trifase-orcamento-comunicacao.md) antes de atualizar; validação e migrations devem ocorrer primeiro em banco descartável. A implementação desta extensão não autoriza deploy nem alteração do banco de produção.

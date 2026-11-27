@@ -16,6 +16,14 @@ ob_start();
 require 'index.php';
 ob_end_clean();
 $ci =& get_instance();
+if (getenv('PORTAL_MODE') === 'expirar') {
+    $f = json_decode(file_get_contents('/lab/portal-cliente-private.json'), true, flags: JSON_THROW_ON_ERROR);
+    $ci->db->where('token_hash', hash('sha256', $f['b']))->update('trifase_cliente_publico_links', ['expira_em' => time() - 1]);
+    if ($ci->db->affected_rows() !== 1) {
+        throw new RuntimeException('Fixture de expiração inválida.');
+    }
+    exit;
+}
 $base = json_decode(file_get_contents('/lab/fixture-ids.json'), true, flags: JSON_THROW_ON_ERROR);
 $usuario = (int) $base['usuario'];
 $ci->db->insert('permissoes', ['nome' => 'Portal laboratório somente leitura ' . bin2hex(random_bytes(3)), 'permissoes' => json_encode(['vCliente' => 1, 'vOs' => 1]), 'situacao' => 1, 'data' => date('Y-m-d')]);

@@ -1,0 +1,110 @@
+[
+  {
+    "suite": "interface_gpt/tests/cancel-ui.cjs",
+    "exit": 0,
+    "stdout": "11 cancellation UI checks passed.\n",
+    "stderr": ""
+  },
+  {
+    "suite": "interface_gpt/tests/cancel.cjs",
+    "exit": 0,
+    "stdout": "30 cancellation domain checks passed.\n",
+    "stderr": ""
+  },
+  {
+    "suite": "interface_gpt/tests/finance-ui.cjs",
+    "exit": 0,
+    "stdout": "12 finance integration checks passed.\n",
+    "stderr": ""
+  },
+  {
+    "suite": "interface_gpt/tests/finance.cjs",
+    "exit": 0,
+    "stdout": "24 financial domain checks passed.\n",
+    "stderr": ""
+  },
+  {
+    "suite": "interface_gpt/tests/line-identity-ui.cjs",
+    "exit": 0,
+    "stdout": "6 stable line identity UI checks passed.\n",
+    "stderr": ""
+  },
+  {
+    "suite": "interface_gpt/tests/line-identity.cjs",
+    "exit": 0,
+    "stdout": "15 stable line identity domain checks passed.\n",
+    "stderr": ""
+  },
+  {
+    "suite": "interface_gpt/tests/portal-page.cjs",
+    "exit": 0,
+    "stdout": "8 portal page render checks passed.\n",
+    "stderr": ""
+  },
+  {
+    "suite": "interface_gpt/tests/portal.cjs",
+    "exit": 0,
+    "stdout": "24 portal domain checks passed.\n",
+    "stderr": ""
+  },
+  {
+    "suite": "interface_gpt/tests/quote.cjs",
+    "exit": 0,
+    "stdout": "29 quote domain checks passed.\n",
+    "stderr": ""
+  },
+  {
+    "suite": "interface_gpt/tests/smoke.cjs",
+    "exit": 0,
+    "stdout": "72 profile/route combinations; queue, financial display and escaping checks passed.\n",
+    "stderr": ""
+  },
+  {
+    "suite": "interface_gpt/tests/stock-ui.cjs",
+    "exit": 0,
+    "stdout": "8 stock UI checks passed.\n",
+    "stderr": ""
+  },
+  {
+    "suite": "interface_gpt/tests/stock.cjs",
+    "exit": 0,
+    "stdout": "20 stock domain checks passed.\n",
+    "stderr": ""
+  },
+  {
+    "suite": "interface_gpt/tests/warranty-refund-ui.cjs",
+    "exit": 0,
+    "stdout": "7 warranty refund UI checks passed.\n",
+    "stderr": ""
+  },
+  {
+    "suite": "interface_gpt/tests/warranty-refund.cjs",
+    "exit": 0,
+    "stdout": "30 warranty refund domain checks passed.\n",
+    "stderr": ""
+  },
+  {
+    "suite": "interface_gpt/tests/warranty-swap-ui.cjs",
+    "exit": 0,
+    "stdout": "6 warranty swap UI checks passed.\n",
+    "stderr": ""
+  },
+  {
+    "suite": "interface_gpt/tests/warranty-swap.cjs",
+    "exit": 0,
+    "stdout": "22 warranty swap domain checks passed.\n",
+    "stderr": ""
+  },
+  {
+    "suite": "interface_gpt/tests/warranty-ui.cjs",
+    "exit": 0,
+    "stdout": "9 warranty UI checks passed.\n",
+    "stderr": ""
+  },
+  {
+    "suite": "interface_gpt/tests/warranty.cjs",
+    "exit": 0,
+    "stdout": "22 warranty domain checks passed.\n",
+    "stderr": ""
+  }
+]

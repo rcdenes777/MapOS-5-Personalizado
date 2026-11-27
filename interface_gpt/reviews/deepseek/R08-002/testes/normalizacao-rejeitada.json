@@ -1,0 +1,50 @@
+{
+  "error": "Item não encontrado.",
+  "unchanged": false,
+  "before": {
+    "id": 1,
+    "status": "Aberto",
+    "total": 0,
+    "paid": 0,
+    "history": [],
+    "cancellation": {
+      "events": [
+        {
+          "id": 1,
+          "type": "request"
+        }
+      ]
+    }
+  },
+  "after": {
+    "id": 1,
+    "status": "Aberto",
+    "total": 0,
+    "paid": 0,
+    "history": [],
+    "cancellation": {
+      "events": [
+        {
+          "id": 1,
+          "type": "request"
+        }
+      ]
+    },
+    "quote": {
+      "draft": {
+        "items": [],
+        "discount": 0,
+        "terms": {
+          "payment": "",
+          "deadline": "",
+          "warranty": "",
+          "diagnosis": ""
+        }
+      },
+      "versions": [],
+      "current": null,
+      "active": false,
+      "nextLineId": 1
+    }
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "candidate": "647dec727fbbc6673fa713d517476f4336fb3314",
+  "code_tree": "64e29267f59fff3d9a6bfaf47bd7e656eb9b9511",
+  "tested_worktree_sha256": {
+    "interface_gpt/assets/app.js": "5fd024021f0f4d664e30f9e25d16e0bdc7e55bfe62c2d2c84f9935b2f320b419",
+    "interface_gpt/assets/cancel-ui.js": "9e3ba1527a2ce227553c3a039474d8eb24c6251b9d30daed0b504b5e22ec28a2",
+    "interface_gpt/assets/cancel.js": "e60bbfa7c4a4dee1033d0ced8a8f351ac6ad57d4eb3f30e767a8c1a01eeb1adc",
+    "interface_gpt/assets/finance-ui.js": "15a746dc8c1852b1a009b98c6fa20c459134a4312ee92842c895fab0b65fbe4e",
+    "interface_gpt/assets/finance.js": "0929532d945fb2d29af9dfa23463bb79cfa7d645f432a6de518a9096e7b565ed",
+    "interface_gpt/assets/portal-page.js": "a3a76b09fb7871be59537cb1c5832cdf21c226557511550b3579bc50980c7e6c",
+    "interface_gpt/assets/portal.js": "9f4fc3b04d638b3a74d0707c199f87b580fbcb49e62ce3018ba6ba8f5f2a8fe5",
+    "interface_gpt/assets/quote-ui.js": "7ac341a725876690df47d4f3a97bf8bfb3f2b61a2390d50c097174cd4b7a792a",
+    "interface_gpt/assets/quote.js": "8b74da135827bf8ec067c9a62f63aa94c9607aca5245ee5d2530cd4124c37568",
+    "interface_gpt/assets/stock.js": "c79062cc26394589e3412d960028b7c7a1d0ca512676aaac461d1e3c4ca40209",
+    "interface_gpt/assets/warranty-ui.js": "0eba7c2b702a5f9473b76f8f506ea0689e9bd3f8c149210870ab65715fed3d38",
+    "interface_gpt/assets/warranty.js": "12dbdf67948f17032cef64171d1859e17622c21f3f2431e52b998a27b683584a",
+    "interface_gpt/index.html": "1d16cab8328cbd86d22a1ab7da33e260f23c6b5643142db08e4c265bcc8ce241"
+  }
+}

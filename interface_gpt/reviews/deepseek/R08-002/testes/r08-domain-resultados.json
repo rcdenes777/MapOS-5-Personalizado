@@ -1,0 +1,222 @@
+{
+  "generatedAt": "2026-11-27T00:35:14.034Z",
+  "codeSha": "",
+  "incrementSha": "",
+  "source": "/home/dragonblue/workspace/interface-gpt-lab/repo/interface_gpt/assets",
+  "total": 35,
+  "summary": {
+    "PASS": 35
+  },
+  "results": [
+    {
+      "id": "D01",
+      "name": "Linhas idênticas recebem IDs distintos e inteiros positivos",
+      "status": "PASS",
+      "detail": "[1,2,3]"
+    },
+    {
+      "id": "D02",
+      "name": "Editar quantidade, preço e nome da mesma linha/tipo preserva o ID",
+      "status": "PASS",
+      "detail": "[1,2,3]"
+    },
+    {
+      "id": "D03",
+      "name": "Reordenar linhas preserva os IDs por identidade, não por índice",
+      "status": "PASS",
+      "detail": "[3,2,1]"
+    },
+    {
+      "id": "D04",
+      "name": "Excluir linha não recicla o ID em inclusão posterior",
+      "status": "PASS",
+      "detail": "[2,3,4]"
+    },
+    {
+      "id": "D05",
+      "name": "Trocar o tipo da linha aloca novo ID (mesmo nome e valores)",
+      "status": "PASS",
+      "detail": "[[\"Serviço\",3],[\"Serviço\",2]]"
+    },
+    {
+      "id": "D06",
+      "name": "ID forjado é rejeitado com mensagem exata e estado intacto; null é inclusão nova",
+      "status": "PASS",
+      "detail": "forjado rejeitado; null tratado como inclusão; edição válida aceita"
+    },
+    {
+      "id": "D07",
+      "name": "ID duplicado no mesmo payload é rejeitado sem duplicar linha",
+      "status": "PASS",
+      "detail": "duplicidade rejeitada"
+    },
+    {
+      "id": "D08",
+      "name": "Linha nova sem ID recebe ID novo sem afetar as linhas existentes",
+      "status": "PASS",
+      "detail": "[1,2,3]"
+    },
+    {
+      "id": "D09",
+      "name": "Publicação anterior permanece byte a byte imutável após editar o rascunho",
+      "status": "PASS",
+      "detail": "v1 intacta; vigência anulada"
+    },
+    {
+      "id": "D10",
+      "name": "Nova publicação compara identidade mesmo com valores públicos idênticos",
+      "status": "PASS",
+      "detail": "identidade nova invalidou a versão"
+    },
+    {
+      "id": "D11",
+      "name": "Snapshot legado sem IDs mantém a comparação de conteúdo original",
+      "status": "PASS",
+      "detail": "vigente pelo conteúdo legado"
+    },
+    {
+      "id": "D12",
+      "name": "Migração perezosa não reescreve snapshot publicado nem cobrança legada",
+      "status": "PASS",
+      "detail": "legado intacto após init repetido"
+    },
+    {
+      "id": "D13",
+      "name": "Projeção pública não expõe IDs internos da linha",
+      "status": "PASS",
+      "detail": "sem lineId/nextLineId"
+    },
+    {
+      "id": "D14",
+      "name": "nextLineId é monotônico após serialização e exclusão",
+      "status": "PASS",
+      "detail": "[1,3]"
+    },
+    {
+      "id": "D15",
+      "name": "Conferência corrompida por ID duplicado é reparada só no rascunho",
+      "status": "PASS",
+      "detail": "[1,2]"
+    },
+    {
+      "id": "D31",
+      "name": "Excluir a linha de maior ID não recicla o número na inclusão seguinte",
+      "status": "PASS",
+      "detail": "[1,3]"
+    },
+    {
+      "id": "D32",
+      "name": "nextLineId maior que o máximo é respeitado (contador monotônico)",
+      "status": "PASS",
+      "detail": "ID 10 usado, contador preservado"
+    },
+    {
+      "id": "D16",
+      "name": "Conferir item por ID + chave remove a linha certa e preserva as demais",
+      "status": "PASS",
+      "detail": "linha A removida; B/C intactas"
+    },
+    {
+      "id": "D17",
+      "name": "Chave stale da mesma linha é rejeitada após retirada parcial; nova chave permite",
+      "status": "PASS",
+      "detail": "retirada parcial manteve ID; replay antigo bloqueado"
+    },
+    {
+      "id": "D18",
+      "name": "Modal stale de A não atinge B quando B ocupa o índice original de A",
+      "status": "PASS",
+      "detail": "B intacta; índice não é identificador"
+    },
+    {
+      "id": "D19",
+      "name": "Reordenar outras linhas não redireciona a chave da linha selecionada",
+      "status": "PASS",
+      "detail": "reordenação preservou seleção exata"
+    },
+    {
+      "id": "D20",
+      "name": "Chave de outra OS / pedido é rejeitada sem tocar o estado",
+      "status": "PASS",
+      "detail": "outra OS e pedido novo bloqueados"
+    },
+    {
+      "id": "D21",
+      "name": "ID inexistente, chave ausente e chave falsa são rejeitados com motivo específico",
+      "status": "PASS",
+      "detail": "negativos isolados com positivo"
+    },
+    {
+      "id": "D22",
+      "name": "Duplo envio do mesmo modal não gera segundo evento",
+      "status": "PASS",
+      "detail": "sem evento duplicado"
+    },
+    {
+      "id": "D23",
+      "name": "Conferência técnica duplicada é rejeitada; identidade nova exige nova conferência",
+      "status": "PASS",
+      "detail": "duplicada rejeitada; identidade nova conferida"
+    },
+    {
+      "id": "D24",
+      "name": "Chave financeira incorpora a identidade e rejeita acerto obsoleto no confirm",
+      "status": "PASS",
+      "detail": "k1 != k2; chave antiga rejeitada; chave atual confirmou"
+    },
+    {
+      "id": "D25",
+      "name": "Cobrança formalizada preserva o lineId e bloqueia edição posterior",
+      "status": "PASS",
+      "detail": "cobrança com IDs, imutável"
+    },
+    {
+      "id": "D26",
+      "name": "itemKey distingue OS, pedido, linha e valores",
+      "status": "PASS",
+      "detail": "chave composicional"
+    },
+    {
+      "id": "D27",
+      "name": "Retirada de serviço não movimenta estoque e preserva o financeiro",
+      "status": "PASS",
+      "detail": "sem movimento e sem cobrança"
+    },
+    {
+      "id": "D28",
+      "name": "Selo normalizado detecta unidade antiga e substituta em qualquer cliente",
+      "status": "PASS",
+      "detail": "normalização e linhagem"
+    },
+    {
+      "id": "D29",
+      "name": "Selo não casa por substring nem por outro tipo de operação",
+      "status": "PASS",
+      "detail": "sem falso positivo"
+    },
+    {
+      "id": "D30",
+      "name": "Produto zerado é recusado no handler com motivo exato e sem baixa",
+      "status": "PASS",
+      "detail": "handler direto recusou zero"
+    },
+    {
+      "id": "D33",
+      "name": "Chave financeira distingue pedidos distintos com os mesmos itens e rejeita a antiga",
+      "status": "PASS",
+      "detail": "k1 != k2 e chave do pedido anterior rejeitada"
+    },
+    {
+      "id": "D34",
+      "name": "Chave financeira distingue duas OS com itens e pedido de mesmo id",
+      "status": "PASS",
+      "detail": "chaves distintas entre OS; chave da outra OS rejeitada"
+    },
+    {
+      "id": "D35",
+      "name": "Mudança de quantidade invalida a conferência técnica (retrato inclui quantidade)",
+      "status": "PASS",
+      "detail": "quantidade no retrato técnico"
+    }
+  ]
+}

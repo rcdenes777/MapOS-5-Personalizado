@@ -1,0 +1,10 @@
+{
+  "original": {
+    "error": "Saldo insuficiente ou fora do limite permitido.",
+    "unchanged": true
+  },
+  "mutante": {
+    "error": "Quantidade ou valor inválido.",
+    "unchanged": true
+  }
+}

@@ -1,0 +1,275 @@
+{
+  "generatedAt": "2026-11-27T01:32:37.705Z",
+  "codeSha": "uncommitted-9a6159d927b92f78a76688b4680280062297d7887f8fc909c270d402979637f3",
+  "source": "/home/dragonblue/workspace/interface-gpt-lab/repo/interface_gpt/assets",
+  "scratch": "/home/dragonblue/.hermes/cache/scratch/r08-005-r08-mutacoes",
+  "total": 25,
+  "summary": {
+    "DETECTADA": 21,
+    "SOBREVIVENTE": 1,
+    "INCONCLUSIVO": 3
+  },
+  "results": [
+    {
+      "id": "R08M-01",
+      "file": "quote.js",
+      "guard": "edição de mesma linha/tipo preserva ID",
+      "expect": [
+        "D02"
+      ],
+      "status": "DETECTADA",
+      "detail": "falha em D02"
+    },
+    {
+      "id": "R08M-02",
+      "file": "quote.js",
+      "guard": "troca de tipo aloca novo ID",
+      "expect": [
+        "D05"
+      ],
+      "status": "DETECTADA",
+      "detail": "falha em D05"
+    },
+    {
+      "id": "R08M-03",
+      "file": "quote.js",
+      "guard": "contador não é recalculado do máximo (sem reciclagem)",
+      "expect": [
+        "D14",
+        "D31"
+      ],
+      "status": "DETECTADA",
+      "detail": "falha em D14"
+    },
+    {
+      "id": "R08M-04",
+      "file": "quote.js",
+      "guard": "identify considera o máximo das linhas existentes",
+      "expect": [
+        "D15"
+      ],
+      "status": "DETECTADA",
+      "detail": "falha em D15"
+    },
+    {
+      "id": "R08M-05",
+      "file": "quote.js",
+      "guard": "identify repara ID duplicado",
+      "expect": [
+        "D15"
+      ],
+      "status": "DETECTADA",
+      "detail": "falha em D15"
+    },
+    {
+      "id": "R08M-06",
+      "file": "quote.js",
+      "guard": "ID forjado/duplicado no payload é rejeitado",
+      "expect": [
+        "D06",
+        "D07"
+      ],
+      "status": "DETECTADA",
+      "detail": "falha em D06"
+    },
+    {
+      "id": "R08M-07",
+      "file": "quote.js",
+      "guard": "nova versão compara identidade",
+      "expect": [
+        "D10"
+      ],
+      "status": "DETECTADA",
+      "detail": "falha em D10"
+    },
+    {
+      "id": "R08M-08",
+      "file": "quote.js",
+      "guard": "snapshot legado compara conteúdo, não identidade",
+      "expect": [
+        "D11"
+      ],
+      "status": "DETECTADA",
+      "detail": "falha em D11"
+    },
+    {
+      "id": "R08M-09",
+      "file": "cancel.js",
+      "guard": "chave incorpora a OS",
+      "expect": [
+        "D20",
+        "D26"
+      ],
+      "status": "DETECTADA",
+      "detail": "falha em D20"
+    },
+    {
+      "id": "R08M-10",
+      "file": "cancel.js",
+      "guard": "chave incorpora o pedido",
+      "expect": [
+        "D20",
+        "D26"
+      ],
+      "status": "DETECTADA",
+      "detail": "falha em D20"
+    },
+    {
+      "id": "R08M-11",
+      "file": "cancel.js",
+      "guard": "chave esperada é conferida antes de remover",
+      "expect": [
+        "D17",
+        "D20",
+        "D21"
+      ],
+      "status": "DETECTADA",
+      "detail": "falha em D17"
+    },
+    {
+      "id": "R08M-12",
+      "file": "cancel.js",
+      "guard": "seleção por lineId, nunca por índice externo",
+      "expect": [
+        "D16",
+        "D17",
+        "D18"
+      ],
+      "status": "DETECTADA",
+      "detail": "falha em D16"
+    },
+    {
+      "id": "R08M-13",
+      "file": "cancel.js",
+      "guard": "retirada parcial preserva o ID",
+      "expect": [
+        "D17",
+        "D19"
+      ],
+      "status": "SOBREVIVENTE",
+      "detail": "nenhum teste falhou"
+    },
+    {
+      "id": "R08M-14",
+      "file": "cancel.js",
+      "guard": "conferência técnica incorpora identidade",
+      "expect": [
+        "D23",
+        "D24"
+      ],
+      "status": "INCONCLUSIVO",
+      "detail": "trecho não encontrado"
+    },
+    {
+      "id": "R08M-15",
+      "file": "warranty.js",
+      "guard": "selo único inclui unidade substituta",
+      "expect": [
+        "D28"
+      ],
+      "status": "DETECTADA",
+      "detail": "falha em D28"
+    },
+    {
+      "id": "R08M-16",
+      "file": "warranty.js",
+      "guard": "selo normalizado",
+      "expect": [
+        "D28"
+      ],
+      "status": "DETECTADA",
+      "detail": "falha em D28"
+    },
+    {
+      "id": "R08M-17",
+      "file": "warranty-ui.js",
+      "guard": "N5 produto zerado fora do seletor",
+      "expect": [
+        "U03"
+      ],
+      "status": "DETECTADA",
+      "detail": "falha em U03"
+    },
+    {
+      "id": "R08M-18",
+      "file": "warranty-ui.js",
+      "guard": "N1 fallback só em raiz finalizada",
+      "expect": [
+        "U04"
+      ],
+      "status": "DETECTADA",
+      "detail": "falha em U04"
+    },
+    {
+      "id": "R08M-19",
+      "file": "cancel.js",
+      "guard": "chave da linha inclui o lineId",
+      "expect": [
+        "D26"
+      ],
+      "status": "DETECTADA",
+      "detail": "falha em D26"
+    },
+    {
+      "id": "R08M-20",
+      "file": "cancel.js",
+      "guard": "chave financeira inclui o pedido",
+      "expect": [
+        "D33"
+      ],
+      "status": "DETECTADA",
+      "detail": "falha em D33"
+    },
+    {
+      "id": "R08M-21",
+      "file": "cancel.js",
+      "guard": "conferência técnica não é duplicada",
+      "expect": [
+        "D23"
+      ],
+      "status": "DETECTADA",
+      "detail": "falha em D23"
+    },
+    {
+      "id": "R08M-22",
+      "file": "app.js",
+      "guard": "N6 bloqueia selo duplicado em qualquer modo não-existente",
+      "expect": [
+        "R08-N6-03",
+        "R08-N6-04"
+      ],
+      "status": "DETECTADA",
+      "detail": "falha em R08-N6-03"
+    },
+    {
+      "id": "R08M-23",
+      "file": "cancel.js",
+      "guard": "chave financeira inclui a OS",
+      "expect": [
+        "D34"
+      ],
+      "status": "DETECTADA",
+      "detail": "falha em D34"
+    },
+    {
+      "id": "R08M-24",
+      "file": "cancel.js",
+      "guard": "chave da linha inclui o nome",
+      "expect": [
+        "D26"
+      ],
+      "status": "INCONCLUSIVO",
+      "detail": "trecho não encontrado"
+    },
+    {
+      "id": "R08M-25",
+      "file": "cancel.js",
+      "guard": "retrato técnico inclui a quantidade",
+      "expect": [
+        "D35"
+      ],
+      "status": "INCONCLUSIVO",
+      "detail": "trecho não encontrado"
+    }
+  ]
+}

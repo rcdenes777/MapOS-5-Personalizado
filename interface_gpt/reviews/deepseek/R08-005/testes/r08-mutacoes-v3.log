@@ -1,0 +1,26 @@
+DETECTADA R08M-01 — edição de mesma linha/tipo preserva ID :: falha em D02
+DETECTADA R08M-02 — troca de tipo aloca novo ID :: falha em D05
+DETECTADA R08M-03 — contador não é recalculado do máximo (sem reciclagem) :: falha em D14
+DETECTADA R08M-04 — identify considera o máximo das linhas existentes :: falha em D15
+DETECTADA R08M-05 — identify repara ID duplicado :: falha em D15
+DETECTADA R08M-06 — ID forjado/duplicado no payload é rejeitado :: falha em D06
+DETECTADA R08M-07 — nova versão compara identidade :: falha em D10
+DETECTADA R08M-08 — snapshot legado compara conteúdo, não identidade :: falha em D11
+DETECTADA R08M-09 — chave incorpora a OS :: falha em D20
+DETECTADA R08M-10 — chave incorpora o pedido :: falha em D20
+DETECTADA R08M-11 — chave esperada é conferida antes de remover :: falha em D17
+DETECTADA R08M-12 — seleção por lineId, nunca por índice externo :: falha em D16
+DETECTADA R08M-13 — retirada parcial preserva o ID :: falha em D19
+DETECTADA R08M-14 — conferência técnica incorpora identidade :: falha em D23
+DETECTADA R08M-15 — selo único inclui unidade substituta :: falha em D28
+DETECTADA R08M-16 — selo normalizado :: falha em D28
+DETECTADA R08M-17 — N5 produto zerado fora do seletor :: falha em U03
+DETECTADA R08M-18 — N1 fallback só em raiz finalizada :: falha em U04
+DETECTADA R08M-19 — chave da linha inclui o lineId :: falha em D26
+DETECTADA R08M-20 — chave financeira inclui o pedido :: falha em D33
+DETECTADA R08M-21 — conferência técnica não é duplicada :: falha em D23
+DETECTADA R08M-22 — N6 bloqueia selo duplicado em qualquer modo não-existente :: falha em R08-N6-03
+DETECTADA R08M-23 — chave financeira inclui a OS :: falha em D34
+DETECTADA R08M-24 — chave da linha inclui o nome :: falha em D26
+DETECTADA R08M-25 — retrato técnico inclui a quantidade :: falha em D35
+TOTAL 25 · DETECTADA 25 · FORA_DO_ALVO 0 · SOBREVIVENTE 0 · INCONCLUSIVO 0

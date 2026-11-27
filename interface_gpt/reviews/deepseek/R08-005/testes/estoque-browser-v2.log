@@ -1,0 +1,16 @@
+PASS create-zero {"s":{"open":false,"error":"","toast":"Registro atualizado na demonstração."},"p":{"sku":"P-004","name":"Componente sintético R08005","quantity":0,"min":1,"cost":null,"movements":[]}}
+PASS receipt-ledger {"s":{"open":false,"error":"","toast":"Registro atualizado na demonstração."},"p":{"sku":"P-004","name":"Componente sintético R08005","quantity":5,"min":1,"cost":450,"movements":[{"id":1,"sku":"P-004","type":"entrada","quantity":5,"before":0,"after":5,"cost":450,"reason":"Entrada fictícia","when":"2026-11-27T01:30:38.841Z","actor":"Administrador"}]}}
+PASS link-debit {"s":{"open":false,"error":"","toast":"Registro atualizado na demonstração."},"line":{"type":"Peça","name":"Componente sintético R08005","quantity":3,"unit":1000,"lineId":1,"stockSku":"P-004","stockCost":450},"stock":2}
+PASS linked-formdata {"form":[["itemId","1"],["itemType","Peça"],["itemName","Componente sintético R08005"],["itemQty","3"],["itemUnit","10"],["discount","0"],["payment",""],["deadline",""],["warranty",""],["diagnosis",""],["equipment",""],["defect",""]]}
+PASS cancel-request {"s":{"open":false,"error":"","toast":"Registro atualizado na demonstração."}}
+PASS technical-no-cost {"text":"Conferir item\nFechar\n\nComponente sintético R08005 · 3 un.\n\nDestino\nSelecione\nNão utilizada\nConsumida ou perdida\nQuantidade\nMotivo (obrigatório para consumo/perda)\n\nPeça vinculada ao catálogo. Só haverá devolução com baixa comprovada para toda a linha; consumo/perda não aumenta o saldo.\n\nConferi o destino e a quantidade do item.\nRegistrar conferência"}
+PASS partial-return {"s":{"open":false,"error":"","toast":"Registro atualizado na demonstração."},"stock":3,"movement":{"id":3,"sku":"P-004","type":"os_devolucao","quantity":1,"before":2,"after":3,"cost":null,"reason":"Baixa comprovada; 1 un. devolvida(s) ao estoque.","when":"2026-11-27T01:30:46.257Z","actor":"Técnico","osId":25,"lineId":1}}
+PASS direct-deny-Técnico {"err":"Confirme a operação autorizada.","same":true,"modal":null}
+PASS direct-deny-Financeiro {"err":"Confirme a operação autorizada.","same":true,"modal":null}
+PASS direct-deny-Atendente {"err":"Confirme a operação autorizada.","same":true,"modal":null}
+PASS stock-overflow-320 {}
+PASS stock-overflow-390 {}
+PASS stock-axe-390 {"violations":[]}
+PASS stock-overflow-768 {}
+PASS stock-overflow-1440 {}
+PASS runtime-errors {"errors":[],"consoleErrors":[]}

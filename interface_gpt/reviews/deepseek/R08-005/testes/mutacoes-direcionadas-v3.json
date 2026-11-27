@@ -1,0 +1,114 @@
+{
+  "summary": {
+    "detected": 12,
+    "survived": 1,
+    "invalid": 0,
+    "inconclusive": 0
+  },
+  "results": [
+    {
+      "id": "M01",
+      "status": "survived",
+      "suite": "stock.cjs",
+      "expected": "link insufficient leaves state",
+      "exit": 0,
+      "output": "24 stock domain checks passed.\n"
+    },
+    {
+      "id": "M02",
+      "status": "detected",
+      "suite": "stock.cjs",
+      "expected": "link stale replay",
+      "exit": 1,
+      "output": "evalmachine.<anonymous>:531\nlet count=0;const eq=(a,b)=>{if(a!==b)throw Error(a+' != '+b)},ok=v=>{if(!v)throw Error('Assertion failed')},snap=x=>JSON.stringify(x),test=(n,f)=>{try{f();count++}catch(e){throw Error(n+': '+e.message)}};\n                                                                                                                                                                             ^\n\nError: link stale replay: undefined != A OS ou estoque mudou. Reabra a operação.\n    at test (evalmachine.<anonymous>:531:180)\n    at evalmachine.<anonymous>:545:1\n    at Script.runInContext (node:vm:150:12)\n    at Script.runInNewContext (node:vm:155:17)\n    at Object.runInNewContext (node:vm:311:38)\n    at Object.<anonymous> (/home/dragonblue/.hermes/cache/scratch/r08005-mut-ksf0actq/tests/stock.cjs:39:16)\n    at Module._compile (node:internal/modules/cjs/loader:1968:14)\n    at Object..js (node:internal/modules/cjs/loader:2108:10)\n    at Module.load (node:internal/modules/cjs/loader:1690:32)\n    at Module._load (node:internal/modules/cjs/loader:1480:12)\n\nNode.js v26.12.1\n"
+    },
+    {
+      "id": "M03",
+      "status": "detected",
+      "suite": "stock.cjs",
+      "expected": "foreign OS and warranty movement not proof",
+      "exit": 1,
+      "output": "evalmachine.<anonymous>:531\nlet count=0;const eq=(a,b)=>{if(a!==b)throw Error(a+' != '+b)},ok=v=>{if(!v)throw Error('Assertion failed')},snap=x=>JSON.stringify(x),test=(n,f)=>{try{f();count++}catch(e){throw Error(n+': '+e.message)}};\n                                                                                                                                                                             ^\n\nError: foreign OS and warranty movement not proof: 3 != 0\n    at test (evalmachine.<anonymous>:531:180)\n    at evalmachine.<anonymous>:558:1\n    at Script.runInContext (node:vm:150:12)\n    at Script.runInNewContext (node:vm:155:17)\n    at Object.runInNewContext (node:vm:311:38)\n    at Object.<anonymous> (/home/dragonblue/.hermes/cache/scratch/r08005-mut-ksf0actq/tests/stock.cjs:39:16)\n    at Module._compile (node:internal/modules/cjs/loader:1968:14)\n    at Object..js (node:internal/modules/cjs/loader:2108:10)\n    at Module.load (node:internal/modules/cjs/loader:1690:32)\n    at Module._load (node:internal/modules/cjs/loader:1480:12)\n\nNode.js v26.12.1\n"
+    },
+    {
+      "id": "M04",
+      "status": "detected",
+      "suite": "stock.cjs",
+      "expected": "foreign line debit is not proof",
+      "exit": 1,
+      "output": "evalmachine.<anonymous>:531\nlet count=0;const eq=(a,b)=>{if(a!==b)throw Error(a+' != '+b)},ok=v=>{if(!v)throw Error('Assertion failed')},snap=x=>JSON.stringify(x),test=(n,f)=>{try{f();count++}catch(e){throw Error(n+': '+e.message)}};\n                                                                                                                                                                             ^\n\nError: foreign line debit is not proof: 1 != 0\n    at test (evalmachine.<anonymous>:531:180)\n    at evalmachine.<anonymous>:555:1\n    at Script.runInContext (node:vm:150:12)\n    at Script.runInNewContext (node:vm:155:17)\n    at Object.runInNewContext (node:vm:311:38)\n    at Object.<anonymous> (/home/dragonblue/.hermes/cache/scratch/r08005-mut-ksf0actq/tests/stock.cjs:39:16)\n    at Module._compile (node:internal/modules/cjs/loader:1968:14)\n    at Object..js (node:internal/modules/cjs/loader:2108:10)\n    at Module.load (node:internal/modules/cjs/loader:1690:32)\n    at Module._load (node:internal/modules/cjs/loader:1480:12)\n\nNode.js v26.12.1\n"
+    },
+    {
+      "id": "M05",
+      "status": "detected",
+      "suite": "stock.cjs",
+      "expected": "foreign SKU debit is not proof",
+      "exit": 1,
+      "output": "evalmachine.<anonymous>:531\nlet count=0;const eq=(a,b)=>{if(a!==b)throw Error(a+' != '+b)},ok=v=>{if(!v)throw Error('Assertion failed')},snap=x=>JSON.stringify(x),test=(n,f)=>{try{f();count++}catch(e){throw Error(n+': '+e.message)}};\n                                                                                                                                                                             ^\n\nError: foreign SKU debit is not proof: 1 != 0\n    at test (evalmachine.<anonymous>:531:180)\n    at evalmachine.<anonymous>:556:1\n    at Script.runInContext (node:vm:150:12)\n    at Script.runInNewContext (node:vm:155:17)\n    at Object.runInNewContext (node:vm:311:38)\n    at Object.<anonymous> (/home/dragonblue/.hermes/cache/scratch/r08005-mut-ksf0actq/tests/stock.cjs:39:16)\n    at Module._compile (node:internal/modules/cjs/loader:1968:14)\n    at Object..js (node:internal/modules/cjs/loader:2108:10)\n    at Module.load (node:internal/modules/cjs/loader:1690:32)\n    at Module._load (node:internal/modules/cjs/loader:1480:12)\n\nNode.js v26.12.1\n"
+    },
+    {
+      "id": "M06",
+      "status": "detected",
+      "suite": "stock.cjs",
+      "expected": "partial proof for processed quantity cannot justify return of a larger line",
+      "exit": 1,
+      "output": "evalmachine.<anonymous>:531\nlet count=0;const eq=(a,b)=>{if(a!==b)throw Error(a+' != '+b)},ok=v=>{if(!v)throw Error('Assertion failed')},snap=x=>JSON.stringify(x),test=(n,f)=>{try{f();count++}catch(e){throw Error(n+': '+e.message)}};\n                                                                                                                                                                             ^\n\nError: partial proof for processed quantity cannot justify return of a larger line: 1 != 0\n    at test (evalmachine.<anonymous>:531:180)\n    at evalmachine.<anonymous>:554:1\n    at Script.runInContext (node:vm:150:12)\n    at Script.runInNewContext (node:vm:155:17)\n    at Object.runInNewContext (node:vm:311:38)\n    at Object.<anonymous> (/home/dragonblue/.hermes/cache/scratch/r08005-mut-ksf0actq/tests/stock.cjs:39:16)\n    at Module._compile (node:internal/modules/cjs/loader:1968:14)\n    at Object..js (node:internal/modules/cjs/loader:2108:10)\n    at Module.load (node:internal/modules/cjs/loader:1690:32)\n    at Module._load (node:internal/modules/cjs/loader:1480:12)\n\nNode.js v26.12.1\n"
+    },
+    {
+      "id": "M07",
+      "status": "detected",
+      "suite": "stock.cjs",
+      "expected": "consumption never increases stock and retains cost",
+      "exit": 1,
+      "output": "evalmachine.<anonymous>:531\nlet count=0;const eq=(a,b)=>{if(a!==b)throw Error(a+' != '+b)},ok=v=>{if(!v)throw Error('Assertion failed')},snap=x=>JSON.stringify(x),test=(n,f)=>{try{f();count++}catch(e){throw Error(n+': '+e.message)}};\n                                                                                                                                                                             ^\n\nError: consumption never increases stock and retains cost: 2 != 0\n    at test (evalmachine.<anonymous>:531:180)\n    at evalmachine.<anonymous>:553:1\n    at Script.runInContext (node:vm:150:12)\n    at Script.runInNewContext (node:vm:155:17)\n    at Object.runInNewContext (node:vm:311:38)\n    at Object.<anonymous> (/home/dragonblue/.hermes/cache/scratch/r08005-mut-ksf0actq/tests/stock.cjs:39:16)\n    at Module._compile (node:internal/modules/cjs/loader:1968:14)\n    at Object..js (node:internal/modules/cjs/loader:2108:10)\n    at Module.load (node:internal/modules/cjs/loader:1690:32)\n    at Module._load (node:internal/modules/cjs/loader:1480:12)\n\nNode.js v26.12.1\n"
+    },
+    {
+      "id": "M08",
+      "status": "detected",
+      "suite": "stock.cjs",
+      "expected": "link debit and immutable cost",
+      "exit": 1,
+      "output": "evalmachine.<anonymous>:531\nlet count=0;const eq=(a,b)=>{if(a!==b)throw Error(a+' != '+b)},ok=v=>{if(!v)throw Error('Assertion failed')},snap=x=>JSON.stringify(x),test=(n,f)=>{try{f();count++}catch(e){throw Error(n+': '+e.message)}};\n                                                                                                                                                                             ^\n\nError: link debit and immutable cost: null != 450\n    at test (evalmachine.<anonymous>:531:180)\n    at evalmachine.<anonymous>:544:1\n    at Script.runInContext (node:vm:150:12)\n    at Script.runInNewContext (node:vm:155:17)\n    at Object.runInNewContext (node:vm:311:38)\n    at Object.<anonymous> (/home/dragonblue/.hermes/cache/scratch/r08005-mut-ksf0actq/tests/stock.cjs:39:16)\n    at Module._compile (node:internal/modules/cjs/loader:1968:14)\n    at Object..js (node:internal/modules/cjs/loader:2108:10)\n    at Module.load (node:internal/modules/cjs/loader:1690:32)\n    at Module._load (node:internal/modules/cjs/loader:1480:12)\n\nNode.js v26.12.1\n"
+    },
+    {
+      "id": "M09",
+      "status": "detected",
+      "suite": "stock-ui.cjs",
+      "expected": "denied roles cannot perform otherwise valid stock exit",
+      "exit": 1,
+      "output": "evalmachine.<anonymous>:956\nlet count=0;const ok=v=>{if(!v)throw Error('Assertion failed')},eq=(a,b)=>ok(a===b),test=(n,f)=>{try{f();count++}catch(e){throw Error(n+': '+e.message)}};\n                                                                                                                          ^\n\nError: denied roles cannot perform otherwise valid stock exit: Assertion failed\n    at test (evalmachine.<anonymous>:956:129)\n    at evalmachine.<anonymous>:963:1\n    at Script.runInContext (node:vm:150:12)\n    at Script.runInNewContext (node:vm:155:17)\n    at Object.runInNewContext (node:vm:311:38)\n    at Object.<anonymous> (/home/dragonblue/.hermes/cache/scratch/r08005-mut-ksf0actq/tests/stock-ui.cjs:21:16)\n    at Module._compile (node:internal/modules/cjs/loader:1968:14)\n    at Object..js (node:internal/modules/cjs/loader:2108:10)\n    at Module.load (node:internal/modules/cjs/loader:1690:32)\n    at Module._load (node:internal/modules/cjs/loader:1480:12)\n\nNode.js v26.12.1\n"
+    },
+    {
+      "id": "M10",
+      "status": "detected",
+      "suite": "stock.cjs",
+      "expected": "public snapshot allowlist excludes stock identity/cost",
+      "exit": 1,
+      "output": "evalmachine.<anonymous>:531\nlet count=0;const eq=(a,b)=>{if(a!==b)throw Error(a+' != '+b)},ok=v=>{if(!v)throw Error('Assertion failed')},snap=x=>JSON.stringify(x),test=(n,f)=>{try{f();count++}catch(e){throw Error(n+': '+e.message)}};\n                                                                                                                                                                             ^\n\nError: public snapshot allowlist excludes stock identity/cost: Assertion failed\n    at test (evalmachine.<anonymous>:531:180)\n    at evalmachine.<anonymous>:561:1\n    at Script.runInContext (node:vm:150:12)\n    at Script.runInNewContext (node:vm:155:17)\n    at Object.runInNewContext (node:vm:311:38)\n    at Object.<anonymous> (/home/dragonblue/.hermes/cache/scratch/r08005-mut-ksf0actq/tests/stock.cjs:39:16)\n    at Module._compile (node:internal/modules/cjs/loader:1968:14)\n    at Object..js (node:internal/modules/cjs/loader:2108:10)\n    at Module.load (node:internal/modules/cjs/loader:1690:32)\n    at Module._load (node:internal/modules/cjs/loader:1480:12)\n\nNode.js v26.12.1\n"
+    },
+    {
+      "id": "M11",
+      "status": "detected",
+      "suite": "line-identity.cjs",
+      "expected": "no request rejects without initializing cancellation",
+      "exit": 1,
+      "output": "evalmachine.<anonymous>:483\nlet count=0;const ok=(v,m)=>{if(!v)throw Error(m||'Assertion failed')},eq=(a,b)=>ok(a===b,a+' != '+b),test=(n,fn)=>{try{fn();count++}catch(e){throw Error(n+': '+e.message)}};\n                                                                                                                                              ^\n\nError: no request rejects without initializing cancellation: {\"id\":1,\"status\":\"Aberto\",\"total\":0,\"paid\":0,\"history\":[],\"cancellation\":{\"events\":[]}} != {\"id\":1,\"status\":\"Aberto\",\"total\":0,\"paid\":0,\"history\":[]}\n    at test (evalmachine.<anonymous>:483:149)\n    at evalmachine.<anonymous>:490:1\n    at Script.runInContext (node:vm:150:12)\n    at Script.runInNewContext (node:vm:155:17)\n    at Object.runInNewContext (node:vm:311:38)\n    at Object.<anonymous> (/home/dragonblue/.hermes/cache/scratch/r08005-mut-ksf0actq/tests/line-identity.cjs:32:16)\n    at Module._compile (node:internal/modules/cjs/loader:1968:14)\n    at Object..js (node:internal/modules/cjs/loader:2108:10)\n    at Module.load (node:internal/modules/cjs/loader:1690:32)\n    at Module._load (node:internal/modules/cjs/loader:1480:12)\n\nNode.js v26.12.1\n"
+    },
+    {
+      "id": "M12",
+      "status": "detected",
+      "suite": "stock.cjs",
+      "expected": "invalid sibling row cannot partially remove a linked item",
+      "exit": 1,
+      "output": "50,\"reason\":\"Inclusão de peça na OS\",\"when\":\"2026-11-26T12:00:00Z\",\"actor\":\"Administrador\",\"osId\":1,\"lineId\":1}]}]} != {\"o\":{\"id\":1,\"status\":\"Aberto\",\"entry\":\"2026-11-25\",\"total\":0,\"paid\":0,\"history\":[],\"quote\":{\"draft\":{\"items\":[{\"type\":\"Peça\",\"name\":\"IGBT\",\"quantity\":3,\"unit\":1000,\"lineId\":1,\"stockSku\":\"P-001\",\"stockCost\":450},{\"lineId\":2,\"type\":\"Peça\",\"name\":\"Inválida\",\"quantity\":1,\"unit\":-1}],\"discount\":0,\"terms\":{\"payment\":\"\",\"deadline\":\"\",\"warranty\":\"\",\"diagnosis\":\"\"}},\"versions\":[],\"current\":null,\"active\":false,\"nextLineId\":3},\"approval\":\"Rascunho\",\"proposal\":3000,\"cancellation\":{\"events\":[{\"id\":1,\"type\":\"request\",\"when\":\"2026-11-26T12:00:00Z\",\"origin\":\"cliente\",\"reason\":\"Pedido\",\"status\":\"Aberto\"}]}},\"stock\":[{\"sku\":\"P-001\",\"name\":\"IGBT\",\"quantity\":5,\"min\":2,\"cost\":450,\"movements\":[{\"id\":1,\"sku\":\"P-001\",\"type\":\"os_saida\",\"quantity\":-3,\"before\":8,\"after\":5,\"cost\":450,\"reason\":\"Inclusão de peça na OS\",\"when\":\"2026-11-26T12:00:00Z\",\"actor\":\"Administrador\",\"osId\":1,\"lineId\":1}]}]}\n    at test (evalmachine.<anonymous>:531:180)\n    at evalmachine.<anonymous>:551:1\n    at Script.runInContext (node:vm:150:12)\n    at Script.runInNewContext (node:vm:155:17)\n    at Object.runInNewContext (node:vm:311:38)\n    at Object.<anonymous> (/home/dragonblue/.hermes/cache/scratch/r08005-mut-ksf0actq/tests/stock.cjs:39:16)\n    at Module._compile (node:internal/modules/cjs/loader:1968:14)\n    at Object..js (node:internal/modules/cjs/loader:2108:10)\n    at Module.load (node:internal/modules/cjs/loader:1690:32)\n    at Module._load (node:internal/modules/cjs/loader:1480:12)\n\nNode.js v26.12.1\n"
+    },
+    {
+      "id": "M13",
+      "status": "detected",
+      "suite": "stock.cjs",
+      "expected": "exit insufficient atomic",
+      "exit": 1,
+      "output": "evalmachine.<anonymous>:531\nlet count=0;const eq=(a,b)=>{if(a!==b)throw Error(a+' != '+b)},ok=v=>{if(!v)throw Error('Assertion failed')},snap=x=>JSON.stringify(x),test=(n,f)=>{try{f();count++}catch(e){throw Error(n+': '+e.message)}};\n                                                                                                                                                                             ^\n\nError: exit insufficient atomic: undefined != Saldo insuficiente ou fora do limite permitido.\n    at test (evalmachine.<anonymous>:531:180)\n    at evalmachine.<anonymous>:541:1\n    at Script.runInContext (node:vm:150:12)\n    at Script.runInNewContext (node:vm:155:17)\n    at Object.runInNewContext (node:vm:311:38)\n    at Object.<anonymous> (/home/dragonblue/.hermes/cache/scratch/r08005-mut-ksf0actq/tests/stock.cjs:39:16)\n    at Module._compile (node:internal/modules/cjs/loader:1968:14)\n    at Object..js (node:internal/modules/cjs/loader:2108:10)\n    at Module.load (node:internal/modules/cjs/loader:1690:32)\n    at Module._load (node:internal/modules/cjs/loader:1480:12)\n\nNode.js v26.12.1\n"
+    }
+  ]
+}

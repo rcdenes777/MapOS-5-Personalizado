@@ -14,8 +14,24 @@ const fixture = JSON.parse(cp.execFileSync('docker', ['exec', container, 'php', 
     const page = await context.newPage();
     let response = await page.goto(`${base}/index.php/publico_cliente/index/${fixture.a}`);
     assert.equal(response.status(), 200, 'valid customer link must open');
+    assert.match(response.headers()['cache-control'] || '', /no-store/i);
+    assert.equal(response.headers()['referrer-policy'], 'no-referrer');
+    const postPublico = await context.request.post(`${base}/index.php/publico_cliente/index/${fixture.a}`);
+    assert.ok([403, 404, 405].includes(postPublico.status()), 'public portal rejects POST');
     assert.match(await page.locator('body').innerText(), /Cliente Alfa Sintetico/);
     assert.doesNotMatch(await page.locator('body').innerText(), /PRIVADO-BETA|Equipamento Beta Sintetico/);
+    if (process.env.PORTAL_SCREENSHOT_DIR) {
+      const fs = require('node:fs');
+      const path = require('node:path');
+      fs.mkdirSync(process.env.PORTAL_SCREENSHOT_DIR, { recursive: true });
+      await page.screenshot({ path: path.join(process.env.PORTAL_SCREENSHOT_DIR, 'portal-desktop.png') });
+      const mobile = await browser.newContext({ viewport: { width: 375, height: 812 }, deviceScaleFactor: 1 });
+      const mobilePage = await mobile.newPage();
+      assert.equal((await mobilePage.goto(`${base}/index.php/publico_cliente/index/${fixture.a}`)).status(), 200);
+      assert.equal(await mobilePage.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), true, 'mobile has no horizontal overflow');
+      await mobilePage.screenshot({ path: path.join(process.env.PORTAL_SCREENSHOT_DIR, 'portal-mobile.png') });
+      await mobile.close();
+    }
     let texto = await page.locator('body').innerText();
     assert.match(texto, /R\$ 600,00/);
     assert.match(texto, /R\$ 350,00/);
@@ -39,6 +55,9 @@ const fixture = JSON.parse(cp.execFileSync('docker', ['exec', container, 'php', 
     assert.equal((await context.request.get(anexoUrl(fixture.osA, fixture.anexos.privado))).status(), 404, 'unpublished attachment is denied');
     assert.equal((await context.request.get(anexoUrl(fixture.osB, fixture.anexos.outro))).status(), 404, 'other customer attachment is denied');
     assert.equal((await context.request.get(anexoUrl(fixture.osA, fixture.anexos.outro))).status(), 404, 'mismatched attachment is denied');
+    assert.equal((await context.request.get(`${base}/index.php/publico/os/${fixture.tokenOs}`)).status(), 200, 'individual OS link remains valid');
+    assert.equal((await context.request.get(`${base}/index.php/publico/anexo/${fixture.tokenOs}/${fixture.anexos.publico}`)).status(), 200, 'individual OS published attachment remains accessible');
+    assert.equal((await context.request.get(`${base}/index.php/publico/anexo/${fixture.tokenOs}/${fixture.anexos.privado}`)).status(), 404, 'individual OS unpublished attachment remains private');
     console.log('PASS customer link, ownership and private notes');
     response = await page.goto(`${base}/index.php/trifase_cliente/gerenciar/${fixture.clienteA}`);
     assert.match(page.url(), /\/login/, 'anonymous admin access must redirect to login');
@@ -62,7 +81,16 @@ const fixture = JSON.parse(cp.execFileSync('docker', ['exec', container, 'php', 
     assert.equal(revokedResponse.status(), 404, 'revocation immediately invalidates renewed link');
     const otherResponse = await context.request.get(`${base}/index.php/publico_cliente/index/${fixture.b}`);
     assert.equal(otherResponse.status(), 200, 'revocation does not affect another customer');
-    console.log('PASS admin login, renewal and revocation');
+    const restritoContext = await browser.newContext();
+    const restritoPage = await restritoContext.newPage();
+    await restritoPage.goto(`${base}/index.php/login`);
+    await restritoPage.locator('[name=email]').fill(fixture.restrito.email);
+    await restritoPage.locator('[name=senha]').fill(fixture.restrito.senha);
+    await Promise.all([restritoPage.waitForURL('**/mapos'), restritoPage.locator('button[type=submit]').click()]);
+    const negado = await restritoContext.request.get(`${base}/index.php/trifase_cliente/gerenciar/${fixture.clienteA}`, { headers: { 'X-Requested-With': 'XMLHttpRequest' } });
+    assert.equal(negado.status(), 403, 'authenticated operator without sharing permissions denied');
+    await restritoContext.close();
+    console.log('PASS admin login, restricted permission, renewal and revocation');
     const clientContext = await browser.newContext();
     const clientPage = await clientContext.newPage();
     await clientPage.goto(`${base}/index.php/mine`);

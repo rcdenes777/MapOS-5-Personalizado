@@ -34,6 +34,11 @@ final class TrifaseClientePublicoTest extends MaposTestCase
         $migration->up();
         $this->db->data_cache = [];
         $this->assertTrue($this->db->table_exists('trifase_cliente_publico_links'));
+        $this->db->query('DROP INDEX trifase_cliente_token_unico');
+        $migration->up();
+        $indices = $this->db->query("PRAGMA index_list('trifase_cliente_publico_links')")->result_array();
+        $indicesUnicos = array_filter($indices, static fn ($indice) => $indice['name'] === 'trifase_cliente_token_unico' && (int) $indice['unique'] === 1);
+        $this->assertCount(1, $indicesUnicos, 'Repetição recupera o índice único ausente');
         $migration->down();
         $this->db->data_cache = [];
         $this->assertFalse($this->db->table_exists('trifase_cliente_publico_links'));

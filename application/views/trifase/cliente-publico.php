@@ -1,6 +1,10 @@
 <?php
 $dinheiro = static fn (int $centavos): string => 'R$ ' . number_format($centavos / 100, 2, ',', '.');
-$filtros = ['' => 'Todas', 'pendente' => 'A pagar', 'pago' => 'Pagas', 'entregue' => 'Entregues', 'nao-entregue' => 'Não entregues'];
+$filtros = ['' => 'Todas'];
+if ($financeiroDisponivel) {
+    $filtros += ['pendente' => 'A pagar', 'pago' => 'Pagas'];
+}
+$filtros += ['entregue' => 'Entregues', 'nao-entregue' => 'Não entregues'];
 ?>
 <!DOCTYPE html>
 <html lang="pt-br" data-tema="padrao" data-tema-modo="claro">
@@ -28,7 +32,7 @@ $filtros = ['' => 'Todas', 'pendente' => 'A pagar', 'pago' => 'Pagas', 'entregue
                     <div><dt class="text-caption text-muted">Saldo a pagar</dt><dd><?= e($dinheiro($financeiro['saldo_c'])) ?></dd></div>
                 <?php } ?>
             </dl>
-            <p class="mt-3 text-caption text-muted">Valores incluem apenas cobranças formalizadas. OS sem cobrança formalizada aparecem sem valor.</p>
+            <?php if ($financeiroDisponivel) { ?><p class="mt-3 text-caption text-muted">Valores incluem apenas cobranças formalizadas. OS sem cobrança formalizada aparecem sem valor.</p><?php } ?>
         </section>
         <nav class="flex flex-wrap gap-3" aria-label="Filtrar ordens">
             <?php foreach ($filtros as $valor => $rotulo) { ?>
@@ -46,7 +50,7 @@ $filtros = ['' => 'Todas', 'pendente' => 'A pagar', 'pago' => 'Pagas', 'entregue
                     <div><dt class="text-caption text-muted">Equipamento</dt><dd class="break-words"><?= e(osTextoCurto($ordem->descricaoProduto) ?: 'Não informado') ?></dd></div>
                     <div><dt class="text-caption text-muted">Serviço</dt><dd><?= e($ordem->status) ?></dd></div>
                     <div><dt class="text-caption text-muted">Entregue</dt><dd><?= e($ordem->entregue ? 'Sim' : 'Não') ?></dd></div>
-                    <div><dt class="text-caption text-muted">Pagamento</dt><dd><?= e($ordem->financeiro['situacao'] ?? 'Sem cobrança formalizada') ?></dd></div>
+                    <div><dt class="text-caption text-muted">Pagamento</dt><dd><?= e($financeiroDisponivel ? ($ordem->financeiro['situacao'] ?? 'Sem cobrança formalizada') : 'Informação financeira indisponível') ?></dd></div>
                     <div><dt class="text-caption text-muted">Saldo a pagar</dt><dd><?= e(isset($ordem->financeiro) ? $dinheiro($ordem->financeiro['saldo_c']) : '—') ?></dd></div>
                 </dl>
             </article>

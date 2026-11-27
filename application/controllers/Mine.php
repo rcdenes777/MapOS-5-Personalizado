@@ -357,7 +357,8 @@ class Mine extends CI_Controller
         $offset = max(0, (int) $this->uri->segment(3));
         $entregasDisponiveis = $this->db->table_exists('trifase_entregas_estado');
         $filtro = (string) $this->input->get('filtro');
-        if (! in_array($filtro, ['', 'pago', 'pendente', 'entregue', 'nao-entregue'], true)) {
+        if (! in_array($filtro, ['', 'pago', 'pendente', 'entregue', 'nao-entregue'], true)
+            || (! $this->financeiroVisivel() && in_array($filtro, ['pago', 'pendente'], true))) {
             $filtro = '';
         }
         $totaisFinanceiros = null;

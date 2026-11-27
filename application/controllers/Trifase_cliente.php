@@ -9,10 +9,11 @@ class Trifase_cliente extends MY_Controller
     public function __construct()
     {
         parent::__construct();
-        foreach (['vCliente', 'eCliente', 'vOs', 'vLancamento'] as $permissao) {
-            if (! $this->permission->checkPermission($this->session->userdata('permissao'), $permissao)) {
-                show_error('Você não tem permissão para compartilhar este cliente.', 403);
-            }
+        if (! $this->permission->checkPermission($this->session->userdata('permissao'), 'vCliente')
+            || ! $this->permission->checkPermission($this->session->userdata('permissao'), 'eCliente')
+            || ! $this->permission->checkPermission($this->session->userdata('permissao'), 'vOs')
+            || ! $this->permission->checkPermission($this->session->userdata('permissao'), 'vLancamento')) {
+            show_error('Você não tem permissão para compartilhar este cliente.', 403);
         }
         if (! trifasePublicoHabilitado() || ! $this->db->table_exists('trifase_cliente_publico_links')) {
             show_404('', false);

@@ -69,6 +69,19 @@ final class TrifaseFinanceiroClienteViewTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('—', $porRotulo['Saldo a pagar']['render']($semDados));
     }
 
+    public function testPortalSemFinanceiroNaoAfirmaAusenciaDeCobranca(): void
+    {
+        $html = $this->renderizar('trifase/cliente-publico', [
+            'cliente' => (object) ['nomeCliente' => 'Cliente fictício'],
+            'ordens' => [(object) ['idOs' => 1, 'descricaoProduto' => 'TV', 'status' => 'Finalizado', 'entregue' => null]],
+            'financeiro' => null, 'financeiroDisponivel' => false, 'total' => 1, 'filtro' => '', 'detalhe' => false,
+            'basePublica' => 'https://exemplo.invalid/', 'urlPortal' => '/portal', 'urlOs' => '/os/', 'urlAnexo' => '/anexo/', 'anexos' => [],
+        ]);
+        $this->assertStringContainsString('Informação financeira indisponível', $html);
+        $this->assertStringNotContainsString('Sem cobrança formalizada', $html);
+        $this->assertStringNotContainsString('filtro=pago', $html);
+    }
+
     public function testFlagDesligadaRemoveAsColunasFinanceiras(): void
     {
         $rotulos = array_column(conecteColunasOs(true, false), 'label');

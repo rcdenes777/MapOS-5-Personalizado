@@ -28,7 +28,13 @@
     <?php } ?>
     <?php if ($entregasDisponiveis ?? false) { ?>
         <nav class="flex flex-wrap gap-3" aria-label="Filtrar ordens">
-            <?php foreach (['' => 'Todas', 'pendente' => 'A pagar', 'pago' => 'Pagas', 'entregue' => 'Entregues', 'nao-entregue' => 'Não entregues'] as $valor => $rotulo) { ?>
+            <?php
+            $filtrosOs = ['' => 'Todas'];
+            if ($financeiroVisivel ?? false) {
+                $filtrosOs += ['pendente' => 'A pagar', 'pago' => 'Pagas'];
+            }
+            $filtrosOs += ['entregue' => 'Entregues', 'nao-entregue' => 'Não entregues'];
+            foreach ($filtrosOs as $valor => $rotulo) { ?>
                 <a class="underline" href="<?= e(site_url('mine/os') . ($valor === '' ? '' : '?filtro=' . rawurlencode($valor))) ?>" <?= ($filtro ?? '') === $valor ? 'aria-current="page"' : '' ?>><?= e($rotulo) ?></a>
             <?php } ?>
         </nav>

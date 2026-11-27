@@ -33,7 +33,8 @@ class Publico_cliente extends CI_Controller
         $os = $this->portal_cliente->ordens((int) $cliente->idClientes);
         $financeiro = $this->financeiro($os);
         $filtro = (string) $this->input->get('filtro');
-        if (! in_array($filtro, ['', 'pago', 'pendente', 'entregue', 'nao-entregue'], true)) {
+        if (! in_array($filtro, ['', 'pago', 'pendente', 'entregue', 'nao-entregue'], true)
+            || ($financeiro === null && in_array($filtro, ['pago', 'pendente'], true))) {
             $filtro = '';
         }
         $filtradas = trifasePortalFiltrar($os, $filtro);
@@ -105,6 +106,7 @@ class Publico_cliente extends CI_Controller
         $prefixo = $base . (config_item('index_page') ? trim((string) config_item('index_page'), '/') . '/' : '');
         $this->load->view('trifase/cliente-publico', ['cliente' => $cliente, 'ordens' => $ordens, 'financeiro' => $financeiro,
             'total' => $total, 'filtro' => $filtro, 'detalhe' => $detalhe, 'basePublica' => $base,
+            'financeiroDisponivel' => trifaseFinanceiroHabilitado() && $this->db->table_exists('trifase_financeiro_obrigacoes'),
             'urlPortal' => $prefixo . 'publico_cliente/index/' . $token, 'urlOs' => $prefixo . 'publico_cliente/os/' . $token . '/',
             'urlAnexo' => $prefixo . 'publico_cliente/anexo/' . $token . '/', 'anexos' => $anexos]);
     }

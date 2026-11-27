@@ -36,7 +36,7 @@ $filtros += ['entregue' => 'Entregues', 'nao-entregue' => 'Não entregues'];
         </section>
         <nav class="flex flex-wrap gap-3" aria-label="Filtrar ordens">
             <?php foreach ($filtros as $valor => $rotulo) { ?>
-                <a class="underline" href="<?= e($urlPortal . ($valor === '' ? '' : '?filtro=' . rawurlencode($valor))) ?>" <?= $filtro === $valor ? 'aria-current="page"' : '' ?>><?= e($rotulo) ?></a>
+                <a class="inline-flex min-h-11 items-center rounded-md px-2 underline <?= e($filtro === $valor ? 'bg-primary-tint font-semibold' : '') ?>" href="<?= e($urlPortal . ($valor === '' ? '' : '?filtro=' . rawurlencode($valor))) ?>" <?= $filtro === $valor ? 'aria-current="page"' : '' ?>><?= e($rotulo) ?></a>
             <?php } ?>
         </nav>
     <?php } else { ?>

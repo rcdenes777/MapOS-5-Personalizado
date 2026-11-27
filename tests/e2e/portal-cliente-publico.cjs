@@ -29,6 +29,7 @@ const fixture = JSON.parse(cp.execFileSync('docker', ['exec', container, 'php', 
       const mobilePage = await mobile.newPage();
       assert.equal((await mobilePage.goto(`${base}/index.php/publico_cliente/index/${fixture.a}`)).status(), 200);
       assert.equal(await mobilePage.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), true, 'mobile has no horizontal overflow');
+      assert.ok((await mobilePage.locator('nav[aria-label="Filtrar ordens"] a').evaluateAll(links => links.every(link => link.getBoundingClientRect().height >= 44))), 'filter touch targets are at least 44px tall');
       await mobilePage.screenshot({ path: path.join(process.env.PORTAL_SCREENSHOT_DIR, 'portal-mobile.png') });
       await mobile.close();
     }

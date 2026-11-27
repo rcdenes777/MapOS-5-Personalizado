@@ -1,9 +1,9 @@
 # Controle do ciclo
-Estado: PAUSADO
+Estado: ATIVO
 Autorização: proprietário autorizou explicitamente o ciclo GPT/Hermes em 25/11/2026.
-Escopo vigente: transição Bancada para laboratório nativo isolado, R08-006 exclusivamente. Escrita Git interface_gpt/ apenas; exceção local de runtime/banco sintético conforme tarefa e README. Escopo R05–R10 anterior preservado como histórico experimental.
-Rodada atual: R08-006
-Aguardando: decisão sobre preparação do laboratório após R08-006 BLOCKED por proteção de remoção Docker. Sem nova tarefa automática. Coleta documental manual de schema sem registros e fixtures sintéticas autorizada separadamente em interface_gpt/referencias/banco/; não é tarefa do cron.
+Escopo vigente: R08-007 — validação focal somente leitura do candidato nativo experimental no laboratório sintético existente; escrita remota apenas mensagens e evidências desta rodada em interface_gpt/.
+Rodada atual: R08-007
+Aguardando: ACK e DONE/BLOCKED de R08-007; após publicação, notificar GPT nesta conversa uma única vez. Não iniciar outra tarefa.
 R05 e R06-002 aprovadas no escopo experimental; código R06-002 033fdc47c09796a584cf9782324fc7c08394ce74; parecer R06-002-RESULT.md. R07-001 aprovada no escopo experimental; código f46ad182bcb7fb067d68c335369640c82bccba1d, parecer R07-001-RESULT.md. R07-002 aprovada no escopo experimental; código e04bb4059282197a0ce98e10d1715379433b5084, parecer R07-002-RESULT.md. R07-003 aprovada no escopo experimental com ressalvas; código cc738622436d3df1224df700916970570eb0bd40, parecer R07-003-RESULT.md. R08-001 aprovada experimentalmente com ressalvas; identidade estável de linhas; F03 integral pendente de R08-002 (estoque e vínculo produto/linha). Pausa solicitada pelo proprietário após R08-001 em 26/11/2026; retomada somente mediante autorização expressa. R10 deve resolver ou justificar F01–F07.
 GPT: agendador MapOS — Ciclo GPT pausado e estado verificado. Despertar por mensagem direta do Hermes nesta conversa, conforme README.md.
 Hermes: autorizado ajustar somente o cron nativo original deste ciclo para 15 minutos e ativá-lo com notificação direta após DONE/BLOCKED. Notificações diretas R06-002, R07-001, R07-002, R07-003 e R08-001 recebidas em 26/11/2026; periodicidade efetiva do cron ainda não verificada pelo GPT. HGT-003 concluído 3/3; job temporário permanece pausado.
@@ -33,3 +33,7 @@ R08-005 BLOCKED: Terra Max apresentou avanço material e correção experimental
 Autorização posterior do proprietário: prosseguir com laboratório nativo e integração gradual conforme R08-NATIVE-LAB.md. Somente R08-006 nesta etapa. A exceção de backend local substitui a proibição anterior exclusivamente para preparar e testar cópia nativa isolada, sem alteração do código nativo, sem dados/credenciais/serviços produtivos. Não aperfeiçoar o simulador. F03 ainda aberta, preservar evidências. Se BLOCKED, aguardar decisão GPT, sem nova tentativa automática. Cron e modelos preservados.
 
 R08-006 BLOCKED: guardas do cron impediram ciclo de limpeza do contêiner de prova; isolamento integral e banco/app/testes não executados. Parecer R08-006-RESULT.md. Não afrouxar proteção global nem contornar aprovação. Aguardar decisão sobre laboratório; coleta documental manual não reativa o cron. Sem acesso aos dados reais, deploy, alterações funcionais ou outros projetos.
+
+
+## Retomada controlada — 27/11/2026
+Proprietário autorizou publicar uma nova tarefa para testar o ciclo restaurado, utilizando DeepSeek enquanto Codex estiver sem cota. Somente R08-007 está autorizada; substitui a pausa anterior apenas para esta rodada. Candidato 86f4c552ac111cec65460768b7023d207824a1b7. Coordenador conforme modelo DeepSeek configurado pelo proprietário; revisão independente DeepSeek Flash, sem Codex/Luna nesta rodada. Capturas Playwright para inspeção pelo GPT. Manter cron de 15 minutos, skills e ai-memory existentes, sem mudanças globais. Não retomar IDs anteriores. Ao concluir ou bloquear, publicar resultado e notificar uma vez, aguardar decisão GPT sem repetir. Integração experimental somente em laboratório; nenhuma produção, merge, deploy, modificação de código nativo, alteração de dados de negócio ou outro projeto. As entradas anteriores são histórico, não tarefas ativas.

@@ -1,0 +1,112 @@
+{
+  "generatedAt": "2026-11-27T01:21:32.626Z",
+  "codeSha": "uncommitted-9a6159d927b92f78a76688b4680280062297d7887f8fc909c270d402979637f3",
+  "total": 8,
+  "summary": {
+    "PASS": 8
+  },
+  "pdfs": [
+    {
+      "file": "origem-encerrada-cupom.pdf",
+      "bytes": 27660
+    },
+    {
+      "file": "origem-garantia-a4.pdf",
+      "bytes": 30686
+    },
+    {
+      "file": "origem-parcial-a4.pdf",
+      "bytes": 30823
+    },
+    {
+      "file": "origem-parcial-cupom.pdf",
+      "bytes": 28005
+    },
+    {
+      "file": "origem-reembolsada-a4.pdf",
+      "bytes": 30452
+    },
+    {
+      "file": "os-cancelada-a4.pdf",
+      "bytes": 30272
+    },
+    {
+      "file": "os-cancelada-cupom.pdf",
+      "bytes": 28247
+    },
+    {
+      "file": "os019-cupom.pdf",
+      "bytes": 28330
+    },
+    {
+      "file": "os020-cupom.pdf",
+      "bytes": 28439
+    },
+    {
+      "file": "recibo-original.pdf",
+      "bytes": 36857
+    },
+    {
+      "file": "retorno-a4.pdf",
+      "bytes": 30690
+    },
+    {
+      "file": "retorno-garantia-a4.pdf",
+      "bytes": 30680
+    },
+    {
+      "file": "retorno-garantia-cupom.pdf",
+      "bytes": 27865
+    }
+  ],
+  "results": [
+    {
+      "id": "R07P-01",
+      "desc": "A4 da origem parcial mantém cobrança líquida 450/150/300 e situação Parcial",
+      "status": "PASS",
+      "detail": "Minha oficina · Demonstração Ordem de serviço #025 Cliente Equipamento Clima Sul Serviços LG · Inverter Entrada Andamento 20/08/2026 Finalizado Entrega Defeito Não registrada Não informado Total cobrado Pago R$ 450,00 R$ 150,00 Saldo Situação financeira R$ 300,00 Parcial Protótipo — sem validade comercial. "
+    },
+    {
+      "id": "R07P-02",
+      "desc": "Cupom 80 mm da origem parcial com totais e sem dados privados",
+      "status": "PASS",
+      "detail": "{\"info\":{\"pages\":1,\"size\":\"227.04 x 425.04 pts\"},\"text\":\"Minha oficina · Demonstração Ordem de serviço #025 Cliente Equipamento Clima Sul Serviços LG · Inverter Entrada Andamento 20/08/2026 Finalizado Entrega Defeito Não registrada Não informado Total cobrado Pago R$ 450,00 R$\"}"
+    },
+    {
+      "id": "R07P-03",
+      "desc": "A4 do retorno não vaza diagnóstico, justificativa, comprovante ou motivo",
+      "status": "PASS",
+      "detail": "Minha oficina · Demonstração Ordem de serviço #026 Cliente Equipamento Clima Sul Serviços LG · Inverter Entrada Andamento 26/11/2026 Aberto Entrega Defeito Não registrada Defeito público do retorno Total cobrado Pago R$ 0,00 R$ 0,00 Saldo Situação financeira R$ 0,00 Sem cobrança Protótipo — sem validade comercial. "
+    },
+    {
+      "id": "R07P-04",
+      "desc": "A4 da origem reembolsada mostra 0/0/0 e situação Reembolsado",
+      "status": "PASS",
+      "detail": "Minha oficina · Demonstração Ordem de serviço #025 Cliente Equipamento Clima Sul Serviços LG · Inverter Entrada Andamento 20/08/2026 Finalizado Entrega Defeito Não registrada Não informado Total cobrado Pago R$ 0,00 R$ 0,00 Saldo Situação financeira R$ 0,00 Reembolsado Protótipo — sem validade comercial. "
+    },
+    {
+      "id": "R07P-05",
+      "desc": "Recibo original continua emitido e sem marca de estorno",
+      "status": "PASS",
+      "detail": "MINHA OFICINA · DEMONSTRAÇÃO Recibo #25 / 1 Recebimento registrado R$ 200,00 OS Cliente #025 Clima Sul Serviços Equipamento Data do recebimento LG · Inverter 25/11/2026 Forma Pix Protótipo — sem validade comercial. Não comprova movimentação bancária. "
+    },
+    {
+      "id": "R07P-06",
+      "desc": "Cupom do encerramento sem dinheiro mostra 0/0 e Encerrado por garantia",
+      "status": "PASS",
+      "detail": "Minha oficina · Demonstração Ordem de serviço #027 Cliente Equipamento Clima Sul Serviços LG · Inverter Entrada Andamento 20/08/2026 Finalizado Entrega Defeito Não registrada Não informado Total cobrado Pago R$ 0,00 R$ 0,00 Saldo Situação financeira R$ 0,00 Encerrado por garantia Protótipo — sem validade comercial. "
+    },
+    {
+      "id": "R07P-07",
+      "desc": "Impressões não contêm referência privada nem justificativa",
+      "status": "PASS",
+      "detail": "limpo"
+    },
+    {
+      "id": "R07P-08",
+      "desc": "Sem erros de página ou console na impressão",
+      "status": "PASS",
+      "detail": "{\"errors\":[],\"consoleErrors\":[]}"
+    }
+  ]
+}

@@ -1,0 +1,455 @@
+{
+  "generatedAt": "2026-11-27T01:21:17.101Z",
+  "codeSha": "uncommitted-9a6159d927b92f78a76688b4680280062297d7887f8fc909c270d402979637f3",
+  "baseUrl": "http://127.0.0.1:18130",
+  "total": 74,
+  "summary": {
+    "PASS": 74
+  },
+  "results": [
+    {
+      "id": "R07B-01",
+      "desc": "Retorno #018 abre a garantia com referência à origem #016 e prazo",
+      "status": "PASS",
+      "detail": "ATENDIMENTO / #018\nDaikin · EcoSwing\n\nRefrigeração Horizonte · Entrada em 21/11/2026\n\nVoltar\nImprimir\nANDAMENTO TÉCNICO\nAberto\nConclusão não registrada\nAtualizar andamento\nFINANCEI"
+    },
+    {
+      "id": "R07B-02",
+      "desc": "Avaliação devolucao_valor registrada sem mover a origem #016",
+      "status": "PASS",
+      "detail": "{\"total\":41000,\"paid\":41000}"
+    },
+    {
+      "id": "R07B-03",
+      "desc": "Painel exibe a devolução pendente e o botão de registro",
+      "status": "PASS",
+      "detail": "R$ 0,00\nTempo de trabalho\n0 min\n\nNão são cobrança, despesa paga ou movimentação de estoque.\n\nRegistrar custo\nHistórico privado da garantia\nAvaliação Coberto\n27/11/2026 · 22:19 · Administrador\nSolução\nDevolução de dinheiro\nDiagnóstico\nFalha confirmada na bancada.\nJustificativa\nAcordo fictício de devolução.\nAtendimentos da unidade\nDaikin · EcoSwing\nRefrigeração Horizonte\n#018\nAberto\nNão entregue\nSem cobrança\n21/11/2026"
+    },
+    {
+      "id": "R07B-04",
+      "desc": "Modal abre sem modalidade/forma pré-escolhidas, campos vazios e confirmação desmarcada",
+      "status": "PASS",
+      "detail": "{\"mode\":\"\",\"method\":\"\",\"amount\":\"\",\"amountReadOnly\":false,\"amountMax\":\"410\",\"date\":\"2026-11-26\",\"dateMax\":\"2026-11-26\",\"dateMin\":\"1900-01-01\",\"reference\":\"\",\"reason\":\"\",\"confirm\":false,\"preview\":\"Selecione a modalidade e confira o valor.\"}"
+    },
+    {
+      "id": "R07B-05",
+      "desc": "Data limitada a hoje (piso conservador sem ledger) e valor limitado ao recebido (410,00)",
+      "status": "PASS",
+      "detail": "{\"date\":\"2026-11-26\",\"max\":\"2026-11-26\",\"min\":\"1900-01-01\",\"amountMax\":\"410\"}"
+    },
+    {
+      "id": "R07B-06",
+      "desc": "Modo total calcula o recebido líquido e trava o valor (readOnly)",
+      "status": "PASS",
+      "detail": "{\"amount\":\"410.00\",\"ro\":true,\"preview\":\"Abatimento: R$ 410,00 · Saldo após registro: R$ 0,00\"}"
+    },
+    {
+      "id": "R07B-07",
+      "desc": "Modo parcial libera o valor e atualiza a prévia",
+      "status": "PASS",
+      "detail": "{\"ro\":false,\"preview\":\"Abatimento: R$ 410,00 · Saldo após registro: R$ 0,00\"}"
+    },
+    {
+      "id": "R07B-08",
+      "desc": "Parcial de 50,00 em 500/200 resulta 450/150/saldo 300",
+      "status": "PASS",
+      "detail": "{\"total\":45000,\"paid\":15000,\"balance\":30000,\"originalTotal\":50000,\"originalPaid\":20000,\"status\":\"Parcial\",\"billing\":{\"due\":\"2026-12-20\",\"items\":[{\"type\":\"Serviço\",\"name\":\"Serviço original\",\"quantity\":1,\"unit\":50000}],\"discount\":0},\"ledger\":{\"opening\":0,\"events\":[{\"id\":1,\"type\":\"receive\",\"amount\":20000,\"date\":\"2026-11-25\",\"method\":\"Pix\",\"registered\":\"2026-11-26T12:00:00Z\"},{\"amount\":5000,\"credit\":5000,\"date\":\"2026-11-26\",\"method\":\"Pix\",\"reference\":\"COMPROVANTE FICTÍCIO R07-002\",\"reason\":\"MOTIVO PRIVADO R07-002\",\"registered\":\"2026-11-27T01:19:53.617Z\",\"returnId\":26,\"operationId\":1,\"id\":2,\"type\":\"warranty_refund\"}],\"warrantyBaseTotal\":50000}}"
+    },
+    {
+      "id": "R07B-09",
+      "desc": "Cobrança, histórico e recibo originais preservados após a parcial",
+      "status": "PASS",
+      "detail": "{\"billing\":{\"due\":\"2026-12-20\",\"items\":[{\"type\":\"Serviço\",\"name\":\"Serviço original\",\"quantity\":1,\"unit\":50000}],\"discount\":0},\"originalTotal\":50000,\"originalPaid\":20000}"
+    },
+    {
+      "id": "R07B-10",
+      "desc": "Retorno permanece sem cobrança própria e com histórico do registro",
+      "status": "PASS",
+      "detail": "{\"total\":0,\"paid\":0}"
+    },
+    {
+      "id": "R07B-11",
+      "desc": "Financeiro lista a devolução com valor, abatimento e link do retorno",
+      "status": "PASS",
+      "detail": "ATENDIMENTO / #025\nLG · Inverter\n\nClima Sul Serviços · Entrada em 20/08/2026\n\nVoltar\nImprimir\nANDAMENTO TÉCNICO\nFinalizado\nConclusão: 01/09/2026\nAtualizar andamento\nFINANCEIRO\nParcial\nSaldo: R$ 300,00\nRegistrar pagamento\nRETIRADA\nNão entregue\nRegistro independente do pagamento\nRegistrar entrega\nVisão geral\nAtendimento\nOrçamento e link\nEntrega\nAnexos\nHistórico\nGarantia\nCancelamento\nFinanceiro\nRecebimentos e correções\nRegistrar pagamento\nDevolução de garantia\n− R$ 50,00\nAbatimento registrado\nR$ 50"
+    },
+    {
+      "id": "R07B-12",
+      "desc": "Financeiro preserva cobrança original, recebido original e saldo",
+      "status": "PASS",
+      "detail": "ATENDIMENTO / #025\nLG · Inverter\n\nClima Sul Serviços · Entrada em 20/08/2026\n\nVoltar\nImprimir\nANDAMENTO TÉCNICO\nFinalizado\nConclusão: 01/09/2026\nAtualizar andamento\nFINANCEIRO\nParcial\nSaldo: R$ 300,00\nRegistrar pagamento\nRETIRADA\nNão entregue\nRegistro independente do pagamento\nRegistrar entrega\nVisão geral\nAtendimento\nOrçamento e link\nEntrega\nAnexos\nHistórico\nGarantia\nCancelamento\nFinanceiro\nRecebimentos e correções\nRegistrar pagamento\nDevolução de garantia\n− R$ 50,00\nAbatimento registrado\nR$ 50,00\nRegistro\n#2\nMotivo\nMOTIVO PRIVADO R07-002\nData\n26/11/2026\nConsultar retorno #026\nRecebimento\nR$ 200,00\n\n25/11/2026 · Pix · Registro #1\n\nRecibo\nResumo da cobrança\nParcial\nTotal cobrado\nR$ 450,00\nRe"
+    },
+    {
+      "id": "R07B-13",
+      "desc": "Resumo do retorno continua sem cobrança (zero à vista)",
+      "status": "PASS",
+      "detail": "{\"total\":0,\"paid\":0,\"balance\":0,\"originalTotal\":null,\"originalPaid\":null,\"status\":\"Sem cobrança\",\"billing\":null,\"ledger\":null}"
+    },
+    {
+      "id": "R07B-14",
+      "desc": "Segundo registro calcula 150,00 e abatimento de 450,00",
+      "status": "PASS",
+      "detail": "{\"amount\":\"150.00\",\"ro\":true,\"preview\":\"Abatimento: R$ 450,00 · Saldo após registro: R$ 0,00\"}"
+    },
+    {
+      "id": "R07B-15",
+      "desc": "Encerramento total deixa 0/0/0 e status Reembolsado",
+      "status": "PASS",
+      "detail": "{\"total\":0,\"paid\":0,\"balance\":0,\"originalTotal\":50000,\"originalPaid\":20000,\"status\":\"Reembolsado\",\"billing\":{\"due\":\"2026-12-20\",\"items\":[{\"type\":\"Serviço\",\"name\":\"Serviço original\",\"quantity\":1,\"unit\":50000}],\"discount\":0},\"ledger\":{\"opening\":0,\"events\":[{\"id\":1,\"type\":\"receive\",\"amount\":20000,\"date\":\"2026-11-25\",\"method\":\"Pix\",\"registered\":\"2026-11-26T12:00:00Z\"},{\"amount\":5000,\"credit\":5000,\"date\":\"2026-11-26\",\"method\":\"Pix\",\"reference\":\"COMPROVANTE FICTÍCIO R07-002\",\"reason\":\"MOTIVO PRIVADO R07-002\",\"registered\":\"2026-11-27T01:19:53.617Z\",\"returnId\":26,\"operationId\":1,\"id\":2,\"type\":\"warranty_refund\"},{\"amount\":15000,\"credit\":45000,\"date\":\"2026-11-26\",\"method\":\"Pix\",\"reference\":\"COMPROVANTE FICTÍCIO R07-002\",\"reason\":\"MOTIVO PRIVADO R07-002\",\"registered\":\"2026-11-27T01:19:54.915Z\",\"returnId\":26,\"operationId\":2,\"id\":3,\"type\":\"warranty_refund\"}],\"warrantyBaseTotal\":50000}}"
+    },
+    {
+      "id": "R07B-16",
+      "desc": "Ledger preserva o recibo original e os dois eventos de devolução",
+      "status": "PASS",
+      "detail": "[\"receive\",\"warranty_refund\",\"warranty_refund\"]"
+    },
+    {
+      "id": "R07B-17",
+      "desc": "Financeiro mostra Reembolsado, zero e a composição 200/500",
+      "status": "PASS",
+      "detail": "ATENDIMENTO / #025\nLG · Inverter\n\nClima Sul Serviços · Entrada em 20/08/2026\n\nVoltar\nImprimir\nANDAMENTO TÉCNICO\nFinalizado\nConclusão: 01/09/2026\nAtualizar andamento\nFINANCEIRO\nReembolsado\nSaldo: R$ 0,00\nRETIRADA\nNão entregue\nRegistro independente do pagamento\nRegistrar entrega\nVisão geral\nAtendimento\nOrçamento e link\nEntrega\nAnexos\nHistórico\nGarantia\nCancelamento\nFinanceiro\nRecebimentos e correções\nDevolução de garantia\n− R$ 150,00\nAbatimento registrado\nR$ 450,00\nRegistro\n#3\nMotivo\nMOTIVO PRIVADO R07-002\nData\n26/11/2026\nConsultar retorno #026\nDevolução de garantia\n− R$ 50,00\nAbatimento registrado\nR$ 50,00\nRegistro\n#2\nMotivo\nMOTIVO PRIVADO R07-002\nData\n26/11/2026\nConsultar retorno #026\nRecebimento\nR$ 200,00\n\n25/11/2026 · Pix · Registro #1\n\nRecibo\nResumo da cobrança\nReembolsado\nTotal cobrado\nR$ 0,00\nRecebido líquido\nR$ 0,00\nSaldo\nR$ 0,00\nVencimento\n20/12/2026\nCobrança original\nR$ 500,00\nRe"
+    },
+    {
+      "id": "R07B-18",
+      "desc": "Zero não oferece nova cobrança no orçamento nem pagamento no financeiro",
+      "status": "PASS",
+      "detail": "sem botões de faturar/pagar"
+    },
+    {
+      "id": "R07B-19",
+      "desc": "Lista financeira mantém a OS zerada com status Reembolsado",
+      "status": "PASS",
+      "detail": "CONTAS DA OFICINA\nFinanceiro\n\nAcompanhe cobranças e recebimentos vinculados às ordens de serviço.\n\nA RECEBER\nR$ 3.950,00\n13 cobranças com saldo\nVENCIDO\nR$ 0,00\nSaldo com vencimento anterior a hoje\nRECEBIDO LÍQUIDO\nR$ 2.830,00\nRecebimentos menos estornos e devoluções\nTOTAL COBRADO\nR$ 6.780,00\nObrigações registradas\nContas a receber\nSituação\nTodas as cobranças\nA vencer / sem data\nVencidas\nQuitadas\n\n17 cobranças\n\n#047\nRefrigeração Horizonte\nDaikin · EcoSwing\nVencimento\n20/12/2026\nEm aberto\nSaldo\nR$ 400,00\nTotal R$ 400,00\n#045\nRefrigeração Horizonte\nDaikin · EcoSwing\nVencimento\n20/12/2026\nQuitado\n"
+    },
+    {
+      "id": "R07B-20",
+      "desc": "Painel e agregado financeiro usam o mesmo saldo líquido (OS zerada contribui 0)",
+      "status": "PASS",
+      "detail": "{\"sum\":395000,\"agg\":395000}"
+    },
+    {
+      "id": "R07B-21",
+      "desc": "Impressão A4 da origem zerada mantém totais, saldo e situação",
+      "status": "PASS",
+      "detail": "DOCUMENTO\nImpressão da OS #025\n\nPrévia fictícia para avaliação do formato.\n\nVoltar\nCupom 80 mm\nImprimir\nMinha oficina · Demonstração\nOrdem de serviço #025\nCliente\nClima Sul Serviços\nEquipamento\nLG · Inverter\nEntrada\n20/08/2026\nAndamento\nFinalizado\nEntrega\nNão registrada\nDefeito\nNão informado\nTotal cobrado\nR$ 0,00\nPago\nR$ 0,00\nSaldo\nR$ 0,00\nSituação financeira\nReembolsado\n\nProtótipo — sem validade comercial."
+    },
+    {
+      "id": "R07B-22",
+      "desc": "Recibo original continua válido, sem estorno",
+      "status": "PASS",
+      "detail": "DOCUMENTO\nRecibo de recebimento\n\nPrévia de demonstração, sem validade comercial.\n\nVoltar\nImprimir\n\nMINHA OFICINA · DEMONSTRAÇÃO\n\nRecibo #25 / 1\n\nRecebimento registrado\n\nR$ 200,00\n\nOS\n#025\nCliente\nClima Sul Serviços\nEquipamento\nLG · Inverter\nData do recebimento\n25/11/2026\nForma\nPix\n\nProtótipo — sem v"
+    },
+    {
+      "id": "R07B-23",
+      "desc": "Portal do cliente mostra Reembolsada 0/0/0 sem dados privados",
+      "status": "PASS",
+      "detail": "{\"total\":0,\"paid\":0,\"balance\":0,\"status\":\"Reembolsada\"}"
+    },
+    {
+      "id": "R07B-24",
+      "desc": "Corrigir o total primeiro restaura 450/150/saldo 300",
+      "status": "PASS",
+      "detail": "{\"total\":45000,\"paid\":15000,\"balance\":30000,\"originalTotal\":50000,\"originalPaid\":20000,\"status\":\"Parcial\",\"billing\":{\"due\":\"2026-12-20\",\"items\":[{\"type\":\"Serviço\",\"name\":\"Serviço original\",\"quantity\":1,\"unit\":50000}],\"discount\":0},\"ledger\":{\"opening\":0,\"events\":[{\"id\":1,\"type\":\"receive\",\"amount\":20000,\"date\":\"2026-11-25\",\"method\":\"Pix\",\"registered\":\"2026-11-26T12:00:00Z\"},{\"amount\":5000,\"credit\":5000,\"date\":\"2026-11-26\",\"method\":\"Pix\",\"reference\":\"COMPROVANTE FICTÍCIO R07-002\",\"reason\":\"MOTIVO PRIVADO R07-002\",\"registered\":\"2026-11-27T01:19:53.617Z\",\"returnId\":26,\"operationId\":1,\"id\":2,\"type\":\"warranty_refund\"},{\"amount\":15000,\"credit\":45000,\"date\":\"2026-11-26\",\"method\":\"Pix\",\"reference\":\"COMPROVANTE FICTÍCIO R07-002\",\"reason\":\"MOTIVO PRIVADO R07-002\",\"registered\":\"2026-11-27T01:19:54.915Z\",\"returnId\":26,\"operationId\":2,\"id\":3,\"type\":\"warranty_refund\"},{\"reason\":\"Registro lançado por engano na bancada R07-002.\",\"registered\":\"2026-11-27T01:19:57.081Z\",\"date\":\"2026-11-27\",\"method\":\"Pix\",\"operationId\":3,\"id\":4,\"type\":\"warranty_refund_correction\",\"reference\":3,\"returnId\":26,\"amount\":15000,\"credit\":45000}],\"warrantyBaseTotal\":50000}}"
+    },
+    {
+      "id": "R07B-25",
+      "desc": "Corrigir a parcial depois restaura 500/200/saldo 300",
+      "status": "PASS",
+      "detail": "{\"total\":50000,\"paid\":20000,\"balance\":30000,\"originalTotal\":50000,\"originalPaid\":20000,\"status\":\"Parcial\",\"billing\":{\"due\":\"2026-12-20\",\"items\":[{\"type\":\"Serviço\",\"name\":\"Serviço original\",\"quantity\":1,\"unit\":50000}],\"discount\":0},\"ledger\":{\"opening\":0,\"events\":[{\"id\":1,\"type\":\"receive\",\"amount\":20000,\"date\":\"2026-11-25\",\"method\":\"Pix\",\"registered\":\"2026-11-26T12:00:00Z\"},{\"amount\":5000,\"credit\":5000,\"date\":\"2026-11-26\",\"method\":\"Pix\",\"reference\":\"COMPROVANTE FICTÍCIO R07-002\",\"reason\":\"MOTIVO PRIVADO R07-002\",\"registered\":\"2026-11-27T01:19:53.617Z\",\"returnId\":26,\"operationId\":1,\"id\":2,\"type\":\"warranty_refund\"},{\"amount\":15000,\"credit\":45000,\"date\":\"2026-11-26\",\"method\":\"Pix\",\"reference\":\"COMPROVANTE FICTÍCIO R07-002\",\"reason\":\"MOTIVO PRIVADO R07-002\",\"registered\":\"2026-11-27T01:19:54.915Z\",\"returnId\":26,\"operationId\":2,\"id\":3,\"type\":\"warranty_refund\"},{\"reason\":\"Registro lançado por engano na bancada R07-002.\",\"registered\":\"2026-11-27T01:19:57.081Z\",\"date\":\"2026-11-27\",\"method\":\"Pix\",\"operationId\":3,\"id\":4,\"type\":\"warranty_refund_correction\",\"reference\":3,\"returnId\":26,\"amount\":15000,\"credit\":45000},{\"reason\":\"Registro lançado por engano na bancada R07-002.\",\"registered\":\"2026-11-"
+    },
+    {
+      "id": "R07B-26",
+      "desc": "Histórico mantém os quatro registros e nenhum botão de correção ativo",
+      "status": "PASS",
+      "detail": "quatro operações"
+    },
+    {
+      "id": "R07B-27",
+      "desc": "Status volta a Parcial após as correções",
+      "status": "PASS",
+      "detail": "Parcial"
+    },
+    {
+      "id": "R07B-28",
+      "desc": "Ordem inversa: após parcial e total a origem fica zerada",
+      "status": "PASS",
+      "detail": "{\"total\":0,\"paid\":0,\"balance\":0,\"originalTotal\":50000,\"originalPaid\":20000,\"status\":\"Reembolsado\",\"billing\":{\"due\":\"2026-12-20\",\"items\":[{\"type\":\"Serviço\",\"name\":\"Serviço original\",\"quantity\":1,\"unit\":50000}],\"discount\":0},\"ledger\":{\"opening\":0,\"events\":[{\"id\":1,\"type\":\"receive\",\"amount\":20000,\"date\":\"2026-11-25\",\"method\":\"Pix\",\"registered\":\"2026-11-26T12:00:00Z\"},{\"amount\":5000,\"credit\":5000,\"date\":\"2026-11-26\",\"method\":\"Pix\",\"reference\":\"COMPROVANTE FICTÍCIO R07-002\",\"reason\":\"MOTIVO PRIVADO R07-002\",\"registered\":\"2026-11-27T01:19:58.914Z\",\"returnId\":28,\"operationId\":1,\"id\":2,\"type\":\"warranty_refund\"},{\"amount\":15000,\"credit\":45000,\"date\":\"2026-11-26\",\"method\":\"Pix\",\"reference\":\"COMPROVANTE FICTÍCIO R07-002\",\"reason\":\"MOTIVO PRIVADO R07-002\",\"registered\":\"2026-11-27T01:19:59.814Z\",\"returnId\":28,\"operationId\":2,\"id\":3,\"type\":\"warranty_refund\"}],\"warrantyBaseTotal\":50000}}"
+    },
+    {
+      "id": "R07B-29",
+      "desc": "Ordem inversa: corrigir o total primeiro restaura 450/150/300",
+      "status": "PASS",
+      "detail": "{\"total\":45000,\"paid\":15000,\"balance\":30000,\"originalTotal\":50000,\"originalPaid\":20000,\"status\":\"Parcial\",\"billing\":{\"due\":\"2026-12-20\",\"items\":[{\"type\":\"Serviço\",\"name\":\"Serviço original\",\"quantity\":1,\"unit\":50000}],\"discount\":0},\"ledger\":{\"opening\":0,\"events\":[{\"id\":1,\"type\":\"receive\",\"amount\":20000,\"date\":\"2026-11-25\",\"method\":\"Pix\",\"registered\":\"2026-11-26T12:00:00Z\"},{\"amount\":5000,\"credit\":5000,\"date\":\"2026-11-26\",\"method\":\"Pix\",\"reference\":\"COMPROVANTE FICTÍCIO R07-002\",\"reason\":\"MOTIVO PRIVADO R07-002\",\"registered\":\"2026-11-27T01:19:58.914Z\",\"returnId\":28,\"operationId\":1,\"id\":2,\"type\":\"warranty_refund\"},{\"amount\":15000,\"credit\":45000,\"date\":\"2026-11-26\",\"method\":\"Pix\",\"reference\":\"COMPROVANTE FICTÍCIO R07-002\",\"reason\":\"MOTIVO PRIVADO R07-002\",\"registered\":\"2026-11-27T01:19:59.814Z\",\"returnId\":28,\"operationId\":2,\"id\":3,\"type\":\"warranty_refund\"},{\"reason\":\"Registro lançado por engano na bancada R07-002.\",\"registered\":\"2026-11-27T01:20:00.732Z\",\"date\":\"2026-11-27\",\"method\":\"Pix\",\"operationId\":3,\"id\":4,\"type\":\"warranty_refund_correction\",\"reference\":3,\"returnId\":28,\"amount\":15000,\"credit\":45000}],\"warrantyBaseTotal\":50000}}"
+    },
+    {
+      "id": "R07B-29b",
+      "desc": "Ordem inversa: corrigir a parcial depois restaura 500/200/300",
+      "status": "PASS",
+      "detail": "{\"total\":50000,\"paid\":20000,\"balance\":30000,\"originalTotal\":50000,\"originalPaid\":20000,\"status\":\"Parcial\",\"billing\":{\"due\":\"2026-12-20\",\"items\":[{\"type\":\"Serviço\",\"name\":\"Serviço original\",\"quantity\":1,\"unit\":50000}],\"discount\":0},\"ledger\":{\"opening\":0,\"events\":[{\"id\":1,\"type\":\"receive\",\"amount\":20000,\"date\":\"2026-11-25\",\"method\":\"Pix\",\"registered\":\"2026-11-26T12:00:00Z\"},{\"amount\":5000,\"credit\":5000,\"date\":\"2026-11-26\",\"method\":\"Pix\",\"reference\":\"COMPROVANTE FICTÍCIO R07-002\",\"reason\":\"MOTIVO PRIVADO R07-002\",\"registered\":\"2026-11-27T01:19:58.914Z\",\"returnId\":28,\"operationId\":1,\"id\":2,\"type\":\"warranty_refund\"},{\"amount\":15000,\"credit\":45000,\"date\":\"2026-11-26\",\"method\":\"Pix\",\"reference\":\"COMPROVANTE FICTÍCIO R07-002\",\"reason\":\"MOTIVO PRIVADO R07-002\",\"registered\":\"2026-11-27T01:19:59.814Z\",\"returnId\":28,\"operationId\":2,\"id\":3,\"type\":\"warranty_refund\"},{\"reason\":\"Registro lançado por engano na bancada R07-002.\",\"registered\":\"2026-11-27T01:20:00.732Z\",\"date\":\"2026-11-27\",\"method\":\"Pix\",\"operationId\":3,\"id\":4,\"type\":\"warranty_refund_correction\",\"reference\":3,\"returnId\":28,\"amount\":15000,\"credit\":45000},{\"reason\":\"Registro lançado por engano na bancada R07-002.\",\"registered\":\"2026-11-"
+    },
+    {
+      "id": "R07B-30",
+      "desc": "Total com zero recebido calcula 0,00 e abatimento integral",
+      "status": "PASS",
+      "detail": "{\"amount\":\"0.00\",\"ro\":true,\"preview\":\"Abatimento: R$ 500,00 · Saldo após registro: R$ 0,00\"}"
+    },
+    {
+      "id": "R07B-31",
+      "desc": "Encerramento sem dinheiro abate 500 sem criar recibo",
+      "status": "PASS",
+      "detail": "{\"total\":0,\"paid\":0,\"balance\":0,\"originalTotal\":50000,\"originalPaid\":0,\"status\":\"Encerrado por garantia\",\"billing\":{\"due\":\"2026-12-20\",\"items\":[{\"type\":\"Serviço\",\"name\":\"Serviço original\",\"quantity\":1,\"unit\":50000}],\"discount\":0},\"ledger\":{\"opening\":0,\"events\":[{\"amount\":0,\"credit\":50000,\"date\":\"2026-11-26\",\"method\":\"Pix\",\"reference\":\"COMPROVANTE FICTÍCIO R07-002\",\"reason\":\"MOTIVO PRIVADO R07-002\",\"registered\":\"2026-11-27T01:20:02.709Z\",\"returnId\":30,\"operationId\":1,\"id\":1,\"type\":\"warranty_refund\"}],\"warrantyBaseTotal\":50000}}"
+    },
+    {
+      "id": "R07B-32",
+      "desc": "Portal do zero sem caixa mostra Encerrada por garantia",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "id": "R07B-33",
+      "desc": "Correção do zero restaura 500/0/500",
+      "status": "PASS",
+      "detail": "{\"total\":50000,\"paid\":0,\"balance\":50000,\"originalTotal\":50000,\"originalPaid\":0,\"status\":\"Em aberto\",\"billing\":{\"due\":\"2026-12-20\",\"items\":[{\"type\":\"Serviço\",\"name\":\"Serviço original\",\"quantity\":1,\"unit\":50000}],\"discount\":0},\"ledger\":{\"opening\":0,\"events\":[{\"amount\":0,\"credit\":50000,\"date\":\"2026-11-26\",\"method\":\"Pix\",\"reference\":\"COMPROVANTE FICTÍCIO R07-002\",\"reason\":\"MOTIVO PRIVADO R07-002\",\"registered\":\"2026-11-27T01:20:02.709Z\",\"returnId\":30,\"operationId\":1,\"id\":1,\"type\":\"warranty_refund\"},{\"reason\":\"Registro lançado por engano na bancada R07-002.\",\"registered\":\"2026-11-27T01:20:03.617Z\",\"date\":\"2026-11-27\",\"method\":\"Pix\",\"operationId\":2,\"id\":2,\"type\":\"warranty_refund_correction\",\"reference\":1,\"returnId\":30,\"amount\":0,\"credit\":50000}],\"warrantyBaseTotal\":50000}}"
+    },
+    {
+      "id": "R07B-34",
+      "desc": "Legado 500/200 sem billing preserva valores originais e não cria billing",
+      "status": "PASS",
+      "detail": "{\"total\":0,\"paid\":0,\"balance\":0,\"originalTotal\":50000,\"originalPaid\":20000,\"status\":\"Reembolsado\",\"billing\":null,\"ledger\":{\"opening\":20000,\"events\":[{\"amount\":20000,\"credit\":50000,\"date\":\"2026-11-26\",\"method\":\"Pix\",\"reference\":\"COMPROVANTE FICTÍCIO R07-002\",\"reason\":\"MOTIVO PRIVADO R07-002\",\"registered\":\"2026-11-27T01:20:04.533Z\",\"returnId\":34,\"operationId\":1,\"id\":1,\"type\":\"warranty_refund\"}],\"warrantyBaseTotal\":50000}}"
+    },
+    {
+      "id": "R07B-35",
+      "desc": "OS legada zerada permanece na lista financeira",
+      "status": "PASS",
+      "detail": "presente"
+    },
+    {
+      "id": "R07B-36",
+      "desc": "Legado não inventa recibos: apenas o evento de devolução",
+      "status": "PASS",
+      "detail": "um evento"
+    },
+    {
+      "id": "R07B-37",
+      "desc": "Orçamento original do legado continua projetado e sem formalizar nova cobrança",
+      "status": "PASS",
+      "detail": "versão preservada"
+    },
+    {
+      "id": "R07B-38",
+      "desc": "Pagamento posterior de 300 quita o saldo líquido (450/450)",
+      "status": "PASS",
+      "detail": "{\"total\":45000,\"paid\":45000,\"balance\":0,\"originalTotal\":50000,\"originalPaid\":50000,\"status\":\"Quitado\",\"billing\":{\"due\":\"2026-12-20\",\"items\":[{\"type\":\"Serviço\",\"name\":\"Serviço original\",\"quantity\":1,\"unit\":50000}],\"discount\":0},\"ledger\":{\"opening\":0,\"events\":[{\"id\":1,\"type\":\"receive\",\"amount\":20000,\"date\":\"2026-11-25\",\"method\":\"Pix\",\"registered\":\"2026-11-26T12:00:00Z\"},{\"amount\":5000,\"credit\":5000,\"date\":\"2026-11-26\",\"method\":\"Pix\",\"reference\":\"COMPROVANTE FICTÍCIO R07-002\",\"reason\":\"MOTIVO PRIVADO R07-002\",\"registered\":\"2026-11-27T01:20:05.947Z\",\"returnId\":32,\"operationId\":1,\"id\":2,\"type\":\"warranty_refund\"},{\"id\":3,\"type\":\"receive\",\"amount\":30000,\"date\":\"2026-11-26\",\"method\":\"Pix\",\"registered\":\"2026-11-27T01:20:06.837Z\"}],\"warrantyBaseTotal\":50000}}"
+    },
+    {
+      "id": "R07B-39",
+      "desc": "Encerramento posterior devolve 450 e abate 450",
+      "status": "PASS",
+      "detail": "{\"total\":0,\"paid\":0,\"balance\":0,\"originalTotal\":50000,\"originalPaid\":50000,\"status\":\"Reembolsado\",\"billing\":{\"due\":\"2026-12-20\",\"items\":[{\"type\":\"Serviço\",\"name\":\"Serviço original\",\"quantity\":1,\"unit\":50000}],\"discount\":0},\"ledger\":{\"opening\":0,\"events\":[{\"id\":1,\"type\":\"receive\",\"amount\":20000,\"date\":\"2026-11-25\",\"method\":\"Pix\",\"registered\":\"2026-11-26T12:00:00Z\"},{\"amount\":5000,\"credit\":5000,\"date\":\"2026-11-26\",\"method\":\"Pix\",\"reference\":\"COMPROVANTE FICTÍCIO R07-002\",\"reason\":\"MOTIVO PRIVADO R07-002\",\"registered\":\"2026-11-27T01:20:05.947Z\",\"returnId\":32,\"operationId\":1,\"id\":2,\"type\":\"warranty_refund\"},{\"id\":3,\"type\":\"receive\",\"amount\":30000,\"date\":\"2026-11-26\",\"method\":\"Pix\",\"registered\":\"2026-11-27T01:20:06.837Z\"},{\"amount\":45000,\"credit\":45000,\"date\":\"2026-11-26\",\"method\":\"Pix\",\"reference\":\"COMPROVANTE FICTÍCIO R07-002\",\"reason\":\"MOTIVO PRIVADO R07-002\",\"registered\":\"2026-11-27T01:20:07.748Z\",\"returnId\":32,\"operationId\":2,\"id\":4,\"type\":\"warranty_refund\"}],\"warrantyBaseTotal\":50000}}"
+    },
+    {
+      "id": "R07B-40",
+      "desc": "Com devolução ativa não há botão de estorno",
+      "status": "PASS",
+      "detail": "sem botão"
+    },
+    {
+      "id": "R07B-41",
+      "desc": "Handler real recusa estorno com devolução ativa e não muda o estado",
+      "status": "PASS",
+      "detail": "{\"err\":\"Há devolução ou abatimento registrado nesta OS. Confira o histórico antes de corrigir o recebimento.\",\"same\":true}"
+    },
+    {
+      "id": "R07B-42",
+      "desc": "Após corrigir, o estorno volta a ser oferecido",
+      "status": "PASS",
+      "detail": "botão presente"
+    },
+    {
+      "id": "R07B-43",
+      "desc": "Excesso de valor é recusado no handler com estado intacto",
+      "status": "PASS",
+      "detail": "{\"open\":true,\"error\":\"A devolução deve respeitar o recebido líquido; no encerramento total, devolva exatamente esse valor.\",\"toast\":\"Registro atualizado na demonstração.\"}"
+    },
+    {
+      "id": "R07B-44",
+      "desc": "Data futura é recusada no handler com estado intacto",
+      "status": "PASS",
+      "detail": "{\"open\":true,\"error\":\"Informe a data real da devolução, sem data futura.\",\"toast\":\"Registro atualizado na demonstração.\"}"
+    },
+    {
+      "id": "R07B-45",
+      "desc": "Data anterior ao recibo é recusada no handler",
+      "status": "PASS",
+      "detail": "{\"open\":true,\"error\":\"Data anterior aos registros financeiros da origem.\",\"toast\":\"Registro atualizado na demonstração.\"}"
+    },
+    {
+      "id": "R07B-46",
+      "desc": "Referência vazia é recusada no handler",
+      "status": "PASS",
+      "detail": "{\"open\":true,\"error\":\"Confira os textos obrigatórios e seus limites.\",\"toast\":\"Registro atualizado na demonstração.\"}"
+    },
+    {
+      "id": "R07B-47",
+      "desc": "Motivo vazio é recusado no handler",
+      "status": "PASS",
+      "detail": "{\"open\":true,\"error\":\"Confira os textos obrigatórios e seus limites.\",\"toast\":\"Registro atualizado na demonstração.\"}"
+    },
+    {
+      "id": "R07B-48",
+      "desc": "Sem confirmação o navegador bloqueia o envio e o estado fica intacto",
+      "status": "PASS",
+      "detail": "{\"open\":true,\"invalid\":true}"
+    },
+    {
+      "id": "R07B-49",
+      "desc": "Cobrança própria do retorno bloqueia no handler",
+      "status": "PASS",
+      "detail": "{\"open\":true,\"error\":\"Concilie a cobrança própria deste retorno antes de executar outra solução.\",\"toast\":\"\"}"
+    },
+    {
+      "id": "R07B-50",
+      "desc": "Entrega registrada bloqueia no handler",
+      "status": "PASS",
+      "detail": "{\"open\":true,\"error\":\"Corrija a entrega antes de executar outra solução.\",\"toast\":\"\"}"
+    },
+    {
+      "id": "R07B-51",
+      "desc": "Chave financeira obsoleta é recusada no handler",
+      "status": "PASS",
+      "detail": "{\"open\":true,\"error\":\"O financeiro mudou. Recarregue e confira novamente o valor.\",\"toast\":\"\"}"
+    },
+    {
+      "id": "R07B-52",
+      "desc": "Duas abas: envio antigo do refund é abortado com aviso e sem lançamento",
+      "status": "PASS",
+      "detail": "{\"e\":{\"open\":false,\"error\":\"\",\"toast\":\"Dados alterados em outra aba. Reabra a operação para evitar sobrescrever a atualização.\"},\"nfAfterTab\":{\"total\":50000,\"paid\":30000,\"balance\":20000,\"originalTotal\":null,\"originalPaid\":null,\"status\":\"Parcial\",\"billing\":{\"due\":\"2026-12-20\",\"items\":[{\"type\":\"Serviço\",\"name\":\"Serviço original\",\"quantity\":1,\"unit\":50000}],\"discount\":0},\"ledger\":{\"opening\":0,\"events\":[{\"id\":1,\"type\":\"receive\",\"amount\":20000,\"date\":\"2026-11-25\",\"method\":\"Pix\",\"registered\":\"2026-11-26T12:00:00Z\"},{\"id\":2,\"type\":\"receive\",\"amount\":10000,\"date\":\"2026-11-26\",\"method\":\"Pix\",\"registered\":\"2026-11-27T01:20:18.844Z\"}]}}}"
+    },
+    {
+      "id": "R07B-52b",
+      "desc": "Duas abas: correção concorrente mantém uma única correção e aborta o envio antigo",
+      "status": "PASS",
+      "detail": "{\"rB\":{\"open\":false,\"error\":\"\",\"toast\":\"Registro atualizado na demonstração.\"},\"eCorr\":{\"open\":false,\"error\":\"\",\"toast\":\"Dados alterados em outra aba. Reabra a operação para evitar sobrescrever a atualização.\"},\"corrCount\":1,\"nCorr\":{\"total\":50000,\"paid\":20000,\"balance\":30000,\"originalTotal\":50000,\"originalPaid\":20000,\"status\":\"Parcial\",\"billing\":{\"due\":\"2026-12-20\",\"items\":[{\"type\":\"Serviço\",\"name\":\"Serviço original\",\"quantity\":1,\"unit\":50000}],\"discount\":0},\"ledger\":{\"opening\":0,\"events\":[{\"id\":1,\"type\":\"receive\",\"amount\":20000,\"date\":\"2026-11-25\",\"method\":\"Pix\",\"registered\":\"2026-11-26T12:00:00Z\"},{\"amount\":2000,\"credit\":2000,\"date\":\"2026-11-26\",\"method\":\"Pix\",\"reference\":\"COMPROVANTE FICTÍCIO R07-002\",\"reason\":\"MOTIVO PRIVADO R07-002\",\"registered\":\"2026-11-27T01:20:25.915Z\",\"returnId\":44,\"operationId\":1,\"id\":2,\"type\":\"warranty_refund\"},{\"reason\":\"Correção da aba B (válida).\",\"registered\":\"2026-11-27T01:20:31.181Z\",\"date\":\"2026-11-27\",\"method\":\"Pix\",\"operationId\":2,\"id\":3,\"type\":\"warranty_refund_correction\",\"reference\":2,\"returnId\":44,\"amount\":2000,\"credit\":2000}],\"warrantyBaseTotal\":50000}}}"
+    },
+    {
+      "id": "R07B-53",
+      "desc": "F02: retorno sem solução executada pode solicitar cancelamento",
+      "status": "PASS",
+      "detail": "true"
+    },
+    {
+      "id": "R07B-54",
+      "desc": "F02: retirada do pedido funciona",
+      "status": "PASS",
+      "detail": "retirado"
+    },
+    {
+      "id": "R07B-55",
+      "desc": "F02: confirmação encerra o retorno sem tocar a origem #016",
+      "status": "PASS",
+      "detail": "{\"r\":{\"open\":false,\"error\":\"\",\"toast\":\"Registro atualizado na demonstração.\"},\"n16\":{\"total\":41000,\"paid\":41000,\"balance\":0,\"originalTotal\":null,\"originalPaid\":null,\"status\":\"Quitado\",\"billing\":null,\"ledger\":null}}"
+    },
+    {
+      "id": "R07B-56",
+      "desc": "F02: solução executada remove a ação e o handler recusa o pedido",
+      "status": "PASS",
+      "detail": "{\"req\":false,\"blockedMsg\":\"Há retorno ou solução de garantia vinculada. Preserve o histórico e concilie a garantia.\"}"
+    },
+    {
+      "id": "R07B-57",
+      "desc": "F02: após corrigir a devolução o pedido volta a ser oferecido",
+      "status": "PASS",
+      "detail": "oferta restaurada"
+    },
+    {
+      "id": "R07B-58",
+      "desc": "F02: devolução com pedido pendente impede a confirmação",
+      "status": "PASS",
+      "detail": "Há retorno ou solução de garantia vinculada. Preserve o histórico e concilie a garantia."
+    },
+    {
+      "id": "R07B-59",
+      "desc": "F02: retirada continua possível após a devolução",
+      "status": "PASS",
+      "detail": "retirado"
+    },
+    {
+      "id": "R07B-60",
+      "desc": "F02: origem com derivado (mesmo finalizado) não oferece cancelamento",
+      "status": "PASS",
+      "detail": "bloqueado"
+    },
+    {
+      "id": "R07B-61",
+      "desc": "Raiz B oferece Registrar retorno apontando para ela mesma",
+      "status": "PASS",
+      "detail": "[\"#retorno/47\"]"
+    },
+    {
+      "id": "R07B-62",
+      "desc": "Formulário da raiz B mantém data-origin da raiz B",
+      "status": "PASS",
+      "detail": "{\"origin\":\"47\",\"text\":\"RECEPÇÃO\\nRetorno em garantia\\n\\nCrie outro atendimento para a mesma unidade, sem alterar a origem.\\n\\nVoltar\\n#047 · Daikin · EcoSwing\\n\\nRefrigeração Horizonte\\n\\nRetorno começa em avaliação, sem cobrança e sem reiniciar a garantia original.\\n\\nPrazo original: 30/03/2027 · Dentro do prazo\\n\\nMotivo da entrada\\nNovo defeito relatado *\\nItens, acessórios e estado (opcionais)\\nConfirmo a entrada da mesma unidade e \"}"
+    },
+    {
+      "id": "R07B-63",
+      "desc": "Submit da raiz B cria retorno com origem/anterior/prazo da raiz B (180 dias)",
+      "status": "PASS",
+      "detail": "{\"id\":48,\"origin\":47,\"previous\":47,\"days\":180,\"unit\":40}"
+    },
+    {
+      "id": "R07B-64",
+      "desc": "Retorno finalizado da raiz A permanece intacto e não foi escolhido",
+      "status": "PASS",
+      "detail": "raiz A intacta"
+    },
+    {
+      "id": "R07B-65",
+      "desc": "Raiz A com retorno finalizado encadeia o atendimento anterior da mesma raiz",
+      "status": "PASS",
+      "detail": "[\"#retorno/46\"]"
+    },
+    {
+      "id": "R07B-66",
+      "desc": "Financeiro consulta valores da devolução, sem botão de registro",
+      "status": "PASS",
+      "detail": "ATENDIMENTO / #038\nLG · Inverter\n\nClima Sul Serviços · Entrada em 26/11/2026\n\nVoltar\nImprimir\nANDAMENTO TÉCNICO\nAberto\nConclusão não registrada\nFINANCEIRO\nSem cobrança\nSaldo: R$ 0,00\nRETIRADA\nNão entregue\nRegistro independente do pagamento\nVisão geral\nAtendimento\nOrçamento e link\nEntrega\nAnexos\nHist"
+    },
+    {
+      "id": "R07B-67",
+      "desc": "Financeiro não executa devolução nem por handler direto",
+      "status": "PASS",
+      "detail": "{\"err\":\"Ação indisponível neste perfil.\",\"same\":true}"
+    },
+    {
+      "id": "R07B-68-Técnico",
+      "desc": "Técnico não vê valores, comprovante nem motivo financeiro",
+      "status": "PASS",
+      "detail": "<div class=\"stack\"><div class=\"grid split\"><section class=\"panel form-section\"><div class=\"section-head\"><h2>Referência original</h2><span class=\"pill blue\"><span class=\"dot\"></span>Retorno</span></div><dl class=\"facts\"><div><dt>OS de orige"
+    },
+    {
+      "id": "R07B-68-Atendente",
+      "desc": "Atendente não vê valores, comprovante nem motivo financeiro",
+      "status": "PASS",
+      "detail": "<div class=\"stack\"><div class=\"grid split\"><section class=\"panel form-section\"><div class=\"section-head\"><h2>Referência original</h2><span class=\"pill blue\"><span class=\"dot\"></span>Retorno</span></div><dl class=\"facts\"><div><dt>OS de orige"
+    },
+    {
+      "id": "R07B-69",
+      "desc": "Portal real mostra o resumo financeiro líquido sem dados privados",
+      "status": "PASS",
+      "detail": "M\nMinha oficina\nAcompanhamento de serviço\nDemonstração\n\nSEU ATENDIMENTO · OS #031\nLG · Inverter\nFinalizado\nEntrada\n20/08/2026\nPrevisão\nNão informada\nSeu orçamento\nVersão 1\n\nTotal da proposta\n\nR$ 500,00\n\nPeças e serviços\nServiço de reparo (demonstração inicial)\nServiço · 1 × R$ 500,00\nR$ 500,00\nPeças\nR$ 0,00\nServiços\nR$ 500,00\nDesconto\nR$ 0,00\n\nCondições de pagamento, prazo e garantia a confirmar c"
+    },
+    {
+      "id": "R07B-70",
+      "desc": "Sem erros de página ou console no fluxo completo",
+      "status": "PASS",
+      "detail": "{\"errors\":[],\"consoleErrors\":[],\"errorsB\":[]}"
+    },
+    {
+      "id": "R07B-71",
+      "desc": "Nenhuma requisição externa durante o fluxo",
+      "status": "PASS",
+      "detail": "[]"
+    }
+  ]
+}

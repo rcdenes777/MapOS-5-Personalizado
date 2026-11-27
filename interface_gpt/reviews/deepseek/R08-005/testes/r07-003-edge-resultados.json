@@ -1,0 +1,218 @@
+{
+  "generatedAt": "2026-11-27T01:21:42.910Z",
+  "codeSha": "uncommitted-9a6159d927b92f78a76688b4680280062297d7887f8fc909c270d402979637f3",
+  "baseUrl": "http://127.0.0.1:18130",
+  "total": 30,
+  "summary": {
+    "PASS": 30
+  },
+  "scans": [
+    {
+      "label": "garantia-390",
+      "viewport": 390,
+      "violations": []
+    },
+    {
+      "label": "modal-troca-390",
+      "viewport": 390,
+      "violations": []
+    },
+    {
+      "label": "garantia-1440",
+      "viewport": 1440,
+      "violations": []
+    },
+    {
+      "label": "modal-troca-1440",
+      "viewport": 1440,
+      "violations": []
+    },
+    {
+      "label": "portal-substituta-390",
+      "viewport": 390,
+      "violations": []
+    }
+  ],
+  "results": [
+    {
+      "id": "R07E3-R-320",
+      "desc": "Garantia e ação de troca utilizáveis em 320px",
+      "status": "PASS",
+      "detail": "{\"over\":0,\"box\":{\"x\":25,\"y\":1817.890625,\"width\":270,\"height\":44}}"
+    },
+    {
+      "id": "R07E3-M-320",
+      "desc": "Modal de troca cabe na tela e não cria overflow em 320px",
+      "status": "PASS",
+      "detail": "{\"open\":true,\"w\":282,\"h\":544,\"vw\":320,\"vh\":568,\"sw\":280,\"cw\":280,\"sh\":1323,\"ch\":542,\"over\":0}"
+    },
+    {
+      "id": "R07E3-M-SCROLL",
+      "desc": "Conteúdo do modal de troca rola verticalmente em 320px",
+      "status": "PASS",
+      "detail": "{\"sh\":1323,\"ch\":542}"
+    },
+    {
+      "id": "R07E3-M-SCROLL-2",
+      "desc": "Rodapé com confirmação e envio alcançável por rolagem",
+      "status": "PASS",
+      "detail": "true"
+    },
+    {
+      "id": "R07E3-C-320",
+      "desc": "Modal fecha pelo botão Fechar em 320px",
+      "status": "PASS",
+      "detail": "fechado"
+    },
+    {
+      "id": "R07E3-R-390",
+      "desc": "Garantia e ação de troca utilizáveis em 390px",
+      "status": "PASS",
+      "detail": "{\"over\":0,\"box\":{\"x\":29,\"y\":41.671875,\"width\":332,\"height\":44}}"
+    },
+    {
+      "id": "R07E3-M-390",
+      "desc": "Modal de troca cabe na tela e não cria overflow em 390px",
+      "status": "PASS",
+      "detail": "{\"open\":true,\"w\":352,\"h\":820,\"vw\":390,\"vh\":844,\"sw\":350,\"cw\":350,\"sh\":1307,\"ch\":818,\"over\":0}"
+    },
+    {
+      "id": "R07E3-C-390",
+      "desc": "Modal fecha pelo botão Fechar em 390px",
+      "status": "PASS",
+      "detail": "fechado"
+    },
+    {
+      "id": "R07E3-R-768",
+      "desc": "Garantia e ação de troca utilizáveis em 768px",
+      "status": "PASS",
+      "detail": "{\"over\":0,\"box\":{\"x\":33,\"y\":157.375,\"width\":702,\"height\":44}}"
+    },
+    {
+      "id": "R07E3-M-768",
+      "desc": "Modal de troca cabe na tela e não cria overflow em 768px",
+      "status": "PASS",
+      "detail": "{\"open\":true,\"w\":560,\"h\":1000,\"vw\":768,\"vh\":1024,\"sw\":558,\"cw\":558,\"sh\":1239,\"ch\":998,\"over\":0}"
+    },
+    {
+      "id": "R07E3-C-768",
+      "desc": "Modal fecha pelo botão Fechar em 768px",
+      "status": "PASS",
+      "detail": "fechado"
+    },
+    {
+      "id": "R07E3-R-1440",
+      "desc": "Garantia e ação de troca utilizáveis em 1440px",
+      "status": "PASS",
+      "detail": "{\"over\":0,\"box\":{\"x\":283,\"y\":66.53125,\"width\":1108,\"height\":44}}"
+    },
+    {
+      "id": "R07E3-M-1440",
+      "desc": "Modal de troca cabe na tela e não cria overflow em 1440px",
+      "status": "PASS",
+      "detail": "{\"open\":true,\"w\":560,\"h\":876,\"vw\":1440,\"vh\":900,\"sw\":558,\"cw\":558,\"sh\":1239,\"ch\":874,\"over\":0}"
+    },
+    {
+      "id": "R07E3-C-1440",
+      "desc": "Modal fecha pelo botão Fechar em 1440px",
+      "status": "PASS",
+      "detail": "fechado"
+    },
+    {
+      "id": "R07E3-K-01",
+      "desc": "Foco inicial entra no diálogo de troca",
+      "status": "PASS",
+      "detail": "{\"tag\":\"BUTTON\",\"inside\":true}"
+    },
+    {
+      "id": "R07E3-K-02",
+      "desc": "Tab mantém o foco dentro do diálogo (16 passos)",
+      "status": "PASS",
+      "detail": "true"
+    },
+    {
+      "id": "R07E3-K-03",
+      "desc": "Shift+Tab no primeiro campo permanece no diálogo",
+      "status": "PASS",
+      "detail": "true"
+    },
+    {
+      "id": "R07E3-K-04",
+      "desc": "Escape fecha o diálogo",
+      "status": "PASS",
+      "detail": "fechado"
+    },
+    {
+      "id": "R07E3-K-05",
+      "desc": "Foco retorna ao acionador após fechar",
+      "status": "PASS",
+      "detail": "{\"action\":\"modal:warrantySwap:18\"}"
+    },
+    {
+      "id": "R07E3-COND",
+      "desc": "Seleção estoque/externa alterna campos condicionais e obrigatoriedade",
+      "status": "PASS",
+      "detail": "{\"ext\":{\"stockHidden\":true,\"extHidden\":false,\"skuDisabled\":true,\"costDisabled\":false},\"stock\":{\"stockHidden\":false,\"extHidden\":true,\"skuDisabled\":false,\"costDisabled\":true,\"skuRequired\":true,\"options\":4},\"back\":{\"stockHidden\":true,\"skuDisabled\":true,\"costDisabled\":false}}"
+    },
+    {
+      "id": "R07E3-AXE-garantia-390-390",
+      "desc": "axe sem violações: garantia-390 390",
+      "status": "PASS",
+      "detail": "[]"
+    },
+    {
+      "id": "R07E3-AXE-modal-troca-390-390",
+      "desc": "axe sem violações: modal-troca-390 390",
+      "status": "PASS",
+      "detail": "[]"
+    },
+    {
+      "id": "R07E3-AXE-garantia-1440-1440",
+      "desc": "axe sem violações: garantia-1440 1440",
+      "status": "PASS",
+      "detail": "[]"
+    },
+    {
+      "id": "R07E3-AXE-modal-troca-1440-1440",
+      "desc": "axe sem violações: modal-troca-1440 1440",
+      "status": "PASS",
+      "detail": "[]"
+    },
+    {
+      "id": "R07E3-X-01",
+      "desc": "Textos extremos e custo máximo não estouram o modal em 390",
+      "status": "PASS",
+      "detail": "{\"over\":0,\"brand\":100,\"model\":100,\"seal\":100,\"reason\":2000,\"costMax\":\"9999999.99\",\"costW\":310,\"panelW\":310}"
+    },
+    {
+      "id": "R07E3-X-02",
+      "desc": "Erro de campo aparece dentro do modal rolável e não grava a troca",
+      "status": "PASS",
+      "detail": "{\"open\":true,\"text\":\"Confira os textos obrigatórios e seus limites.\",\"over\":0,\"ops\":0}"
+    },
+    {
+      "id": "R07E3-P-01",
+      "desc": "Portal em 390 mostra a substituta sem overflow nem dados privados",
+      "status": "PASS",
+      "detail": "M\nMinha oficina\nAcompanhamento de serviço\nDemonstração\n\nSEU ATENDIMENTO · OS #018\nSubstituta em garantia · Midea · Nova\nAberto\nEntrada\n21/11/2026\nPrevisão\nNão informada\nOrçamento\n\nNão há orçamento publicado disponível para consulta neste momento.\n\nArquivos compartilhados\n\nNenhum arquivo compartilhado nesta demonstração.\n\nEste é um link de demonstração. Na versão real, compartilhe o endereço privad"
+    },
+    {
+      "id": "R07E3-P-02",
+      "desc": "axe sem violações no portal da substituta em 390",
+      "status": "PASS",
+      "detail": "[]"
+    },
+    {
+      "id": "R07E3-P-03",
+      "desc": "Técnico não vê custo nem ação de troca",
+      "status": "PASS",
+      "detail": "ATENDIMENTO / #018\nDaikin · EcoSwing\n\nRefrigeração Horizonte · Entrada em 21/11/2026\n\nVoltar\nImprimir\nANDAMENTO TÉCNICO\nAberto\nConclusão não registrada\nAtualizar andamento\nFINANCEIRO\nAcesso restrito\nValores ocultos neste perfil\nRETIRADA\nNão entregue\nRegistro independente do pagamento\nVisão geral\nAte"
+    },
+    {
+      "id": "R07E3-ERR",
+      "desc": "Sem erros de página ou console nas bordas",
+      "status": "PASS",
+      "detail": "{\"errors\":[],\"consoleErrors\":[]}"
+    }
+  ]
+}

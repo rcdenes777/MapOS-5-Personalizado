@@ -1,0 +1,208 @@
+{
+  "generatedAt": "2026-11-27T01:13:19.820Z",
+  "codeSha": "uncommitted-9a6159d927b92f78a76688b4680280062297d7887f8fc909c270d402979637f3",
+  "assetsDir": "/home/dragonblue/workspace/interface-gpt-lab/repo/interface_gpt/assets",
+  "assets": {
+    "quote.js": "8b74da135827bf8ec067c9a62f63aa94c9607aca5245ee5d2530cd4124c37568",
+    "portal.js": "9f4fc3b04d638b3a74d0707c199f87b580fbcb49e62ce3018ba6ba8f5f2a8fe5",
+    "finance.js": "0929532d945fb2d29af9dfa23463bb79cfa7d645f432a6de518a9096e7b565ed",
+    "cancel.js": "9a6159d927b92f78a76688b4680280062297d7887f8fc909c270d402979637f3",
+    "warranty.js": "12dbdf67948f17032cef64171d1859e17622c21f3f2431e52b998a27b683584a"
+  },
+  "total": 38,
+  "summary": {
+    "PASS": 38
+  },
+  "results": [
+    {
+      "id": "N01",
+      "name": "Solução diferente de devolução é recusada e a correta é aceita",
+      "status": "PASS"
+    },
+    {
+      "id": "N02",
+      "name": "Avaliação com cobertura em avaliação é recusada",
+      "status": "PASS"
+    },
+    {
+      "id": "N03",
+      "name": "Avaliação obsoleta é recusada e a vigente aceita",
+      "status": "PASS"
+    },
+    {
+      "id": "N04",
+      "name": "Chave financeira obsoleta é recusada e a atual aceita",
+      "status": "PASS"
+    },
+    {
+      "id": "N05",
+      "name": "Valor acima do recebido é recusado e o limite exato aceito",
+      "status": "PASS"
+    },
+    {
+      "id": "N06",
+      "name": "Encerramento total inexato é recusado e o exato aceito",
+      "status": "PASS"
+    },
+    {
+      "id": "N07",
+      "name": "Parcial zero é recusada e o total zero aceito",
+      "status": "PASS"
+    },
+    {
+      "id": "N08",
+      "name": "Modalidade inválida é recusada",
+      "status": "PASS"
+    },
+    {
+      "id": "N09",
+      "name": "Forma inválida é recusada e Pix aceito",
+      "status": "PASS"
+    },
+    {
+      "id": "N10",
+      "name": "Data futura é recusada e hoje aceito",
+      "status": "PASS"
+    },
+    {
+      "id": "N11",
+      "name": "Data impossível é recusada",
+      "status": "PASS"
+    },
+    {
+      "id": "N12",
+      "name": "Data anterior ao recibo é recusada e a data do recibo aceita",
+      "status": "PASS"
+    },
+    {
+      "id": "N13",
+      "name": "Referência vazia é recusada",
+      "status": "PASS"
+    },
+    {
+      "id": "N14",
+      "name": "Motivo vazio é recusado",
+      "status": "PASS"
+    },
+    {
+      "id": "N15",
+      "name": "Confirmação ausente é recusada",
+      "status": "PASS"
+    },
+    {
+      "id": "N16",
+      "name": "Referência acima do limite é recusada",
+      "status": "PASS"
+    },
+    {
+      "id": "N17",
+      "name": "Motivo acima do limite é recusado",
+      "status": "PASS"
+    },
+    {
+      "id": "N18",
+      "name": "Cobrança própria do retorno bloqueia e a conciliação libera",
+      "status": "PASS"
+    },
+    {
+      "id": "N19",
+      "name": "Entrega registrada bloqueia e a correção libera",
+      "status": "PASS"
+    },
+    {
+      "id": "N20",
+      "name": "Retorno finalizado bloqueia",
+      "status": "PASS"
+    },
+    {
+      "id": "N21",
+      "name": "Publicação ativa bloqueia e a retirada libera preservando a versão",
+      "status": "PASS"
+    },
+    {
+      "id": "N22",
+      "name": "Cobrança já encerrada recusa nova devolução",
+      "status": "PASS"
+    },
+    {
+      "id": "N23",
+      "name": "Correção sem confirmação é recusada",
+      "status": "PASS"
+    },
+    {
+      "id": "N24",
+      "name": "Correção com motivo vazio é recusada",
+      "status": "PASS"
+    },
+    {
+      "id": "N25",
+      "name": "Correção de devolução inexistente é recusada",
+      "status": "PASS"
+    },
+    {
+      "id": "N26",
+      "name": "Correção duplicada é recusada",
+      "status": "PASS"
+    },
+    {
+      "id": "N27",
+      "name": "Estorno de recebimento bloqueado com devolução ativa e liberado após correção",
+      "status": "PASS"
+    },
+    {
+      "id": "N28",
+      "name": "Acerto de cancelamento bloqueado com crédito de garantia",
+      "status": "PASS"
+    },
+    {
+      "id": "N29",
+      "name": "Recebimento após encerramento total é recusado",
+      "status": "PASS"
+    },
+    {
+      "id": "N30",
+      "name": "Nova cobrança e edição após encerramento total são recusadas",
+      "status": "PASS"
+    },
+    {
+      "id": "N31",
+      "name": "F02: pedido de cancelamento bloqueado com solução executada",
+      "status": "PASS"
+    },
+    {
+      "id": "N32",
+      "name": "F02: confirmação do cancelamento bloqueada com devolução executada; retirada permitida",
+      "status": "PASS"
+    },
+    {
+      "id": "N33",
+      "name": "F02: derivado cancelado por origem bloqueia o cancelamento da origem",
+      "status": "PASS"
+    },
+    {
+      "id": "N34",
+      "name": "F02: derivado por anterior cancelado bloqueia o cancelamento do retorno",
+      "status": "PASS"
+    },
+    {
+      "id": "N35",
+      "name": "Último finalizado não cruza raízes da mesma unidade",
+      "status": "PASS"
+    },
+    {
+      "id": "N36",
+      "name": "Retorno ativo único por unidade entre raízes distintas",
+      "status": "PASS"
+    },
+    {
+      "id": "N37",
+      "name": "Reabertura de retorno finalizado com irmão ativo é bloqueada",
+      "status": "PASS"
+    },
+    {
+      "id": "N38",
+      "name": "Projeção pública não contém referência, motivo, retorno nem ledger",
+      "status": "PASS"
+    }
+  ]
+}

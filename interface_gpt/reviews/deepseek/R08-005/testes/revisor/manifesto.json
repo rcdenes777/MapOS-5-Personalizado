@@ -1,0 +1,18 @@
+{
+  "delegation_id": "deleg_190cf297",
+  "started": "2026-11-26 22:01:11",
+  "task_count": 1,
+  "model": "deepseek-flash",
+  "provider": "deepseek",
+  "tasks": [
+    {
+      "index": 0,
+      "goal": "Independently and adversarially investigate the uncommitted R08-005 cancellation change, read-only; do not approve the round or edit anything.",
+      "log": "/home/dragonblue/.hermes/cache/delegation/live/deleg_190cf297/task-0.log",
+      "status": "completed",
+      "exit_reason": "completed",
+      "model": "deepseek-flash"
+    }
+  ],
+  "completed": "2026-11-26 22:12:11"
+}

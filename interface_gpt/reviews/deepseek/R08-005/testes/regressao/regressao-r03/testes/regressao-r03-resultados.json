@@ -1,0 +1,881 @@
+{
+  "generatedAt": "2026-11-27T01:17:23.437Z",
+  "base": "http://127.0.0.1:18130",
+  "sha": "",
+  "codeSha": "uncommitted-9a6159d927b92f78a76688b4680280062297d7887f8fc909c270d402979637f3",
+  "incrementSha": "",
+  "totals": {
+    "pass": 116,
+    "fail": 0,
+    "info": 2,
+    "total": 118
+  },
+  "results": [
+    {
+      "area": "base",
+      "id": "B01",
+      "desc": "Documento tem título, lang pt-BR e viewport",
+      "status": "PASS",
+      "detail": "{\"title\":\"MapOS · Bancada\",\"lang\":\"pt-BR\",\"viewport\":\"width=device-width, initial-scale=1, viewport-fit=cover\",\"scripts\":[\"http://127.0.0.1:18130/assets/quote.js\",\"http://127.0.0.1:18130/assets/stock.js\",\"http://127.0.0.1:18130/assets/portal.js\",\"http://127.0.0.1:18130/assets/quote-ui.js\",\"http://127.0.0.1:18130/assets/finance.js\",\"http://127.0.0.1:18130/assets/finance-ui.js\",\"http://127.0.0.1:18130/assets/cancel.js\",\"http://127.0.0.1:18130/assets/cancel-ui.js\",\"http://127.0.0.1:18130/assets/warranty.js\",\"http://127.0.0.1:18130/assets/warranty-ui.js\",\"http://127.0.0.1:18130/assets/app.js\"],\"links\":[\"http://127.0.0.1:18130/assets/favicon.svg\",\"http://127.0.0.1:18130/assets/style.css\"],\"imgs\":[],\"forms\":0}"
+    },
+    {
+      "area": "base",
+      "id": "B02",
+      "desc": "Sem recursos externos declarados (scripts/links/imagens)",
+      "status": "PASS",
+      "detail": "{\"scripts\":[\"http://127.0.0.1:18130/assets/quote.js\",\"http://127.0.0.1:18130/assets/stock.js\",\"http://127.0.0.1:18130/assets/portal.js\",\"http://127.0.0.1:18130/assets/quote-ui.js\",\"http://127.0.0.1:18130/assets/finance.js\",\"http://127.0.0.1:18130/assets/finance-ui.js\",\"http://127.0.0.1:18130/assets/cancel.js\",\"http://127.0.0.1:18130/assets/cancel-ui.js\",\"http://127.0.0.1:18130/assets/warranty.js\",\"http://127.0.0.1:18130/assets/warranty-ui.js\",\"http://127.0.0.1:18130/assets/app.js\"],\"links\":[\"http://127.0.0.1:18130/assets/favicon.svg\",\"http://127.0.0.1:18130/assets/style.css\"],\"imgs\":[]}"
+    },
+    {
+      "area": "rotas",
+      "id": "R01",
+      "desc": "Rota #inicio renderiza",
+      "status": "PASS",
+      "detail": "h1=\"O que precisa de atenção?\""
+    },
+    {
+      "area": "rotas",
+      "id": "R02",
+      "desc": "Rota #ordens renderiza",
+      "status": "PASS",
+      "detail": "h1=\"Ordens de serviço\""
+    },
+    {
+      "area": "rotas",
+      "id": "R03",
+      "desc": "Rota #nova renderiza",
+      "status": "PASS",
+      "detail": "h1=\"Nova ordem de serviço\""
+    },
+    {
+      "area": "rotas",
+      "id": "R04",
+      "desc": "Rota #os/20 renderiza",
+      "status": "PASS",
+      "detail": "h1=\"Midea · Xtreme Save\""
+    },
+    {
+      "area": "rotas",
+      "id": "R05",
+      "desc": "Rota #os/20/atendimento renderiza",
+      "status": "PASS",
+      "detail": "h1=\"Midea · Xtreme Save\""
+    },
+    {
+      "area": "rotas",
+      "id": "R06",
+      "desc": "Rota #os/20/orcamento renderiza",
+      "status": "PASS",
+      "detail": "h1=\"Midea · Xtreme Save\""
+    },
+    {
+      "area": "rotas",
+      "id": "R07",
+      "desc": "Rota #os/20/entrega renderiza",
+      "status": "PASS",
+      "detail": "h1=\"Midea · Xtreme Save\""
+    },
+    {
+      "area": "rotas",
+      "id": "R08",
+      "desc": "Rota #os/20/anexos renderiza",
+      "status": "PASS",
+      "detail": "h1=\"Midea · Xtreme Save\""
+    },
+    {
+      "area": "rotas",
+      "id": "R09",
+      "desc": "Rota #os/20/historico renderiza",
+      "status": "PASS",
+      "detail": "h1=\"Midea · Xtreme Save\""
+    },
+    {
+      "area": "rotas",
+      "id": "R10",
+      "desc": "Rota #retorno/20 renderiza",
+      "status": "PASS",
+      "detail": "h1=\"Retorno em garantia\""
+    },
+    {
+      "area": "rotas",
+      "id": "R11",
+      "desc": "Rota #imprimir/20 renderiza",
+      "status": "PASS",
+      "detail": "h1=\"Impressão da OS #020\""
+    },
+    {
+      "area": "rotas",
+      "id": "R12",
+      "desc": "Rota #imprimir/20/cupom renderiza",
+      "status": "PASS",
+      "detail": "h1=\"Impressão da OS #020\""
+    },
+    {
+      "area": "rotas",
+      "id": "R13",
+      "desc": "Rota #clientes renderiza",
+      "status": "PASS",
+      "detail": "h1=\"Clientes\""
+    },
+    {
+      "area": "rotas",
+      "id": "R14",
+      "desc": "Rota #estoque renderiza",
+      "status": "PASS",
+      "detail": "h1=\"Estoque\""
+    },
+    {
+      "area": "rotas",
+      "id": "R15",
+      "desc": "Rota #financeiro renderiza",
+      "status": "PASS",
+      "detail": "h1=\"Financeiro\""
+    },
+    {
+      "area": "rotas",
+      "id": "R16",
+      "desc": "Rota #relatorios renderiza",
+      "status": "PASS",
+      "detail": "h1=\"Relatórios\""
+    },
+    {
+      "area": "rotas",
+      "id": "R17",
+      "desc": "Rota #configuracoes renderiza",
+      "status": "PASS",
+      "detail": "h1=\"Configurações\""
+    },
+    {
+      "area": "rotas",
+      "id": "R18",
+      "desc": "Rota #mais renderiza",
+      "status": "PASS",
+      "detail": "h1=\"Mais módulos\""
+    },
+    {
+      "area": "perfis",
+      "id": "P-Administrador-nav",
+      "desc": "Administrador: menu lateral esperado",
+      "status": "PASS",
+      "detail": "Hoje | Ordens de serviço | Clientes | Estoque | Financeiro | Relatórios | Configurações"
+    },
+    {
+      "area": "perfis",
+      "id": "P-Administrador-money",
+      "desc": "Administrador: exposição financeira coerente",
+      "status": "PASS",
+      "detail": "R$ visível=true"
+    },
+    {
+      "area": "perfis",
+      "id": "P-Técnico-nav",
+      "desc": "Técnico: menu lateral esperado",
+      "status": "PASS",
+      "detail": "Hoje | Ordens de serviço | Estoque"
+    },
+    {
+      "area": "perfis",
+      "id": "P-Técnico-money",
+      "desc": "Técnico: exposição financeira coerente",
+      "status": "PASS",
+      "detail": "R$ visível=false"
+    },
+    {
+      "area": "perfis",
+      "id": "P-Atendente-nav",
+      "desc": "Atendente: menu lateral esperado",
+      "status": "PASS",
+      "detail": "Hoje | Ordens de serviço | Clientes"
+    },
+    {
+      "area": "perfis",
+      "id": "P-Atendente-money",
+      "desc": "Atendente: exposição financeira coerente",
+      "status": "PASS",
+      "detail": "R$ visível=false"
+    },
+    {
+      "area": "perfis",
+      "id": "P-Financeiro-nav",
+      "desc": "Financeiro: menu lateral esperado",
+      "status": "PASS",
+      "detail": "Hoje | Ordens de serviço | Financeiro | Relatórios"
+    },
+    {
+      "area": "perfis",
+      "id": "P-Financeiro-money",
+      "desc": "Financeiro: exposição financeira coerente",
+      "status": "PASS",
+      "detail": "R$ visível=true"
+    },
+    {
+      "area": "perfis",
+      "id": "T-bloqueio-financeiro",
+      "desc": "Técnico não acessa Financeiro",
+      "status": "PASS",
+      "detail": "h1=\"Ação indisponível\""
+    },
+    {
+      "area": "perfis",
+      "id": "T-bloqueio-nova",
+      "desc": "Técnico não acessa Nova OS",
+      "status": "PASS",
+      "detail": "h1=\"Ação indisponível\""
+    },
+    {
+      "area": "perfis",
+      "id": "T-bloqueio-clientes",
+      "desc": "Técnico não acessa Clientes",
+      "status": "PASS",
+      "detail": "h1=\"Ação indisponível\""
+    },
+    {
+      "area": "perfis",
+      "id": "T-bloqueio-configuracoes",
+      "desc": "Técnico não acessa Configurações",
+      "status": "PASS",
+      "detail": "h1=\"Ação indisponível\""
+    },
+    {
+      "area": "perfis",
+      "id": "T-bloqueio-relatorios",
+      "desc": "Técnico não acessa Relatórios",
+      "status": "PASS",
+      "detail": "h1=\"Ação indisponível\""
+    },
+    {
+      "area": "perfis",
+      "id": "T-estoque",
+      "desc": "Técnico acessa Estoque",
+      "status": "PASS",
+      "detail": "h1=\"Estoque\""
+    },
+    {
+      "area": "perfis",
+      "id": "A-bloqueio-estoque",
+      "desc": "Atendente não acessa Estoque",
+      "status": "PASS",
+      "detail": "h1=\"Ação indisponível\""
+    },
+    {
+      "area": "perfis",
+      "id": "A-bloqueio-financeiro",
+      "desc": "Atendente não acessa Financeiro",
+      "status": "PASS",
+      "detail": "h1=\"Ação indisponível\""
+    },
+    {
+      "area": "perfis",
+      "id": "A-bloqueio-relatorios",
+      "desc": "Atendente não acessa Relatórios",
+      "status": "PASS",
+      "detail": "h1=\"Ação indisponível\""
+    },
+    {
+      "area": "perfis",
+      "id": "A-bloqueio-configuracoes",
+      "desc": "Atendente não acessa Configurações",
+      "status": "PASS",
+      "detail": "h1=\"Ação indisponível\""
+    },
+    {
+      "area": "perfis",
+      "id": "A-acesso--nova",
+      "desc": "Atendente acessa #nova",
+      "status": "PASS",
+      "detail": "h1=\"Nova ordem de serviço\""
+    },
+    {
+      "area": "perfis",
+      "id": "A-acesso--clientes",
+      "desc": "Atendente acessa #clientes",
+      "status": "PASS",
+      "detail": "h1=\"Clientes\""
+    },
+    {
+      "area": "perfis",
+      "id": "A-acesso--retorno-20",
+      "desc": "Atendente acessa #retorno/20",
+      "status": "PASS",
+      "detail": "h1=\"Retorno em garantia\""
+    },
+    {
+      "area": "perfis",
+      "id": "F-bloqueio-nova",
+      "desc": "Financeiro não acessa Nova OS",
+      "status": "PASS",
+      "detail": "h1=\"Ação indisponível\""
+    },
+    {
+      "area": "perfis",
+      "id": "F-bloqueio-clientes",
+      "desc": "Financeiro não acessa Clientes",
+      "status": "PASS",
+      "detail": "h1=\"Ação indisponível\""
+    },
+    {
+      "area": "perfis",
+      "id": "F-bloqueio-estoque",
+      "desc": "Financeiro não acessa Estoque",
+      "status": "PASS",
+      "detail": "h1=\"Ação indisponível\""
+    },
+    {
+      "area": "perfis",
+      "id": "F-bloqueio-configuracoes",
+      "desc": "Financeiro não acessa Configurações",
+      "status": "PASS",
+      "detail": "h1=\"Ação indisponível\""
+    },
+    {
+      "area": "perfis",
+      "id": "F-acesso--financeiro",
+      "desc": "Financeiro acessa #financeiro",
+      "status": "PASS",
+      "detail": "h1=\"Financeiro\""
+    },
+    {
+      "area": "perfis",
+      "id": "F-acesso--relatorios",
+      "desc": "Financeiro acessa #relatorios",
+      "status": "PASS",
+      "detail": "h1=\"Relatórios\""
+    },
+    {
+      "area": "perfis",
+      "id": "F-acesso--os-20",
+      "desc": "Financeiro acessa #os/20",
+      "status": "PASS",
+      "detail": "h1=\"Midea · Xtreme Save\""
+    },
+    {
+      "area": "perfis",
+      "id": "ADM-financeiro",
+      "desc": "Administrador vê valores e ações financeiras",
+      "status": "PASS",
+      "detail": "ANDAMENTO TÉCNICO | Finalizado | Conclusão: 24/11/2026 | Atualizar andamento | FINANCEIRO | Parcial | Saldo: R$ 150,00 | Registrar pagamento | RETIRADA | Não en"
+    },
+    {
+      "area": "fluxoA",
+      "id": "A01",
+      "desc": "Nova OS de equipamento novo criada",
+      "status": "PASS",
+      "detail": "hash=#os/25, ordens=9"
+    },
+    {
+      "area": "fluxoA",
+      "id": "A02",
+      "desc": "OS criada preserva equipamento, cliente e defeito",
+      "status": "PASS",
+      "detail": "Marca Teste · Modelo Alfa"
+    },
+    {
+      "area": "fluxoA",
+      "id": "A03",
+      "desc": "Histórico registra a entrada",
+      "status": "PASS",
+      "detail": "Entrada registrada | 27/11/2026 · 22:16"
+    },
+    {
+      "area": "fluxoB",
+      "id": "B01",
+      "desc": "Unidades do cliente listadas para reutilização",
+      "status": "PASS",
+      "detail": "LG · Dual Inverter · #024 | Midea · Xtreme Save · #020 | Marca Teste · Modelo Alfa · #025"
+    },
+    {
+      "area": "fluxoB",
+      "id": "B02",
+      "desc": "Nova OS vinculada à unidade existente",
+      "status": "PASS",
+      "detail": "{\"brand\":\"Midea\",\"model\":\"Xtreme Save\",\"unit\":20}"
+    },
+    {
+      "area": "fluxoB",
+      "id": "B03",
+      "desc": "Nova OS herda a identificação e mantém o defeito novo",
+      "status": "PASS",
+      "detail": "Midea · Xtreme Save"
+    },
+    {
+      "area": "fluxoC",
+      "id": "C01",
+      "desc": "Catálogo preenche marca e modelo",
+      "status": "PASS",
+      "detail": "{\"brand\":\"LG\",\"model\":\"Dual Inverter\"}"
+    },
+    {
+      "area": "fluxoC",
+      "id": "C02",
+      "desc": "Edição manual limpa a seleção do catálogo",
+      "status": "PASS",
+      "detail": "catalog=\"\""
+    },
+    {
+      "area": "fluxoD",
+      "id": "D01",
+      "desc": "Aprovação fictícia registra decisão sem criar cobrança",
+      "status": "PASS",
+      "detail": "{\"total\":0,\"paid\":0,\"approval\":\"Aprovado\",\"status\":\"Aprovado\"}"
+    },
+    {
+      "area": "fluxoD",
+      "id": "D02",
+      "desc": "Andamento técnico alterado para Em Andamento",
+      "status": "PASS",
+      "detail": "ANDAMENTO TÉCNICO\nEm Andamento\nConclusão não registrada\nAtualizar andamento"
+    },
+    {
+      "area": "fluxoD",
+      "id": "D03",
+      "desc": "OS finalizada com conclusão registrada",
+      "status": "PASS",
+      "detail": "ANDAMENTO TÉCNICO | Finalizado | Conclusão: 26/11/2026 | Atualizar andamento"
+    },
+    {
+      "area": "fluxoD",
+      "id": "D04",
+      "desc": "Histórico registra versão, aprovação e andamento",
+      "status": "PASS",
+      "detail": "Andamento: Finalizado | 27/11/2026 · 22:16 | Andamento: Em Andamento | 27/11/2026 · 22:16 | Orçamento: versão 1 — Aprovado | 27/11/2026 · 22:16 | Entrada registrada | 21/11/2026"
+    },
+    {
+      "area": "fluxoD",
+      "id": "D05",
+      "desc": "Cobrança formalizada separadamente após aprovação e finalização",
+      "status": "PASS",
+      "detail": "{\"total\":24000,\"paid\":0,\"status\":\"Finalizado\",\"billing\":{\"due\":\"2026-12-02\",\"items\":[{\"type\":\"Serviço\",\"name\":\"Serviço de reparo (demonstração inicial)\",\"quantity\":1,\"unit\":24000,\"lineId\":1}],\"discount\":0}}"
+    },
+    {
+      "area": "fluxoE",
+      "id": "E01",
+      "desc": "Pagamento parcial atualiza pago e saldo",
+      "status": "PASS",
+      "detail": "FINANCEIRO | Parcial | Saldo: R$ 120,00 | Registrar pagamento"
+    },
+    {
+      "area": "fluxoE",
+      "id": "E02",
+      "desc": "Entrega registrada com saldo pendente",
+      "status": "PASS",
+      "detail": "{\"date\":\"2026-11-26\",\"receiver\":\"Refrigeração Horizonte\",\"third\":false,\"items\":\"Gree · G-Top Inverter\",\"authorization\":\"\",\"registered\":\"2026-11-27T01:16:41.237Z\"}"
+    },
+    {
+      "area": "fluxoE",
+      "id": "E03",
+      "desc": "Entrega independente do andamento (comportamento intencional)",
+      "status": "INFO",
+      "detail": "status na entrega=\"ANDAMENTO TÉCNICO Em Andamento Conclusão não registrada Atualizar andamento\"; entrega registrada=true"
+    },
+    {
+      "area": "fluxoE",
+      "id": "E04",
+      "desc": "Quitação posterior zera o saldo",
+      "status": "PASS",
+      "detail": "FINANCEIRO | Quitado | Saldo: R$ 0,00"
+    },
+    {
+      "area": "fluxoF",
+      "id": "F01",
+      "desc": "Entrega para terceiro exige autorização",
+      "status": "PASS",
+      "detail": "authorization visível=true"
+    },
+    {
+      "area": "fluxoF",
+      "id": "F02",
+      "desc": "Entrega registra terceiro, recebedor e autorização",
+      "status": "PASS",
+      "detail": "{\"date\":\"2026-11-26\",\"receiver\":\"Carlos Entregador (fictício)\",\"third\":true,\"items\":\"Midea · Xtreme Save\",\"authorization\":\"Autorizado por telefone, protocolo fictício 123.\",\"registered\":\"2026-11-27T01:16:42.238Z\"}"
+    },
+    {
+      "area": "fluxoF",
+      "id": "F03",
+      "desc": "Aba Entrega exibe vínculo de terceiro e autorização",
+      "status": "PASS",
+      "detail": "Pular para o conteúdo | M | mapos | BANCADA / EXPERIMENTAL | B | Minha oficina | Ambiente de demonstração | Hoje | Ordens de serviço | Clientes | Estoque | Financeiro | Relatórios | Configurações | Dados fictícios · offl"
+    },
+    {
+      "area": "fluxoG",
+      "id": "G01",
+      "desc": "OS finalizada oferece registrar retorno",
+      "status": "PASS",
+      "detail": "links=1"
+    },
+    {
+      "area": "fluxoG",
+      "id": "G02",
+      "desc": "Retorno abre nova OS sem itens/estado informados",
+      "status": "PASS",
+      "detail": "{\"id\":27,\"origin\":20,\"items\":\"\",\"condition\":\"\"}"
+    },
+    {
+      "area": "fluxoG",
+      "id": "G03",
+      "desc": "Retorno preserva a origem e nasce em avaliação",
+      "status": "PASS",
+      "detail": "Pular para o conteúdo | M | mapos | BANCADA / EXPERIMENTAL | B | Minha oficina | Ambiente de demonstração | Hoje | Ordens de serviço | Clientes | Estoque | Financeiro | Relatórios | Configurações | Dados fictícios · offl"
+    },
+    {
+      "area": "fluxoH",
+      "id": "H01",
+      "desc": "Troca de perfil recompõe a interface sem erro",
+      "status": "PASS",
+      "detail": "nav=4, h1=Samsung · Digital Inverter"
+    },
+    {
+      "area": "fluxoI",
+      "id": "I01",
+      "desc": "Dados persistem após recarregar",
+      "status": "PASS",
+      "detail": "ordens=11, linhas=11"
+    },
+    {
+      "area": "fluxoI",
+      "id": "I02",
+      "desc": "Pagamento e entrega persistem",
+      "status": "PASS",
+      "detail": "FINANCEIRO Quitado Saldo: R$ 0,00 / RETIRADA Entregue 26/11/2026"
+    },
+    {
+      "area": "reset",
+      "id": "X01",
+      "desc": "Restaurar dados fictícios volta à amostra inicial",
+      "status": "PASS",
+      "detail": "ordens=8"
+    },
+    {
+      "area": "reset",
+      "id": "X02",
+      "desc": "Restauração informa o usuário por toast",
+      "status": "PASS",
+      "detail": "Demonstração restaurada."
+    },
+    {
+      "area": "rede",
+      "id": "N01",
+      "desc": "Nenhuma requisição para serviço externo",
+      "status": "PASS",
+      "detail": "[]"
+    },
+    {
+      "area": "console",
+      "id": "C01",
+      "desc": "Sem erros JavaScript durante as operações",
+      "status": "PASS",
+      "detail": "[]"
+    },
+    {
+      "area": "console",
+      "id": "C02",
+      "desc": "Sem avisos de console",
+      "status": "PASS",
+      "detail": "[]"
+    },
+    {
+      "area": "console",
+      "id": "C03",
+      "desc": "Sem recursos HTTP com erro (404 etc.)",
+      "status": "PASS",
+      "detail": "[]"
+    },
+    {
+      "area": "a11y",
+      "id": "K01",
+      "desc": "Primeiro Tab alcança o atalho de conteúdo",
+      "status": "PASS",
+      "detail": "{\"tag\":\"A\",\"cls\":\"skip\",\"href\":\"#main\",\"text\":\"Pular para o conteúdo\"}"
+    },
+    {
+      "area": "a11y",
+      "id": "K02",
+      "desc": "Atalho \"Pular para o conteúdo\" mantém a tela",
+      "status": "PASS",
+      "detail": "h1 após Enter=\"O que precisa de atenção?\""
+    },
+    {
+      "area": "a11y",
+      "id": "K03",
+      "desc": "Foco de teclado é visível",
+      "status": "PASS",
+      "detail": "{\"tag\":\"A\",\"text\":\"Voltar\",\"outline\":\"solid 3px rgb(39, 141, 186)\"}"
+    },
+    {
+      "area": "a11y",
+      "id": "K04",
+      "desc": "Modal recebe foco ao abrir",
+      "status": "PASS",
+      "detail": "{\"open\":true,\"activeInside\":true,\"active\":\"<button type=\\\"button\\\" class=\\\"btn\\\" data-action=\\\"close\\\">Fechar</button>\"}"
+    },
+    {
+      "area": "a11y",
+      "id": "K05",
+      "desc": "Foco permanece dentro do modal (Tab)",
+      "status": "PASS",
+      "detail": "12 Tabs consecutivos dentro do diálogo"
+    },
+    {
+      "area": "a11y",
+      "id": "K06",
+      "desc": "Escape fecha o modal e devolve o foco ao gatilho",
+      "status": "PASS",
+      "detail": "{\"open\":false,\"active\":\"modal:tech:20\"}"
+    },
+    {
+      "area": "a11y",
+      "id": "K07",
+      "desc": "Controles sem nome acessível",
+      "status": "PASS",
+      "detail": "[]"
+    },
+    {
+      "area": "a11y",
+      "id": "K08",
+      "desc": "Navegações rotuladas e diálogo referenciado",
+      "status": "PASS",
+      "detail": "[\"Módulos\",\"Seções da OS\",\"Navegação rápida\"]"
+    },
+    {
+      "area": "a11y",
+      "id": "K09-painel",
+      "desc": "Contraste AA em painel",
+      "status": "PASS",
+      "detail": "[]"
+    },
+    {
+      "area": "a11y",
+      "id": "K09-ordens",
+      "desc": "Contraste AA em ordens",
+      "status": "PASS",
+      "detail": "[]"
+    },
+    {
+      "area": "a11y",
+      "id": "K09-OS",
+      "desc": "Contraste AA em OS",
+      "status": "PASS",
+      "detail": "[]"
+    },
+    {
+      "area": "a11y",
+      "id": "K09-financeiro",
+      "desc": "Contraste AA em financeiro",
+      "status": "PASS",
+      "detail": "[]"
+    },
+    {
+      "area": "a11y",
+      "id": "K10",
+      "desc": "Alvos de toque ≥44 px na nova OS (390 px)",
+      "status": "PASS",
+      "detail": "[]"
+    },
+    {
+      "area": "a11y",
+      "id": "K11",
+      "desc": "Texto ≥12 px (legibilidade sem zoom)",
+      "status": "PASS",
+      "detail": "[]"
+    },
+    {
+      "area": "responsivo",
+      "id": "V-1920x1080-overflow",
+      "desc": "1920x1080: sem rolagem horizontal",
+      "status": "PASS",
+      "detail": "[]"
+    },
+    {
+      "area": "responsivo",
+      "id": "V-1920x1080-bounds",
+      "desc": "1920x1080: sem elementos fora da viewport",
+      "status": "PASS",
+      "detail": "[]"
+    },
+    {
+      "area": "responsivo",
+      "id": "V-1440x900-overflow",
+      "desc": "1440x900: sem rolagem horizontal",
+      "status": "PASS",
+      "detail": "[]"
+    },
+    {
+      "area": "responsivo",
+      "id": "V-1440x900-bounds",
+      "desc": "1440x900: sem elementos fora da viewport",
+      "status": "PASS",
+      "detail": "[]"
+    },
+    {
+      "area": "responsivo",
+      "id": "V-1366x768-overflow",
+      "desc": "1366x768: sem rolagem horizontal",
+      "status": "PASS",
+      "detail": "[]"
+    },
+    {
+      "area": "responsivo",
+      "id": "V-1366x768-bounds",
+      "desc": "1366x768: sem elementos fora da viewport",
+      "status": "PASS",
+      "detail": "[]"
+    },
+    {
+      "area": "responsivo",
+      "id": "V-768x1024-overflow",
+      "desc": "768x1024: sem rolagem horizontal",
+      "status": "PASS",
+      "detail": "[]"
+    },
+    {
+      "area": "responsivo",
+      "id": "V-768x1024-bounds",
+      "desc": "768x1024: sem elementos fora da viewport",
+      "status": "PASS",
+      "detail": "[]"
+    },
+    {
+      "area": "responsivo",
+      "id": "V-412x915-overflow",
+      "desc": "412x915: sem rolagem horizontal",
+      "status": "PASS",
+      "detail": "[]"
+    },
+    {
+      "area": "responsivo",
+      "id": "V-412x915-bounds",
+      "desc": "412x915: sem elementos fora da viewport",
+      "status": "PASS",
+      "detail": "[]"
+    },
+    {
+      "area": "responsivo",
+      "id": "V-390x844-overflow",
+      "desc": "390x844: sem rolagem horizontal",
+      "status": "PASS",
+      "detail": "[]"
+    },
+    {
+      "area": "responsivo",
+      "id": "V-390x844-bounds",
+      "desc": "390x844: sem elementos fora da viewport",
+      "status": "PASS",
+      "detail": "[]"
+    },
+    {
+      "area": "responsivo",
+      "id": "V-360x800-overflow",
+      "desc": "360x800: sem rolagem horizontal",
+      "status": "PASS",
+      "detail": "[]"
+    },
+    {
+      "area": "responsivo",
+      "id": "V-360x800-bounds",
+      "desc": "360x800: sem elementos fora da viewport",
+      "status": "PASS",
+      "detail": "[]"
+    },
+    {
+      "area": "responsivo",
+      "id": "V-320x568-overflow",
+      "desc": "320x568: sem rolagem horizontal",
+      "status": "PASS",
+      "detail": "[]"
+    },
+    {
+      "area": "responsivo",
+      "id": "V-320x568-bounds",
+      "desc": "320x568: sem elementos fora da viewport",
+      "status": "PASS",
+      "detail": "[]"
+    },
+    {
+      "area": "limites",
+      "id": "L01",
+      "desc": "Formulário vazio é bloqueado pela validação nativa",
+      "status": "PASS",
+      "detail": "ordens=8, inválidos=3, hash=#nova"
+    },
+    {
+      "area": "limites",
+      "id": "L02",
+      "desc": "Texto longo sem espaços não causa rolagem horizontal",
+      "status": "PASS",
+      "detail": "{\"over\":0,\"h1w\":362,\"h1sw\":362}"
+    },
+    {
+      "area": "limites",
+      "id": "L03",
+      "desc": "Listagem com nome longo sem espaços não estoura",
+      "status": "PASS",
+      "detail": "overflow=0"
+    },
+    {
+      "area": "limites",
+      "id": "L04",
+      "desc": "Busca escapa HTML e não executa script",
+      "status": "PASS",
+      "detail": "{\"img\":0,\"xss\":0,\"text\":\"0 ordens encontradas\\n\\nNenhuma OS nesta seleção.\"}"
+    },
+    {
+      "area": "limites",
+      "id": "L05",
+      "desc": "Pagamento zero ou acima do saldo é bloqueado",
+      "status": "PASS",
+      "detail": "pago=0/0"
+    },
+    {
+      "area": "limites",
+      "id": "L06",
+      "desc": "Data futura de retirada é bloqueada",
+      "status": "PASS",
+      "detail": "delivery=null"
+    },
+    {
+      "area": "limites",
+      "id": "L07",
+      "desc": "Valor extremo é formatado em BRL sem erro",
+      "status": "INFO",
+      "detail": "R$ 999.999.999,99"
+    }
+  ],
+  "console": [],
+  "httpErrors": [],
+  "network": {
+    "total": 605,
+    "external": []
+  },
+  "shots": [
+    {
+      "file": "desktop/40-fluxo-a-nova-os-criada-1440x900.png",
+      "bytes": 144175
+    },
+    {
+      "file": "desktop/41-fluxo-c-catalogo-manual-1440x900.png",
+      "bytes": 102466
+    },
+    {
+      "file": "desktop/42-fluxo-d-finalizado-1440x900.png",
+      "bytes": 114977
+    },
+    {
+      "file": "desktop/43-fluxo-d-cobranca-1440x900.png",
+      "bytes": 148935
+    },
+    {
+      "file": "desktop/43-fluxo-e-entrega-saldo-quitado-1440x900.png",
+      "bytes": 135226
+    },
+    {
+      "file": "desktop/44-fluxo-g-retorno-sem-itens-1440x900.png",
+      "bytes": 142321
+    },
+    {
+      "file": "desktop/45-fluxo-i-persistencia-1440x900.png",
+      "bytes": 131357
+    },
+    {
+      "file": "desktop/46-configuracoes-restaurado-1440x900.png",
+      "bytes": 76967
+    }
+  ]
+}

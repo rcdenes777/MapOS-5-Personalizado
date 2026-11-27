@@ -1,0 +1,121 @@
+PASS R07-S1-01 — Origem #020 finalizada mostra garantia, conclusão e ação de retorno :: {"hasGarantia":true,"hasConclusao":true,"links":1}
+PASS R07-S1-02 — Formulário de retorno traz origem, prazo, defeito obrigatório e opcionais, sem seletor de cliente :: {"origin":"20","fields":["defect","items","condition","confirm",""],"hasClient":false,"hasMode":false,"confirm":true,"scope":"#020 · Midea · Xtreme Save\n\nClima Sul Serviços\n\nRetorno começa em avaliação, sem cobrança e sem reiniciar a ga
+PASS R07-S1-03 — Sem confirmação o retorno não é criado e o envio é barrado :: {"n0":8,"n1":8,"st":{"hash":"#retorno/20","toast":""},"blockedConfirm":{"valid":false,"missing":true}}
+PASS R07-S1-04 — Defeito vazio é barrado pela validação nativa do formulário :: {"valid":false,"defect":true}
+PASS R07-S1-05 — Retorno criado preserva origem e não copia financeiro, laudo, anexos, token ou orçamento :: {"created":{"id":25,"status":"Aberto","origin":20,"unit":20,"client":1,"brand":"Midea","model":"Xtreme Save","total":0,"paid":0,"approval":"Sem orçamento","conclusion":null,"warrantyDays":0,"defect":"Placa voltou a falhar após o reparo.","i
+PASS R07-S1-06 — Origem passa a apontar para o retorno em andamento :: ["Abrir retorno em andamento #025"]
+PASS R07-S1-07 — Segunda entrada pela origem é bloqueada com link para o retorno ativo :: GARANTIA
+Retorno em andamento
+
+A unidade já tem um atendimento aberto.
+
+Abrir retorno #025
+PASS R07-S1-08 — URL direta de retorno inexistente não abre formulário
+PASS R07-S1-09 — Origem sem conclusão não permite retorno :: GARANTIA
+Retorno indisponível
+
+Identifique a unidade e registre a conclusão real da origem.
+
+Voltar
+PASS R07-S1-14 — Unidade sem marca/modelo não permite retorno :: GARANTIA
+Retorno indisponível
+
+Identifique a unidade e registre a conclusão real da origem.
+
+Voltar
+PASS R07-S1-10 — Retorno de origem entregue e com link não herda token, laudo nem dados financeiros :: {"link19":true,"created":30,"publicLink":null,"report":null}
+PASS R07-S1-11 — Prazo vencido é exibido e não presume cobertura automática :: {"exp":{"root":27,"previous":27,"unit":27,"client":1,"conclusion":"2020-01-01","days":90,"end":"2020-03-31"},"coverage":"Em avaliação","end":"2020-03-31"}
+PASS R07-S1-12 — Prazo desconhecido mostra não informado e não inventa vencimento :: {"days":null,"end":null}
+PASS R07-S1-13 — Sem erros de página ou console no fluxo de entrada :: {"errors":[],"consoleErrors":[]}
+PASS R07-S2-01 — Duas abas: a segunda gravação é bloqueada e não duplica o retorno :: {"n0":8,"n1":9,"n2":9,"ids":[25],"stB":"Dados alterados em outra aba. Reabra a operação para evitar sobrescrever a atualização."}
+PASS R07-S2-02 — Duas abas: nenhuma exceção de página :: {"errors":[],"errsB":[],"consoleErrors":[]}
+PASS R07-S3-01 — Origem #016 com #018 ativo exibe vínculo e impede novo retorno :: {"text":"aikin\nModelo\nEcoSwing\nSelo\nNão informado\nSérie\nNão informado\nIMEI\nNão informado\nCliente\nNome\nRefrigeração Horizonte\nContato\n(45) 90000-0103\nGarantia\n\nConclusão em 17/11/2026\n\n15/02/2027 · Dentro do prazo\n\nVer ga
+PASS R07-S3-02 — Retorno legado #018 resolve vínculo com #016 sem inventar dados :: {"root":16,"previous":16,"unit":16,"client":3,"conclusion":"2026-11-17","days":90,"end":"2027-02-15","events":[],"operations":[]}
+PASS R07-S3-03 — Avaliação sem cobertura concluída não escolhe solução :: {"opened":true,"previous":"0","open":true,"error":"Conclua a avaliação de cobertura antes de escolher a solução.","toast":""}
+PASS R07-S3-04 — Diagnóstico é obrigatório quando a cobertura é concluída :: {"opened":true,"previous":"0","open":true,"error":"Confira os textos obrigatórios e seus limites.","toast":""}
+PASS R07-S3-05 — Avaliação registrada não muda andamento, cobrança, entrega nem histórico financeiro :: {"events":1,"coverage":"Coberto","status":"Aberto","total":0,"paid":0,"delivery":null}
+PASS R07-S3-06 — Avaliação com versão anterior obsoleta é recusada e não altera o histórico :: {"opened":true,"previous":"0","open":true,"error":"Outra avaliação foi registrada. Recarregue antes de decidir.","toast":"Registro atualizado na demonstração."}
+PASS R07-S3-07 — Revisão cria novo evento e preserva o anterior imutável :: [{"id":1,"type":"avaliar","coverage":"coberto","solution":"reparo_sem_cobranca","diagnosis":"Falha do reparo original.","reason":"Conferido na bancada.","when":"2026-11-27T01:19:35.017Z","actor":"Administrador"},{"id":2,"type":"avaliar","co
+PASS R07-S3-08 — Duas abas na avaliação: segunda gravação bloqueada, sem evento extra :: {"toast":"Dados alterados em outra aba. Reabra a operação para evitar sobrescrever a atualização.","events":3}
+PASS R07-S3-09 — Concluir reparo sem cobrança grava conclusão e não concede nova garantia :: {"status":"Finalizado","conclusion":"2026-11-26","total":0,"paid":0,"days":0,"st":{"opened":true,"open":false,"error":"","toast":"Registro atualizado na demonstração."}}
+PASS R07-S3-10a — Origem com retorno finalizado aponta para o atendimento anterior, não cria irmão :: {"link16":["#retorno/18"],"formBase":"18"}
+PASS R07-S3-10b — OS ordinária ativa da mesma unidade não oferece nem abre retorno :: {"ordId":25,"ordLinks":[],"ordForm":0}
+PASS R07-S3-10 — Segundo retorno herda raiz e prazo original e preserva o anterior :: {"idSecond":26,"origin":16,"warranty":{"root":16,"previous":18,"unit":16,"client":3,"conclusion":"2026-11-17","days":90,"end":"2027-02-15","events":[],"operations":[]},"rootEnd":"2027-02-15","st":{"hash":"#os/26","toast":"OS #026 criada"}}
+PASS R07-S3-11 — Retorno sem avaliação pode concluir e continua sem cobertura presumida :: {"status":"Finalizado","coverage":"Em avaliação","events":0}
+PASS R07-S3-12a — Retorno anterior com irmão ativo não reabre e mantém um único ativo :: {"sib":{"opened":true,"open":true,"error":"Esta OS já originou retorno. Preserve o atendimento encerrado e use a nova OS.","toast":""},"activeNow":[27]}
+PASS R07-S3-12 — Origem sem entrega com retorno derivado não reabre :: {"opened":true,"open":true,"error":"Esta OS já originou retorno. Preserve o atendimento encerrado e use a nova OS.","toast":""}
+PASS R07-S3-13 — Sem erros de página ou console no ciclo de avaliação :: {"errors":[],"errsB":[],"consoleErrors":[]}
+PASS R07-S4-01 — Concluir retorno com troca pendente é bloqueado antes de qualquer mutação :: {"opened":true,"open":true,"error":"Execute a solução de garantia escolhida antes de concluir o retorno.","toast":"Registro atualizado na demonstração."}
+PASS R07-S4-02 — Concluir retorno com devolução pendente é bloqueado :: {"opened":true,"open":true,"error":"Execute a solução de garantia escolhida antes de concluir o retorno.","toast":"Registro atualizado na demonstração."}
+PASS R07-S4-03 — Origem entregue com derivado não reabre :: {"opened":true,"open":true,"error":"Esta OS já originou retorno. Preserve o atendimento encerrado e use a nova OS.","toast":"Registro atualizado na demonstração."}
+PASS R07-S4-04 — OS ordinária pede prazo antes da conclusão e o preserva depois :: {"hasField":1,"days":180,"conclusion":"2026-11-26","hasAfter":0,"after":{"days":180,"conclusion":"2026-11-26"},"st":{"opened":true,"open":false,"error":"","toast":"Registro atualizado na demonstração."}}
+PASS R07-S4-05 — Sem erros de página ou console nos bloqueios :: {"errors":[],"consoleErrors":[]}
+PASS R07-S5-01 — Admin vê custos privados e ação de registrar :: stoque.
+
+Registrar custo
+Histórico privado da garantia
+
+Nenhuma avaliação registrada.
+
+Atendimentos da unidade
+Daikin · EcoSwing
+Refrigeração Horizonte
+#018
+Aberto
+Não entregue
+Sem cobrança
+21/11/2026
+PASS R07-S5-02 — Custo 25,50 e 30 min é registrado sem caixa nem estoque :: {"c":{"amount":2550,"minutes":30},"ledgerAfter":"null","stock":[{"name":"IGBT 650 V","quantity":8},{"name":"Optoacoplador PC817","quantity":3},{"name":"Capacitor 450 V","quantity":16}]}
+PASS R07-S5-03 — Zero reais com tempo válido é aceito :: {"c":{"amount":2550,"minutes":60},"r":{"opened":true,"open":false,"error":"","toast":"Registro atualizado na demonstração."}}
+PASS R07-S5-04 — Custo e tempo zerados são rejeitados com mensagem específica :: {"opened":true,"open":true,"error":"Informe custo interno ou tempo de trabalho válido.","toast":"Registro atualizado na demonstração."}
+PASS R07-S5-05 — Valor acima do limite é rejeitado no formulário e no handler :: {"r":{"opened":true,"open":true,"error":"","toast":"Registro atualizado na demonstração."},"domLimit":"Informe custo interno ou tempo de trabalho válido."}
+PASS R07-S5-06 — Tempo acima do limite é rejeitado no formulário e no handler :: {"r":{"opened":true,"open":true,"error":"","toast":"Registro atualizado na demonstração."},"domMinutes":"Informe custo interno ou tempo de trabalho válido."}
+PASS R07-S5-07 — Correção única zera o custo e preserva o registro original :: {"c":{"amount":0,"minutes":30},"ev":[{"id":1,"type":"custo","amount":2550},{"id":2,"type":"custo","amount":0},{"id":3,"type":"corrigir_custo","amount":2550,"reference":1}]}
+PASS R07-S5-08 — Segunda correção do mesmo custo é recusada e o controle desaparece :: {"r":{"opened":false},"domSecond":"Custo inexistente ou já corrigido."}
+PASS R07-S5-09T — Técnico não vê custo, valores, controle nem consegue gravar por handler direto :: {"hasCostPanel":false,"hasMoney":false,"modal":null,"direct":"Ação indisponível neste perfil."}
+PASS R07-S5-09A — Atendente não vê custo, valores, controle nem consegue gravar por handler direto :: {"hasCostPanel":false,"hasMoney":false,"modal":null,"direct":"Ação indisponível neste perfil."}
+PASS R07-S5-09F — Financeiro não vê custo, valores, controle nem consegue gravar por handler direto :: {"hasCostPanel":false,"hasMoney":true,"modal":null,"direct":"Ação indisponível neste perfil."}
+PASS R07-S5-10 — Permissões efetivas: avaliação Admin/Técnico, entrada Admin/Atendente, sem ampliar perfis :: {"techAssess":true,"techEntryDenied":true,"attAssess":null,"attEntry":1,"finAssess":null}
+PASS R07-S5-11 — Sem erros de página ou console nos custos e permissões :: {"errors":[],"consoleErrors":[]}
+PASS R07-S6-01 — Sem decisão de novo orçamento o retorno não edita nem publica :: ATENDIMENTO / #018
+Daikin · EcoSwing
+
+Refrigeração Horizonte · Entrada em 21/11/2026
+
+Voltar
+Imprimir
+ANDAMENTO TÉCNICO
+Aberto
+Conclusão não registrada
+Atualiza
+PASS R07-S6-02 — Após a decisão o orçamento próprio fica editável e não cobra automaticamente :: ATENDIMENTO / #018
+Daikin · EcoSwing
+
+Refrigeração Horizonte · Entrada em 21/11/2026
+
+Voltar
+Imprimir
+ANDAMENTO TÉCNICO
+Aberto
+Conclusão não registrada
+Atualizar andamento
+FINANCEIRO
+Sem cobrança
+Saldo: R$ 0,00
+RETIRADA
+Não entregue
+Registr
+PASS R07-S6-03 — Rascunho salvo mantém total zero e origem intocada :: {"items":[{"name":"Reparo adicional fictício","type":"Serviço","quantity":1,"unit":5000,"lineId":1}],"discount":0,"terms":{"payment":"","deadline":"","warranty":"","diagnosis":"","equipment":"","defect":""}}
+PASS R07-S6-04 — Publicação cria versão 1 e registra a operação privada :: {"current":1,"ops":[{"type":"orcamento","version":1,"when":"2026-11-27T01:20:57.419Z"}]}
+PASS R07-S6-05 — Cobrança antes da aprovação vigente é bloqueada :: {"opened":false}
+PASS R07-S6-06 — Decisão interna aprovada não fatura sozinha :: {"decision":{"answer":"Aprovado","name":"Cliente Fictício R07","channel":"presencial","date":"2026-11-26","note":"","registered":"2026-11-27T01:20:58.597Z","afterDelivery":false},"total":0}
+PASS R07-S6-07 — Itens alterados após a aprovação impedem faturar a versão antiga :: {"r":{"opened":false},"domBilling":"Fature o retorno somente com novo orçamento vigente, aprovado e sem alterações nos itens ou valores."}
+PASS R07-S6-08 — Nova versão ainda sem aprovação não fatura :: {"opened":false}
+PASS R07-S6-09 — Cobrança explícita usa a versão vigente e não movimenta a origem :: {"total":7000,"paid":0,"billing":{"due":"2026-11-26","items":[{"name":"Reparo adicional fictício","type":"Serviço","quantity":1,"unit":7000,"lineId":2}],"discount":0}}
+PASS R07-S6-10 — Recusa não fatura e exige nova versão aprovada :: {"total":0,"last":{"answer":"Recusado","name":"Cliente Fictício R07","channel":"presencial","date":"2026-11-26","note":"","registered":"2026-11-27T01:21:10.595Z","afterDelivery":false}}
+PASS R07-S6-11 — Nova versão aprovada após recusa fatura o valor vigente :: [{"n":1,"d":"Recusado"},{"n":2,"d":"Aprovado"}]
+PASS R07-S6-12 — Projeção pública não expõe garantia, origem, avaliação, custos nem laudo :: {"id":26,"status":"Negociação","entry":"2026-11-26","forecast":"","equipment":"Electrolux · Color Adapt","finance":null,"quote":{"number":1,"created":"2026-11-27T01:21:20.446Z","items":[{"type":"Serviço","name":"Reparo público fictício","qu
+PASS R07-S6-13 — Resposta pública registra decisão, não fatura e não vaza informação privada :: {"pub":{"total":0,"paid":0,"decision":{"answer":"Aprovado","name":"Cliente Portal Fictício","channel":"link simulado","date":"2026-11-26","note":"","registered":"2026-11-27T01:21:22.346Z","afterDelivery":false},"delivery":null,"err":""},"pr
+PASS R07-S6-14 — Cobrança do retorno é explícita, separada da decisão e não movimenta a origem :: {"total":6000,"paid":0,"billing":{"due":"2026-11-26","items":[{"name":"Reparo público fictício","type":"Serviço","quantity":1,"unit":6000,"lineId":1}],"discount":0}}
+PASS R07-S6-15 — Sem erros de página ou console no orçamento :: {"errors":[],"consoleErrors":[],"perrs":[]}
+TOTAL 65 · PASS 65 · FAIL 0 · INFO 0

@@ -1,0 +1,95 @@
+{
+  "generatedAt": "2026-11-27T01:19:03.456Z",
+  "codeSha": "uncommitted-9a6159d927b92f78a76688b4680280062297d7887f8fc909c270d402979637f3",
+  "results": [
+    {
+      "id": "R06-PR-01",
+      "desc": "Mídia de impressão oculta casca e navegação",
+      "status": "PASS",
+      "detail": "{\"sidebar\":\"none\",\"top\":\"none\",\"nav\":\"none\",\"sheet\":\"block\"}"
+    },
+    {
+      "id": "R06-PR-02",
+      "desc": "PDF A4 da OS cancelada tem uma página e dados financeiros finais",
+      "status": "PASS",
+      "detail": "{\"info\":{\"pages\":1,\"size\":\"594.96 x 841.92 pts (A4)\",\"raw\":\"Title:           MapOS · Bancada\\nCreator:         Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.0.0 Safari/537.36\\nProducer:        Skia/PDF m156\\nCreationDate:    Thu Nov 26 22:19:02 2026 -03\\nModDate:         Thu Nov 26 22:19:02 2026 -03\\nCustom Metadata: no\\nMetadata Stream: no\\nTagged:          no\\nUserProperties:  no\\nSuspects:        no\\nForm:            none\\nJavaScript:      no\\nPages:           1\\nEncrypted:       no\\nPage size:       594.96 x 841.92 pts (A4)\\nPage rot:        0\\nFile size:       30272 bytes\\nOptimized:       no\\nPDF version:     1.4\\n\"},\"text\":\"Minha oficina · Demonstração\\nOrdem de serviço #025\\n\\nCliente                               Equipamento\\n\\nClima Sul Serviços                    Impressão · R06\\nEntrada                               Andamento\\n\\n26/11/2026                            Cancelado\\nEntrega                               Defeito\\n\\nNão registrada                        Impressão de OS cancelada R06.\\n\\nTotal cobrado                         Pago\\n\\nR$ 80,00                              R$ 80,00\\nSaldo                                "
+    },
+    {
+      "id": "R06-PR-03",
+      "desc": "PDF A4 não contém justificativa nem referência privada da devolução",
+      "status": "PASS",
+      "detail": "privacy"
+    },
+    {
+      "id": "R06-PR-04",
+      "desc": "PDF de impressão não contém casca, cabeçalho de tela ou navegação",
+      "status": "PASS",
+      "detail": "{\"top\":\"none\",\"nav\":\"none\",\"head\":\"none\",\"toast\":\"none\"}"
+    },
+    {
+      "id": "R06-PR-05",
+      "desc": "Cupom usa largura de 80 mm e mantém os valores finais",
+      "status": "PASS",
+      "detail": "{\"info\":{\"pages\":2,\"size\":\"227.04 x 426 pts\",\"raw\":\"Title:           MapOS · Bancada\\nCreator:         Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.0.0 Safari/537.36\\nProducer:        Skia/PDF m156\\nCreationDate:    Thu Nov 26 22:19:02 2026 -03\\nModDate:         Thu Nov 26 22:19:02 2026 -03\\nCustom Metadata: no\\nMetadata Stream: no\\nTagged:          no\\nUserProperties:  no\\nSuspects:        no\\nForm:            none\\nJavaScript:      no\\nPages:           2\\nEncrypted:       no\\nPage size:       227.04 x 426 pts\\nPage rot:        0\\nFile size:       28247 bytes\\nOptimized:       no\\nPDF version:     1.4\\n\"},\"widthMm\":80,\"text\":\"Minha oficina · Demonstração\\nOrdem de serviço #025\\n\\n\\nCliente\\nClima Sul Serviços\\n\\nEquipamento\\nImpressão · R06\\n\\nEntrada\\n26/11/2026\\n\\nAndamento\\nCancelado\\n\\nEntrega\\nNão registrada\\n\\nDefeito\\nImpressão de OS cancelada R06.\\n\\n\\nTotal cobrado\\nR$ 80,00\\n\\nPago\\nR$ 80,00\\n\\nSaldo\\nR$ 0,00\\n\\fSituação financeira\\nSem pendência\\n\\n\\nProtótipo — sem validade comercial.\\n\\f\"}"
+    },
+    {
+      "id": "R06-PR-06",
+      "desc": "Limitação de impressão: cupom de 80 mm ocupa 2 páginas em 150 mm, também nas OS #020/#019 antes do R06 (INFO)",
+      "status": "INFO",
+      "detail": "{\"pages\":2,\"size\":\"227.04 x 426 pts\"}"
+    },
+    {
+      "id": "R06-PR-06-B",
+      "desc": "Cupom das OS legadas #020/#019 também tem 2 páginas em 80×150 mm",
+      "status": "PASS",
+      "detail": "[{\"id\":20,\"pages\":2,\"widthMm\":80,\"file\":\"impressos/os020-cupom.pdf\"},{\"id\":19,\"pages\":2,\"widthMm\":80,\"file\":\"impressos/os019-cupom.pdf\"}]"
+    },
+    {
+      "id": "R06-PR-07",
+      "desc": "Recibo original é impresso sem ESTORNADO e com o valor recebido",
+      "status": "PASS",
+      "detail": "{\"info\":{\"pages\":1,\"size\":\"594.96 x 841.92 pts (A4)\",\"raw\":\"Title:           MapOS · Bancada\\nCreator:         Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.0.0 Safari/537.36\\nProducer:        Skia/PDF m156\\nCreationDate:    Thu Nov 26 22:19:03 2026 -03\\nModDate:         Thu Nov 26 22:19:03 2026 -03\\nCustom Metadata: no\\nMetadata Stream: no\\nTagged:          no\\nUserProperties:  no\\nSuspects:        no\\nForm:            none\\nJavaScript:      no\\nPages:           1\\nEncrypted:       no\\nPage size:       594.96 x 841.92 pts (A4)\\nPage rot:        0\\nFile size:       36879 bytes\\nOptimized:       no\\nPDF version:     1.4\\n\"},\"text\":\"MINHA OFICINA · DEMONSTRAÇÃO\\n\\nRecibo #25 / 1\\nRecebimento registrado\\n\\n\\nR$ 100,00\\nOS                                                    Cliente\\n\\n#025                                                  Clima Sul Serviços\\nEquipamento                                           Data do recebimento\\n\\nImpressão · R06                                       26/11/2026\\nForma\\n\\nPix\\n\\nProtótipo — sem validade comercial. Não comprova movimentação bancária.\\n\\f\"}"
+    },
+    {
+      "id": "R06-PR-08",
+      "desc": "Impressão sem exceções, erros de console ou requisições externas",
+      "status": "PASS",
+      "detail": "{\"errors\":[],\"consoleErrors\":[],\"external\":[]}"
+    }
+  ],
+  "pdfs": [
+    {
+      "file": "impressos/os-cancelada-a4.pdf",
+      "bytes": 30272,
+      "pages": 1,
+      "size": "594.96 x 841.92 pts (A4)",
+      "raw": "Title:           MapOS · Bancada\nCreator:         Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.0.0 Safari/537.36\nProducer:        Skia/PDF m156\nCreationDate:    Thu Nov 26 22:19:02 2026 -03\nModDate:         Thu Nov 26 22:19:02 2026 -03\nCustom Metadata: no\nMetadata Stream: no\nTagged:          no\nUserProperties:  no\nSuspects:        no\nForm:            none\nJavaScript:      no\nPages:           1\nEncrypted:       no\nPage size:       594.96 x 841.92 pts (A4)\nPage rot:        0\nFile size:       30272 bytes\nOptimized:       no\nPDF version:     1.4\n"
+    },
+    {
+      "file": "impressos/os-cancelada-cupom.pdf",
+      "bytes": 28247,
+      "pages": 2,
+      "size": "227.04 x 426 pts",
+      "raw": "Title:           MapOS · Bancada\nCreator:         Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.0.0 Safari/537.36\nProducer:        Skia/PDF m156\nCreationDate:    Thu Nov 26 22:19:02 2026 -03\nModDate:         Thu Nov 26 22:19:02 2026 -03\nCustom Metadata: no\nMetadata Stream: no\nTagged:          no\nUserProperties:  no\nSuspects:        no\nForm:            none\nJavaScript:      no\nPages:           2\nEncrypted:       no\nPage size:       227.04 x 426 pts\nPage rot:        0\nFile size:       28247 bytes\nOptimized:       no\nPDF version:     1.4\n"
+    },
+    {
+      "file": "impressos/recibo-original.pdf",
+      "bytes": 36879,
+      "pages": 1,
+      "size": "594.96 x 841.92 pts (A4)",
+      "raw": "Title:           MapOS · Bancada\nCreator:         Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.0.0 Safari/537.36\nProducer:        Skia/PDF m156\nCreationDate:    Thu Nov 26 22:19:03 2026 -03\nModDate:         Thu Nov 26 22:19:03 2026 -03\nCustom Metadata: no\nMetadata Stream: no\nTagged:          no\nUserProperties:  no\nSuspects:        no\nForm:            none\nJavaScript:      no\nPages:           1\nEncrypted:       no\nPage size:       594.96 x 841.92 pts (A4)\nPage rot:        0\nFile size:       36879 bytes\nOptimized:       no\nPDF version:     1.4\n"
+    },
+    {
+      "id": 20,
+      "pages": 2,
+      "widthMm": 80,
+      "file": "impressos/os020-cupom.pdf"
+    },
+    {
+      "id": 19,
+      "pages": 2,
+      "widthMm": 80,
+      "file": "impressos/os019-cupom.pdf"
+    }
+  ]
+}

@@ -1,0 +1,137 @@
+[
+  {
+    "name": "R1 no request: cancellation/quote must not be initialized",
+    "status": "FAIL",
+    "detail": "R1: state changed on rejection: \"{\\\"o\\\":{\\\"id\\\":1,\\\"status\\\":\\\"Aberto\\\",\\\"entry\\\":\\\"2026-11-25\\\",\\\"total\\\":0,\\\"paid\\\":0,\\\"history\\\":[],\\\"cancellation\\\":{\\\"events\\\":[]}},\\\"stock\\\":[]}\" != \"{\\\"o\\\":{\\\"id\\\":1,\\\"status\\\":\\\"Aberto\\\",\\\"entry\\\":\\\"2026-11-25\\\",\\\"total\\\":0,\\\"paid\\\":0,\\\"history\\\":[]},\\\"stock\\\":[]}\""
+  },
+  {
+    "name": "R2 legacy missing line: no lazy quote/lineId normalization",
+    "status": "FAIL",
+    "detail": "R2: state changed on rejection: \"{\\\"o\\\":{\\\"id\\\":1,\\\"status\\\":\\\"Aberto\\\",\\\"entry\\\":\\\"2026-11-25\\\",\\\"total\\\":0,\\\"paid\\\":0,\\\"history\\\":[],\\\"cancellation\\\":{\\\"events\\\":[{\\\"id\\\":1,\\\"type\\\":\\\"request\\\"}]},\\\"quote\\\":{\\\"draft\\\":{\\\"items\\\":[],\\\"discount\\\":0,\\\"terms\\\":{\\\"payment\\\":\\\"\\\",\\\"deadline\\\":\\\"\\\",\\\"warranty\\\":\\\"\\\",\\\"diagnosis\\\":\\\"\\\"}},\\\"versions\\\":[],\\\"current\\\":null,\\\"active\\\":false,\\\"nextLineId\\\":1}},\\\"stock\\\":[]}\" != \"{\\\"o\\\":{\\\"id\\\":1,\\\"status\\\":\\\"Aberto\\\",\\\"entry\\\":\\\"2026-11-25\\\",\\\"total\\\":0,\\\"paid\\\":0,\\\"history\\\":[],\\\"cancellation\\\":{\\\"events\\\":[{\\\"id\\\":1,\\\"type\\\":\\\"request\\\"}]}},\\\"stock\\\":[]}\""
+  },
+  {
+    "name": "R15 legacy quote without lineIds + missing target",
+    "status": "FAIL",
+    "detail": "state changed: \"{\\\"id\\\":1,\\\"status\\\":\\\"Aberto\\\",\\\"entry\\\":\\\"2026-11-25\\\",\\\"total\\\":0,\\\"paid\\\":0,\\\"history\\\":[],\\\"cancellation\\\":{\\\"events\\\":[{\\\"id\\\":1,\\\"type\\\":\\\"request\\\"}]},\\\"quote\\\":{\\\"draft\\\":{\\\"items\\\":[{\\\"type\\\":\\\"Peça\\\",\\\"name\\\":\\\"A\\\",\\\"quantity\\\":1,\\\"unit\\\":100,\\\"lineId\\\":1}],\\\"discount\\\":0,\\\"terms\\\":{}},\\\"versions\\\":[],\\\"current\\\":null,\\\"active\\\":false,\\\"nextLineId\\\":2}}\" != \"{\\\"id\\\":1,\\\"status\\\":\\\"Aberto\\\",\\\"entry\\\":\\\"2026-11-25\\\",\\\"total\\\":0,\\\"paid\\\":0,\\\"history\\\":[],\\\"cancellation\\\":{\\\"events\\\":[{\\\"id\\\":1,\\\"type\\\":\\\"request\\\"}]},\\\"quote\\\":{\\\"draft\\\":{\\\"items\\\":[{\\\"type\\\":\\\"Peça\\\",\\\"name\\\":\\\"A\\\",\\\"quantity\\\":1,\\\"unit\\\":100}],\\\"discount\\\":0,\\\"terms\\\":{}},\\\"versions\\\":[],\\\"current\\\":null,\\\"active\\\":false}}\""
+  },
+  {
+    "name": "R3 invalid sibling after target (linked item)",
+    "status": "FAIL",
+    "detail": "R3: state changed on rejection: \"{\\\"o\\\":{\\\"id\\\":1,\\\"status\\\":\\\"Aberto\\\",\\\"entry\\\":\\\"2026-11-25\\\",\\\"total\\\":0,\\\"paid\\\":0,\\\"history\\\":[],\\\"quote\\\":{\\\"draft\\\":{\\\"items\\\":[{\\\"type\\\":\\\"Peça\\\",\\\"name\\\":\\\"IGBT\\\",\\\"quantity\\\":2,\\\"unit\\\":1000,\\\"lineId\\\":1,\\\"stockSku\\\":\\\"P-001\\\",\\\"stockCost\\\":450},{\\\"lineId\\\":2,\\\"type\\\":\\\"Peça\\\",\\\"name\\\":\\\"Inválida\\\",\\\"quantity\\\":1,\\\"unit\\\":-1}],\\\"discount\\\":0,\\\"terms\\\":{\\\"payment\\\":\\\"\\\",\\\"deadline\\\":\\\"\\\",\\\"warranty\\\":\\\"\\\",\\\"diagnosis\\\":\\\"\\\"}},\\\"versions\\\":[],\\\"current\\\":null,\\\"active\\\":false,\\\"nextLineId\\\":3},\\\"approval\\\":\\\"Rascunho\\\",\\\"proposal\\\":3000,\\\"cancellation\\\":{\\\"events\\\":[{\\\"id\\\":1,\\\"type\\\":\\\"request\\\",\\\"when\\\":\\\"2026-11-26T12:00:00Z\\\",\\\"origin\\\":\\\"cliente\\\",\\\"reason\\\":\\\"Pedido\\\",\\\"status\\\":\\\"Aberto\\\"}]}},\\\"stock\\\":[{\\\"sku\\\":\\\"P-001\\\",\\\"name\\\":\\\"IGBT\\\",\\\"quantity\\\":5,\\\"min\\\":0,\\\"cost\\\":450,\\\"movements\\\":[{\\\"id\\\":1,\\\"sku\\\":\\\"P-001\\\",\\\"type\\\":\\\"os_saida\\\",\\\"quantity\\\":-3,\\\"before\\\":8,\\\"after\\\":5,\\\"cost\\\":450,\\\"reason\\\":\\\"Inclusão de peça na OS\\\",\\\"when\\\":\\\"2026-11-26T12:00:00Z\\\",\\\"actor\\\":\\\"Administrador\\\",\\\"osId\\\":1,\\\"lineId\\\":1}]}]}\" != \"{\\\"o\\\":{\\\"id\\\":1,\\\"status\\\":\\\"Aberto\\\",\\\"entry\\\":\\\"2026-11-25\\\",\\\"total\\\":0,\\\"paid\\\":0,\\\"history\\\":[],\\\"quote\\\":{\\\"draft\\\":{\\\"items\\\":[{\\\"type\\\":\\\"Peça\\\",\\\"name\\\":\\\"IGBT\\\",\\\"quantity\\\":3,\\\"unit\\\":1000,\\\"lineId\\\":1,\\\"stockSku\\\":\\\"P-001\\\",\\\"stockCost\\\":450},{\\\"lineId\\\":2,\\\"type\\\":\\\"Peça\\\",\\\"name\\\":\\\"Inválida\\\",\\\"quantity\\\":1,\\\"unit\\\":-1}],\\\"discount\\\":0,\\\"terms\\\":{\\\"payment\\\":\\\"\\\",\\\"deadline\\\":\\\"\\\",\\\"warranty\\\":\\\"\\\",\\\"diagnosis\\\":\\\"\\\"}},\\\"versions\\\":[],\\\"current\\\":null,\\\"active\\\":false,\\\"nextLineId\\\":3},\\\"approval\\\":\\\"Rascunho\\\",\\\"proposal\\\":3000,\\\"cancellation\\\":{\\\"events\\\":[{\\\"id\\\":1,\\\"type\\\":\\\"request\\\",\\\"when\\\":\\\"2026-11-26T12:00:00Z\\\",\\\"origin\\\":\\\"cliente\\\",\\\"reason\\\":\\\"Pedido\\\",\\\"status\\\":\\\"Aberto\\\"}]}},\\\"stock\\\":[{\\\"sku\\\":\\\"P-001\\\",\\\"name\\\":\\\"IGBT\\\",\\\"quantity\\\":5,\\\"min\\\":0,\\\"cost\\\":450,\\\"movements\\\":[{\\\"id\\\":1,\\\"sku\\\":\\\"P-001\\\",\\\"type\\\":\\\"os_saida\\\",\\\"quantity\\\":-3,\\\"before\\\":8,\\\"after\\\":5,\\\"cost\\\":450,\\\"reason\\\":\\\"Inclusão de peça na OS\\\",\\\"when\\\":\\\"2026-11-26T12:00:00Z\\\",\\\"actor\\\":\\\"Administrador\\\",\\\"osId\\\":1,\\\"lineId\\\":1}]}]}\""
+  },
+  {
+    "name": "R3b invalid sibling before target (linked item)",
+    "status": "FAIL",
+    "detail": "R3b: state changed on rejection: \"{\\\"o\\\":{\\\"id\\\":1,\\\"status\\\":\\\"Aberto\\\",\\\"entry\\\":\\\"2026-11-25\\\",\\\"total\\\":0,\\\"paid\\\":0,\\\"history\\\":[],\\\"quote\\\":{\\\"draft\\\":{\\\"items\\\":[{\\\"lineId\\\":2,\\\"type\\\":\\\"Peça\\\",\\\"name\\\":\\\"Inválida\\\",\\\"quantity\\\":1,\\\"unit\\\":-1},{\\\"type\\\":\\\"Peça\\\",\\\"name\\\":\\\"IGBT\\\",\\\"quantity\\\":2,\\\"unit\\\":1000,\\\"lineId\\\":1,\\\"stockSku\\\":\\\"P-001\\\",\\\"stockCost\\\":450}],\\\"discount\\\":0,\\\"terms\\\":{\\\"payment\\\":\\\"\\\",\\\"deadline\\\":\\\"\\\",\\\"warranty\\\":\\\"\\\",\\\"diagnosis\\\":\\\"\\\"}},\\\"versions\\\":[],\\\"current\\\":null,\\\"active\\\":false,\\\"nextLineId\\\":3},\\\"approval\\\":\\\"Rascunho\\\",\\\"proposal\\\":3000,\\\"cancellation\\\":{\\\"events\\\":[{\\\"id\\\":1,\\\"type\\\":\\\"request\\\",\\\"when\\\":\\\"2026-11-26T12:00:00Z\\\",\\\"origin\\\":\\\"cliente\\\",\\\"reason\\\":\\\"Pedido\\\",\\\"status\\\":\\\"Aberto\\\"}]}},\\\"stock\\\":[{\\\"sku\\\":\\\"P-001\\\",\\\"name\\\":\\\"IGBT\\\",\\\"quantity\\\":5,\\\"min\\\":0,\\\"cost\\\":450,\\\"movements\\\":[{\\\"id\\\":1,\\\"sku\\\":\\\"P-001\\\",\\\"type\\\":\\\"os_saida\\\",\\\"quantity\\\":-3,\\\"before\\\":8,\\\"after\\\":5,\\\"cost\\\":450,\\\"reason\\\":\\\"Inclusão de peça na OS\\\",\\\"when\\\":\\\"2026-11-26T12:00:00Z\\\",\\\"actor\\\":\\\"Administrador\\\",\\\"osId\\\":1,\\\"lineId\\\":1}]}]}\" != \"{\\\"o\\\":{\\\"id\\\":1,\\\"status\\\":\\\"Aberto\\\",\\\"entry\\\":\\\"2026-11-25\\\",\\\"total\\\":0,\\\"paid\\\":0,\\\"history\\\":[],\\\"quote\\\":{\\\"draft\\\":{\\\"items\\\":[{\\\"lineId\\\":2,\\\"type\\\":\\\"Peça\\\",\\\"name\\\":\\\"Inválida\\\",\\\"quantity\\\":1,\\\"unit\\\":-1},{\\\"type\\\":\\\"Peça\\\",\\\"name\\\":\\\"IGBT\\\",\\\"quantity\\\":3,\\\"unit\\\":1000,\\\"lineId\\\":1,\\\"stockSku\\\":\\\"P-001\\\",\\\"stockCost\\\":450}],\\\"discount\\\":0,\\\"terms\\\":{\\\"payment\\\":\\\"\\\",\\\"deadline\\\":\\\"\\\",\\\"warranty\\\":\\\"\\\",\\\"diagnosis\\\":\\\"\\\"}},\\\"versions\\\":[],\\\"current\\\":null,\\\"active\\\":false,\\\"nextLineId\\\":3},\\\"approval\\\":\\\"Rascunho\\\",\\\"proposal\\\":3000,\\\"cancellation\\\":{\\\"events\\\":[{\\\"id\\\":1,\\\"type\\\":\\\"request\\\",\\\"when\\\":\\\"2026-11-26T12:00:00Z\\\",\\\"origin\\\":\\\"cliente\\\",\\\"reason\\\":\\\"Pedido\\\",\\\"status\\\":\\\"Aberto\\\"}]}},\\\"stock\\\":[{\\\"sku\\\":\\\"P-001\\\",\\\"name\\\":\\\"IGBT\\\",\\\"quantity\\\":5,\\\"min\\\":0,\\\"cost\\\":450,\\\"movements\\\":[{\\\"id\\\":1,\\\"sku\\\":\\\"P-001\\\",\\\"type\\\":\\\"os_saida\\\",\\\"quantity\\\":-3,\\\"before\\\":8,\\\"after\\\":5,\\\"cost\\\":450,\\\"reason\\\":\\\"Inclusão de peça na OS\\\",\\\"when\\\":\\\"2026-11-26T12:00:00Z\\\",\\\"actor\\\":\\\"Administrador\\\",\\\"osId\\\":1,\\\"lineId\\\":1}]}]}\""
+  },
+  {
+    "name": "R4 sibling quantity 0",
+    "status": "FAIL",
+    "detail": "R4: state changed on rejection: \"{\\\"o\\\":{\\\"id\\\":1,\\\"status\\\":\\\"Aberto\\\",\\\"entry\\\":\\\"2026-11-25\\\",\\\"total\\\":0,\\\"paid\\\":0,\\\"history\\\":[],\\\"quote\\\":{\\\"draft\\\":{\\\"items\\\":[{\\\"type\\\":\\\"Peça\\\",\\\"name\\\":\\\"IGBT\\\",\\\"quantity\\\":2,\\\"unit\\\":1000,\\\"lineId\\\":1,\\\"stockSku\\\":\\\"P-001\\\",\\\"stockCost\\\":450},{\\\"lineId\\\":2,\\\"type\\\":\\\"Peça\\\",\\\"name\\\":\\\"Inválida\\\",\\\"quantity\\\":0,\\\"unit\\\":1}],\\\"discount\\\":0,\\\"terms\\\":{\\\"payment\\\":\\\"\\\",\\\"deadline\\\":\\\"\\\",\\\"warranty\\\":\\\"\\\",\\\"diagnosis\\\":\\\"\\\"}},\\\"versions\\\":[],\\\"current\\\":null,\\\"active\\\":false,\\\"nextLineId\\\":3},\\\"approval\\\":\\\"Rascunho\\\",\\\"proposal\\\":3000,\\\"cancellation\\\":{\\\"events\\\":[{\\\"id\\\":1,\\\"type\\\":\\\"request\\\",\\\"when\\\":\\\"2026-11-26T12:00:00Z\\\",\\\"origin\\\":\\\"cliente\\\",\\\"reason\\\":\\\"Pedido\\\",\\\"status\\\":\\\"Aberto\\\"}]}},\\\"stock\\\":[{\\\"sku\\\":\\\"P-001\\\",\\\"name\\\":\\\"IGBT\\\",\\\"quantity\\\":5,\\\"min\\\":0,\\\"cost\\\":450,\\\"movements\\\":[{\\\"id\\\":1,\\\"sku\\\":\\\"P-001\\\",\\\"type\\\":\\\"os_saida\\\",\\\"quantity\\\":-3,\\\"before\\\":8,\\\"after\\\":5,\\\"cost\\\":450,\\\"reason\\\":\\\"Inclusão de peça na OS\\\",\\\"when\\\":\\\"2026-11-26T12:00:00Z\\\",\\\"actor\\\":\\\"Administrador\\\",\\\"osId\\\":1,\\\"lineId\\\":1}]}]}\" != \"{\\\"o\\\":{\\\"id\\\":1,\\\"status\\\":\\\"Aberto\\\",\\\"entry\\\":\\\"2026-11-25\\\",\\\"total\\\":0,\\\"paid\\\":0,\\\"history\\\":[],\\\"quote\\\":{\\\"draft\\\":{\\\"items\\\":[{\\\"type\\\":\\\"Peça\\\",\\\"name\\\":\\\"IGBT\\\",\\\"quantity\\\":3,\\\"unit\\\":1000,\\\"lineId\\\":1,\\\"stockSku\\\":\\\"P-001\\\",\\\"stockCost\\\":450},{\\\"lineId\\\":2,\\\"type\\\":\\\"Peça\\\",\\\"name\\\":\\\"Inválida\\\",\\\"quantity\\\":0,\\\"unit\\\":1}],\\\"discount\\\":0,\\\"terms\\\":{\\\"payment\\\":\\\"\\\",\\\"deadline\\\":\\\"\\\",\\\"warranty\\\":\\\"\\\",\\\"diagnosis\\\":\\\"\\\"}},\\\"versions\\\":[],\\\"current\\\":null,\\\"active\\\":false,\\\"nextLineId\\\":3},\\\"approval\\\":\\\"Rascunho\\\",\\\"proposal\\\":3000,\\\"cancellation\\\":{\\\"events\\\":[{\\\"id\\\":1,\\\"type\\\":\\\"request\\\",\\\"when\\\":\\\"2026-11-26T12:00:00Z\\\",\\\"origin\\\":\\\"cliente\\\",\\\"reason\\\":\\\"Pedido\\\",\\\"status\\\":\\\"Aberto\\\"}]}},\\\"stock\\\":[{\\\"sku\\\":\\\"P-001\\\",\\\"name\\\":\\\"IGBT\\\",\\\"quantity\\\":5,\\\"min\\\":0,\\\"cost\\\":450,\\\"movements\\\":[{\\\"id\\\":1,\\\"sku\\\":\\\"P-001\\\",\\\"type\\\":\\\"os_saida\\\",\\\"quantity\\\":-3,\\\"before\\\":8,\\\"after\\\":5,\\\"cost\\\":450,\\\"reason\\\":\\\"Inclusão de peça na OS\\\",\\\"when\\\":\\\"2026-11-26T12:00:00Z\\\",\\\"actor\\\":\\\"Administrador\\\",\\\"osId\\\":1,\\\"lineId\\\":1}]}]}\""
+  },
+  {
+    "name": "R5 sibling non-integer unit",
+    "status": "FAIL",
+    "detail": "R5: state changed on rejection: \"{\\\"o\\\":{\\\"id\\\":1,\\\"status\\\":\\\"Aberto\\\",\\\"entry\\\":\\\"2026-11-25\\\",\\\"total\\\":0,\\\"paid\\\":0,\\\"history\\\":[],\\\"quote\\\":{\\\"draft\\\":{\\\"items\\\":[{\\\"type\\\":\\\"Peça\\\",\\\"name\\\":\\\"IGBT\\\",\\\"quantity\\\":2,\\\"unit\\\":1000,\\\"lineId\\\":1,\\\"stockSku\\\":\\\"P-001\\\",\\\"stockCost\\\":450},{\\\"lineId\\\":2,\\\"type\\\":\\\"Peça\\\",\\\"name\\\":\\\"Inválida\\\",\\\"quantity\\\":1,\\\"unit\\\":1.5}],\\\"discount\\\":0,\\\"terms\\\":{\\\"payment\\\":\\\"\\\",\\\"deadline\\\":\\\"\\\",\\\"warranty\\\":\\\"\\\",\\\"diagnosis\\\":\\\"\\\"}},\\\"versions\\\":[],\\\"current\\\":null,\\\"active\\\":false,\\\"nextLineId\\\":3},\\\"approval\\\":\\\"Rascunho\\\",\\\"proposal\\\":3000,\\\"cancellation\\\":{\\\"events\\\":[{\\\"id\\\":1,\\\"type\\\":\\\"request\\\",\\\"when\\\":\\\"2026-11-26T12:00:00Z\\\",\\\"origin\\\":\\\"cliente\\\",\\\"reason\\\":\\\"Pedido\\\",\\\"status\\\":\\\"Aberto\\\"}]}},\\\"stock\\\":[{\\\"sku\\\":\\\"P-001\\\",\\\"name\\\":\\\"IGBT\\\",\\\"quantity\\\":5,\\\"min\\\":0,\\\"cost\\\":450,\\\"movements\\\":[{\\\"id\\\":1,\\\"sku\\\":\\\"P-001\\\",\\\"type\\\":\\\"os_saida\\\",\\\"quantity\\\":-3,\\\"before\\\":8,\\\"after\\\":5,\\\"cost\\\":450,\\\"reason\\\":\\\"Inclusão de peça na OS\\\",\\\"when\\\":\\\"2026-11-26T12:00:00Z\\\",\\\"actor\\\":\\\"Administrador\\\",\\\"osId\\\":1,\\\"lineId\\\":1}]}]}\" != \"{\\\"o\\\":{\\\"id\\\":1,\\\"status\\\":\\\"Aberto\\\",\\\"entry\\\":\\\"2026-11-25\\\",\\\"total\\\":0,\\\"paid\\\":0,\\\"history\\\":[],\\\"quote\\\":{\\\"draft\\\":{\\\"items\\\":[{\\\"type\\\":\\\"Peça\\\",\\\"name\\\":\\\"IGBT\\\",\\\"quantity\\\":3,\\\"unit\\\":1000,\\\"lineId\\\":1,\\\"stockSku\\\":\\\"P-001\\\",\\\"stockCost\\\":450},{\\\"lineId\\\":2,\\\"type\\\":\\\"Peça\\\",\\\"name\\\":\\\"Inválida\\\",\\\"quantity\\\":1,\\\"unit\\\":1.5}],\\\"discount\\\":0,\\\"terms\\\":{\\\"payment\\\":\\\"\\\",\\\"deadline\\\":\\\"\\\",\\\"warranty\\\":\\\"\\\",\\\"diagnosis\\\":\\\"\\\"}},\\\"versions\\\":[],\\\"current\\\":null,\\\"active\\\":false,\\\"nextLineId\\\":3},\\\"approval\\\":\\\"Rascunho\\\",\\\"proposal\\\":3000,\\\"cancellation\\\":{\\\"events\\\":[{\\\"id\\\":1,\\\"type\\\":\\\"request\\\",\\\"when\\\":\\\"2026-11-26T12:00:00Z\\\",\\\"origin\\\":\\\"cliente\\\",\\\"reason\\\":\\\"Pedido\\\",\\\"status\\\":\\\"Aberto\\\"}]}},\\\"stock\\\":[{\\\"sku\\\":\\\"P-001\\\",\\\"name\\\":\\\"IGBT\\\",\\\"quantity\\\":5,\\\"min\\\":0,\\\"cost\\\":450,\\\"movements\\\":[{\\\"id\\\":1,\\\"sku\\\":\\\"P-001\\\",\\\"type\\\":\\\"os_saida\\\",\\\"quantity\\\":-3,\\\"before\\\":8,\\\"after\\\":5,\\\"cost\\\":450,\\\"reason\\\":\\\"Inclusão de peça na OS\\\",\\\"when\\\":\\\"2026-11-26T12:00:00Z\\\",\\\"actor\\\":\\\"Administrador\\\",\\\"osId\\\":1,\\\"lineId\\\":1}]}]}\""
+  },
+  {
+    "name": "R6 sibling gross overflow",
+    "status": "FAIL",
+    "detail": "R6: state changed on rejection: \"{\\\"o\\\":{\\\"id\\\":1,\\\"status\\\":\\\"Aberto\\\",\\\"entry\\\":\\\"2026-11-25\\\",\\\"total\\\":0,\\\"paid\\\":0,\\\"history\\\":[],\\\"quote\\\":{\\\"draft\\\":{\\\"items\\\":[{\\\"type\\\":\\\"Peça\\\",\\\"name\\\":\\\"IGBT\\\",\\\"quantity\\\":2,\\\"unit\\\":1000,\\\"lineId\\\":1,\\\"stockSku\\\":\\\"P-001\\\",\\\"stockCost\\\":450},{\\\"lineId\\\":2,\\\"type\\\":\\\"Peça\\\",\\\"name\\\":\\\"Inválida\\\",\\\"quantity\\\":10000,\\\"unit\\\":999999999}],\\\"discount\\\":0,\\\"terms\\\":{\\\"payment\\\":\\\"\\\",\\\"deadline\\\":\\\"\\\",\\\"warranty\\\":\\\"\\\",\\\"diagnosis\\\":\\\"\\\"}},\\\"versions\\\":[],\\\"current\\\":null,\\\"active\\\":false,\\\"nextLineId\\\":3},\\\"approval\\\":\\\"Rascunho\\\",\\\"proposal\\\":3000,\\\"cancellation\\\":{\\\"events\\\":[{\\\"id\\\":1,\\\"type\\\":\\\"request\\\",\\\"when\\\":\\\"2026-11-26T12:00:00Z\\\",\\\"origin\\\":\\\"cliente\\\",\\\"reason\\\":\\\"Pedido\\\",\\\"status\\\":\\\"Aberto\\\"}]}},\\\"stock\\\":[{\\\"sku\\\":\\\"P-001\\\",\\\"name\\\":\\\"IGBT\\\",\\\"quantity\\\":5,\\\"min\\\":0,\\\"cost\\\":450,\\\"movements\\\":[{\\\"id\\\":1,\\\"sku\\\":\\\"P-001\\\",\\\"type\\\":\\\"os_saida\\\",\\\"quantity\\\":-3,\\\"before\\\":8,\\\"after\\\":5,\\\"cost\\\":450,\\\"reason\\\":\\\"Inclusão de peça na OS\\\",\\\"when\\\":\\\"2026-11-26T12:00:00Z\\\",\\\"actor\\\":\\\"Administrador\\\",\\\"osId\\\":1,\\\"lineId\\\":1}]}]}\" != \"{\\\"o\\\":{\\\"id\\\":1,\\\"status\\\":\\\"Aberto\\\",\\\"entry\\\":\\\"2026-11-25\\\",\\\"total\\\":0,\\\"paid\\\":0,\\\"history\\\":[],\\\"quote\\\":{\\\"draft\\\":{\\\"items\\\":[{\\\"type\\\":\\\"Peça\\\",\\\"name\\\":\\\"IGBT\\\",\\\"quantity\\\":3,\\\"unit\\\":1000,\\\"lineId\\\":1,\\\"stockSku\\\":\\\"P-001\\\",\\\"stockCost\\\":450},{\\\"lineId\\\":2,\\\"type\\\":\\\"Peça\\\",\\\"name\\\":\\\"Inválida\\\",\\\"quantity\\\":10000,\\\"unit\\\":999999999}],\\\"discount\\\":0,\\\"terms\\\":{\\\"payment\\\":\\\"\\\",\\\"deadline\\\":\\\"\\\",\\\"warranty\\\":\\\"\\\",\\\"diagnosis\\\":\\\"\\\"}},\\\"versions\\\":[],\\\"current\\\":null,\\\"active\\\":false,\\\"nextLineId\\\":3},\\\"approval\\\":\\\"Rascunho\\\",\\\"proposal\\\":3000,\\\"cancellation\\\":{\\\"events\\\":[{\\\"id\\\":1,\\\"type\\\":\\\"request\\\",\\\"when\\\":\\\"2026-11-26T12:00:00Z\\\",\\\"origin\\\":\\\"cliente\\\",\\\"reason\\\":\\\"Pedido\\\",\\\"status\\\":\\\"Aberto\\\"}]}},\\\"stock\\\":[{\\\"sku\\\":\\\"P-001\\\",\\\"name\\\":\\\"IGBT\\\",\\\"quantity\\\":5,\\\"min\\\":0,\\\"cost\\\":450,\\\"movements\\\":[{\\\"id\\\":1,\\\"sku\\\":\\\"P-001\\\",\\\"type\\\":\\\"os_saida\\\",\\\"quantity\\\":-3,\\\"before\\\":8,\\\"after\\\":5,\\\"cost\\\":450,\\\"reason\\\":\\\"Inclusão de peça na OS\\\",\\\"when\\\":\\\"2026-11-26T12:00:00Z\\\",\\\"actor\\\":\\\"Administrador\\\",\\\"osId\\\":1,\\\"lineId\\\":1}]}]}\""
+  },
+  {
+    "name": "R7 sibling missing type",
+    "status": "FAIL",
+    "detail": "R7: state changed on rejection: \"{\\\"o\\\":{\\\"id\\\":1,\\\"status\\\":\\\"Aberto\\\",\\\"entry\\\":\\\"2026-11-25\\\",\\\"total\\\":0,\\\"paid\\\":0,\\\"history\\\":[],\\\"quote\\\":{\\\"draft\\\":{\\\"items\\\":[{\\\"type\\\":\\\"Peça\\\",\\\"name\\\":\\\"IGBT\\\",\\\"quantity\\\":2,\\\"unit\\\":1000,\\\"lineId\\\":1,\\\"stockSku\\\":\\\"P-001\\\",\\\"stockCost\\\":450},{\\\"lineId\\\":2,\\\"name\\\":\\\"Inválida\\\",\\\"quantity\\\":1,\\\"unit\\\":1}],\\\"discount\\\":0,\\\"terms\\\":{\\\"payment\\\":\\\"\\\",\\\"deadline\\\":\\\"\\\",\\\"warranty\\\":\\\"\\\",\\\"diagnosis\\\":\\\"\\\"}},\\\"versions\\\":[],\\\"current\\\":null,\\\"active\\\":false,\\\"nextLineId\\\":3},\\\"approval\\\":\\\"Rascunho\\\",\\\"proposal\\\":3000,\\\"cancellation\\\":{\\\"events\\\":[{\\\"id\\\":1,\\\"type\\\":\\\"request\\\",\\\"when\\\":\\\"2026-11-26T12:00:00Z\\\",\\\"origin\\\":\\\"cliente\\\",\\\"reason\\\":\\\"Pedido\\\",\\\"status\\\":\\\"Aberto\\\"}]}},\\\"stock\\\":[{\\\"sku\\\":\\\"P-001\\\",\\\"name\\\":\\\"IGBT\\\",\\\"quantity\\\":5,\\\"min\\\":0,\\\"cost\\\":450,\\\"movements\\\":[{\\\"id\\\":1,\\\"sku\\\":\\\"P-001\\\",\\\"type\\\":\\\"os_saida\\\",\\\"quantity\\\":-3,\\\"before\\\":8,\\\"after\\\":5,\\\"cost\\\":450,\\\"reason\\\":\\\"Inclusão de peça na OS\\\",\\\"when\\\":\\\"2026-11-26T12:00:00Z\\\",\\\"actor\\\":\\\"Administrador\\\",\\\"osId\\\":1,\\\"lineId\\\":1}]}]}\" != \"{\\\"o\\\":{\\\"id\\\":1,\\\"status\\\":\\\"Aberto\\\",\\\"entry\\\":\\\"2026-11-25\\\",\\\"total\\\":0,\\\"paid\\\":0,\\\"history\\\":[],\\\"quote\\\":{\\\"draft\\\":{\\\"items\\\":[{\\\"type\\\":\\\"Peça\\\",\\\"name\\\":\\\"IGBT\\\",\\\"quantity\\\":3,\\\"unit\\\":1000,\\\"lineId\\\":1,\\\"stockSku\\\":\\\"P-001\\\",\\\"stockCost\\\":450},{\\\"lineId\\\":2,\\\"name\\\":\\\"Inválida\\\",\\\"quantity\\\":1,\\\"unit\\\":1}],\\\"discount\\\":0,\\\"terms\\\":{\\\"payment\\\":\\\"\\\",\\\"deadline\\\":\\\"\\\",\\\"warranty\\\":\\\"\\\",\\\"diagnosis\\\":\\\"\\\"}},\\\"versions\\\":[],\\\"current\\\":null,\\\"active\\\":false,\\\"nextLineId\\\":3},\\\"approval\\\":\\\"Rascunho\\\",\\\"proposal\\\":3000,\\\"cancellation\\\":{\\\"events\\\":[{\\\"id\\\":1,\\\"type\\\":\\\"request\\\",\\\"when\\\":\\\"2026-11-26T12:00:00Z\\\",\\\"origin\\\":\\\"cliente\\\",\\\"reason\\\":\\\"Pedido\\\",\\\"status\\\":\\\"Aberto\\\"}]}},\\\"stock\\\":[{\\\"sku\\\":\\\"P-001\\\",\\\"name\\\":\\\"IGBT\\\",\\\"quantity\\\":5,\\\"min\\\":0,\\\"cost\\\":450,\\\"movements\\\":[{\\\"id\\\":1,\\\"sku\\\":\\\"P-001\\\",\\\"type\\\":\\\"os_saida\\\",\\\"quantity\\\":-3,\\\"before\\\":8,\\\"after\\\":5,\\\"cost\\\":450,\\\"reason\\\":\\\"Inclusão de peça na OS\\\",\\\"when\\\":\\\"2026-11-26T12:00:00Z\\\",\\\"actor\\\":\\\"Administrador\\\",\\\"osId\\\":1,\\\"lineId\\\":1}]}]}\""
+  },
+  {
+    "name": "R8 malformed legacy discount string with remaining rows",
+    "status": "FAIL",
+    "detail": "R8: state changed on rejection: \"{\\\"o\\\":{\\\"id\\\":1,\\\"status\\\":\\\"Aberto\\\",\\\"entry\\\":\\\"2026-11-25\\\",\\\"total\\\":1000,\\\"paid\\\":0,\\\"history\\\":[],\\\"quote\\\":{\\\"draft\\\":{\\\"items\\\":[{\\\"type\\\":\\\"Serviço\\\",\\\"name\\\":\\\"B\\\",\\\"quantity\\\":1,\\\"unit\\\":500,\\\"lineId\\\":2}],\\\"discount\\\":null,\\\"terms\\\":{}},\\\"versions\\\":[],\\\"current\\\":null,\\\"active\\\":false,\\\"nextLineId\\\":3},\\\"cancellation\\\":{\\\"events\\\":[{\\\"id\\\":1,\\\"type\\\":\\\"request\\\",\\\"when\\\":\\\"2026-11-26T12:00:00Z\\\",\\\"origin\\\":\\\"cliente\\\",\\\"reason\\\":\\\"Pedido\\\",\\\"status\\\":\\\"Aberto\\\"}]},\\\"approval\\\":\\\"Rascunho\\\"},\\\"stock\\\":[]}\" != \"{\\\"o\\\":{\\\"id\\\":1,\\\"status\\\":\\\"Aberto\\\",\\\"entry\\\":\\\"2026-11-25\\\",\\\"total\\\":1000,\\\"paid\\\":0,\\\"history\\\":[],\\\"quote\\\":{\\\"draft\\\":{\\\"items\\\":[{\\\"type\\\":\\\"Serviço\\\",\\\"name\\\":\\\"A\\\",\\\"quantity\\\":1,\\\"unit\\\":500,\\\"lineId\\\":1},{\\\"type\\\":\\\"Serviço\\\",\\\"name\\\":\\\"B\\\",\\\"quantity\\\":1,\\\"unit\\\":500,\\\"lineId\\\":2}],\\\"discount\\\":\\\"x\\\",\\\"terms\\\":{}},\\\"versions\\\":[],\\\"current\\\":null,\\\"active\\\":false,\\\"nextLineId\\\":3},\\\"cancellation\\\":{\\\"events\\\":[{\\\"id\\\":1,\\\"type\\\":\\\"request\\\",\\\"when\\\":\\\"2026-11-26T12:00:00Z\\\",\\\"origin\\\":\\\"cliente\\\",\\\"reason\\\":\\\"Pedido\\\",\\\"status\\\":\\\"Aberto\\\"}]}},\\\"stock\\\":[]}\""
+  },
+  {
+    "name": "R9 draft.items not an array: atomic but TypeError",
+    "status": "PASS",
+    "detail": "TypeError \"q.draft.items.filter is not a function\"; state identical (non-domain error message)"
+  },
+  {
+    "name": "R10 duplicate SKU in catalog",
+    "status": "PASS",
+    "detail": "exact \"Produto inexistente ou duplicado.\"; full {o,stock} identical"
+  },
+  {
+    "name": "R11 malformed ledger sign",
+    "status": "PASS",
+    "detail": "exact \"Histórico de baixa inválido.\"; full {o,stock} identical"
+  },
+  {
+    "name": "R12 stale item key",
+    "status": "PASS",
+    "detail": "exact \"O item ou pedido mudou. Reabra a conferência.\"; full {o,stock} identical"
+  },
+  {
+    "name": "R13 invalid quantity",
+    "status": "PASS",
+    "detail": "exact \"Quantidade inválida.\"; full {o,stock} identical"
+  },
+  {
+    "name": "R14 invalid disposition",
+    "status": "PASS",
+    "detail": "exact \"Destino inválido para este item.\"; full {o,stock} identical"
+  },
+  {
+    "name": "S1 partial linked removal: references, stock, ledger, history",
+    "status": "PASS",
+    "detail": "same quote/draft/items/item refs; stock 6; balance 2; one os_devolucao + history event"
+  },
+  {
+    "name": "S2 full linked removal returns full proof",
+    "status": "PASS",
+    "detail": "line removed in place; stock 8; balance 0; return 3"
+  },
+  {
+    "name": "S3 full manual removal keeps surviving sibling references",
+    "status": "PASS",
+    "detail": "B/C same objects; A gone; proposal 500"
+  },
+  {
+    "name": "S4 discount clamp with obligation",
+    "status": "PASS",
+    "detail": "discount min(2500,2000)=2000; total unchanged"
+  },
+  {
+    "name": "S5 same SKU on two lines: ledger scoped per line",
+    "status": "PASS",
+    "detail": "line1 return did not consume line2 proof; final stock 8"
+  },
+  {
+    "name": "S6 lost consumption never increases stock",
+    "status": "PASS",
+    "detail": "stock 5; os_consumo 2; balance 1; cost kept"
+  },
+  {
+    "name": "S7 foreign OS movement is not proof and creates no movement",
+    "status": "PASS",
+    "detail": "no return, no movement, stock 5, note explicit"
+  },
+  {
+    "name": "S8 partial proof reconciles without return",
+    "status": "PASS",
+    "detail": "os_conciliacao 1; stock 5; balance 0"
+  },
+  {
+    "name": "P1 JSON-copy divergence: apply happens before sync(o) throws",
+    "status": "FAIL",
+    "detail": "eq: \"O item ou pedido mudou. Reabra a conferência.\" != \"Quantidade ou valor inválido.\""
+  },
+  {
+    "name": "P2 frozen cancellation.events: add() throws after OS write",
+    "status": "PASS",
+    "detail": "OBSERVED: line removed, add() threw \"Cannot add property 1, object is not extensible\"; no rollback (synthetic frozen array)"
+  },
+  {
+    "name": "P3 frozen stock movements: commit() throws after OS+stock writes",
+    "status": "PASS",
+    "detail": "OBSERVED: OS line 2, stock quantity 6, but ledger still 1 movement and no history; commit() threw \"Cannot add property 1, object is not extensible\" (synthetic frozen array)"
+  }
+]

@@ -1,0 +1,401 @@
+{
+  "generatedAt": "2026-11-27T01:21:25.989Z",
+  "codeSha": "uncommitted-9a6159d927b92f78a76688b4680280062297d7887f8fc909c270d402979637f3",
+  "baseUrl": "http://127.0.0.1:18130",
+  "total": 65,
+  "summary": {
+    "PASS": 65
+  },
+  "results": [
+    {
+      "id": "R07-S1-01",
+      "desc": "Origem #020 finalizada mostra garantia, conclusão e ação de retorno",
+      "status": "PASS",
+      "detail": "{\"hasGarantia\":true,\"hasConclusao\":true,\"links\":1}"
+    },
+    {
+      "id": "R07-S1-02",
+      "desc": "Formulário de retorno traz origem, prazo, defeito obrigatório e opcionais, sem seletor de cliente",
+      "status": "PASS",
+      "detail": "{\"origin\":\"20\",\"fields\":[\"defect\",\"items\",\"condition\",\"confirm\",\"\"],\"hasClient\":false,\"hasMode\":false,\"confirm\":true,\"scope\":\"#020 · Midea · Xtreme Save\\n\\nClima Sul Serviços\\n\\nRetorno começa em avaliação, sem cobrança e sem reiniciar a garantia original.\\n\\nPrazo original: 22/02/2027 · Dentro do prazo\"}"
+    },
+    {
+      "id": "R07-S1-03",
+      "desc": "Sem confirmação o retorno não é criado e o envio é barrado",
+      "status": "PASS",
+      "detail": "{\"n0\":8,\"n1\":8,\"st\":{\"hash\":\"#retorno/20\",\"toast\":\"\"},\"blockedConfirm\":{\"valid\":false,\"missing\":true}}"
+    },
+    {
+      "id": "R07-S1-04",
+      "desc": "Defeito vazio é barrado pela validação nativa do formulário",
+      "status": "PASS",
+      "detail": "{\"valid\":false,\"defect\":true}"
+    },
+    {
+      "id": "R07-S1-05",
+      "desc": "Retorno criado preserva origem e não copia financeiro, laudo, anexos, token ou orçamento",
+      "status": "PASS",
+      "detail": "{\"created\":{\"id\":25,\"status\":\"Aberto\",\"origin\":20,\"unit\":20,\"client\":1,\"brand\":\"Midea\",\"model\":\"Xtreme Save\",\"total\":0,\"paid\":0,\"approval\":\"Sem orçamento\",\"conclusion\":null,\"warrantyDays\":0,\"defect\":\"Placa voltou a falhar após o reparo.\",\"items\":\"Cabo de força\",\"condition\":\"Embalagem amassada\",\"report\":null,\"publicLink\":null,\"quote\":null,\"delivery\":null,\"warranty\":{\"root\":20,\"previous\":20,\"unit\":20,\"client\":1,\"conclusion\":\"2026-11-24\",\"days\":90,\"end\":\"2027-02-22\",\"events\":[],\"operations\":[]},\"history\":[{\"time\":\"2026-11-27T01:19:06.418Z\",\"text\":\"Retorno registrado; origem preservada\"}]},\"unchanged\":true}"
+    },
+    {
+      "id": "R07-S1-06",
+      "desc": "Origem passa a apontar para o retorno em andamento",
+      "status": "PASS",
+      "detail": "[\"Abrir retorno em andamento #025\"]"
+    },
+    {
+      "id": "R07-S1-07",
+      "desc": "Segunda entrada pela origem é bloqueada com link para o retorno ativo",
+      "status": "PASS",
+      "detail": "GARANTIA\nRetorno em andamento\n\nA unidade já tem um atendimento aberto.\n\nAbrir retorno #025"
+    },
+    {
+      "id": "R07-S1-08",
+      "desc": "URL direta de retorno inexistente não abre formulário",
+      "status": "PASS",
+      "detail": ""
+    },
+    {
+      "id": "R07-S1-09",
+      "desc": "Origem sem conclusão não permite retorno",
+      "status": "PASS",
+      "detail": "GARANTIA\nRetorno indisponível\n\nIdentifique a unidade e registre a conclusão real da origem.\n\nVoltar"
+    },
+    {
+      "id": "R07-S1-14",
+      "desc": "Unidade sem marca/modelo não permite retorno",
+      "status": "PASS",
+      "detail": "GARANTIA\nRetorno indisponível\n\nIdentifique a unidade e registre a conclusão real da origem.\n\nVoltar"
+    },
+    {
+      "id": "R07-S1-10",
+      "desc": "Retorno de origem entregue e com link não herda token, laudo nem dados financeiros",
+      "status": "PASS",
+      "detail": "{\"link19\":true,\"created\":30,\"publicLink\":null,\"report\":null}"
+    },
+    {
+      "id": "R07-S1-11",
+      "desc": "Prazo vencido é exibido e não presume cobertura automática",
+      "status": "PASS",
+      "detail": "{\"exp\":{\"root\":27,\"previous\":27,\"unit\":27,\"client\":1,\"conclusion\":\"2020-01-01\",\"days\":90,\"end\":\"2020-03-31\"},\"coverage\":\"Em avaliação\",\"end\":\"2020-03-31\"}"
+    },
+    {
+      "id": "R07-S1-12",
+      "desc": "Prazo desconhecido mostra não informado e não inventa vencimento",
+      "status": "PASS",
+      "detail": "{\"days\":null,\"end\":null}"
+    },
+    {
+      "id": "R07-S1-13",
+      "desc": "Sem erros de página ou console no fluxo de entrada",
+      "status": "PASS",
+      "detail": "{\"errors\":[],\"consoleErrors\":[]}"
+    },
+    {
+      "id": "R07-S2-01",
+      "desc": "Duas abas: a segunda gravação é bloqueada e não duplica o retorno",
+      "status": "PASS",
+      "detail": "{\"n0\":8,\"n1\":9,\"n2\":9,\"ids\":[25],\"stB\":\"Dados alterados em outra aba. Reabra a operação para evitar sobrescrever a atualização.\"}"
+    },
+    {
+      "id": "R07-S2-02",
+      "desc": "Duas abas: nenhuma exceção de página",
+      "status": "PASS",
+      "detail": "{\"errors\":[],\"errsB\":[],\"consoleErrors\":[]}"
+    },
+    {
+      "id": "R07-S3-01",
+      "desc": "Origem #016 com #018 ativo exibe vínculo e impede novo retorno",
+      "status": "PASS",
+      "detail": "{\"text\":\"aikin\\nModelo\\nEcoSwing\\nSelo\\nNão informado\\nSérie\\nNão informado\\nIMEI\\nNão informado\\nCliente\\nNome\\nRefrigeração Horizonte\\nContato\\n(45) 90000-0103\\nGarantia\\n\\nConclusão em 17/11/2026\\n\\n15/02/2027 · Dentro do prazo\\n\\nVer garantia e retornos\\nAbrir retorno em andamento #018\"}"
+    },
+    {
+      "id": "R07-S3-02",
+      "desc": "Retorno legado #018 resolve vínculo com #016 sem inventar dados",
+      "status": "PASS",
+      "detail": "{\"root\":16,\"previous\":16,\"unit\":16,\"client\":3,\"conclusion\":\"2026-11-17\",\"days\":90,\"end\":\"2027-02-15\",\"events\":[],\"operations\":[]}"
+    },
+    {
+      "id": "R07-S3-03",
+      "desc": "Avaliação sem cobertura concluída não escolhe solução",
+      "status": "PASS",
+      "detail": "{\"opened\":true,\"previous\":\"0\",\"open\":true,\"error\":\"Conclua a avaliação de cobertura antes de escolher a solução.\",\"toast\":\"\"}"
+    },
+    {
+      "id": "R07-S3-04",
+      "desc": "Diagnóstico é obrigatório quando a cobertura é concluída",
+      "status": "PASS",
+      "detail": "{\"opened\":true,\"previous\":\"0\",\"open\":true,\"error\":\"Confira os textos obrigatórios e seus limites.\",\"toast\":\"\"}"
+    },
+    {
+      "id": "R07-S3-05",
+      "desc": "Avaliação registrada não muda andamento, cobrança, entrega nem histórico financeiro",
+      "status": "PASS",
+      "detail": "{\"events\":1,\"coverage\":\"Coberto\",\"status\":\"Aberto\",\"total\":0,\"paid\":0,\"delivery\":null}"
+    },
+    {
+      "id": "R07-S3-06",
+      "desc": "Avaliação com versão anterior obsoleta é recusada e não altera o histórico",
+      "status": "PASS",
+      "detail": "{\"opened\":true,\"previous\":\"0\",\"open\":true,\"error\":\"Outra avaliação foi registrada. Recarregue antes de decidir.\",\"toast\":\"Registro atualizado na demonstração.\"}"
+    },
+    {
+      "id": "R07-S3-07",
+      "desc": "Revisão cria novo evento e preserva o anterior imutável",
+      "status": "PASS",
+      "detail": "[{\"id\":1,\"type\":\"avaliar\",\"coverage\":\"coberto\",\"solution\":\"reparo_sem_cobranca\",\"diagnosis\":\"Falha do reparo original.\",\"reason\":\"Conferido na bancada.\",\"when\":\"2026-11-27T01:19:35.017Z\",\"actor\":\"Administrador\"},{\"id\":2,\"type\":\"avaliar\",\"coverage\":\"nao_coberto\",\"solution\":\"novo_orcamento\",\"diagnosis\":\"Falha nova fora da cobertura.\",\"reason\":\"Revisão da decisão.\",\"when\":\"2026-11-27T01:19:36.837Z\",\"actor\":\"Administrador\"}]"
+    },
+    {
+      "id": "R07-S3-08",
+      "desc": "Duas abas na avaliação: segunda gravação bloqueada, sem evento extra",
+      "status": "PASS",
+      "detail": "{\"toast\":\"Dados alterados em outra aba. Reabra a operação para evitar sobrescrever a atualização.\",\"events\":3}"
+    },
+    {
+      "id": "R07-S3-09",
+      "desc": "Concluir reparo sem cobrança grava conclusão e não concede nova garantia",
+      "status": "PASS",
+      "detail": "{\"status\":\"Finalizado\",\"conclusion\":\"2026-11-26\",\"total\":0,\"paid\":0,\"days\":0,\"st\":{\"opened\":true,\"open\":false,\"error\":\"\",\"toast\":\"Registro atualizado na demonstração.\"}}"
+    },
+    {
+      "id": "R07-S3-10a",
+      "desc": "Origem com retorno finalizado aponta para o atendimento anterior, não cria irmão",
+      "status": "PASS",
+      "detail": "{\"link16\":[\"#retorno/18\"],\"formBase\":\"18\"}"
+    },
+    {
+      "id": "R07-S3-10b",
+      "desc": "OS ordinária ativa da mesma unidade não oferece nem abre retorno",
+      "status": "PASS",
+      "detail": "{\"ordId\":25,\"ordLinks\":[],\"ordForm\":0}"
+    },
+    {
+      "id": "R07-S3-10",
+      "desc": "Segundo retorno herda raiz e prazo original e preserva o anterior",
+      "status": "PASS",
+      "detail": "{\"idSecond\":26,\"origin\":16,\"warranty\":{\"root\":16,\"previous\":18,\"unit\":16,\"client\":3,\"conclusion\":\"2026-11-17\",\"days\":90,\"end\":\"2027-02-15\",\"events\":[],\"operations\":[]},\"rootEnd\":\"2027-02-15\",\"st\":{\"hash\":\"#os/26\",\"toast\":\"OS #026 criada\"}}"
+    },
+    {
+      "id": "R07-S3-11",
+      "desc": "Retorno sem avaliação pode concluir e continua sem cobertura presumida",
+      "status": "PASS",
+      "detail": "{\"status\":\"Finalizado\",\"coverage\":\"Em avaliação\",\"events\":0}"
+    },
+    {
+      "id": "R07-S3-12a",
+      "desc": "Retorno anterior com irmão ativo não reabre e mantém um único ativo",
+      "status": "PASS",
+      "detail": "{\"sib\":{\"opened\":true,\"open\":true,\"error\":\"Esta OS já originou retorno. Preserve o atendimento encerrado e use a nova OS.\",\"toast\":\"\"},\"activeNow\":[27]}"
+    },
+    {
+      "id": "R07-S3-12",
+      "desc": "Origem sem entrega com retorno derivado não reabre",
+      "status": "PASS",
+      "detail": "{\"opened\":true,\"open\":true,\"error\":\"Esta OS já originou retorno. Preserve o atendimento encerrado e use a nova OS.\",\"toast\":\"\"}"
+    },
+    {
+      "id": "R07-S3-13",
+      "desc": "Sem erros de página ou console no ciclo de avaliação",
+      "status": "PASS",
+      "detail": "{\"errors\":[],\"errsB\":[],\"consoleErrors\":[]}"
+    },
+    {
+      "id": "R07-S4-01",
+      "desc": "Concluir retorno com troca pendente é bloqueado antes de qualquer mutação",
+      "status": "PASS",
+      "detail": "{\"opened\":true,\"open\":true,\"error\":\"Execute a solução de garantia escolhida antes de concluir o retorno.\",\"toast\":\"Registro atualizado na demonstração.\"}"
+    },
+    {
+      "id": "R07-S4-02",
+      "desc": "Concluir retorno com devolução pendente é bloqueado",
+      "status": "PASS",
+      "detail": "{\"opened\":true,\"open\":true,\"error\":\"Execute a solução de garantia escolhida antes de concluir o retorno.\",\"toast\":\"Registro atualizado na demonstração.\"}"
+    },
+    {
+      "id": "R07-S4-03",
+      "desc": "Origem entregue com derivado não reabre",
+      "status": "PASS",
+      "detail": "{\"opened\":true,\"open\":true,\"error\":\"Esta OS já originou retorno. Preserve o atendimento encerrado e use a nova OS.\",\"toast\":\"Registro atualizado na demonstração.\"}"
+    },
+    {
+      "id": "R07-S4-04",
+      "desc": "OS ordinária pede prazo antes da conclusão e o preserva depois",
+      "status": "PASS",
+      "detail": "{\"hasField\":1,\"days\":180,\"conclusion\":\"2026-11-26\",\"hasAfter\":0,\"after\":{\"days\":180,\"conclusion\":\"2026-11-26\"},\"st\":{\"opened\":true,\"open\":false,\"error\":\"\",\"toast\":\"Registro atualizado na demonstração.\"}}"
+    },
+    {
+      "id": "R07-S4-05",
+      "desc": "Sem erros de página ou console nos bloqueios",
+      "status": "PASS",
+      "detail": "{\"errors\":[],\"consoleErrors\":[]}"
+    },
+    {
+      "id": "R07-S5-01",
+      "desc": "Admin vê custos privados e ação de registrar",
+      "status": "PASS",
+      "detail": "stoque.\n\nRegistrar custo\nHistórico privado da garantia\n\nNenhuma avaliação registrada.\n\nAtendimentos da unidade\nDaikin · EcoSwing\nRefrigeração Horizonte\n#018\nAberto\nNão entregue\nSem cobrança\n21/11/2026"
+    },
+    {
+      "id": "R07-S5-02",
+      "desc": "Custo 25,50 e 30 min é registrado sem caixa nem estoque",
+      "status": "PASS",
+      "detail": "{\"c\":{\"amount\":2550,\"minutes\":30},\"ledgerAfter\":\"null\",\"stock\":[{\"name\":\"IGBT 650 V\",\"quantity\":8},{\"name\":\"Optoacoplador PC817\",\"quantity\":3},{\"name\":\"Capacitor 450 V\",\"quantity\":16}]}"
+    },
+    {
+      "id": "R07-S5-03",
+      "desc": "Zero reais com tempo válido é aceito",
+      "status": "PASS",
+      "detail": "{\"c\":{\"amount\":2550,\"minutes\":60},\"r\":{\"opened\":true,\"open\":false,\"error\":\"\",\"toast\":\"Registro atualizado na demonstração.\"}}"
+    },
+    {
+      "id": "R07-S5-04",
+      "desc": "Custo e tempo zerados são rejeitados com mensagem específica",
+      "status": "PASS",
+      "detail": "{\"opened\":true,\"open\":true,\"error\":\"Informe custo interno ou tempo de trabalho válido.\",\"toast\":\"Registro atualizado na demonstração.\"}"
+    },
+    {
+      "id": "R07-S5-05",
+      "desc": "Valor acima do limite é rejeitado no formulário e no handler",
+      "status": "PASS",
+      "detail": "{\"r\":{\"opened\":true,\"open\":true,\"error\":\"\",\"toast\":\"Registro atualizado na demonstração.\"},\"domLimit\":\"Informe custo interno ou tempo de trabalho válido.\"}"
+    },
+    {
+      "id": "R07-S5-06",
+      "desc": "Tempo acima do limite é rejeitado no formulário e no handler",
+      "status": "PASS",
+      "detail": "{\"r\":{\"opened\":true,\"open\":true,\"error\":\"\",\"toast\":\"Registro atualizado na demonstração.\"},\"domMinutes\":\"Informe custo interno ou tempo de trabalho válido.\"}"
+    },
+    {
+      "id": "R07-S5-07",
+      "desc": "Correção única zera o custo e preserva o registro original",
+      "status": "PASS",
+      "detail": "{\"c\":{\"amount\":0,\"minutes\":30},\"ev\":[{\"id\":1,\"type\":\"custo\",\"amount\":2550},{\"id\":2,\"type\":\"custo\",\"amount\":0},{\"id\":3,\"type\":\"corrigir_custo\",\"amount\":2550,\"reference\":1}]}"
+    },
+    {
+      "id": "R07-S5-08",
+      "desc": "Segunda correção do mesmo custo é recusada e o controle desaparece",
+      "status": "PASS",
+      "detail": "{\"r\":{\"opened\":false},\"domSecond\":\"Custo inexistente ou já corrigido.\"}"
+    },
+    {
+      "id": "R07-S5-09T",
+      "desc": "Técnico não vê custo, valores, controle nem consegue gravar por handler direto",
+      "status": "PASS",
+      "detail": "{\"hasCostPanel\":false,\"hasMoney\":false,\"modal\":null,\"direct\":\"Ação indisponível neste perfil.\"}"
+    },
+    {
+      "id": "R07-S5-09A",
+      "desc": "Atendente não vê custo, valores, controle nem consegue gravar por handler direto",
+      "status": "PASS",
+      "detail": "{\"hasCostPanel\":false,\"hasMoney\":false,\"modal\":null,\"direct\":\"Ação indisponível neste perfil.\"}"
+    },
+    {
+      "id": "R07-S5-09F",
+      "desc": "Financeiro não vê custo, valores, controle nem consegue gravar por handler direto",
+      "status": "PASS",
+      "detail": "{\"hasCostPanel\":false,\"hasMoney\":true,\"modal\":null,\"direct\":\"Ação indisponível neste perfil.\"}"
+    },
+    {
+      "id": "R07-S5-10",
+      "desc": "Permissões efetivas: avaliação Admin/Técnico, entrada Admin/Atendente, sem ampliar perfis",
+      "status": "PASS",
+      "detail": "{\"techAssess\":true,\"techEntryDenied\":true,\"attAssess\":null,\"attEntry\":1,\"finAssess\":null}"
+    },
+    {
+      "id": "R07-S5-11",
+      "desc": "Sem erros de página ou console nos custos e permissões",
+      "status": "PASS",
+      "detail": "{\"errors\":[],\"consoleErrors\":[]}"
+    },
+    {
+      "id": "R07-S6-01",
+      "desc": "Sem decisão de novo orçamento o retorno não edita nem publica",
+      "status": "PASS",
+      "detail": "ATENDIMENTO / #018\nDaikin · EcoSwing\n\nRefrigeração Horizonte · Entrada em 21/11/2026\n\nVoltar\nImprimir\nANDAMENTO TÉCNICO\nAberto\nConclusão não registrada\nAtualiza"
+    },
+    {
+      "id": "R07-S6-02",
+      "desc": "Após a decisão o orçamento próprio fica editável e não cobra automaticamente",
+      "status": "PASS",
+      "detail": "ATENDIMENTO / #018\nDaikin · EcoSwing\n\nRefrigeração Horizonte · Entrada em 21/11/2026\n\nVoltar\nImprimir\nANDAMENTO TÉCNICO\nAberto\nConclusão não registrada\nAtualizar andamento\nFINANCEIRO\nSem cobrança\nSaldo: R$ 0,00\nRETIRADA\nNão entregue\nRegistro independente do pagamento\nRegistrar entrega\nVisão geral\nAt"
+    },
+    {
+      "id": "R07-S6-03",
+      "desc": "Rascunho salvo mantém total zero e origem intocada",
+      "status": "PASS",
+      "detail": "{\"items\":[{\"name\":\"Reparo adicional fictício\",\"type\":\"Serviço\",\"quantity\":1,\"unit\":5000,\"lineId\":1}],\"discount\":0,\"terms\":{\"payment\":\"\",\"deadline\":\"\",\"warranty\":\"\",\"diagnosis\":\"\",\"equipment\":\"\",\"defect\":\"\"}}"
+    },
+    {
+      "id": "R07-S6-04",
+      "desc": "Publicação cria versão 1 e registra a operação privada",
+      "status": "PASS",
+      "detail": "{\"current\":1,\"ops\":[{\"type\":\"orcamento\",\"version\":1,\"when\":\"2026-11-27T01:20:57.419Z\"}]}"
+    },
+    {
+      "id": "R07-S6-05",
+      "desc": "Cobrança antes da aprovação vigente é bloqueada",
+      "status": "PASS",
+      "detail": "{\"opened\":false}"
+    },
+    {
+      "id": "R07-S6-06",
+      "desc": "Decisão interna aprovada não fatura sozinha",
+      "status": "PASS",
+      "detail": "{\"decision\":{\"answer\":\"Aprovado\",\"name\":\"Cliente Fictício R07\",\"channel\":\"presencial\",\"date\":\"2026-11-26\",\"note\":\"\",\"registered\":\"2026-11-27T01:20:58.597Z\",\"afterDelivery\":false},\"total\":0}"
+    },
+    {
+      "id": "R07-S6-07",
+      "desc": "Itens alterados após a aprovação impedem faturar a versão antiga",
+      "status": "PASS",
+      "detail": "{\"r\":{\"opened\":false},\"domBilling\":\"Fature o retorno somente com novo orçamento vigente, aprovado e sem alterações nos itens ou valores.\"}"
+    },
+    {
+      "id": "R07-S6-08",
+      "desc": "Nova versão ainda sem aprovação não fatura",
+      "status": "PASS",
+      "detail": "{\"opened\":false}"
+    },
+    {
+      "id": "R07-S6-09",
+      "desc": "Cobrança explícita usa a versão vigente e não movimenta a origem",
+      "status": "PASS",
+      "detail": "{\"total\":7000,\"paid\":0,\"billing\":{\"due\":\"2026-11-26\",\"items\":[{\"name\":\"Reparo adicional fictício\",\"type\":\"Serviço\",\"quantity\":1,\"unit\":7000,\"lineId\":2}],\"discount\":0}}"
+    },
+    {
+      "id": "R07-S6-10",
+      "desc": "Recusa não fatura e exige nova versão aprovada",
+      "status": "PASS",
+      "detail": "{\"total\":0,\"last\":{\"answer\":\"Recusado\",\"name\":\"Cliente Fictício R07\",\"channel\":\"presencial\",\"date\":\"2026-11-26\",\"note\":\"\",\"registered\":\"2026-11-27T01:21:10.595Z\",\"afterDelivery\":false}}"
+    },
+    {
+      "id": "R07-S6-11",
+      "desc": "Nova versão aprovada após recusa fatura o valor vigente",
+      "status": "PASS",
+      "detail": "[{\"n\":1,\"d\":\"Recusado\"},{\"n\":2,\"d\":\"Aprovado\"}]"
+    },
+    {
+      "id": "R07-S6-12",
+      "desc": "Projeção pública não expõe garantia, origem, avaliação, custos nem laudo",
+      "status": "PASS",
+      "detail": "{\"id\":26,\"status\":\"Negociação\",\"entry\":\"2026-11-26\",\"forecast\":\"\",\"equipment\":\"Electrolux · Color Adapt\",\"finance\":null,\"quote\":{\"number\":1,\"created\":\"2026-11-27T01:21:20.446Z\",\"items\":[{\"type\":\"Serviço\",\"name\":\"Reparo público fictício\",\"quantity\":1,\"unit\":6000}],\"discount\":0,\"total\":6000,\"terms\":{\"payment\":\"\",\"deadline\":\"\",\"warranty\":\"\",\"diagnosis\":\"\",\"equipment\":\"\",\"defect\":\"\"},\"decision\":null,\"readOnly\":false},\"at"
+    },
+    {
+      "id": "R07-S6-13",
+      "desc": "Resposta pública registra decisão, não fatura e não vaza informação privada",
+      "status": "PASS",
+      "detail": "{\"pub\":{\"total\":0,\"paid\":0,\"decision\":{\"answer\":\"Aprovado\",\"name\":\"Cliente Portal Fictício\",\"channel\":\"link simulado\",\"date\":\"2026-11-26\",\"note\":\"\",\"registered\":\"2026-11-27T01:21:22.346Z\",\"afterDelivery\":false},\"delivery\":null,\"err\":\"\"},\"preview\":\"SEU ATENDIMENTO · OS #026\\nElectrolux · Color Adapt\\nNegociação\\nEntrada\\n26/11/2026\\nPrevisão\\nNão informada\\nSeu orçamento\\nVersão 1\\n\\nTotal da proposta\\n\\nR$ 60,00\\n\\nPeças e serviços\\nReparo público fictício\\nSe\"}"
+    },
+    {
+      "id": "R07-S6-14",
+      "desc": "Cobrança do retorno é explícita, separada da decisão e não movimenta a origem",
+      "status": "PASS",
+      "detail": "{\"total\":6000,\"paid\":0,\"billing\":{\"due\":\"2026-11-26\",\"items\":[{\"name\":\"Reparo público fictício\",\"type\":\"Serviço\",\"quantity\":1,\"unit\":6000,\"lineId\":1}],\"discount\":0}}"
+    },
+    {
+      "id": "R07-S6-15",
+      "desc": "Sem erros de página ou console no orçamento",
+      "status": "PASS",
+      "detail": "{\"errors\":[],\"consoleErrors\":[],\"perrs\":[]}"
+    }
+  ]
+}

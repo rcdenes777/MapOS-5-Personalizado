@@ -1,0 +1,66 @@
+{
+  "generatedAt": "2026-11-27T01:19:49.584Z",
+  "codeSha": "uncommitted-9a6159d927b92f78a76688b4680280062297d7887f8fc909c270d402979637f3",
+  "total": 6,
+  "summary": {
+    "PASS": 6
+  },
+  "results": [
+    {
+      "id": "R07-PR-01",
+      "desc": "Mídia de impressão oculta a casca e mantém a folha",
+      "status": "PASS",
+      "detail": "{\"sidebar\":\"none\",\"top\":\"none\",\"nav\":\"none\",\"sheet\":\"block\"}"
+    },
+    {
+      "id": "R07-PR-02",
+      "desc": "PDF A4 do retorno tem uma página A4 e identifica OS, cliente, equipamento e defeito",
+      "status": "PASS",
+      "detail": "{\"info\":{\"pages\":1,\"size\":\"594.96 x 841.92 pts (A4)\"},\"text\":\"Minha oficina · Demonstração\\nOrdem de serviço #025\\n\\nCliente                               Equipamento\\n\\nClima Sul Serviços                    Midea · Xtreme Save\\nEntrada                               Andamento\\n\\n26/11/2026                            Aberto\\nEntrega                               Defeito\\n\\nNão registrada                        Defeito público impresso do retorno R07.\\n\\nTotal cobrado                         Pago\\n\\nR$ 0,00                               R$ 0,00\\nSaldo                       \"}"
+    },
+    {
+      "id": "R07-PR-03",
+      "desc": "Cupom do retorno fica em 80 mm, uma página, com o mesmo defeito",
+      "status": "PASS",
+      "detail": "{\"info\":{\"pages\":1,\"size\":\"227.04 x 425.04 pts\"},\"widthMm\":80}"
+    },
+    {
+      "id": "R07-PR-04",
+      "desc": "Impressão do retorno não vaza diagnóstico, custo, avaliação ou vínculo",
+      "status": "PASS",
+      "detail": "{\"a4\":\"Minha oficina · Demonstração\\nOrdem de serviço #025\\n\\nCliente                               Equipamento\\n\\nClima Sul Serviços                    Midea · Xtreme Save\\nEntrada                               Andamento\\n\\n26/11/2026                            Aberto\\nEntrega                               Defeito\"}"
+    },
+    {
+      "id": "R07-PR-05",
+      "desc": "Impressão da origem continua válida e não muda com o retorno",
+      "status": "PASS",
+      "detail": "{\"info\":{\"pages\":1,\"size\":\"594.96 x 841.92 pts (A4)\"},\"text\":\"Minha oficina · Demonstração\\nOrdem de serviço #016\\n\\nCliente                               Equipamento\\n\\nRefrigeração Horizonte                Daikin · EcoSwing\\nEntrada                               Andamento\\n\\n12/11/2026                            Finalizado\\nEntrega                               Defei\"}"
+    },
+    {
+      "id": "R07-PR-06",
+      "desc": "Sem exceções, console ou requisições externas na impressão",
+      "status": "PASS",
+      "detail": "{\"errors\":[],\"consoleErrors\":[],\"external\":[]}"
+    }
+  ],
+  "pdfs": [
+    {
+      "file": "impressos/retorno-garantia-a4.pdf",
+      "bytes": 30680,
+      "pages": 1,
+      "size": "594.96 x 841.92 pts (A4)"
+    },
+    {
+      "file": "impressos/retorno-garantia-cupom.pdf",
+      "bytes": 27865,
+      "pages": 1,
+      "size": "227.04 x 425.04 pts"
+    },
+    {
+      "file": "impressos/origem-garantia-a4.pdf",
+      "bytes": 30686,
+      "pages": 1,
+      "size": "594.96 x 841.92 pts (A4)"
+    }
+  ]
+}

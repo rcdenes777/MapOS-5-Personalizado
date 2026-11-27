@@ -1,0 +1,44 @@
+[
+  {
+    "suite": "r08-domain.cjs",
+    "exit": 0,
+    "log": "interface_gpt/reviews/deepseek/R08-005/testes/log-r08-domain.cjs.txt",
+    "script_sha256": "6fd74b351f3d236e3d7d60b70d01700589ad7d01c33d0771d7960b4fcf78d361"
+  },
+  {
+    "suite": "r08-ui.cjs",
+    "exit": 0,
+    "log": "interface_gpt/reviews/deepseek/R08-005/testes/log-r08-ui.cjs.txt",
+    "script_sha256": "ffb36b79e1def53b093020a9d492c62e2c6e784b4c2d1284b78e08682db40ed1"
+  },
+  {
+    "suite": "r07-negativos.cjs",
+    "exit": 0,
+    "log": "interface_gpt/reviews/deepseek/R08-005/testes/log-r07-negativos.cjs.txt",
+    "script_sha256": "47b74c5afe821791f3c70c4f8e4ba9f1d0c296aa3ab436740c97baf40441ea75"
+  },
+  {
+    "suite": "r07-002-domain.cjs",
+    "exit": 0,
+    "log": "interface_gpt/reviews/deepseek/R08-005/testes/log-r07-002-domain.cjs.txt",
+    "script_sha256": "dcc3efab61e2681bce56ef248fe395d4ccd8008d7ce0dbb223d972775d904a42"
+  },
+  {
+    "suite": "r07-002-negativos.cjs",
+    "exit": 0,
+    "log": "interface_gpt/reviews/deepseek/R08-005/testes/log-r07-002-negativos.cjs.txt",
+    "script_sha256": "5439f34dc99261dcb51134e7f0bc2116f1981ef4baf02ff1f040582630f92f92"
+  },
+  {
+    "suite": "r07-003-domain.cjs",
+    "exit": 0,
+    "log": "interface_gpt/reviews/deepseek/R08-005/testes/log-r07-003-domain.cjs.txt",
+    "script_sha256": "aa12645a8c78319457b6f54c676ccab10487cd8b9257a4ab3d91f40ef7d86ecb"
+  },
+  {
+    "suite": "r06-002/negativos.cjs",
+    "exit": 0,
+    "log": "interface_gpt/reviews/deepseek/R08-005/testes/log-r06-002-negativos.cjs.txt",
+    "script_sha256": "4c7cb44b397edeeb2da2b81322b12538cd73bd817410a308bf12caf92baaf5ba"
+  }
+]

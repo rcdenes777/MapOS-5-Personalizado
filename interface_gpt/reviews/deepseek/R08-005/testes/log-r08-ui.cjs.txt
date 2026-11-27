@@ -1,0 +1,6 @@
+PASS U01 — editor carrega identidade e linha nova em branco
+PASS U02 — conferência identifica a linha exata e recusa índice como ID
+PASS U03 — N5 seletor de troca exclui produto zerado e mantém o disponível
+PASS U04 — N1 fallback apenas em raiz finalizada
+
+TOTAL 4 · PASS 4 · FAIL 0

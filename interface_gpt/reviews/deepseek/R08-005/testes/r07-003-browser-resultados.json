@@ -1,0 +1,394 @@
+{
+  "generatedAt": "2026-11-27T01:22:39.239Z",
+  "codeSha": "uncommitted-9a6159d927b92f78a76688b4680280062297d7887f8fc909c270d402979637f3",
+  "total": 64,
+  "summary": {
+    "PASS": 64
+  },
+  "results": [
+    {
+      "id": "R07-003-B01",
+      "desc": "Avaliar como troca não executa, não cobra e não altera origem nem estoque",
+      "status": "PASS",
+      "detail": "{\"ops\":0,\"o16\":\"{\\\"id\\\":16,\\\"client\\\":3,\\\"brand\\\":\\\"Daikin\\\",\\\"model\\\":\\\"EcoSwing\\\",\\\"type\\\":\\\"Placa eletrônica\\\",\\\"defect\\\":\\\"Equipamento não liga.\\\",\\\"entry\\\":\\\"2026-11-12\\\",\\\"items\\\":\\\"\\\",\\\"condition\\\":\\\"\\\",\\\"status\\\":\\\"Finalizado\\\",\\\"total\\\":41000,\\\"paid\\\":41000,\\\"approval\\\":\\\"Aprovado\\\",\\\"delivery\\\":{\\\"date\\\":\\\"2026-11-18\\\",\\\"receiver\\\":\\\"Refrigeração Horizonte\\\",\\\"items\\\":\\\"Placa eletrônica\\\"},\\\"conclusion\\\":\\\"2026-11-17\\\",\\\"warrantyDays\\\":90,\\\"history\\\":[{\\\"time\\\":\\\"2026-11-21\\\",\\\"text\\\":\\\"Entrada registrada\\\"}],\\\"cancellation\\\":{\\\"events\\\":[]}}\",\"stock\":\"[{\\\"name\\\":\\\"IGBT 650 V\\\",\\\"sku\\\":\\\"P-001\\\",\\\"quantity\\\":8,\\\"min\\\":5},{\\\"name\\\":\\\"Optoacoplador PC817\\\",\\\"sku\\\":\\\"P-002\\\",\\\"quantity\\\":3,\\\"min\\\":10},{\\\"name\\\":\\\"Capacitor 450 V\\\",\\\"sku\\\":\\\"P-003\\\",\\\"quantity\\\":16,\\\"min\\\":5}]\",\"coverage\":\"Coberto\",\"total\":0}"
+    },
+    {
+      "id": "R07-003-B02",
+      "desc": "Modal de troca sem origem/destino pré-selecionados e com campos condicionais",
+      "status": "PASS",
+      "detail": "{\"source\":\"\",\"dest\":\"\",\"confirm\":false,\"stockHidden\":true,\"skuDisabled\":true,\"costDisabled\":false}"
+    },
+    {
+      "id": "R07-003-B03",
+      "desc": "Negativo: marca vazia recusa com motivo e estado intacto",
+      "status": "PASS",
+      "detail": "{\"open\":true,\"error\":\"Confira os textos obrigatórios e seus limites.\",\"title\":\"Registrar troca em garantia\"}"
+    },
+    {
+      "id": "R07-003-B04",
+      "desc": "Negativo: identidade ausente recusa com motivo específico",
+      "status": "PASS",
+      "detail": "{\"open\":true,\"error\":\"Identifique a nova unidade por selo, série ou IMEI.\",\"title\":\"Registrar troca em garantia\"}"
+    },
+    {
+      "id": "R07-003-B05",
+      "desc": "Negativo: destino vazio recusa com motivo específico",
+      "status": "PASS",
+      "detail": "{\"open\":true,\"error\":\"Informe origem da substituta e destino da antiga.\",\"title\":\"Registrar troca em garantia\"}"
+    },
+    {
+      "id": "R07-003-B06",
+      "desc": "Negativo: custo externo inválido recusa e não grava",
+      "status": "PASS",
+      "detail": "{\"open\":true,\"error\":\"Informe um custo externo válido.\",\"title\":\"Registrar troca em garantia\"}"
+    },
+    {
+      "id": "R07-003-B07",
+      "desc": "Negativo: confirmação ausente recusa e não grava",
+      "status": "PASS",
+      "detail": "{\"open\":true,\"error\":\"Confirme a substituição física e o destino da unidade antiga.\",\"title\":\"Registrar troca em garantia\"}"
+    },
+    {
+      "id": "R07-003-B08",
+      "desc": "Negativo: selo duplicado normalizado (espaços/caixa) contra a unidade antiga",
+      "status": "PASS",
+      "detail": "{\"open\":true,\"error\":\"Selo já cadastrado. Identifique outra unidade física.\",\"title\":\"Registrar troca em garantia\"}"
+    },
+    {
+      "id": "R07-003-B09",
+      "desc": "Negativo: avaliação obsoleta recusa com motivo e estado intacto",
+      "status": "PASS",
+      "detail": "{\"open\":true,\"error\":\"A avaliação mudou ou não permite esta solução. Reabra e confira.\",\"title\":\"Registrar troca em garantia\"}"
+    },
+    {
+      "id": "R07-003-B10",
+      "desc": "Troca externa grava uma operação, custo privado e não move estoque nem financeiro",
+      "status": "PASS",
+      "detail": "{\"ok\":{\"opened\":true,\"open\":false,\"error\":\"\",\"toast\":\"Registro atualizado na demonstração.\"},\"ev\":{\"id\":1,\"type\":\"troca\",\"assessment\":1,\"origin\":16,\"oldUnit\":16,\"replacement\":{\"type\":\"Placa\",\"brand\":\"Midea\",\"model\":\"Nova\",\"seal\":\"NOVA-1\",\"serial\":\"\",\"imei\":\"\",\"unit\":25},\"source\":\"externa\",\"destination\":\"retida_assistencia\",\"sku\":null,\"cost\":4500,\"reason\":\"MOTIVO PRIVADO R07-003\",\"when\":\"2026-11-27T01:21:37.062Z\",\"actor\":\"Administrador\"},\"afterSwap\":{\"o16\":\"{\\\"id\\\":16,\\\"client\\\":3,\\\"brand\\\":\\\"Daikin\\\",\\\"model\\\":\\\"EcoSwing\\\",\\\"type\\\":\\\"Placa eletrônica\\\",\\\"defect\\\":\\\"Equipamento não liga.\\\",\\\"entry\\\":\\\"2026-11-12\\\",\\\"items\\\":\\\"\\\",\\\"condition\\\":\\\"\\\",\\\"status\\\":\\\"Finalizado\\\",\\\"total\\\":41000,\\\"paid\\\":41000,\\\"approval\\\":\\\"Aprovado\\\",\\\"delivery\\\":{\\\"date\\\":\\\"2026-11-18\\\",\\\"receiver\\\":\\\"Refrigeração Horizonte\\\",\\\"items\\\":\\\"Placa eletrônica\\\"},\\\"conclusion\\\":\\\"2026-11-17\\\",\\\"warrantyDays\\\":90,\\\"history\\\":[{\\\"time\\\":\\\"2026-11-21\\\",\\\"text\\\":\\\"Entrada registrada\\\"}],\\\"cancellation\\\":{\\\"events\\\":[]},\\\"seal\\\":\\\"ANT-1\\\"}\",\"stock\":\"[{\\\"name\\\":\\\"IGBT 650 V\\\",\\\"sku\\\":\\\"P-001\\\",\\\"quantity\\\":8,\\\"min\\\":5},{\\\"name\\\":\\\"Optoacoplador PC817\\\",\\\"sku\\\":\\\"P-002\\\",\\\"quantity\\\":3,\\\"min\\\":10},{\\\"name\\\":\\\"Capaci"
+    },
+    {
+      "id": "R07-003-B11",
+      "desc": "Painel registra substituta, destino, motivo e custo para Admin",
+      "status": "PASS",
+      "detail": "ATENDIMENTO / #018\nDaikin · EcoSwing\n\nRefrigeração Horizonte · Entrada em 21/11/2026\n\nVoltar\nImprimir\nANDAMENTO TÉCNICO\nAberto\nConclusão não registrada\nAtualizar andamento\nFINANCEIRO\nSem cobrança\nSaldo: R$ 0,00\nRETIRADA\nNão entregue\nRegistro independente do pagamento\nRegistrar entrega\nVisão geral\nAtendimento\nOrçamento e link\nEntrega\nAnexos\nHistórico\nGarantia\nCancelamento\nFinanceiro\nReferência original\nRetorno\nOS de origem\n#016\nAtendimento anterior\n#016\nConclusão original\n17/11/2026\nPrazo original\n90 dias\nVencimento\n15/02/2027 · Dentro do prazo\n\nPrazo é referência temporal; não determina cobertura. Um retorno não concede nova garantia.\n\nConsultar origem\nAvaliação da cobertura\nCoberto\nSolução\n"
+    },
+    {
+      "id": "R07-003-B12",
+      "desc": "Origem aponta para o retorno em andamento enquanto a substituta não conclui",
+      "status": "PASS",
+      "detail": "{\"links\":[\"#os/18/garantia\",\"#os/18\"],\"text\":\"ATENDIMENTO / #016\\nDaikin · EcoSwing\\n\\nRefrigeração Horizonte · Entrada em 12/11/2026\\n\\nVoltar\\nImprimir\\nANDAMENTO TÉCNICO\\nFinalizado\\nConclusão: 17/11/2026\\nAtualizar andamento\\nFINANCEIRO\\nQuitado\\nSaldo: R$ 0,00\\nRETIRADA\\nEntregue\\n18/11/2026\\nVisão geral\\nAtendimento\\nOrçamento e link\\nEntrega\\nAnexos\\nHistóric\"}"
+    },
+    {
+      "id": "R07-003-B13",
+      "desc": "URL da origem durante troca em andamento não abre outra OS",
+      "status": "PASS",
+      "detail": "GARANTIA\nRetorno em andamento\n\nA unidade já tem um atendimento aberto.\n\nAbrir retorno #018"
+    },
+    {
+      "id": "R07-003-B14",
+      "desc": "A4 e cupom mostram a substituta sem custo/motivo privados",
+      "status": "PASS",
+      "detail": "{\"a4\":\"DOCUMENTO\\nImpressão da OS #018\\n\\nPrévia fictícia para avaliação do formato.\\n\\nVoltar\\nCupom 80 mm\\nImprimir\\nMinha oficina · Demonstração\\nOrdem de serviço #018\\nCliente\\nRefrigeração Horizonte\\nEquipamento\\nDaikin · EcoSwing\\nSubstituta em garantia\\nPlaca · Midea · Nova \"}"
+    },
+    {
+      "id": "R07-003-B15",
+      "desc": "Entrega pré-preenche a substituta com identificação física",
+      "status": "PASS",
+      "detail": "Substituta em garantia · Placa · Midea · Nova · Selo NOVA-1"
+    },
+    {
+      "id": "R07-003-B16",
+      "desc": "Portal mostra marca/modelo da substituta sem selo, motivo, custo ou IDs",
+      "status": "PASS",
+      "detail": "M\nMinha oficina\nAcompanhamento de serviço\nDemonstração\n\nSEU ATENDIMENTO · OS #018\nSubstituta em garantia · Midea · Nova\nAberto\nEntrada\n21/11/2026\nPrevisão\nNão informada\nOrçamento\n\nNão há orçamento publicado disponível para consulta neste momento.\n\nArquivos compartilhados\n\nNenhum arquivo compartilhado nesta demonstração.\n\nEste é um link de demonstração. Na versão real, compartilhe o endereço privado apenas com pessoas autorizadas.\n\nMapOS Bancada · Protótipo local com dados fictícios. Não envie es"
+    },
+    {
+      "id": "R07-003-B17",
+      "desc": "Sem erros de página ou console no fluxo externo",
+      "status": "PASS",
+      "detail": "{\"errors\":[],\"consoleErrors\":[]}"
+    },
+    {
+      "id": "R07-003-B18",
+      "desc": "Troca de estoque baixa exatamente 1 unidade, custo desconhecido e sem cobrança",
+      "status": "PASS",
+      "detail": "{\"stk\":[{\"name\":\"IGBT 650 V\",\"quantity\":8},{\"name\":\"Optoacoplador PC817\",\"quantity\":2},{\"name\":\"Capacitor 450 V\",\"quantity\":16}],\"ev\":{\"id\":1,\"type\":\"troca\",\"assessment\":1,\"origin\":16,\"oldUnit\":16,\"replacement\":{\"type\":\"Placa\",\"brand\":\"Midea\",\"model\":\"Nova\",\"seal\":\"NOVA-1\",\"serial\":\"\",\"imei\":\"\",\"unit\":25},\"source\":\"estoque\",\"destination\":\"retida_assistencia\",\"sku\":\"P-002\",\"cost\":null,\"reason\":\"MOTIVO PRIVADO R07-003\",\"when\":\"2026-11-27T01:21:42.647Z\",\"actor\":\"Administrador\"}}"
+    },
+    {
+      "id": "R07-003-B19",
+      "desc": "Movimento de saída vinculado ao retorno e à operação",
+      "status": "PASS",
+      "detail": "[{\"id\":1,\"sku\":\"P-002\",\"type\":\"troca_saida\",\"quantity\":1,\"before\":3,\"after\":2,\"returnId\":18,\"operationId\":1,\"cost\":null,\"when\":\"2026-11-27T01:21:42.647Z\",\"reason\":\"MOTIVO PRIVADO R07-003\",\"actor\":\"Administrador\"}]"
+    },
+    {
+      "id": "R07-003-B20",
+      "desc": "Painel de estoque mostra custo não informado para Admin",
+      "status": "PASS",
+      "detail": "ATENDIMENTO / #018\nDaikin · EcoSwing\n\nRefrigeração Horizonte · Entrada em 21/11/2026\n\nVoltar\nImprimir\nANDAMENTO TÉCNICO\nAberto\nConclusão não registrada\nAtualizar andamento\nFINANCEIRO\nSem cobrança\nSaldo: R$ 0,00\nRETIRADA\nNão entregue\nRegistro independente do pagamento\nRegistrar entrega\nVisão geral\nAtendimento\nOrçamento e link\nEntrega\nAnexos\nHistórico\nGarantia\nCancelamento\nFinanceiro\nReferência original\nRetorno\nOS de origem\n#016\nAtendimento anterior\n#016\nConclusão original\n17/11/2026\nPrazo original\n90 dias\nVencimento\n15/02/2027 · Dentro do prazo\n\nPrazo é referência temporal; não determina cobertura. Um retorno não concede nova garantia.\n\nConsultar origem\nAvaliação da cobertura\nCoberto\nSolução\nTroca\nDiagnóstico\nFalha confirmada na bancada R07-003.\nJustificativa\nAcordo fictício R07-003.\n\nAvaliar não executa cobrança, troca ou devolução.\n\nTroca em garantia\nSubstituição registrada\nUnidade rece"
+    },
+    {
+      "id": "R07-003-B21",
+      "desc": "Tela de estoque reflete a baixa de 1 e mantém os demais produtos",
+      "status": "PASS",
+      "detail": "[\"P-001IGBT 650 V8 unidadesDisponívelMínimo: 5Custo de referência: Não informadoMovimentarHistórico de movimentosNenhum movimento registrado. Saldo inicial da demonstração não comprova baixa de OS.\",\"P-002Optoacoplador PC8172 unidadesEstoque baixoMínimo: 10Custo de referência: Não informadoMovimentarHistórico de movimentosTroca em garantia27/11/2026 · 22:21 · AdministradorMOTIVO PRIVADO R07-003Retorno #18-1 un.3 → 2Custo não informado\",\"P-003Capacitor 450 V16 unidadesDisponívelMínimo: 5Custo de referência: Não informadoMovimentarHistórico de movimentosNenhum movimento registrado. Saldo inicial da demonstração não comprova baixa de OS.\"]"
+    },
+    {
+      "id": "R07-003-B22",
+      "desc": "Troca de estoque não altera a cobrança da origem nem cria dívida no retorno",
+      "status": "PASS",
+      "detail": "{\"fin\":\"{\\\"s\\\":{\\\"total\\\":41000,\\\"paid\\\":41000,\\\"balance\\\":0,\\\"due\\\":\\\"\\\",\\\"opening\\\":41000},\\\"l\\\":null}\",\"total\":0}"
+    },
+    {
+      "id": "R07-003-B23",
+      "desc": "Origem com retorno aberto mostra o vínculo ativo e não permite duplicar",
+      "status": "PASS",
+      "detail": "ATENDIMENTO / #016\nDaikin · EcoSwing\n\nRefrigeração Horizonte · Entrada em 12/11/2026\n\nVoltar\nImprimir\nANDAMENTO TÉCNICO\nFinalizado\nConclusão: 17/11/2026\nAtualizar andamento\nFINANCEIRO\nQuitado\nSaldo: R$ 0,00\nRETIRADA\nEntregue\n18/11/2026\nVisão geral\nAtendimento\nOrçamento e link\nEntrega\nAnexos\nHistóric"
+    },
+    {
+      "id": "R07-003-B24",
+      "desc": "Concluir o retorno após a troca grava conclusão e não reinicia prazo",
+      "status": "PASS",
+      "detail": "{\"status\":\"Finalizado\",\"conclusion\":\"2026-11-26\",\"days\":0,\"end\":\"2027-02-15\"}"
+    },
+    {
+      "id": "R07-003-B25",
+      "desc": "Retorno posterior aponta para a troca (#018) sem nova raiz",
+      "status": "PASS",
+      "detail": "{\"link16\":[\"#retorno/18\"],\"formBase\":\"18\"}"
+    },
+    {
+      "id": "R07-003-B26",
+      "desc": "Retorno da substituta mantém raiz, atendimento anterior e prazo original",
+      "status": "PASS",
+      "detail": "{\"id\":25,\"unit\":25,\"replUnit\":25,\"origin\":16,\"prev\":18,\"end\":\"2027-02-15\"}"
+    },
+    {
+      "id": "R07-003-B27",
+      "desc": "Nova OS comum não oferece a unidade antiga e oferece a substituta",
+      "status": "PASS",
+      "detail": "[{\"v\":\"22\",\"t\":\"Gree · G-Top Inverter · #022\"},{\"v\":\"18\",\"t\":\"Midea · Nova · #018\"}]"
+    },
+    {
+      "id": "R07-003-B28",
+      "desc": "Handler direto recusa a unidade antiga e não cria OS",
+      "status": "PASS",
+      "detail": "{\"n\":9,\"toast\":\"Unidade substituída. Selecione a substituta.\"}"
+    },
+    {
+      "id": "R07-003-B29",
+      "desc": "Sem erros de página ou console no fluxo de estoque",
+      "status": "PASS",
+      "detail": "{\"errors\":[],\"consoleErrors\":[]}"
+    },
+    {
+      "id": "R07-003-B18b",
+      "desc": "Produto zerado não é oferecido; injeção direta recusa com motivo e estado intacto",
+      "status": "PASS",
+      "detail": "{\"st\":{\"open\":true,\"error\":\"Produto inexistente ou sem estoque disponível.\",\"title\":\"Registrar troca em garantia\"},\"before\":\"{\\\"stock\\\":[{\\\"name\\\":\\\"IGBT 650 V\\\",\\\"sku\\\":\\\"P-001\\\",\\\"quantity\\\":8,\\\"min\\\":5},{\\\"name\\\":\\\"Optoacoplador PC817\\\",\\\"sku\\\":\\\"P-002\\\",\\\"quantity\\\":3,\\\"min\\\":10},{\\\"name\\\":\\\"Capacitor 450 V\\\",\\\"sku\\\":\\\"P-003\\\",\\\"quantity\\\":16,\\\"min\\\":5}],\\\"ops\\\":[],\\\"raw\\\":\\\"{\\\\\\\"clients\\\\\\\":[{\\\\\\\"id\\\\\\\":1,\\\\\\\"name\\\\\\\":\\\\\\\"Clima Sul Serviços\\\\\\\",\\\\\\\"phone\\\\\\\":\\\\\\\"(45) 90000-0101\\\\\\\"},{\\\\\\\"id\\\\\\\":2,\\\\\\\"name\\\\\\\":\\\\\\\"Marina Alves\\\\\\\",\\\\\\\"phone\\\\\\\":\\\\\\\"(45) 90000-0102\\\\\\\"},{\\\\\\\"id\\\\\\\":3,\\\\\\\"name\\\\\\\":\\\\\\\"Refrigeração Horizonte\\\\\\\",\\\\\\\"phone\\\\\\\":\\\\\\\"(45) 90000-0103\\\\\\\"},{\\\\\\\"id\\\\\\\":4,\\\\\\\"name\\\\\\\":\\\\\\\"Paulo Lima\\\\\\\",\\\\\\\"phone\\\\\\\":\\\\\\\"(45) 90000-0104\\\\\\\"}],\\\\\\\"orders\\\\\\\":[{\\\\\\\"id\\\\\\\":24,\\\\\\\"client\\\\\\\":1,\\\\\\\"brand\\\\\\\":\\\\\\\"LG\\\\\\\",\\\\\\\"model\\\\\\\":\\\\\\\"Dual Inverter\\\\\\\",\\\\\\\"type\\\\\\\":\\\\\\\"Placa eletrônica\\\\\\\",\\\\\\\"defect\\\\\\\":\\\\\\\"Sem comunicação com a condensadora.\\\\\\\",\\\\\\\"entry\\\\\\\":\\\\\\\"2026-11-26\\\\\\\",\\\\\\\"items\\\\\\\":\\\\\\\"\\\\\\\",\\\\\\\"condition\\\\\\\":\\\\\\\"\\\\\\\",\\\\\\\"status\\\\\\\":\\\\\\\"Aberto\\\\\\\",\\\\\\\"total\\\\\\\":0,\\\\\\\"paid\\\\\\\":0,\\\\\\\"approval\\\\\\\":\\\\\\\"Sem orçamento\\\\\\\",\\\\\\\"delivery\\\\\\\":null,\\\\\\\"conclusion\\\\\\\":null,\\\\"
+    },
+    {
+      "id": "R07-003-B18c",
+      "desc": "SKU inexistente recusa no navegador sem baixa",
+      "status": "PASS",
+      "detail": "{\"st\":{\"open\":true,\"error\":\"Produto inexistente ou sem estoque disponível.\",\"title\":\"Registrar troca em garantia\"}}"
+    },
+    {
+      "id": "R07-003-B18d",
+      "desc": "Custo externo zero é aceito e registrado como zero",
+      "status": "PASS",
+      "detail": "{\"z\":{\"opened\":true,\"open\":false,\"error\":\"\",\"toast\":\"Registro atualizado na demonstração.\"},\"cost\":0}"
+    },
+    {
+      "id": "R07-003-B18e",
+      "desc": "Custo externo ausente é aceito como desconhecido",
+      "status": "PASS",
+      "detail": "{\"n\":{\"opened\":true,\"open\":false,\"error\":\"\",\"toast\":\"Registro atualizado na demonstração.\"},\"cost\":null}"
+    },
+    {
+      "id": "R07-003-B18f",
+      "desc": "Sem erros de página ou console nos negativos de estoque/custo",
+      "status": "PASS",
+      "detail": "{\"errors\":[],\"consoleErrors\":[]}"
+    },
+    {
+      "id": "R07-003-B30",
+      "desc": "Solução diferente de troca não oferece a ação",
+      "status": "PASS",
+      "detail": "ATENDIMENTO / #018\nDaikin · EcoSwing\n\nRefrigeração Horizonte · Entrada em 21/11/2026\n\nVoltar\nImprimir\nANDAMENTO TÉCNICO\nAberto\nConclusão não registrada\nAtualizar andamento\nFINANCEIRO\nSem cobrança\nSaldo: R$ 0,00\nRETIRADA\nNão entregue\nRegistro independente do pagamento\nRegistrar entrega\nVisão geral\nAt"
+    },
+    {
+      "id": "R07-003-B31",
+      "desc": "Cobrança própria bloqueia a troca com motivo e sem ação",
+      "status": "PASS",
+      "detail": "ATENDIMENTO / #018\nDaikin · EcoSwing\n\nRefrigeração Horizonte · Entrada em 21/11/2026\n\nVoltar\nImprimir\nANDAMENTO TÉCNICO\nAberto\nConclusão não registrada\nAtualizar andamento\nFINANCEIRO\nSem cobrança\nSaldo: R$ 0,00\nRETIRADA\nNão entregue\nRegistro independente do pagamento\nRegistrar entrega\nVisão geral\nAtendimento\nOrçamento e link\nEntrega\nAnexos\nHistórico\nGarantia\nCancelamento\nFinanceiro\nReferência orig"
+    },
+    {
+      "id": "R07-003-B32",
+      "desc": "Entrega registrada bloqueia a troca com motivo e sem ação",
+      "status": "PASS",
+      "detail": "ATENDIMENTO / #018\nDaikin · EcoSwing\n\nRefrigeração Horizonte · Entrada em 21/11/2026\n\nVoltar\nImprimir\nANDAMENTO TÉCNICO\nAberto\nConclusão não registrada\nAtualizar andamento\nFINANCEIRO\nSem cobrança\nSaldo: R$ 0,00\nRETIRADA\nEntregue\n26/11/2026\nVisão geral\nAtendimento\nOrçamento e link\nEntrega\nAnexos\nHistórico\nGarantia\nCancelamento\nFinanceiro\nReferência original\nRetorno\nOS de origem\n#016\nAtendimento ant"
+    },
+    {
+      "id": "R07-003-B33",
+      "desc": "Conclusão antes da troca bloqueia a ação com motivo",
+      "status": "PASS",
+      "detail": "ATENDIMENTO / #018\nDaikin · EcoSwing\n\nRefrigeração Horizonte · Entrada em 21/11/2026\n\nVoltar\nImprimir\nANDAMENTO TÉCNICO\nFinalizado\nConclusão: 26/11/2026\nAtualizar andamento\nFINANCEIRO\nSem cobrança\nSaldo: R$ 0,00\nRETIRADA\nNão entregue\nRegistro independente do pagamento\nRegistrar entrega\nVisão geral\nAtendimento\nOrçamento e link\nEntrega\nAnexos\nHistórico\nGarantia\nCancelamento\nFinanceiro\nReferência ori"
+    },
+    {
+      "id": "R07-003-B34",
+      "desc": "Publicação ativa bloqueia e a retirada libera a troca",
+      "status": "PASS",
+      "detail": "{\"pubBlocked\":true,\"afterWithdraw\":1,\"blocker\":\"Retire a publicação do orçamento antes de executar troca ou devolução.\",\"text\":\"ATENDIMENTO / #018\\nDaikin · EcoSwing\\n\\nRefrigeração Horizonte · Entrada em 21/11/2026\\n\\nVoltar\\nImprimir\\nANDAMENTO TÉCNICO\\nNegociação\\nConclusão não registrada\\nAtualizar andamento\\nFINANCEIRO\\nSem cobrança\\nSaldo: R$ 0,00\\nRETIRADA\\nNão entregue\\nRegistro independente do pagamento\\nRegistrar entrega\\nVisão geral\\nAtendimento\\nOrçamento e link\\nEntrega\\nAnexos\\nHistórico\\nGarantia\\nCancelamento\\nFinanceiro\\nReferência original\\nRetorno\\nOS de origem\\n#016\\nAtendimento anterior\\n#016\\nConclusão original\\n17/11/2026\\nPrazo original\\n90 dias\\nVencimento\\n15/02/2027 · Dentro do prazo\\n\\nPrazo é referência temporal; não determina cobertura. Um retorno não concede nova garantia.\\n\\nConsultar origem\\nAvaliação da cobertura\\nCoberto\\nSolução\\nTroca\\nDiagnóstico\\nFalha confirmada na bancada R07-003.\\nJustificativa\\nAcordo fictício R07-003.\\nRevisar avaliação\\n\\nAvaliar não executa cobrança, troca ou devolução.\\n\\nTroca em garantia\\n\\nRegistre a no\"}"
+    },
+    {
+      "id": "R07-003-B35",
+      "desc": "Outro atendimento aberto da unidade bloqueia a troca",
+      "status": "PASS",
+      "detail": "ATENDIMENTO / #018\nDaikin · EcoSwing\n\nRefrigeração Horizonte · Entrada em 21/11/2026\n\nVoltar\nImprimir\nANDAMENTO TÉCNICO\nAberto\nConclusão não registrada\nAtualizar andamento\nFINANCEIRO\nSem cobrança\nSaldo: R$ 0,00\nRETIRADA\nNão entregue\nRegistro independente do pagamento\nRegistrar entrega\nVisão geral\nAtendimento\nOrçamento e link\nEntrega\nAnexos\nHistórico\nGarantia\nCancelamento\nFinanceiro\nReferência orig"
+    },
+    {
+      "id": "R07-003-B36",
+      "desc": "Duas abas: envio obsoleto abortado e uma única troca gravada",
+      "status": "PASS",
+      "detail": "{\"ops\":1,\"stB\":{\"open\":false,\"error\":\"\",\"toast\":\"Dados alterados em outra aba. Reabra a operação para evitar sobrescrever a atualização.\"}}"
+    },
+    {
+      "id": "R07-003-B37",
+      "desc": "Duas abas: sem exceção de página",
+      "status": "PASS",
+      "detail": "{\"errsB\":[],\"errors\":[]}"
+    },
+    {
+      "id": "R07-003-B38",
+      "desc": "Troca repetida não oferece ação e o handler direto não altera o estado",
+      "status": "PASS",
+      "detail": "{\"repeated\":0,\"direct\":\"Esta unidade ou retorno já tem solução executada.\"}"
+    },
+    {
+      "id": "R07-003-B39",
+      "desc": "Unidade substituída não é reutilizada por URL nem por handler direto",
+      "status": "PASS",
+      "detail": "{\"formBase\":\"18\",\"oldErr\":\"Unidade substituída. Utilize o atendimento da substituta.\"}"
+    },
+    {
+      "id": "R07-003-B40",
+      "desc": "Sem erros de página ou console nos bloqueios",
+      "status": "PASS",
+      "detail": "{\"errors\":[],\"consoleErrors\":[]}"
+    },
+    {
+      "id": "R07-003-B41",
+      "desc": "IDs de OS e de unidade podem coincidir sem quebrar o vínculo inicial",
+      "status": "PASS",
+      "detail": "{\"root\":100,\"r1\":101,\"u1\":102}"
+    },
+    {
+      "id": "R07-003-B42",
+      "desc": "Retorno posterior cria OS #102 com unidade 102, raiz 100 e anterior 101",
+      "status": "PASS",
+      "detail": "{\"link\":[\"#retorno/101\"],\"formBase\":\"101\",\"r2\":{\"id\":102,\"unit\":102,\"origin\":100}}"
+    },
+    {
+      "id": "R07-003-B43",
+      "desc": "Histórico por raiz lista as duas gerações de retorno",
+      "status": "PASS",
+      "detail": "ATENDIMENTO / #100\nMarca · Raiz\n\nClima Sul Serviços · Entrada em 01/08/2026\n\nVoltar\nImprimir\nANDAMENTO TÉCNICO\nFinalizado\nConclusão: 10/08/2026\nAtualizar andamento\nFINANCEIRO\nSem cobrança\nSaldo: R$ 0,00\nRETIRADA\nNão entregue\nRegistro independente do pagamento\nRegistrar entrega\nVisão geral\nAtendimento\nOrçamento e link\nEntrega\nAnexos\nHistórico\nGarantia\nCancelamento\nFinanceiro\nReferência original\nAtendimento original\nOS de origem\n#100\nConclusão original\n10/08/2026\nPrazo original\n90 dias\nVencimento\n08/11/2026 · Prazo expirado\n\nPrazo é referência temporal; não determina cobertura. Um retorno não concede nova garantia.\n\nAbrir retorno em andamento #102\nHistórico de retornos\n\nCada entrada cria uma OS distinta para a mesma unidade.\n\nMarca · Raiz\nClima Sul Serviços\n#101\nFinalizado\nNão entregue\nSem cobrança\n26/11/2026\nSub · Um\nClima Sul Serviços\n#102\nAberto\nNão entregue\nSem cobrança\n26/11/2026"
+    },
+    {
+      "id": "R07-003-B44",
+      "desc": "Segunda troca em sequência continua a linhagem e cria unidade 103",
+      "status": "PASS",
+      "detail": "{\"id\":1,\"type\":\"troca\",\"assessment\":1,\"origin\":100,\"oldUnit\":102,\"replacement\":{\"type\":\"Placa\",\"brand\":\"Midea\",\"model\":\"Dois\",\"seal\":\"SUB-2\",\"serial\":\"\",\"imei\":\"\",\"unit\":103},\"source\":\"externa\",\"destination\":\"retida_assistencia\",\"sku\":null,\"cost\":4500,\"reason\":\"MOTIVO PRIVADO R07-003\",\"when\":\"2026-11-27T01:22:24.163Z\",\"actor\":\"Administrador\"}"
+    },
+    {
+      "id": "R07-003-B45",
+      "desc": "Retorno da segunda substituta usa a unidade 103 e a raiz 100",
+      "status": "PASS",
+      "detail": "{\"base3\":\"102\",\"id\":103,\"unit\":103}"
+    },
+    {
+      "id": "R07-003-B46",
+      "desc": "Cliente distinto não consegue vincular retorno à unidade da substituta",
+      "status": "PASS",
+      "detail": "Identifique a mesma unidade e o cliente na OS de origem antes de registrar retorno."
+    },
+    {
+      "id": "R07-003-B47",
+      "desc": "Sem erros de página ou console na linhagem",
+      "status": "PASS",
+      "detail": "{\"errors\":[],\"consoleErrors\":[]}"
+    },
+    {
+      "id": "R07-003-B48",
+      "desc": "Retorno cancelado: Admin consulta histórico corrigido e não recebe ação de nova devolução/correção",
+      "status": "PASS",
+      "detail": "{\"btns\":{\"refund\":0,\"corr\":0},\"text\":\"ATENDIMENTO / #031\\nLG · Cancelado\\n\\nClima Sul Serviços · Entrada em 26/11/2026\\n\\nVoltar\\nImprimir\\nANDAMENTO TÉCNICO\\nCancelado\\nConclusão não registrada\\nFINANCEIRO\\nSem cobrança\\nSaldo: R$ 0,00\\nRETIRADA\\nNão entregue\\nRegistro independente do pagamento\\nRegistrar entrega\\nVisão geral\\nAtendimento\\nOrçamento e link\\nEntrega\\nAnexos\\nHistórico\\nGarantia\\nCancelamento\\nFinanceiro\\nReferência original\\nRetorno\\nOS de origem\\n#030\\nAtendimento anterior\\n#030\\nConclusão original\\n01/09/2026\\nPrazo original\\n90 dias\\nVencimento\\n30/\"}"
+    },
+    {
+      "id": "R07-003-B49",
+      "desc": "Financeiro consulta valores sem ação de devolução/correção no retorno cancelado",
+      "status": "PASS",
+      "detail": "{\"btns\":{\"refund\":0,\"corr\":0}}"
+    },
+    {
+      "id": "R07-003-B50",
+      "desc": "Técnico não vê valores nem motivo financeiro no retorno cancelado",
+      "status": "PASS",
+      "detail": "ATENDIMENTO / #031\nLG · Cancelado\n\nClima Sul Serviços · Entrada em 26/11/2026\n\nVoltar\nImprimir\nANDAMENTO TÉCNICO\nCancelado\nConclusão não registrada\nFINANCEIRO\nAcesso restrito\nValores ocultos neste perfil\nRETIRADA\nNão entregue\nRegistro independente do pagamento\nVisão geral\nAtendimento\nOrçamento\nEntrega\nAnexos\nHistórico\nGarantia\nCancelamento\nReferência original\nRetorno\nOS de origem\n#030\nAtendimento "
+    },
+    {
+      "id": "R07-003-B51",
+      "desc": "Prévia decimal rejeita 3 casas/vazio/extremo e aceita 2 casas",
+      "status": "PASS",
+      "detail": "{\"p3\":\"Selecione a modalidade e confira o valor.\",\"pe\":\"Selecione a modalidade e confira o valor.\",\"pmax\":\"Selecione a modalidade e confira o valor.\",\"p2\":\"Abatimento: R$ 1,23 · Saldo após registro: R$ 300,00\"}"
+    },
+    {
+      "id": "R07-003-B52",
+      "desc": "Handler de devolução recusa 3 casas e não altera ledger/estado",
+      "status": "PASS",
+      "detail": "{\"st\":\"Informe valor válido com até dois centavos.\"}"
+    },
+    {
+      "id": "R07-003-B53",
+      "desc": "Operações legadas sem array só inicializam em sucesso válido",
+      "status": "PASS",
+      "detail": "{\"absent\":true,\"present\":true}"
+    },
+    {
+      "id": "R07-003-B54",
+      "desc": "Sem erros de página ou console nas ressalvas R07-002",
+      "status": "PASS",
+      "detail": "{\"errors\":[],\"consoleErrors\":[]}"
+    },
+    {
+      "id": "R07-003-B55-Financeiro",
+      "desc": "Financeiro consulta a troca sem custo/ação e o handler direto é negado",
+      "status": "PASS",
+      "detail": "{\"direct\":\"Ação indisponível neste perfil.\",\"text\":\"ATENDIMENTO / #018\\nDaikin · EcoSwing\\n\\nRefrigeração Horizonte · Entrada em 21/11/2026\\n\\nVoltar\\nImprimir\\nANDAMENTO TÉCNICO\\nAberto\\nConclusão não registrada\\nFINANCEIRO\\nSem cobrança\\nSaldo: R$ 0,00\\nRETIRADA\\nNão entregue\\nRegistro independente do pagamento\\nVisão geral\\n\"}"
+    },
+    {
+      "id": "R07-003-B55-Técnico",
+      "desc": "Técnico consulta a troca sem custo/ação e o handler direto é negado",
+      "status": "PASS",
+      "detail": "{\"direct\":\"Ação indisponível neste perfil.\",\"text\":\"ATENDIMENTO / #018\\nDaikin · EcoSwing\\n\\nRefrigeração Horizonte · Entrada em 21/11/2026\\n\\nVoltar\\nImprimir\\nANDAMENTO TÉCNICO\\nAberto\\nConclusão não registrada\\nAtualizar andamento\\nFINANCEIRO\\nAcesso restrito\\nValores ocultos neste perfil\\nRETIRADA\\nNão entregue\\nRegistro i\"}"
+    },
+    {
+      "id": "R07-003-B55-Atendente",
+      "desc": "Atendente consulta a troca sem custo/ação e o handler direto é negado",
+      "status": "PASS",
+      "detail": "{\"direct\":\"Ação indisponível neste perfil.\",\"text\":\"ATENDIMENTO / #018\\nDaikin · EcoSwing\\n\\nRefrigeração Horizonte · Entrada em 21/11/2026\\n\\nVoltar\\nImprimir\\nANDAMENTO TÉCNICO\\nAberto\\nConclusão não registrada\\nFINANCEIRO\\nAcesso restrito\\nValores ocultos neste perfil\\nRETIRADA\\nNão entregue\\nRegistro independente do pagam\"}"
+    },
+    {
+      "id": "R07-003-B56",
+      "desc": "Admin vê custo interno e mantém a ação somente antes de executar",
+      "status": "PASS",
+      "detail": "ATENDIMENTO / #018\nDaikin · EcoSwing\n\nRefrigeração Horizonte · Entrada em 21/11/2026\n\nVoltar\nImprimir\nANDAMENTO TÉCNICO\nAberto\nConclusão não registrada\nAtualizar andamento\nFINANCEIRO\nSem cobrança\nSaldo: R$ 0,00\nRETIRADA\nNão entregue\nRegistro independente do pagamento\nRegistrar entrega\nVisão geral\nAtendimento\nOrçamento e link\nEntrega\nAnexos\nHistórico\nGarantia\nCancelamento\nFinanceiro\nReferência original\nRetorno\nOS de origem\n#016\nAtendimento anterior\n#016\nConclusão original\n17/11/2026\nPrazo origina"
+    },
+    {
+      "id": "R07-003-B57",
+      "desc": "Sem erros de página ou console nas permissões",
+      "status": "PASS",
+      "detail": "{\"errors\":[],\"consoleErrors\":[]}"
+    }
+  ]
+}

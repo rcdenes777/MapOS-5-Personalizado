@@ -1,0 +1,32 @@
+[
+  {
+    "suite": "regressao/regressao-r02.cjs",
+    "exit": 0,
+    "log": "interface_gpt/reviews/deepseek/R08-005/testes/log-regressao-regressao-r02.cjs.txt"
+  },
+  {
+    "suite": "regressao/regressao-r03-audit.cjs",
+    "exit": 1,
+    "log": "interface_gpt/reviews/deepseek/R08-005/testes/log-regressao-regressao-r03-audit.cjs.txt"
+  },
+  {
+    "suite": "regressao/regressao-r04-browser.cjs",
+    "exit": 0,
+    "log": "interface_gpt/reviews/deepseek/R08-005/testes/log-regressao-regressao-r04-browser.cjs.txt"
+  },
+  {
+    "suite": "regressao/regressao-r04-edge.cjs",
+    "exit": 0,
+    "log": "interface_gpt/reviews/deepseek/R08-005/testes/log-regressao-regressao-r04-edge.cjs.txt"
+  },
+  {
+    "suite": "regressao/regressao-r05-browser.cjs",
+    "exit": 0,
+    "log": "interface_gpt/reviews/deepseek/R08-005/testes/log-regressao-regressao-r05-browser.cjs.txt"
+  },
+  {
+    "suite": "regressao/regressao-r05-edge.cjs",
+    "exit": 0,
+    "log": "interface_gpt/reviews/deepseek/R08-005/testes/log-regressao-regressao-r05-edge.cjs.txt"
+  }
+]

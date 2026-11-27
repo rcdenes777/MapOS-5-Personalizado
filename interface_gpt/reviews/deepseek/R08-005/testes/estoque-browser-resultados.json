@@ -1,0 +1,276 @@
+{
+  "summary": {
+    "PASS": 16
+  },
+  "results": [
+    {
+      "id": "create-zero",
+      "status": "PASS",
+      "detail": {
+        "s": {
+          "open": false,
+          "error": "",
+          "toast": "Registro atualizado na demonstração."
+        },
+        "p": {
+          "sku": "P-004",
+          "name": "Componente sintético R08005",
+          "quantity": 0,
+          "min": 1,
+          "cost": null,
+          "movements": []
+        }
+      }
+    },
+    {
+      "id": "receipt-ledger",
+      "status": "PASS",
+      "detail": {
+        "s": {
+          "open": false,
+          "error": "",
+          "toast": "Registro atualizado na demonstração."
+        },
+        "p": {
+          "sku": "P-004",
+          "name": "Componente sintético R08005",
+          "quantity": 5,
+          "min": 1,
+          "cost": 450,
+          "movements": [
+            {
+              "id": 1,
+              "sku": "P-004",
+              "type": "entrada",
+              "quantity": 5,
+              "before": 0,
+              "after": 5,
+              "cost": 450,
+              "reason": "Entrada fictícia",
+              "when": "2026-11-27T01:27:37.279Z",
+              "actor": "Administrador"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "link-debit",
+      "status": "PASS",
+      "detail": {
+        "s": {
+          "open": false,
+          "error": "",
+          "toast": "Registro atualizado na demonstração."
+        },
+        "line": {
+          "type": "Peça",
+          "name": "Componente sintético R08005",
+          "quantity": 3,
+          "unit": 1000,
+          "lineId": 1,
+          "stockSku": "P-004",
+          "stockCost": 450
+        },
+        "stock": 2
+      }
+    },
+    {
+      "id": "linked-formdata",
+      "status": "PASS",
+      "detail": {
+        "form": [
+          [
+            "itemId",
+            "1"
+          ],
+          [
+            "itemType",
+            "Peça"
+          ],
+          [
+            "itemName",
+            "Componente sintético R08005"
+          ],
+          [
+            "itemQty",
+            "3"
+          ],
+          [
+            "itemUnit",
+            "10"
+          ],
+          [
+            "discount",
+            "0"
+          ],
+          [
+            "payment",
+            ""
+          ],
+          [
+            "deadline",
+            ""
+          ],
+          [
+            "warranty",
+            ""
+          ],
+          [
+            "diagnosis",
+            ""
+          ],
+          [
+            "equipment",
+            ""
+          ],
+          [
+            "defect",
+            ""
+          ]
+        ]
+      }
+    },
+    {
+      "id": "cancel-request",
+      "status": "PASS",
+      "detail": {
+        "s": {
+          "open": false,
+          "error": "",
+          "toast": "Registro atualizado na demonstração."
+        }
+      }
+    },
+    {
+      "id": "technical-no-cost",
+      "status": "PASS",
+      "detail": {
+        "text": "Conferir item\nFechar\n\nComponente sintético R08005 · 3 un.\n\nDestino\nSelecione\nNão utilizada\nConsumida ou perdida\nQuantidade\nMotivo (obrigatório para consumo/perda)\n\nPeça vinculada ao catálogo. Só haverá devolução com baixa comprovada para toda a linha; consumo/perda não aumenta o saldo.\n\nConferi o destino e a quantidade do item.\nRegistrar conferência"
+      }
+    },
+    {
+      "id": "partial-return",
+      "status": "PASS",
+      "detail": {
+        "s": {
+          "open": false,
+          "error": "",
+          "toast": "Registro atualizado na demonstração."
+        },
+        "stock": 3,
+        "movement": {
+          "id": 3,
+          "sku": "P-004",
+          "type": "os_devolucao",
+          "quantity": 1,
+          "before": 2,
+          "after": 3,
+          "cost": null,
+          "reason": "Baixa comprovada; 1 un. devolvida(s) ao estoque.",
+          "when": "2026-11-27T01:27:44.713Z",
+          "actor": "Técnico",
+          "osId": 25,
+          "lineId": 1
+        }
+      }
+    },
+    {
+      "id": "direct-deny-Técnico",
+      "status": "PASS",
+      "detail": {
+        "err": "Confirme a operação autorizada.",
+        "same": true,
+        "modal": null
+      }
+    },
+    {
+      "id": "direct-deny-Financeiro",
+      "status": "PASS",
+      "detail": {
+        "err": "Confirme a operação autorizada.",
+        "same": true,
+        "modal": null
+      }
+    },
+    {
+      "id": "direct-deny-Atendente",
+      "status": "PASS",
+      "detail": {
+        "err": "Confirme a operação autorizada.",
+        "same": true,
+        "modal": null
+      }
+    },
+    {
+      "id": "stock-overflow-320",
+      "status": "PASS",
+      "detail": {}
+    },
+    {
+      "id": "stock-overflow-390",
+      "status": "PASS",
+      "detail": {}
+    },
+    {
+      "id": "stock-axe-390",
+      "status": "PASS",
+      "detail": {
+        "violations": []
+      }
+    },
+    {
+      "id": "stock-overflow-768",
+      "status": "PASS",
+      "detail": {}
+    },
+    {
+      "id": "stock-overflow-1440",
+      "status": "PASS",
+      "detail": {}
+    },
+    {
+      "id": "runtime-errors",
+      "status": "PASS",
+      "detail": {
+        "errors": [],
+        "consoleErrors": []
+      }
+    }
+  ],
+  "shots": [
+    {
+      "name": "01-catalogo",
+      "sha256": "563b7513effce93ec8acd8e6fce6acb97caeb8863bc5fb091b182a7c7c556ac8"
+    },
+    {
+      "name": "02-entrada",
+      "sha256": "1c4d5f80dedd4ed12787dbc0008489632b57a828293a790d5b464bc27670f5c8"
+    },
+    {
+      "name": "03-vincular",
+      "sha256": "11ea8bcd9c2207baf5bccbb3c2d478bc220a3114ddb55e8dd6044fb34f086e7d"
+    },
+    {
+      "name": "04-conferencia-parcial",
+      "sha256": "bbe0f09d1f98803b26bb9e314ffd77b9bab0e4b8f6f613fcd1ca71934f4a21c0"
+    },
+    {
+      "name": "05-estoque-320",
+      "sha256": "cf1f561ef67fd019abc2b64977e9283da490010bb1dd7a353de9cee95e0299f2"
+    },
+    {
+      "name": "05-estoque-390",
+      "sha256": "21313174c27ac5d89a0515443b3de810e0681331a2afc1d73c099c2b7ca8c898"
+    },
+    {
+      "name": "05-estoque-768",
+      "sha256": "f3cc8f6cbcb5f6c40fd80ce4a1afd2531feada629a58aded6bb0ecc5e0f1ef82"
+    },
+    {
+      "name": "05-estoque-1440",
+      "sha256": "2a6487c681a1b512d36aea337a54c75ae3d4bfd3c2e90ddd12cf8aaace17c33e"
+    }
+  ],
+  "codeHash": "9a6159d927b92f78a76688b4680280062297d7887f8fc909c270d402979637f3"
+}

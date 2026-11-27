@@ -54,7 +54,7 @@ const BancadaQuote = (() => {
     const items=draft.items.map(i=>{
       const prior=i.lineId===undefined||i.lineId===null?null:q.draft.items.find(x=>x.lineId===i.lineId);
       assert(i.lineId===undefined||i.lineId===null||prior&&!seen.has(i.lineId),'O item mudou ou não pertence a esta OS. Reabra o orçamento.');
-      assert(!i.stockSku&&!Object.prototype.hasOwnProperty.call(i,'stockCost'),'Vincule peças pelo estoque.');
+      assert(!Object.prototype.hasOwnProperty.call(i,'stockSku')&&!Object.prototype.hasOwnProperty.call(i,'stockCost'),'Vincule peças pelo estoque.');
       if(prior)seen.add(i.lineId);
       if(prior?.stockSku){assert(i.type===prior.type&&i.name===prior.name&&i.quantity===prior.quantity,'Retire a peça vinculada pela operação de estoque.');return {...prior,unit:i.unit}}
       return {...copy(i),lineId:prior&&prior.type===i.type?prior.lineId:next++};

@@ -27,7 +27,7 @@ const BancadaStock=(()=>{
    const note=disposition==='lost'?'Consumo/perda registrado; não retorna ao estoque.':returned?'Baixa comprovada; '+returned+' un. devolvida(s) ao estoque.':'Baixa não comprovada para toda a linha; sem entrada no estoque.';
    return {product:p,returned,note,event:processed?event(p,type,processed,p.quantity+returned,null,note,when,actor,{osId:o.id,lineId:i.lineId}):null};
  }
- const editable=o=>BancadaQuote.editable(o)&&!o.conclusion&&!['Finalizado','Faturado'].includes(o.status)&&o.cancellation?.events?.filter(e=>['request','withdraw','confirm'].includes(e.type)).at(-1)?.type!=='request';
+ const editable=o=>Number.isSafeInteger(o.id)&&o.id>0&&BancadaQuote.editable(o)&&!o.conclusion&&!['Finalizado','Faturado'].includes(o.status)&&o.cancellation?.events?.filter(e=>['request','withdraw','confirm'].includes(e.type)).at(-1)?.type!=='request';
  function link(stock,o,d,when,actor){
    ensure(editable(o),'Inclusão de peça indisponível neste atendimento.');
    ensure(d.expected===orderKey(o,stock),'A OS ou estoque mudou. Reabra a operação.');

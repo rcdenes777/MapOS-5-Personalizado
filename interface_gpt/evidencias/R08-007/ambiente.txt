@@ -1,8 +1,14 @@
-captured_at_utc: 2026-11-27T19:43:10Z
-repo_head: 46018a5e0fd56a409d2d821a12bcd205467acd38
+captured_at_utc: 2026-11-27T19:50:17Z
+repo_head: 967535353d0be42a3239757e466889e26dee638c
 code_candidate: 86f4c552ac111cec65460768b7023d207824a1b7
+diff_code_candidate_to_af62e809_paths_interface_gpt_assets_referencias:
+  (vazio = sem alteracao)
 diff_code_candidate_to_HEAD_paths_interface_gpt_assets_referencias:
   (vazio = sem alteracao)
+test-read.cjs_blob_86f4c552_af62e809_HEAD:
+  86f4c552 d468c39102791fe9931fbd13376f0736a903eacb
+  af62e809 d468c39102791fe9931fbd13376f0736a903eacb
+  HEAD d468c39102791fe9931fbd13376f0736a903eacb
 overlay_sha256: 4ea423f4e726d8e349d843b4098a4715272cf63573e3dfcbdb4eb9b26e2f7f01
 served_app_css_sha256: 478efdfba10898515df902af8e737ec42cefb27e79334bd70c98a19ea3a4343a
 lab_source_head: 8c256cae4ddaeefad68922abddbb8addfe37c99d

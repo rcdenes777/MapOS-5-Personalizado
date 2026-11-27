@@ -18,7 +18,7 @@ Validação focal, somente leitura, do ciclo restaurado GitHub → Hermes → GP
 
 Os dois hashes de CSS conferem com os valores registrados em `interface_gpt/README.md`; a lista servida é a nativa (`8c256cae`) com o overlay experimental já ativo.
 
-Sobre a linha 2 de `test-read.log` (`candidate(repo HEAD): af62e809`): o rótulo registra o HEAD do repositório no instante da execução, que já incluía o commit de ACK. O código candidato continua sendo `86f4c552`: `git diff 86f4c552..af62e809 -- interface_gpt/assets interface_gpt/referencias` é vazio (registrado em `ambiente.txt`), o blob de `test-read.cjs` é idêntico nos dois commits e o overlay servido tem o SHA-256 do candidato. Nenhum arquivo de código mudou entre o candidato e a execução.
+Sobre a linha 2 de `test-read.log` (`candidate(repo HEAD): af62e809`): o rótulo registra o HEAD do repositório no instante da execução, que já incluía o commit de ACK. O código candidato continua sendo `86f4c552`: o diff de `interface_gpt/assets` e `interface_gpt/referencias` entre `86f4c552` e `af62e809` (e entre `86f4c552` e o HEAD atual) é vazio, o blob de `test-read.cjs` é idêntico nos quatro commits (`d468c391`), e o overlay servido tem o SHA-256 do candidato. Verificação registrada em `ambiente.txt`.
 
 ## Ambiente exercitado
 
@@ -55,7 +55,7 @@ Asserções efetivamente executadas pelo script (todas passaram):
 4. Coluna Total: presente para `admin` (`td[data-label="Total"]` > 0) e **ausente** para `tecnico` (0 células).
 5. Layout móvel (320 px): célula de equipamento com `display: block` e sem overflow horizontal (`scrollWidth <= innerWidth`).
 6. Tablet (1024 px): campo de busca com largura ≥ 160 px.
-7. Detalhe: link da primeira linha aponta para `/index.php/os/visualizar/<id>` no mesmo origin, resposta **200**, sem redirecionamento, `h1` contém `OS <id>`.
+7. Detalhe: o primeiro link de detalhe do documento (a linha 10 nesta fixture) aponta para `/index.php/os/visualizar/<id>` no mesmo origin, resposta **200**, sem redirecionamento, `h1` contém `OS <id>`.
 8. Busca por id: resultado **200** e link da OS presente; busca inexistente (`INEXISTENTE-987654`): **200** com exatamente 1 ocorrência de `Nenhuma OS encontrada`.
 
 ## Teste 2 — capturas da lista de OS do administrador
@@ -67,16 +67,16 @@ Script: `interface_gpt/evidencias/R08-007/capturas-os.cjs` (Playwright/Chromium 
 | 390×900 | 200 | Ordens de serviço | 0 | 324×44, dentro do viewport | `Ver OS 10`, 44×44, visível e clicável | 10 (OS 10 e início da 9 visíveis) | `os-lista-admin-390x900.png` / `72315232f9f58d6cef45d681d75bd782c6acd9e7d41bc7763ed3d1f64d3512d9` |
 | 1440×900 | 200 | Ordens de serviço | 0 | 431×42, dentro do viewport | `Ver OS 10`, 36×36, visível e clicável | 10 (7 visíveis) | `os-lista-admin-1440x900.png` / `5a691140144cb4e852bc8291f6f7cf787ada13713cfd8c09b9bf13dbb10ec82f` |
 
-Critérios: `no_overflow`, `search_visible` e `action_usable` (visível, dentro do viewport, ≥ 24×24 e `elementFromPoint` no centro resolve para o próprio controle) verdadeiros nos dois viewports. A medida de ação cobre o primeiro link de detalhe (`Ver OS 10`); a inspeção visual das duas capturas cobriu os ícones de ver/editar/excluir de todas as linhas visíveis: legíveis, separados e sem sobreposição. **Nenhum defeito objetivo observado; nenhuma alteração de código feita.**
+Critérios: `no_overflow`, `search_visible` e `action_usable` (visível, dentro do viewport, ≥ 24×24 e `elementFromPoint` no centro resolve para o próprio controle) verdadeiros nos dois viewports. A medida de ação cobre o primeiro link de detalhe (`Ver OS 10`); a inspeção visual cobriu as células de ação efetivamente em quadro — 7 linhas em 1440 e apenas o cartão da OS 10 em 390 — todas legíveis, separadas e sem sobreposição. **Nenhum defeito objetivo observado; nenhuma alteração de código feita.**
 
 Bloqueio de rede: a allow-list `page.route` bloqueia toda requisição iniciada pela **página** fora de `http://127.0.0.1:18130`; o `guard.cjs` usa `page.request` (APIRequestContext), que não passa por `page.route`, mas só acessa a própria URL do laboratório (`/index.php/login`) — não há requisição externa do guard.
 
-Observação de fixture (não defeito): o estado sintético não é uniforme. Extrato integral em `estado-fixture.json` (leitura do DOM como administrador em 1440×900, 19:43Z): OS 10 a 3 `Cancelado` com `R$ 0,00`; OS 2 `Aberto` com `R$ 0,00`; OS 1 `Finalizado` com `R$ 320,00`. As capturas mostram apenas as linhas visíveis (10 a 4 em 1440; 10 e início da 9 em 390).
+Observação de fixture (não defeito): o estado sintético não é uniforme. Extrato integral em `estado-fixture.json` (leitura do DOM como administrador em 1440×900, 19:50Z): OS 10 a 3 `Cancelado` com `R$ 0,00`; OS 2 `Aberto` com `R$ 0,00`; OS 1 `Finalizado` com `R$ 320,00`. As capturas mostram apenas as linhas visíveis (10 a 4 em 1440; 10 e início da 9 em 390).
 
 ## Teste 3 — revisão independente
 
 - Revisor: subagente novo, somente leitura, via `delegate_task`; rota efetiva **`deepseek/deepseek-flash`** (herdada da sessão do coordenador, provedor `deepseek`), `delegation_id` `deleg_7e61db6e`, 24 chamadas, 302 s, custo estimado US$ 0,0433. O revisor **executou ferramentas**: releu os scripts, reexecutou `test-read.cjs` (exit 0), refez as medições 390/1440 em Playwright inline, extraiu o estado completo das 10 linhas, revalidou SHA-256 e dimensões das PNGs, conferiu o checkout nativo limpo e procurou segredos.
-- Pacote revisado: `46018a5e` (código `86f4c552` inalterado). Parecer bruto em `revisao-independente.json`.
+- Pacote revisado: `46018a5e` (código `86f4c552` inalterado). Parecer consolidado em `revisao-independente.json`; reauditoria em `revisao-delta.json`.
 - Veredito inicial: **`passed=false`**, com 2 bloqueantes de evidência/relato e 10 sugestões.
 
 Bloqueantes e disposição:
@@ -88,20 +88,22 @@ Bloqueantes e disposição:
 
 Sugestões registradas sem alteração de código (escopo da rodada proíbe corrigir implementação):
 
-- `guard.cjs:8`: `state.includes('active')` também aceita `inactive`; o `MainPID` ainda barra o caso inativo, então não houve passe falso, mas a comparação deve ser exata (`ActiveState`). Recomendação para decisão do GPT.
-- `test-read.cjs:52`: pega o primeiro link de detalhe do documento, não necessariamente o da primeira linha da tabela; o relatório foi ajustado para não afirmar isso.
+- `guard.cjs`: a sugestão inicial de que `state.includes('active')` aceitaria `inactive` foi verificada na reauditoria e é **improcedente** — `state` é um array (`split('\n')`) e `includes` é comparação exata; nenhuma mudança necessária.
+- `test-read.cjs:52`: pega o primeiro link de detalhe do documento (linha 10 nesta fixture), não o da primeira linha por seletor; o relatório foi ajustado para não afirmar isso.
 - `capturas-os.cjs`: o script só falha por suas três asserções booleanas; `status`, `h1` e número de linhas são observacionais (registrados em `capturas-os.json`, não asseridos). O revisor não reexecutou o script para não sobrescrever as capturas; a reprodução inline bateu com todas as métricas.
-- `capturas-os.log` não traz bloco de proveniência; `ambiente.txt` supre ambiente, SHAs e comandos de verificação.
-- Custos: números do coordenador têm agora artefato próprio em `custos.json`; os do revisor vêm do resultado da delegação.
+- `ambiente.txt` registra ambiente, endpoints de diff, blobs e SHAs de CSS; `estado-fixture.json` é autodescritivo (`captured_at_utc`, papel, viewport, seletor); `custos.json` guarda a sessão do coordenador e as duas revisões.
+
+Reauditoria incremental (commit `96753535`): revisor novo `deepseek/deepseek-flash` (`deleg_f9408146`, 35 chamadas, 339 s, US$ 0,0513 estimado) confirmou **os dois bloqueantes resolvidos**, sem novos bloqueantes, reexecutando `test-read.cjs` e revalidando o DOM, os SHAs e o checkout nativo. As demais sugestões foram incorporadas nesta versão do relatório.
 
 ## Rotas e custo
 
 | Papel | Configuração | Observado na execução |
 |---|---|---|
-| Coordenador (cron) | job `fb7db49cdf80`, `model: deepseek-chat`, `provider: deepseek` | sessão `deepseek-flash` / `deepseek`, `base_url=https://api.deepseek.com/v1`; 32 chamadas, 78.303 tokens de entrada, 17.806 de saída, 2.843.136 de cache lido, 6.952 de reasoning (`custos.json`) |
-| Revisor independente | subagente herda o modelo do processo | `deepseek/deepseek-flash`, 24 chamadas, 1.255.066 tokens de entrada, 53.373 de saída, custo estimado US$ 0,0433 |
+| Coordenador (cron) | job `fb7db49cdf80`, `model: deepseek-chat`, `provider: deepseek` | sessão `deepseek-flash` / `deepseek`, `base_url=https://api.deepseek.com/v1`; 45 chamadas, 95.270 tokens de entrada, 29.041 de saída, 4.476.416 de cache lido, 9.499 de reasoning (snapshot 19:50Z em `custos.json`) |
+| Revisor inicial | subagente herda o modelo do processo | `deepseek/deepseek-flash`, 24 chamadas, 1.255.066 tokens de entrada (inclui leitura de cache; o split não é exposto pelo resultado da delegação) e 53.373 de saída; US$ 0,0433 estimados |
+| Reauditoria | subagente herda o modelo do processo | `deepseek/deepseek-flash`, 35 chamadas, 1.892.803 tokens de entrada (idem) e 65.524 de saída; US$ 0,0513 estimados |
 
-Custo estimado do coordenador: **US$ 0,031** (`cost_status=estimated`, fonte `official_docs_snapshot`, leitura às 19:43Z; o valor final fecha ao término da sessão); custo real registrado no `state.db`: US$ 0. Início do ciclo: 2026-11-27T19:35:11Z (16:35 -03).
+Custo estimado do coordenador: **US$ 0,045** (`cost_status=estimated`, fonte `official_docs_snapshot`, snapshot às 19:50Z; o valor fecha ao término da sessão). `actual_cost_usd` consta como 0,0 no registro de uso, mas **não é um custo real reconciliado** — o status permanece estimado. Início do ciclo: 2026-11-27T19:35:11Z (16:35 -03). Rotas e custos são lidos do `state.db` e do resultado da delegação; não foram verificados de forma independente.
 
 ## Limitações e riscos
 
@@ -109,7 +111,7 @@ Custo estimado do coordenador: **US$ 0,031** (`cost_status=estimated`, fonte `of
 - Capturas do administrador em 390 e 1440; o técnico foi coberto pelo `test-read.cjs` em 320 e 1024, não por captura própria.
 - "Usabilidade da ação" foi medida por visibilidade, alvo ≥ 24 px e acerto de `elementFromPoint` no primeiro link de detalhe; os demais ícones foram julgados por inspeção visual das capturas. A navegação real de detalhe e busca foi exercitada pelo `test-read.cjs` (ambos os papéis).
 - `capturas-os.cjs` não assere `status`, `h1` e contagem de linhas; são registros observacionais no JSON. O bloqueio de rede vale para requisições da página; o guard acessa apenas a URL do laboratório via `page.request`.
-- `guard.cjs` tem endurecimento pendente na checagem de `ActiveState` (sugestão da revisão); não foi alterado nesta rodada, por proibição de mudança de implementação e para preservar a identidade do harness testado.
+- `guard.cjs`: nenhum defeito encontrado; a sugestão inicial sobre `includes('active')` foi refutada na reauditoria (array com comparação exata). O harness não foi alterado nesta rodada.
 - Overlay CSS experimental depende da estrutura e dos rótulos nativos; navegadores sem `:has()` mantêm a apresentação original.
 - Nenhuma escrita de domínio; apenas sessões normais de login. Laboratório sintético, sem dados, credenciais ou serviços de produção.
 - O estado das OS sintéticas varia (ver `estado-fixture.json`); não é um fixture recriado para esta rodada.

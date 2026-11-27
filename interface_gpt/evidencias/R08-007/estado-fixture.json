@@ -1,52 +1,70 @@
-[
-  {
-    "numero": "10",
-    "status": "Cancelado",
-    "total": "R$ 0,00"
-  },
-  {
-    "numero": "9",
-    "status": "Cancelado",
-    "total": "R$ 0,00"
-  },
-  {
-    "numero": "8",
-    "status": "Cancelado",
-    "total": "R$ 0,00"
-  },
-  {
-    "numero": "7",
-    "status": "Cancelado",
-    "total": "R$ 0,00"
-  },
-  {
-    "numero": "6",
-    "status": "Cancelado",
-    "total": "R$ 0,00"
-  },
-  {
-    "numero": "5",
-    "status": "Cancelado",
-    "total": "R$ 0,00"
-  },
-  {
-    "numero": "4",
-    "status": "Cancelado",
-    "total": "R$ 0,00"
-  },
-  {
-    "numero": "3",
-    "status": "Cancelado",
-    "total": "R$ 0,00"
-  },
-  {
-    "numero": "2",
-    "status": "Aberto",
-    "total": "R$ 0,00"
-  },
-  {
-    "numero": "1",
-    "status": "Finalizado",
-    "total": "R$ 320,00"
-  }
-]
+{
+  "captured_at_utc": "2026-11-27T19:50:13.807Z",
+  "url": "http://127.0.0.1:18130/index.php/os",
+  "status": 200,
+  "role": "admin",
+  "viewport": "1440x900",
+  "selector": "tbody tr (data-label cells)",
+  "rows": [
+    {
+      "row": 1,
+      "numero": "10",
+      "status": "Cancelado",
+      "total": "R$ 0,00"
+    },
+    {
+      "row": 2,
+      "numero": "9",
+      "status": "Cancelado",
+      "total": "R$ 0,00"
+    },
+    {
+      "row": 3,
+      "numero": "8",
+      "status": "Cancelado",
+      "total": "R$ 0,00"
+    },
+    {
+      "row": 4,
+      "numero": "7",
+      "status": "Cancelado",
+      "total": "R$ 0,00"
+    },
+    {
+      "row": 5,
+      "numero": "6",
+      "status": "Cancelado",
+      "total": "R$ 0,00"
+    },
+    {
+      "row": 6,
+      "numero": "5",
+      "status": "Cancelado",
+      "total": "R$ 0,00"
+    },
+    {
+      "row": 7,
+      "numero": "4",
+      "status": "Cancelado",
+      "total": "R$ 0,00"
+    },
+    {
+      "row": 8,
+      "numero": "3",
+      "status": "Cancelado",
+      "total": "R$ 0,00"
+    },
+    {
+      "row": 9,
+      "numero": "2",
+      "status": "Aberto",
+      "total": "R$ 0,00"
+    },
+    {
+      "row": 10,
+      "numero": "1",
+      "status": "Finalizado",
+      "total": "R$ 320,00"
+    }
+  ]
+}

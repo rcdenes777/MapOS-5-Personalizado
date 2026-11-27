@@ -1,0 +1,268 @@
+{
+  "generatedAt": "2026-11-27T00:58:31.414Z",
+  "codeSha": "uncommitted-d2627c1df25f686465b8b1d2a8d61088dfd67466962152ee582cf090a5ceb0c0",
+  "incrementSha": "647dec727fbbc6673fa713d517476f4336fb3314",
+  "total": 40,
+  "summary": {
+    "PASS": 40
+  },
+  "results": [
+    {
+      "id": "R08-B01",
+      "desc": "Duas linhas idênticas + serviço recebem IDs distintos no editor real",
+      "status": "PASS",
+      "detail": "{\"L\":[{\"lineId\":1,\"type\":\"Peça\",\"name\":\"IGBT\",\"quantity\":3,\"unit\":1000},{\"lineId\":2,\"type\":\"Peça\",\"name\":\"IGBT\",\"quantity\":3,\"unit\":1000},{\"lineId\":3,\"type\":\"Serviço\",\"name\":\"Diagnóstico\",\"quantity\":1,\"unit\":2000}],\"res\":{\"open\":false,\"error\":\"\",\"toast\":\"Registro atualizado na demonstração.\"}}"
+    },
+    {
+      "id": "R08-B02",
+      "desc": "FormData preserva os IDs e o editor reabre com a identidade gravada",
+      "status": "PASS",
+      "detail": "{\"formIds\":[\"1\",\"2\",\"3\"],\"fm\":[\"1\",\"2\",\"3\"]}"
+    },
+    {
+      "id": "R08-B03",
+      "desc": "Editar nome, quantidade e preço no navegador preserva o ID da linha",
+      "status": "PASS",
+      "detail": "{\"L2\":[{\"lineId\":1,\"type\":\"Peça\",\"name\":\"IGBT revisado\",\"quantity\":2,\"unit\":1200},{\"lineId\":2,\"type\":\"Peça\",\"name\":\"IGBT\",\"quantity\":3,\"unit\":1000},{\"lineId\":3,\"type\":\"Serviço\",\"name\":\"Diagnóstico\",\"quantity\":1,\"unit\":2000}],\"res\":{\"open\":false,\"error\":\"\",\"toast\":\"Registro atualizado na demonstração.\"}}"
+    },
+    {
+      "id": "R08-B04",
+      "desc": "Inclusão posterior não recicla o ID da linha removida",
+      "status": "PASS",
+      "detail": "{\"added\":{\"lineId\":4,\"type\":\"Peça\",\"name\":\"Novo\",\"quantity\":1,\"unit\":500},\"added2\":{\"lineId\":5,\"type\":\"Peça\",\"name\":\"Outro\",\"quantity\":1,\"unit\":500}}"
+    },
+    {
+      "id": "R08-B05",
+      "desc": "Trocar o tipo no navegador aloca novo ID",
+      "status": "PASS",
+      "detail": "{\"before\":1,\"after\":6}"
+    },
+    {
+      "id": "R08-B06",
+      "desc": "ID forjado no FormData é rejeitado com mensagem exata e rascunho intacto",
+      "status": "PASS",
+      "detail": "{\"res\":{\"open\":true,\"error\":\"O item mudou ou não pertence a esta OS. Reabra o orçamento.\",\"toast\":\"Registro atualizado na demonstração.\"},\"same\":true}"
+    },
+    {
+      "id": "R08-B07",
+      "desc": "Publicação anterior imutável; rascunho alterado muda a vigência",
+      "status": "PASS",
+      "detail": "{\"v1\":1,\"changed\":false}"
+    },
+    {
+      "id": "R08-B08",
+      "desc": "Nova publicação preserva a v1 e cria a v2",
+      "status": "PASS",
+      "detail": "{\"count\":2}"
+    },
+    {
+      "id": "R08-B09",
+      "desc": "Aprovação não vira cobrança nem recebimento",
+      "status": "PASS",
+      "detail": "{\"res\":{\"open\":false,\"error\":\"\",\"toast\":\"Registro atualizado na demonstração.\"},\"s1\":{\"status\":\"Aprovado\",\"total\":0,\"paid\":0,\"billing\":null,\"approval\":\"Aprovado\",\"ledger\":null}}"
+    },
+    {
+      "id": "R08-B10",
+      "desc": "Cobrança formalizada carrega os lineIds e o total vigente",
+      "status": "PASS",
+      "detail": "{\"s2\":{\"status\":\"Aprovado\",\"total\":9900,\"paid\":0,\"billing\":{\"due\":\"2026-11-26\",\"items\":[{\"lineId\":6,\"name\":\"IGBT revisado\",\"type\":\"Serviço\",\"quantity\":2,\"unit\":1200},{\"lineId\":2,\"name\":\"IGBT\",\"type\":\"Peça\",\"quantity\":5,\"unit\":1000},{\"lineId\":3,\"name\":\"Diagnóstico\",\"type\":\"Serviço\",\"quantity\":1,\"unit\":2000},{\"lineId\":5,\"name\":\"Outro\",\"type\":\"Peça\",\"quantity\":1,\"unit\":500}],\"discount\":0},\"approval\":\"Aprovado\",\"ledger\":null},\"billingIds\":[6,2,3,5]}"
+    },
+    {
+      "id": "R08-B11",
+      "desc": "Sem exceções ou erros de console no fluxo de identidade",
+      "status": "PASS",
+      "detail": "{\"errors\":[],\"consoleErrors\":[]}"
+    },
+    {
+      "id": "R08-B12",
+      "desc": "Impressão A4 renderiza a OS sem erro",
+      "status": "PASS",
+      "detail": "DOCUMENTO\nImpressão da OS #025\n\nPrévia fictícia para avaliação do formato.\n\nVoltar\nCupom 80 mm\nImprimir\nMinha oficina · Demonstração\nOrdem de serviço #025\nClien"
+    },
+    {
+      "id": "R08-B13",
+      "desc": "Modal stale de A é recusado quando A já saiu; B não é atingida",
+      "status": "PASS",
+      "detail": "{\"res\":{\"open\":true,\"error\":\"Item não encontrado.\",\"toast\":\"Registro atualizado na demonstração.\"},\"L\":[{\"lineId\":2,\"type\":\"Peça\",\"name\":\"IGBT\",\"quantity\":3,\"unit\":1000},{\"lineId\":3,\"type\":\"Serviço\",\"name\":\"Diagnóstico\",\"quantity\":1,\"unit\":2000}],\"modalA\":{\"lineId\":1,\"key\":\"[25,1,1,\\\"Peça\\\",\\\"IGBT\\\",3,1000]\"},\"removeA\":[2,3],\"bId\":2}"
+    },
+    {
+      "id": "R08-B14",
+      "desc": "Retirada parcial preserva ID; replay da chave antiga é rejeitado",
+      "status": "PASS",
+      "detail": "{\"res\":{\"open\":false,\"error\":\"\",\"toast\":\"Registro atualizado na demonstração.\"},\"afterPartial\":[{\"lineId\":2,\"type\":\"Peça\",\"name\":\"IGBT\",\"quantity\":2,\"unit\":1000},{\"lineId\":3,\"type\":\"Serviço\",\"name\":\"Diagnóstico\",\"quantity\":1,\"unit\":2000}],\"replay\":{\"err\":\"O item ou pedido mudou. Reabra a conferência.\",\"same\":true}}"
+    },
+    {
+      "id": "R08-B15",
+      "desc": "Nova chave após retirada parcial permite continuar",
+      "status": "PASS",
+      "detail": "{\"res\":{\"open\":false,\"error\":\"\",\"toast\":\"Registro atualizado na demonstração.\"},\"modalB2\":{\"lineId\":2,\"key\":\"[25,1,2,\\\"Peça\\\",\\\"IGBT\\\",2,1000]\"}}"
+    },
+    {
+      "id": "R08-B16",
+      "desc": "Reordenar não redireciona a seleção: a linha escolhida é removida",
+      "status": "PASS",
+      "detail": "{\"target\":{\"lineId\":3,\"type\":\"Serviço\",\"name\":\"Diagnóstico\",\"quantity\":1,\"unit\":2000},\"res\":{\"open\":false,\"error\":\"\",\"toast\":\"Registro atualizado na demonstração.\"},\"modalR\":{\"lineId\":3,\"key\":\"[25,1,3,\\\"Serviço\\\",\\\"Diagnóstico\\\",1,2000]\"}}"
+    },
+    {
+      "id": "R08-B17",
+      "desc": "Chave de outra OS, chave forjada e ID inexistente são rejeitados sem estado",
+      "status": "PASS",
+      "detail": "{\"out\":{\"[23,null,1,\\\"Serviço\\\",\\\"Serviço de reparo (demonstração inicial)\\\",1,24000]\":\"O item ou pedido mudou. Reabra a conferência.\",\"forjada\":\"O item ou pedido mudou. Reabra a conferência.\",\"missing\":\"Item não encontrado.\"},\"same\":true}"
+    },
+    {
+      "id": "R08-B18",
+      "desc": "Duplo envio do mesmo item não duplica evento",
+      "status": "PASS",
+      "detail": "{\"res\":{\"open\":false,\"error\":\"\",\"toast\":\"Registro atualizado na demonstração.\"},\"replay2\":{\"err\":\"Item não encontrado.\",\"events\":6}}"
+    },
+    {
+      "id": "R08-B19",
+      "desc": "Sem exceções ou erros de console no cancelamento por identidade",
+      "status": "PASS",
+      "detail": "{\"errors\":[],\"consoleErrors\":[]}"
+    },
+    {
+      "id": "R08-B20",
+      "desc": "Duas abas: envio obsoleto é interrompido com a mensagem exata e sem sobrescrever a outra aba",
+      "status": "PASS",
+      "detail": "{\"res\":{\"open\":false,\"error\":\"\",\"toast\":\"Dados alterados em outra aba. Reabra a operação para evitar sobrescrever a atualização.\"},\"post\":{\"toast\":\"Dados alterados em outra aba. Reabra a operação para evitar sobrescrever a atualização.\",\"raw\":\"{\\\"clients\\\":[{\\\"id\\\":1,\\\"name\\\":\\\"Clima Sul Serviços\\\",\\\"phone\\\":\\\"(45) 90000-0101\\\"},{\\\"id\\\":2,\\\"name\\\":\\\"Marina Alves\\\",\\\"phone\\\":\\\"(45) 90000-0102\\\"},{\\\"id\\\":3,\\\"name\\\":\\\"Refrigeração Horizonte\\\",\\\"phone\\\":\\\"(45) 90000-0103\\\"},{\\\"id\\\":4,\\\"name\\\":\\\"Paulo Lima\\\",\\\"phone\\\":\\\"(45) 90000-0104\\\"}],\\\"orders\\\":[{\\\"id\\\":24,\\\"client\\\":1,\\\"brand\\\":\\\"LG\\\",\\\"model\\\":\\\"Dual Inverter\\\",\\\"type\\\":\\\"Placa eletrônica\\\",\\\"defect\\\":\\\"Sem comunicação com a condensadora.\\\",\\\"entry\\\":\\\"2026-11-26\\\",\\\"items\\\":\\\"\\\",\\\"condition\\\":\\\"\\\",\\\"status\\\":\\\"Aberto\\\",\\\"total\\\":0,\\\"paid\\\":0,\\\"approval\\\":\\\"Sem orçamento\\\",\\\"delivery\\\":null,\\\"conclusion\\\":null,\\\"warrantyDays\\\":0,\\\"history\\\":[{\\\"time\\\":\\\"2026-11-21\\\",\\\"text\\\":\\\"Entrada registrada\\\"}],\\\"cancellation\\\":{\\\"events\\\":[]}},{\\\"id\\\":23,\\\"client\\\":2,\\\"brand\\\":\\\"Samsung\\\",\\\"model\\\":\\\"Digital Inverter\\\",\\\"type\\\":\\\"Placa eletrônica\\\",\\\"defect\\\":\\\"Placa sem alimentação.\\\",\\\"entry\\\":\\\"2026-11-21\\\",\\\"items\\\":\\\"\\\",\\\"condition\\\":"
+    },
+    {
+      "id": "R08-B21",
+      "desc": "Legado sem IDs: snapshot/cobrança intactos, rascunho identificado, portal sem IDs privados",
+      "status": "PASS",
+      "detail": "{\"legacyAfter\":{\"v\":\"[{\\\"number\\\":1,\\\"items\\\":[{\\\"type\\\":\\\"Peça\\\",\\\"name\\\":\\\"IGBT legado\\\",\\\"quantity\\\":2,\\\"unit\\\":1000}],\\\"discount\\\":0,\\\"terms\\\":{},\\\"total\\\":2000,\\\"created\\\":\\\"2026-11-26\\\",\\\"decision\\\":null}]\",\"b\":\"{\\\"due\\\":\\\"2026-12-20\\\",\\\"items\\\":[{\\\"type\\\":\\\"Peça\\\",\\\"name\\\":\\\"IGBT legado\\\",\\\"quantity\\\":2,\\\"unit\\\":1000}],\\\"discount\\\":0}\",\"draft\":[1],\"portal\":\"{\\\"id\\\":25,\\\"status\\\":\\\"Aberto\\\",\\\"entry\\\":\\\"2026-11-26\\\",\\\"forecast\\\":\\\"\\\",\\\"equipment\\\":\\\"Philco · R08T\\\",\\\"finance\\\":{\\\"total\\\":2000,\\\"paid\\\":0,\\\"balance\\\":2000,\\\"status\\\":\\\"Em aberto\\\"},\\\"quote\\\":{\\\"number\\\":1,\\\"created\\\":\\\"2026-11-26\\\",\\\"items\\\":[{\\\"type\\\":\\\"Peça\\\",\\\"name\\\":\\\"IGBT legado\\\",\\\"quantity\\\":2,\\\"unit\\\":1000}],\\\"discount\\\":0,\\\"total\\\":2000,\\\"terms\\\":{\\\"equipment\\\":\\\"\\\",\\\"defect\\\":\\\"\\\"},\\\"decision\\\":null,\\\"readOnly\\\":false},\\\"attachments\\\":[]}\"}}"
+    },
+    {
+      "id": "R08-B22",
+      "desc": "N1: raiz aberta/cancelada não usa fallback temporal; finalizada conserva o prazo",
+      "status": "PASS",
+      "detail": "{\"open\":true,\"final\":true,\"text\":true}"
+    },
+    {
+      "id": "R08-B23",
+      "desc": "N2: retorno de outra origem é identificado no link/rota direta, sem herdar prazo; mesma origem mantém o texto normal",
+      "status": "PASS",
+      "detail": "{\"text\":\"ATENDIMENTO / #025\\nPhilco · R08T\\n\\nClima Sul Serviços · Entrada em 26/11/2026\\n\\nVoltar\\nImprimir\\nANDAMENTO TÉCNICO\\nAberto\\nConclusão: 20/11/2026\\nAtualizar andamento\\nFINANCEIRO\\nEm aberto\\nSaldo: R$ 20,00\\nRegistrar pagamento\\nRETIRADA\\nNão entregue\\nRegistro independente do pagamento\\nRegistrar entrega\\nVisão g\",\"label\":true,\"href\":\"#os/90/garantia\",\"period\":false,\"direct\":true,\"sameOrigin\":false}"
+    },
+    {
+      "id": "R08-B24",
+      "desc": "N5: produto zerado não é oferecido e injeção direta é recusada",
+      "status": "PASS",
+      "detail": "{\"zero\":[\"\",\"P-001\",\"P-003\"],\"n5res\":{\"open\":true,\"error\":\"Produto inexistente ou sem estoque disponível.\"}}"
+    },
+    {
+      "id": "R08-B25",
+      "desc": "N6: selo normalizado duplicado no modo novo é recusado; unidade existente é aceita",
+      "status": "PASS",
+      "detail": "{\"first\":{\"before\":8,\"after\":9,\"id\":25,\"toast\":\"OS #025 criada\",\"seal\":\"ABC 123\"},\"dup\":{\"before\":9,\"after\":9,\"id\":25,\"toast\":\"Selo já cadastrado. Selecione a unidade existente ou identifique outra.\",\"seal\":\"ABC 123\"},\"existing\":{\"before\":9,\"after\":10,\"id\":26,\"toast\":\"OS #026 criada\",\"seal\":\"ABC 123\"}}"
+    },
+    {
+      "id": "R08-B25b",
+      "desc": "N6: outro cliente, modo \"identificar depois\" e selo de substituta também são recusados",
+      "status": "PASS",
+      "detail": "{\"other\":{\"before\":10,\"after\":10,\"toast\":\"Selo já cadastrado. Selecione a unidade existente ou identifique outra.\"},\"later\":{\"before\":10,\"after\":10,\"toast\":\"Selo já cadastrado. Selecione a unidade existente ou identifique outra.\"},\"sub\":{\"before\":10,\"after\":10,\"id\":26,\"toast\":\"Selo já cadastrado. Selecione a unidade existente ou identifique outra.\",\"seal\":\"ABC 123\"}}"
+    },
+    {
+      "id": "R08-B26",
+      "desc": "Sem exceções ou erros de console nas ressalvas N1/N2/N5/N6",
+      "status": "PASS",
+      "detail": "{\"errors\":[],\"consoleErrors\":[]}"
+    },
+    {
+      "id": "R08-B27-1440",
+      "desc": "Editor de orçamento sem overflow horizontal em 1440px",
+      "status": "PASS",
+      "detail": "{\"overflow\":false}"
+    },
+    {
+      "id": "R08-B28-1440",
+      "desc": "Modal de conferência sem overflow horizontal em 1440px",
+      "status": "PASS",
+      "detail": "{\"overflow\":false}"
+    },
+    {
+      "id": "R08-AXE-modal-cancelitem-1440",
+      "desc": "axe sem violações: modal-cancelitem 1440",
+      "status": "PASS",
+      "detail": "[]"
+    },
+    {
+      "id": "R08-B27-768",
+      "desc": "Editor de orçamento sem overflow horizontal em 768px",
+      "status": "PASS",
+      "detail": "{\"overflow\":false}"
+    },
+    {
+      "id": "R08-B28-768",
+      "desc": "Modal de conferência sem overflow horizontal em 768px",
+      "status": "PASS",
+      "detail": "{\"overflow\":false}"
+    },
+    {
+      "id": "R08-AXE-modal-cancelitem-768",
+      "desc": "axe sem violações: modal-cancelitem 768",
+      "status": "PASS",
+      "detail": "[]"
+    },
+    {
+      "id": "R08-B27-390",
+      "desc": "Editor de orçamento sem overflow horizontal em 390px",
+      "status": "PASS",
+      "detail": "{\"overflow\":false}"
+    },
+    {
+      "id": "R08-B28-390",
+      "desc": "Modal de conferência sem overflow horizontal em 390px",
+      "status": "PASS",
+      "detail": "{\"overflow\":false}"
+    },
+    {
+      "id": "R08-AXE-modal-cancelitem-390",
+      "desc": "axe sem violações: modal-cancelitem 390",
+      "status": "PASS",
+      "detail": "[]"
+    },
+    {
+      "id": "R08-B27-320",
+      "desc": "Editor de orçamento sem overflow horizontal em 320px",
+      "status": "PASS",
+      "detail": "{\"overflow\":false}"
+    },
+    {
+      "id": "R08-B28-320",
+      "desc": "Modal de conferência sem overflow horizontal em 320px",
+      "status": "PASS",
+      "detail": "{\"overflow\":false}"
+    },
+    {
+      "id": "R08-B29",
+      "desc": "Teclado: foco entra e permanece no modal; Escape fecha e devolve o foco",
+      "status": "PASS",
+      "detail": "{\"firstFocus\":true,\"trapped\":true,\"closed\":true,\"focusBack\":\"modal:cancelitem:25:1\"}"
+    },
+    {
+      "id": "R08-B30",
+      "desc": "Sem exceções ou erros de console na responsividade",
+      "status": "PASS",
+      "detail": "{\"errors\":[],\"consoleErrors\":[]}"
+    }
+  ],
+  "axe": [
+    {
+      "label": "modal-cancelitem",
+      "viewport": 1440,
+      "violations": []
+    },
+    {
+      "label": "modal-cancelitem",
+      "viewport": 768,
+      "violations": []
+    },
+    {
+      "label": "modal-cancelitem",
+      "viewport": 390,
+      "violations": []
+    }
+  ]
+}

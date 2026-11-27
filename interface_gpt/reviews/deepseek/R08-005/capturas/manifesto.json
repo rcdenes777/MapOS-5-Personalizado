@@ -1,0 +1,58 @@
+[
+  {
+    "file": "capturas/desktop/01-editor-duas-linhas-identicas-1440.png",
+    "sha256": "9ad127139b7583f8e0a599285483f9bad31c80d1eed5fa9343cef8ab93741640",
+    "bytes": 245737,
+    "width": 1440,
+    "w": 1440,
+    "h": 1279
+  },
+  {
+    "file": "capturas/desktop/02-impressao-os-1440.png",
+    "sha256": "c3763d57eafeccc7e1a8f1af5a0d74a2198869824870af4a068c57518c58080e",
+    "bytes": 102552,
+    "width": 1440,
+    "w": 1440,
+    "h": 900
+  },
+  {
+    "file": "capturas/desktop/03-editor-orcamento-1440.png",
+    "sha256": "1e808e85c2380dd858c3a0c2e17fb62775eb7d3d1581698a06588631d37b1ed9",
+    "bytes": 244880,
+    "width": 1440,
+    "w": 1440,
+    "h": 1229
+  },
+  {
+    "file": "capturas/desktop/05-modal-conferencia-1440.png",
+    "sha256": "0bdf44d552cebae4b2c458cc0ff3d6fc9cedb71135030570b2ce7a5240814bd9",
+    "bytes": 193739,
+    "width": 1440,
+    "w": 1440,
+    "h": 1434
+  },
+  {
+    "file": "capturas/tablet/06-modal-conferencia-768.png",
+    "sha256": "22bd10f81b1c358e33a08aa856dd4ed2866c341ad922a3389796a6ad69bb60dc",
+    "bytes": 141667,
+    "width": 768,
+    "w": 768,
+    "h": 1521
+  },
+  {
+    "file": "capturas/mobile/04-editor-orcamento-390.png",
+    "sha256": "50704a148ea4f10b6569ed4e67174c9edf8f62c0f3008f298ce20af4a0890d2b",
+    "bytes": 120891,
+    "width": 390,
+    "w": 390,
+    "h": 2174
+  },
+  {
+    "file": "capturas/mobile320/07-modal-conferencia-320.png",
+    "sha256": "8da99060750c2aa08e06b2164e8c82f413c4845845fd1dfcb80f2411e56788a4",
+    "bytes": 113621,
+    "width": 320,
+    "w": 320,
+    "h": 2049
+  }
+]

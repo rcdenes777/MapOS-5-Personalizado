@@ -1,0 +1,48 @@
+diff --git a/interface_gpt/assets/cancel.js b/interface_gpt/assets/cancel.js
+index cbb8cd3c..20c83f48 100644
+--- a/interface_gpt/assets/cancel.js
++++ b/interface_gpt/assets/cancel.js
+@@ -24,7 +24,7 @@ const BancadaCancel=(()=>{
+  }
+  function withdraw(o,reason,when){return add(o,'withdraw',{request:requestId(o),reason:text(reason,2000)},when)}
+  function remove(o,lineId,quantity,disposition,reason,when,orders=[],expected,stock,actor){
+-   guard(o,orders);const request=requestId(o),q=BancadaQuote.init(o),index=q.draft.items.findIndex(i=>i.lineId===lineId),item=q.draft.items[index];
++   guard(o,orders);const draft=copy(o),request=requestId(draft),q=BancadaQuote.init(draft),index=q.draft.items.findIndex(i=>i.lineId===lineId),item=q.draft.items[index];
+    ensure(Number.isSafeInteger(lineId)&&lineId>0&&item,'Item não encontrado.');
+    ensure(expected===itemKey(o,item),'O item ou pedido mudou. Reabra a conferência.');
+    ensure(Number.isInteger(quantity)&&quantity>0&&quantity<=item.quantity,'Quantidade inválida.');
+@@ -35,6 +35,10 @@ const BancadaCancel=(()=>{
+    if(quantity===item.quantity)q.draft.items.splice(index,1);else item.quantity-=quantity;
+    // Original clears OS discount when there is no formalized obligation; with obligation preserve it separately.
+    q.draft.discount=o.total?Math.min(q.draft.discount,q.draft.items.reduce((s,i)=>s+i.quantity*i.unit,0)):0;
++   BancadaQuote.sync(draft);
++   const actual=BancadaQuote.init(o);
++   if(quantity===actual.draft.items[index].quantity)actual.draft.items.splice(index,1);else actual.draft.items[index].quantity-=quantity;
++   actual.draft.discount=q.draft.discount;
+    BancadaQuote.sync(o);
+    if(plan)BancadaStock.commit(plan);
+    return add(o,'item',{request,item:old,disposition,reason:why,stockReturned:plan?.returned||0,stockMovement:plan?.event?.id??null,stockNote:plan?plan.note:disposition==='unused'?'Baixa não comprovada; sem entrada no estoque.':disposition==='lost'?'Consumo/perda registrado; não retorna ao estoque.':''},when);
+diff --git a/interface_gpt/tests/line-identity.cjs b/interface_gpt/tests/line-identity.cjs
+index 2830ba4d..3add1dd1 100644
+--- a/interface_gpt/tests/line-identity.cjs
++++ b/interface_gpt/tests/line-identity.cjs
+@@ -10,6 +10,7 @@ const draft=items=>({items,discount:0,terms:{}});
+ function make(id=1){const o={id,client:1,brand:'LG',model:'Placa',status:'Aberto',entry:day,total:0,paid:0,history:[]};Q.saveDraft(o,draft([piece(),piece(),service()]));return o}
+ const rows=o=>C.lines(o),request=o=>C.request(o,'cliente','Solicitação',now);
+ const remove=(o,i,qty=1,key=C.itemKey(o,i))=>C.remove(o,i.lineId,qty,i.type==='Peça'?'unused':'notdone','',now,[],key);
++test('legacy missing line rejects without normalizing order or stock',()=>{const o={id:1,status:'Aberto',total:0,paid:0,history:[],cancellation:{events:[{id:1,type:'request'}]}},stock=[],before=json(stock);reject(()=>C.remove(o,999,1,'unused','',now,[],'bad',stock,'Admin'),'Item não encontrado.',o);eq(json(stock),before)});
+ test('distinct IDs for identical lines',()=>{const o=make();eq(new Set(rows(o).map(i=>i.lineId)).size,3)});
+ test('preserve IDs on edits and reorder; stale quote changes',()=>{const o=make(),[a,b,c]=rows(o),v=Q.publish(o,now);Q.saveDraft(o,draft([b,{...a,quantity:2},c]));eq(rows(o)[0].lineId,b.lineId);eq(rows(o)[1].lineId,a.lineId);eq(Q.vigente(o),null);eq(v.items[0].quantity,3)});
+ test('new line never reuses removed ID',()=>{const o=make(),[a,b,c]=rows(o);Q.saveDraft(o,draft([b,c]));Q.saveDraft(o,draft([...rows(o),piece()]));ok(rows(o).at(-1).lineId>a.lineId);ok(!rows(o).some(i=>i.lineId===a.lineId))});
+diff --git a/interface_gpt/tests/stock.cjs b/interface_gpt/tests/stock.cjs
+index 0d565242..a4856fdd 100644
+--- a/interface_gpt/tests/stock.cjs
++++ b/interface_gpt/tests/stock.cjs
+@@ -22,6 +22,7 @@ test('editor cannot remove or change linked qty',()=>{const x=setup(),i=link(x);
+ test('editor price only retains stock identity and no debit',()=>{const x=setup(),i=link(x),before=snap(x.stock);Q.saveDraft(x.o,{items:[{type:i.type,name:i.name,quantity:i.quantity,unit:2000,lineId:i.lineId}],discount:0,terms:{}});eq(Q.init(x.o).draft.items[0].stockSku,'P-001');eq(Q.init(x.o).draft.items[0].stockCost,450);eq(snap(x.stock),before)});
+ test('forged link rejected',()=>{const x=setup();Q.init(x.o);reject(()=>Q.saveDraft(x.o,{items:[{type:'Peça',name:'IGBT',quantity:1,unit:1,stockSku:'P-001'}],discount:0,terms:{}}),'Vincule peças pelo estoque.',x)});
+ test('ordinary removal restores proven balance and id never reused',()=>{const x=setup(),i=link(x),k=S.orderKey(x.o,x.stock);const p=S.unlink(x.stock,x.o,i.lineId,k,now,actor);eq(p.returned,3);eq(x.stock[0].quantity,8);eq(S.balance(x.stock[0],1,i.lineId),0);reject(()=>S.unlink(x.stock,x.o,i.lineId,k,now,actor),'A OS ou estoque mudou. Reabra a operação.',x);ok(link(x).lineId>i.lineId)});
++test('invalid sibling row cannot partially remove a linked item',()=>{const x=setup(),i=link(x);request(x);const key=C.itemKey(x.o,i);x.o.quote.draft.items.push({lineId:2,type:'Peça',name:'Inválida',quantity:1,unit:-1});x.o.quote.nextLineId=3;reject(()=>C.remove(x.o,i.lineId,1,'unused','',now,[],key,x.stock,actor),'Quantidade ou valor inválido.',x)});
+ test('partial unused returns only proven quantity',()=>{const x=setup(),i=link(x);request(x);const e=remove(x,i,1,'unused');eq(e.stockReturned,1);eq(x.stock[0].quantity,6);eq(C.lines(x.o)[0].lineId,i.lineId);eq(S.balance(x.stock[0],1,i.lineId),2);eq(remove(x,C.lines(x.o)[0],2,'unused').stockReturned,2);eq(x.stock[0].quantity,8)});
+ test('consumption never increases stock and retains cost',()=>{const x=setup(),i=link(x);request(x);const e=remove(x,i,2,'lost','IGBT queimou');eq(e.item.stockCost,450);eq(e.stockReturned,0);eq(x.stock[0].quantity,5);eq(x.stock[0].movements.at(-1).type,'os_consumo');eq(S.balance(x.stock[0],1,i.lineId),1)});
+ test('partial proof reconciles without return',()=>{const x=setup(),i=link(x);x.stock[0].movements[0].quantity=-1;request(x);const e=remove(x,i,2,'unused');eq(e.stockReturned,0);eq(x.stock[0].quantity,5);eq(x.stock[0].movements.at(-1).type,'os_conciliacao');eq(x.stock[0].movements.at(-1).quantity,1);eq(S.balance(x.stock[0],1,i.lineId),0)});

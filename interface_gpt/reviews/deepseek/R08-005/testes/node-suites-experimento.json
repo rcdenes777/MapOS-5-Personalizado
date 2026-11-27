@@ -1,0 +1,133 @@
+{
+  "timestamp": "2026-11-27T00:56:44.520479+00:00",
+  "code": "uncommitted-experimental-checkpoint",
+  "code_sha256": "d2627c1df25f686465b8b1d2a8d61088dfd67466962152ee582cf090a5ceb0c0",
+  "suites": [
+    {
+      "path": "interface_gpt/tests/cancel-ui.cjs",
+      "sha256": "12a01ee293be946b59970e48a80a691186e6b5b45130bc33cc9c0d98f202ec91",
+      "exit": 0,
+      "stdout": "11 cancellation UI checks passed.\n",
+      "stderr": ""
+    },
+    {
+      "path": "interface_gpt/tests/cancel.cjs",
+      "sha256": "958dad07ea825b3e23c39f39cdf84ca8921c786593cf4df72d83426d958220e5",
+      "exit": 0,
+      "stdout": "30 cancellation domain checks passed.\n",
+      "stderr": ""
+    },
+    {
+      "path": "interface_gpt/tests/finance-ui.cjs",
+      "sha256": "3a4e2ddc0705f0489043994c1edebe0ad2ab92dcae4100be301250f100c53472",
+      "exit": 0,
+      "stdout": "12 finance integration checks passed.\n",
+      "stderr": ""
+    },
+    {
+      "path": "interface_gpt/tests/finance.cjs",
+      "sha256": "8ecade21938d110fa7824929d416e4a17d26f0a821e6cd0467da31699c915dd8",
+      "exit": 0,
+      "stdout": "24 financial domain checks passed.\n",
+      "stderr": ""
+    },
+    {
+      "path": "interface_gpt/tests/line-identity-ui.cjs",
+      "sha256": "4819c9d1620ecd088cae1921bdff9f69ee0eb12a5d568cd44f149859ce4cb5f5",
+      "exit": 0,
+      "stdout": "6 stable line identity UI checks passed.\n",
+      "stderr": ""
+    },
+    {
+      "path": "interface_gpt/tests/line-identity.cjs",
+      "sha256": "0d473f7d9e66fa03b977142403ff3247a2eb3383467fd50b1ea03c62e3176833",
+      "exit": 0,
+      "stdout": "16 stable line identity domain checks passed.\n",
+      "stderr": ""
+    },
+    {
+      "path": "interface_gpt/tests/portal-page.cjs",
+      "sha256": "fe9441e115c08964f09914a8fe4adc0857dd9b77d2f18c600a26ce59c894d2b0",
+      "exit": 0,
+      "stdout": "8 portal page render checks passed.\n",
+      "stderr": ""
+    },
+    {
+      "path": "interface_gpt/tests/portal.cjs",
+      "sha256": "2f7d0986c5529a0db39e96f902b38f25b0085d51cf42b82ec5e5a4b0a6248216",
+      "exit": 0,
+      "stdout": "24 portal domain checks passed.\n",
+      "stderr": ""
+    },
+    {
+      "path": "interface_gpt/tests/quote.cjs",
+      "sha256": "2ade592415a26f7a3e82b169f267752e30f1d29681828e93e947775c1d138f72",
+      "exit": 0,
+      "stdout": "29 quote domain checks passed.\n",
+      "stderr": ""
+    },
+    {
+      "path": "interface_gpt/tests/smoke.cjs",
+      "sha256": "a37d0dbc206c8526f6ae7972008e798eae43144fc7da68b53823fd0bdc4028ed",
+      "exit": 0,
+      "stdout": "72 profile/route combinations; queue, financial display and escaping checks passed.\n",
+      "stderr": ""
+    },
+    {
+      "path": "interface_gpt/tests/stock-ui.cjs",
+      "sha256": "a2f840425aec390cc52f300982db4997a2b5b418d369af5649247a303fcd9207",
+      "exit": 0,
+      "stdout": "8 stock UI checks passed.\n",
+      "stderr": ""
+    },
+    {
+      "path": "interface_gpt/tests/stock.cjs",
+      "sha256": "413c64f8bcaa852579dcdc1f9b0acd8efd6b6b5f86cdf7164b9b62023c7362fb",
+      "exit": 0,
+      "stdout": "20 stock domain checks passed.\n",
+      "stderr": ""
+    },
+    {
+      "path": "interface_gpt/tests/warranty-refund-ui.cjs",
+      "sha256": "c1246916846d4cbb338c26ca9ce620160f76e752f17bbd493de1bcbf32160fe6",
+      "exit": 0,
+      "stdout": "7 warranty refund UI checks passed.\n",
+      "stderr": ""
+    },
+    {
+      "path": "interface_gpt/tests/warranty-refund.cjs",
+      "sha256": "e7e8471f86492e322880a5368df2070920570809f8c0b798e0220253d2f1644e",
+      "exit": 0,
+      "stdout": "30 warranty refund domain checks passed.\n",
+      "stderr": ""
+    },
+    {
+      "path": "interface_gpt/tests/warranty-swap-ui.cjs",
+      "sha256": "3caa8411f362b7064646acb2579058ce69ec9de06228d15c51360f8b67395e5c",
+      "exit": 0,
+      "stdout": "6 warranty swap UI checks passed.\n",
+      "stderr": ""
+    },
+    {
+      "path": "interface_gpt/tests/warranty-swap.cjs",
+      "sha256": "caf79cbee5a6b349cfa10b7da9dbe8a9bfe14e4f9f60fda4df785c53ab9efeaa",
+      "exit": 0,
+      "stdout": "22 warranty swap domain checks passed.\n",
+      "stderr": ""
+    },
+    {
+      "path": "interface_gpt/tests/warranty-ui.cjs",
+      "sha256": "40c715cafb8d9f23e27a56d541094894a4b2a4c88c928d14882144c33240fe29",
+      "exit": 0,
+      "stdout": "9 warranty UI checks passed.\n",
+      "stderr": ""
+    },
+    {
+      "path": "interface_gpt/tests/warranty.cjs",
+      "sha256": "e0cbf1a1cc949a705f5054a31ac6169f66ca7e5b35e510d5f3099c70f4393b01",
+      "exit": 0,
+      "stdout": "22 warranty domain checks passed.\n",
+      "stderr": ""
+    }
+  ]
+}

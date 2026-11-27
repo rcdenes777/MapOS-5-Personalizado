@@ -1,0 +1,16 @@
+[
+  {
+    "name": "missing legacy quote remains untouched",
+    "status": "FAIL",
+    "detail": "OS or stock changed on rejection"
+  },
+  {
+    "name": "corrupted other line cannot cause partial removal or stock return",
+    "status": "FAIL",
+    "detail": "OS or stock changed on rejection"
+  },
+  {
+    "name": "valid partial return keeps live line reference and ledger",
+    "status": "PASS"
+  }
+]

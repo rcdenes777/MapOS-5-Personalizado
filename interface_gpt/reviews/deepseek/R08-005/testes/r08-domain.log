@@ -1,0 +1,37 @@
+PASS D01 — Linhas idênticas recebem IDs distintos e inteiros positivos :: [1,2,3]
+PASS D02 — Editar quantidade, preço e nome da mesma linha/tipo preserva o ID :: [1,2,3]
+PASS D03 — Reordenar linhas preserva os IDs por identidade, não por índice :: [3,2,1]
+PASS D04 — Excluir linha não recicla o ID em inclusão posterior :: [2,3,4]
+PASS D05 — Trocar o tipo da linha aloca novo ID (mesmo nome e valores) :: [["Serviço",3],["Serviço",2]]
+PASS D06 — ID forjado é rejeitado com mensagem exata e estado intacto; null é inclusão nova :: forjado rejeitado; null tratado como inclusão; edição válida aceita
+PASS D07 — ID duplicado no mesmo payload é rejeitado sem duplicar linha :: duplicidade rejeitada
+PASS D08 — Linha nova sem ID recebe ID novo sem afetar as linhas existentes :: [1,2,3]
+PASS D09 — Publicação anterior permanece byte a byte imutável após editar o rascunho :: v1 intacta; vigência anulada
+PASS D10 — Nova publicação compara identidade mesmo com valores públicos idênticos :: identidade nova invalidou a versão
+PASS D11 — Snapshot legado sem IDs mantém a comparação de conteúdo original :: vigente pelo conteúdo legado
+PASS D12 — Migração perezosa não reescreve snapshot publicado nem cobrança legada :: legado intacto após init repetido
+PASS D13 — Projeção pública não expõe IDs internos da linha :: sem lineId/nextLineId
+PASS D14 — nextLineId é monotônico após serialização e exclusão :: [1,3]
+PASS D15 — Conferência corrompida por ID duplicado é reparada só no rascunho :: [1,2]
+PASS D31 — Excluir a linha de maior ID não recicla o número na inclusão seguinte :: [1,3]
+PASS D32 — nextLineId maior que o máximo é respeitado (contador monotônico) :: ID 10 usado, contador preservado
+PASS D16 — Conferir item por ID + chave remove a linha certa e preserva as demais :: linha A removida; B/C intactas
+PASS D17 — Chave stale da mesma linha é rejeitada após retirada parcial; nova chave permite :: retirada parcial manteve ID; replay antigo bloqueado
+PASS D18 — Modal stale de A não atinge B quando B ocupa o índice original de A :: B intacta; índice não é identificador
+PASS D19 — Reordenar outras linhas não redireciona a chave da linha selecionada :: reordenação preservou seleção exata
+PASS D20 — Chave de outra OS / pedido é rejeitada sem tocar o estado :: outra OS e pedido novo bloqueados
+PASS D21 — ID inexistente, chave ausente e chave falsa são rejeitados com motivo específico :: negativos isolados com positivo
+PASS D22 — Duplo envio do mesmo modal não gera segundo evento :: sem evento duplicado
+PASS D23 — Conferência técnica duplicada é rejeitada; identidade nova exige nova conferência :: duplicada rejeitada; identidade nova conferida
+PASS D24 — Chave financeira incorpora a identidade e rejeita acerto obsoleto no confirm :: k1 != k2; chave antiga rejeitada; chave atual confirmou
+PASS D25 — Cobrança formalizada preserva o lineId e bloqueia edição posterior :: cobrança com IDs, imutável
+PASS D26 — itemKey distingue OS, pedido, linha e valores :: chave composicional
+PASS D27 — Retirada de serviço não movimenta estoque e preserva o financeiro :: sem movimento e sem cobrança
+PASS D28 — Selo normalizado detecta unidade antiga e substituta em qualquer cliente :: normalização e linhagem
+PASS D29 — Selo não casa por substring nem por outro tipo de operação :: sem falso positivo
+PASS D30 — Produto zerado é recusado no handler com motivo exato e sem baixa :: handler direto recusou zero
+PASS D33 — Chave financeira distingue pedidos distintos com os mesmos itens e rejeita a antiga :: k1 != k2 e chave do pedido anterior rejeitada
+PASS D34 — Chave financeira distingue duas OS com itens e pedido de mesmo id :: chaves distintas entre OS; chave da outra OS rejeitada
+PASS D35 — Mudança de quantidade invalida a conferência técnica (retrato inclui quantidade) :: quantidade no retrato técnico
+
+TOTAL 35 · PASS 35 · FAIL 0

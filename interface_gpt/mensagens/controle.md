@@ -1,9 +1,9 @@
 # Controle do ciclo
-Estado: ATIVO
+Estado: PAUSADO
 Autorização: proprietário autorizou explicitamente o ciclo GPT/Hermes em 25/11/2026.
 Escopo: R05–R10, protótipo interface_gpt exclusivamente.
 Rodada atual: R08-005
-Aguardando: R08-005, nova tentativa única expressamente autorizada pelo proprietário com Terra no esforço máximo suportado, mesmo candidato 647dec727fbbc6673fa713d517476f4336fb3314 e critérios R08-002. Confirmar configuração efetiva disponível antes do laboratório; revisor DeepSeek Flash obrigatório. Sem R08-003/R09.
+Aguardando: decisão explícita após R08-005 BLOCKED. Candidato 647dec727fbbc6673fa713d517476f4336fb3314 intacto; patch experimental v4 preservado, não incorporado. F03 aberta. Não repetir tarefas, não iniciar R08-003/R09. Parecer R08-005-RESULT.md.
 R05 e R06-002 aprovadas no escopo experimental; código R06-002 033fdc47c09796a584cf9782324fc7c08394ce74; parecer R06-002-RESULT.md. R07-001 aprovada no escopo experimental; código f46ad182bcb7fb067d68c335369640c82bccba1d, parecer R07-001-RESULT.md. R07-002 aprovada no escopo experimental; código e04bb4059282197a0ce98e10d1715379433b5084, parecer R07-002-RESULT.md. R07-003 aprovada no escopo experimental com ressalvas; código cc738622436d3df1224df700916970570eb0bd40, parecer R07-003-RESULT.md. R08-001 aprovada experimentalmente com ressalvas; identidade estável de linhas; F03 integral pendente de R08-002 (estoque e vínculo produto/linha). Pausa solicitada pelo proprietário após R08-001 em 26/11/2026; retomada somente mediante autorização expressa. R10 deve resolver ou justificar F01–F07.
 GPT: agendador MapOS — Ciclo GPT pausado e estado verificado. Despertar por mensagem direta do Hermes nesta conversa, conforme README.md.
 Hermes: autorizado ajustar somente o cron nativo original deste ciclo para 15 minutos e ativá-lo com notificação direta após DONE/BLOCKED. Notificações diretas R06-002, R07-001, R07-002, R07-003 e R08-001 recebidas em 26/11/2026; periodicidade efetiva do cron ainda não verificada pelo GPT. HGT-003 concluído 3/3; job temporário permanece pausado.
@@ -27,3 +27,5 @@ R08-002 BLOCKED (parecer R08-002-RESULT.md). R08-004 é apenas recuperação do 
 R08-004 BLOCKED: experimento revertido por quebra de identidade de referência; causa operacional da interrupção anterior não comprovada. Controle PAUSADO por regra de parada após segundo bloqueio. Nenhuma nova tentativa automática; cron original preservado, monitor deve encerrar silenciosamente. Aguardar decisão explícita.
 
 Autorização posterior do proprietário: R08-005, tentativa única com Terra no máximo; configuração local pelo proprietário, ainda não verificada pelo GPT. Preservar evidências e critérios de aceite. Caso BLOCKED, retornar PAUSADO, sem nova tentativa automática.
+
+R08-005 BLOCKED: Terra Max apresentou avanço material e correção experimental focal, mas M01 sobrevivente, cobertura incompleta e revisão final ausente. Tentativa única encerrada; controle PAUSADO; monitor original silencioso, sem mudanças de cron/config. Aguardar decisão explícita sobre continuidade ou mudança de estratégia (backend/banco isolados somente após autorização de escopo). Sem nova tentativa automática.

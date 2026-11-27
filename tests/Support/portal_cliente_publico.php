@@ -16,6 +16,18 @@ ob_start();
 require 'index.php';
 ob_end_clean();
 $ci =& get_instance();
+if (getenv('PORTAL_MODE') === 'contar-links-os') {
+    $f = json_decode(file_get_contents('/lab/portal-cliente-private.json'), true, flags: JSON_THROW_ON_ERROR);
+    echo (int) $ci->db->from('trifase_publico_links l')->join('os', 'os.idOs = l.os_id')->where('os.clientes_id', (int) $f['clienteA'])->count_all_results();
+    exit;
+}
+if (getenv('PORTAL_MODE') === 'nova-os') {
+    $f = json_decode(file_get_contents('/lab/portal-cliente-private.json'), true, flags: JSON_THROW_ON_ERROR);
+    $base = json_decode(file_get_contents('/lab/fixture-ids.json'), true, flags: JSON_THROW_ON_ERROR);
+    $ci->db->insert('os', ['dataInicial' => date('Y-m-d'), 'descricaoProduto' => 'Equipamento novo sintetico', 'defeito' => 'Teste', 'status' => 'Aberto', 'clientes_id' => (int) $f['clienteA'], 'usuarios_id' => (int) $base['usuario'], 'faturado' => 0, 'valorTotal' => '0.00']);
+    echo (int) $ci->db->insert_id();
+    exit;
+}
 if (getenv('PORTAL_MODE') === 'expirar') {
     $f = json_decode(file_get_contents('/lab/portal-cliente-private.json'), true, flags: JSON_THROW_ON_ERROR);
     $ci->db->where('token_hash', hash('sha256', $f['b']))->update('trifase_cliente_publico_links', ['expira_em' => time() - 1]);

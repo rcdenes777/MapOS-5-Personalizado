@@ -46,6 +46,12 @@ const fixture = JSON.parse(cp.execFileSync('docker', ['exec', container, 'php', 
     texto = await page.locator('body').innerText();
     assert.match(texto, new RegExp(`OS #${fixture.ordensA[1]}\\b`));
     assert.doesNotMatch(texto, new RegExp(`OS #${fixture.ordensA[2]}\\b`));
+    const novaOs = Number(cp.execFileSync('docker', ['exec', '-e', 'PORTAL_MODE=nova-os', container, 'php', '-d', 'variables_order=EGPCS', '/var/www/html/tests/Support/portal_cliente_publico.php'], { encoding: 'utf8' }));
+    assert.ok(novaOs > 0);
+    await page.goto(`${base}/index.php/publico_cliente/index/${fixture.a}`);
+    texto = await page.locator('body').innerText();
+    assert.match(texto, new RegExp(`OS #${novaOs}\\b`), 'new order appears without issuing another link');
+    assert.match(texto, /Equipamento novo sintetico/);
     response = await page.goto(`${base}/index.php/publico_cliente/os/${fixture.a}/${fixture.ordensA[1]}`);
     texto = await page.locator('body').innerText();
     assert.match(texto, /Total cobrado/);
@@ -65,6 +71,8 @@ const fixture = JSON.parse(cp.execFileSync('docker', ['exec', container, 'php', 
     assert.equal((await context.request.get(`${base}/index.php/publico/os/${fixture.tokenOs}`)).status(), 200, 'individual OS link remains valid');
     assert.equal((await context.request.get(`${base}/index.php/publico/anexo/${fixture.tokenOs}/${fixture.anexos.publico}`)).status(), 200, 'individual OS published attachment remains accessible');
     assert.equal((await context.request.get(`${base}/index.php/publico/anexo/${fixture.tokenOs}/${fixture.anexos.privado}`)).status(), 404, 'individual OS unpublished attachment remains private');
+    const linksOs = Number(cp.execFileSync('docker', ['exec', '-e', 'PORTAL_MODE=contar-links-os', container, 'php', '-d', 'variables_order=EGPCS', '/var/www/html/tests/Support/portal_cliente_publico.php'], { encoding: 'utf8' }));
+    assert.equal(linksOs, 1, 'customer portal did not create individual OS tokens');
     console.log('PASS customer link, ownership and private notes');
     response = await page.goto(`${base}/index.php/trifase_cliente/gerenciar/${fixture.clienteA}`);
     assert.match(page.url(), /\/login/, 'anonymous admin access must redirect to login');

@@ -1,0 +1,42 @@
+{
+  "session": {
+    "id": "local-58ec332a9e027d3ecf6c91436a27d0d45e48fb8ea0c36046b510644cffc3f78e",
+    "started_at": 1795808111.993102,
+    "model": "deepseek-flash",
+    "billing_provider": "deepseek",
+    "billing_base_url": "https://api.deepseek.com/v1",
+    "billing_mode": null,
+    "estimated_cost_usd": 0.030958458,
+    "actual_cost_usd": null,
+    "cost_status": "estimated",
+    "cost_source": "official_docs_snapshot",
+    "input_tokens": 78303,
+    "output_tokens": 17806,
+    "cache_read_tokens": 2843136,
+    "reasoning_tokens": 6952,
+    "api_call_count": 32,
+    "ended_at": null,
+    "started_at_utc": "2026-11-27T19:35:11.993102Z"
+  },
+  "usage": {
+    "session_id": "local-58ec332a9e027d3ecf6c91436a27d0d45e48fb8ea0c36046b510644cffc3f78e",
+    "model": "deepseek-flash",
+    "billing_provider": "deepseek",
+    "billing_base_url": "https://api.deepseek.com/v1",
+    "billing_mode": "",
+    "task": "",
+    "api_call_count": 32,
+    "input_tokens": 78303,
+    "output_tokens": 17806,
+    "cache_read_tokens": 2843136,
+    "cache_write_tokens": 0,
+    "reasoning_tokens": 6952,
+    "estimated_cost_usd": 0.030958458,
+    "actual_cost_usd": 0.0,
+    "cost_status": "estimated",
+    "cost_source": "official_docs_snapshot",
+    "first_seen": 1795808117.008586,
+    "last_seen": 1795808598.0478837
+  },
+  "note": "source: ~/.hermes/state.db (sessions, session_model_usage); no secrets"
+}

@@ -1,0 +1,39 @@
+{
+  "reviewer_route": "deepseek/deepseek-flash (subagent inherited from coordinator session; provider deepseek)",
+  "delegation_id": "deleg_7e61db6e",
+  "subagent_id": "sa-0-c9e623aa",
+  "reviewed_commit": "46018a5e0fd56a409d2d821a12bcd205467acd38",
+  "reviewed_code_candidate": "86f4c552ac111cec65460768b7023d207824a1b7",
+  "verdict_initial": {
+    "passed": false,
+    "blockers": [
+      "RELATORIO.md:69 claims all 10 synthetic OS are Cancelado/R$ 0,00; live DOM shows OS 10..3 Cancelado/R$ 0,00, OS 2 Aberto/R$ 0,00, OS 1 Finalizado/R$ 320,00, and the captures show only the visible subset. Correct the claim.",
+      "test-read.log:2 records candidate(repo HEAD) af62e809 while the report names 86f4c552; code identity holds (test-read.cjs blob identical, no code diff) but the evidence metadata must be explained/corrected."
+    ],
+    "suggestions": [
+      "guard.cjs: 'state.includes(\"active\")' also matches 'inactive'; use exact ActiveState comparison and add an inactive case. Hardening, not a false pass.",
+      "test-read.cjs:52 takes the first /os/visualizar/ link in the document, not the first tbody row; align report wording.",
+      "test-read.log does not record X-Mapos-Lab, git status, CSS command or NODE_PATH; identity rests on guard.cjs plus exit 0.",
+      "capturas-os.cjs route interception does not cover guardLab's page.request; states 'external requests blocked' by mechanism.",
+      "capturas-os.cjs exits non-zero only for its three boolean assertions; status/h1/rows are observational.",
+      "Report claims view/edit/delete icons legible but script measures only the first 'Ver OS 10' link.",
+      "Token/cost figures have no artifact in the packet.",
+      "capturas-os.log lacks provenance lines.",
+      "Report 'Linhas 10' is DOM rows; 7 visible at 1440x900.",
+      "capturas-os.cjs was not re-executed by the reviewer because it would overwrite evidence; an inline read-only reproduction matched its metrics."
+    ],
+    "tests_run": [
+      "node test-read.cjs -> exit 0, expected pass line",
+      "inline Playwright 390x900/1440x900 -> metrics identical to capturas-os.json (overflow 0; search 324x44 / 431x42; action 44x44 / 36x36 hittable; rows 10)",
+      "inline Playwright tbody status/total -> OS 10..3 Cancelado/R$ 0,00; OS 2 Aberto/R$ 0,00; OS 1 Finalizado/R$ 320,00",
+      "curl anonymous /os and /os/visualizar/10 -> 307 to /index.php/login",
+      "served app.css sha256 -> 478efdfb...; source app.css + overlay recomputed -> same",
+      "PNG sha256 and dimensions -> match (390x900, 1440x900)",
+      "node --check on test-read.cjs, capturas-os.cjs, guard.cjs -> exit 0",
+      "lab source worktree clean at 8c256cae; no secrets in evidence"
+    ],
+    "limits": "Read-only; did not re-execute capturas-os.cjs (would overwrite evidence); coordinator route and cost are self-reported and were not independently verified.",
+    "summary": "Core tests reproduce and no material product regression was found. Packet not accepted as-is due to two evidence-reporting blockers."
+  },
+  "origin": "delegate_task batch result, 2026-11-27T19:42Z, 302 s, model=deepseek-flash, cost estimated US$ 0,0433"
+}

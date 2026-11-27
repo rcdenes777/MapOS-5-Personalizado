@@ -1,0 +1,13 @@
+captured_at_utc: 2026-11-27T19:43:10Z
+repo_head: 46018a5e0fd56a409d2d821a12bcd205467acd38
+code_candidate: 86f4c552ac111cec65460768b7023d207824a1b7
+diff_code_candidate_to_HEAD_paths_interface_gpt_assets_referencias:
+  (vazio = sem alteracao)
+overlay_sha256: 4ea423f4e726d8e349d843b4098a4715272cf63573e3dfcbdb4eb9b26e2f7f01
+served_app_css_sha256: 478efdfba10898515df902af8e737ec42cefb27e79334bd70c98a19ea3a4343a
+lab_source_head: 8c256cae4ddaeefad68922abddbb8addfe37c99d
+lab_source_status: ''
+php: PHP 8.5.13 (cli) (built: Nov 19 2026 14:29:58) (NTS)
+mysql: mysql  Ver 8.4.11 for Linux on x86_64 (MySQL Community Server - GPL)
+nginx_server_header: nginx/1.31.3
+lab_identity_header: synthetic-native-isolated

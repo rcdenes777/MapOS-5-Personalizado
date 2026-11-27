@@ -1,0 +1,36 @@
+diff --git a/interface_gpt/assets/cancel.js b/interface_gpt/assets/cancel.js
+index cbb8cd3c..7a3ef110 100644
+--- a/interface_gpt/assets/cancel.js
++++ b/interface_gpt/assets/cancel.js
+@@ -24,7 +24,7 @@ const BancadaCancel=(()=>{
+  }
+  function withdraw(o,reason,when){return add(o,'withdraw',{request:requestId(o),reason:text(reason,2000)},when)}
+  function remove(o,lineId,quantity,disposition,reason,when,orders=[],expected,stock,actor){
+-   guard(o,orders);const request=requestId(o),q=BancadaQuote.init(o),index=q.draft.items.findIndex(i=>i.lineId===lineId),item=q.draft.items[index];
++   guard(o,orders);const request=requestId(o),draft=copy(o),q=BancadaQuote.init(draft),index=q.draft.items.findIndex(i=>i.lineId===lineId),item=q.draft.items[index];
+    ensure(Number.isSafeInteger(lineId)&&lineId>0&&item,'Item não encontrado.');
+    ensure(expected===itemKey(o,item),'O item ou pedido mudou. Reabra a conferência.');
+    ensure(Number.isInteger(quantity)&&quantity>0&&quantity<=item.quantity,'Quantidade inválida.');
+@@ -35,8 +35,9 @@ const BancadaCancel=(()=>{
+    if(quantity===item.quantity)q.draft.items.splice(index,1);else item.quantity-=quantity;
+    // Original clears OS discount when there is no formalized obligation; with obligation preserve it separately.
+    q.draft.discount=o.total?Math.min(q.draft.discount,q.draft.items.reduce((s,i)=>s+i.quantity*i.unit,0)):0;
+-   BancadaQuote.sync(o);
++   BancadaQuote.sync(draft);
+    if(plan)BancadaStock.commit(plan);
++   Object.assign(o,draft);
+    return add(o,'item',{request,item:old,disposition,reason:why,stockReturned:plan?.returned||0,stockMovement:plan?.event?.id??null,stockNote:plan?plan.note:disposition==='unused'?'Baixa não comprovada; sem entrada no estoque.':disposition==='lost'?'Consumo/perda registrado; não retorna ao estoque.':''},when);
+  }
+  function confer(o,confirmed,notes,when,orders=[]){
+diff --git a/interface_gpt/tests/line-identity.cjs b/interface_gpt/tests/line-identity.cjs
+index 2830ba4d..9ab796b1 100644
+--- a/interface_gpt/tests/line-identity.cjs
++++ b/interface_gpt/tests/line-identity.cjs
+@@ -10,6 +10,7 @@ const draft=items=>({items,discount:0,terms:{}});
+ function make(id=1){const o={id,client:1,brand:'LG',model:'Placa',status:'Aberto',entry:day,total:0,paid:0,history:[]};Q.saveDraft(o,draft([piece(),piece(),service()]));return o}
+ const rows=o=>C.lines(o),request=o=>C.request(o,'cliente','Solicitação',now);
+ const remove=(o,i,qty=1,key=C.itemKey(o,i))=>C.remove(o,i.lineId,qty,i.type==='Peça'?'unused':'notdone','',now,[],key);
++test('legacy missing line rejects without normalizing order',()=>{const o={id:1,status:'Aberto',total:0,paid:0,history:[],cancellation:{events:[{id:1,type:'request'}]}};reject(()=>C.remove(o,999,1,'unused','',now,[],'bad'),'Item não encontrado.',o)});
+ test('distinct IDs for identical lines',()=>{const o=make();eq(new Set(rows(o).map(i=>i.lineId)).size,3)});
+ test('preserve IDs on edits and reorder; stale quote changes',()=>{const o=make(),[a,b,c]=rows(o),v=Q.publish(o,now);Q.saveDraft(o,draft([b,{...a,quantity:2},c]));eq(rows(o)[0].lineId,b.lineId);eq(rows(o)[1].lineId,a.lineId);eq(Q.vigente(o),null);eq(v.items[0].quantity,3)});
+ test('new line never reuses removed ID',()=>{const o=make(),[a,b,c]=rows(o);Q.saveDraft(o,draft([b,c]));Q.saveDraft(o,draft([...rows(o),piece()]));ok(rows(o).at(-1).lineId>a.lineId);ok(!rows(o).some(i=>i.lineId===a.lineId))});

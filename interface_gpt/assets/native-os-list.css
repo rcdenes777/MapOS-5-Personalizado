@@ -1,0 +1,37 @@
+/* MapOS Bancada: experimental lab overlay for the native OS list.
+   Scoped to the operational OS search form; no fields or controls are hidden. */
+@media screen and (width < 40rem) {
+  #conteudo-principal:has(form[aria-label="Filtrar ordens de serviço"][action$="/os"]) td:is([data-label="Equipamento"], [data-label="Responsável"]) {
+    display: block;
+    max-width: none;
+    text-align: left;
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+
+  #conteudo-principal:has(form[aria-label="Filtrar ordens de serviço"][action$="/os"]) td:is([data-label="Equipamento"], [data-label="Responsável"])::before {
+    display: block;
+  }
+}
+
+/* At desktop-sidebar widths the native five-column grid crushes the search. */
+@media screen and (width >= 64rem) and (width < 75rem) {
+  #conteudo-principal form[aria-label="Filtrar ordens de serviço"][action$="/os"] {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  #conteudo-principal:has(form[aria-label="Filtrar ordens de serviço"][action$="/os"]) table:has(caption) :is(th, td) {
+    padding-inline: calc(var(--spacing) * 2);
+  }
+}
+
+/* Long unbroken identifiers should not force the table wider than its panel. */
+@media screen and (width >= 40rem) {
+  #conteudo-principal:has(form[aria-label="Filtrar ordens de serviço"][action$="/os"]) td:is([data-label="Cliente"], [data-label="Equipamento"], [data-label="Responsável"]) {
+    overflow-wrap: anywhere;
+  }
+
+  #conteudo-principal:has(form[aria-label="Filtrar ordens de serviço"][action$="/os"]) td[data-label="Responsável"] {
+    white-space: normal;
+  }
+}

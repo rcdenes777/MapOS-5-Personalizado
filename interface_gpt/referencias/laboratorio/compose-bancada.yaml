@@ -1,0 +1,5 @@
+# Optional synthetic-lab-only overlay; preserve the default compose unchanged.
+services:
+  app:
+    volumes:
+      - /home/dragonblue/workspace/mapos-r08-006-native-lab/runtime/bancada-app-v6.css:/var/www/html/assets/dist/app.css:ro

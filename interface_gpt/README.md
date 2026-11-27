@@ -76,3 +76,70 @@ Consulte [R05-FINANCEIRO.md](R05-FINANCEIRO.md). Abra Financeiro no menu ou na a
 ## Incremento R06 — cancelamentos
 
 Consulte [R06-CANCELAMENTOS.md](R06-CANCELAMENTOS.md). Abra a aba Cancelamento de uma OS elegível. Pedido, conferência técnica e acerto financeiro são independentes. Registre perda sem retorno ao estoque, devolução como evento separado, saldo a receber e retificação nos casos simulados. Testes: `node tests/cancel.cjs` e `node tests/cancel-ui.cjs` além das seis suítes anteriores. R06 validada pelo DeepSeek em navegador real; consulte [reviews/deepseek/R06](reviews/deepseek/R06/RELATORIO.md).
+
+## Ensaio nativo de listagem de OS — somente laboratório
+
+Este ensaio é separado do simulador: o navegador usa a listagem e o detalhe
+renderizados pelo MapOS nativo, com a sessão, os filtros e as permissões do
+servidor. `assets/native-os-list.css` apenas ajusta a apresentação da lista;
+não lê dados, não concede permissões e não implementa regras de negócio. O
+compose opcional monta uma cópia do CSS nativo com esse acréscimo, somente
+leitura, no laboratório sintético. **Não é instalação nem deploy para produção.**
+
+O procedimento abaixo é específico do laboratório existente neste host. Não
+use em outro alvo sem revisar o caminho, o checkout e a configuração. O overlay
+é experimental: depende da estrutura HTML e dos rótulos nativos; navegadores
+sem suporte a `:has()` mantêm a apresentação original. O build da raiz não
+compila este arquivo e não equivale a uma integração para produção.
+
+```bash
+(
+set -eu
+LAB=/home/dragonblue/workspace/mapos-r08-006-native-lab
+REPO=/home/dragonblue/workspace/interface-gpt-lab/repo
+# Recuse código nativo diferente ou com alterações antes de preparar arquivos.
+test "$(git -C "$LAB/source" rev-parse HEAD)" = 8c256cae4ddaeefad68922abddbb8addfe37c99d
+test -z "$(git -C "$LAB/source" status --porcelain)"
+export NODE_PATH=/home/dragonblue/workspace/interface-gpt-lab/tools/node_modules
+node "$REPO/interface_gpt/referencias/laboratorio/test-guard.cjs"
+LAB="$LAB" REPO="$REPO" python3 - <<'PY'
+import os
+from pathlib import Path
+lab, repo = Path(os.environ['LAB']), Path(os.environ['REPO'])
+base = (lab / 'source/assets/dist/app.css').read_bytes()
+extra = (repo / 'interface_gpt/assets/native-os-list.css').read_bytes()
+target = lab / 'runtime/bancada-app-v6.css'
+data = base + b'\n' + extra
+if target.exists():
+    if target.read_bytes() != data:
+        raise SystemExit('Arquivo existente difere; não foi sobrescrito')
+else:
+    with target.open('xb') as file:
+        file.write(data)
+PY
+# Recria somente o app sintético; sessões de laboratório podem expirar.
+docker compose -f "$LAB/compose.yaml" -f "$REPO/interface_gpt/referencias/laboratorio/compose-bancada.yaml" up -d --no-deps --no-build --pull never app
+export NODE_PATH=/home/dragonblue/workspace/interface-gpt-lab/tools/node_modules
+node "$REPO/interface_gpt/referencias/laboratorio/test-guard.cjs"
+node "$REPO/interface_gpt/referencias/laboratorio/test-read.cjs"
+node "$REPO/interface_gpt/referencias/laboratorio/test-os-equipment-layout.cjs"
+)
+```
+
+Para retornar ao CSS original, recrie apenas o app com o compose-base:
+
+```bash
+docker compose -f /home/dragonblue/workspace/mapos-r08-006-native-lab/compose.yaml up -d --no-deps --no-build --pull never app
+```
+
+A verificação visual até aqui usou Chromium e dados sintéticos; não é cobertura
+em aparelhos reais, WebKit ou Firefox. Na referência exercitada, os SHA-256 são:
+
+- CSS nativo: `ac7c224bf76a879c7eee901485da33bb73b9b7168e612fb546691c957854d6a4`.
+- Overlay: `4ea423f4e726d8e349d843b4098a4715272cf63573e3dfcbdb4eb9b26e2f7f01`.
+- CSS combinado: `478efdfba10898515df902af8e737ec42cefb27e79334bd70c98a19ea3a4343a`.
+
+O retorno do overlay não altera o banco. Antes de cada uso, confira se o hash
+servido de `assets/dist/app.css` corresponde ao arquivo esperado. Não exponha o
+laboratório nem use credenciais ou dados reais. Veja as capturas e a verificação
+em [evidencias/](evidencias/).

@@ -29,7 +29,7 @@ const server = http.createServer((req, res) => {
         assert.equal(await notice.innerText(), 'Demonstração: não conectada ao MapOS. Os dados são fictícios e ficam neste navegador.');
         assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), `overflow at ${width}px ${route}`);
         await page.emulateMedia({ media: 'print' });
-        assert.equal(await notice.isVisible(), false, `notice visible in print at ${width}px ${route}`);
+        assert.equal(await notice.isVisible(), true, `demo notice missing in print at ${width}px ${route}`);
         await page.emulateMedia({ media: 'screen' });
       }
       await page.close();

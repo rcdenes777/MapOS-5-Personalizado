@@ -3,7 +3,7 @@
 - Controls: 3 reference pass, 3 starter fail material checks (attach actual results, not assertions).
 - Runtime, model/provider/effort and adapter provenance; exact sandbox and DB isolation proof:
 - Approved budget and resource limits:
-- 24-row attempt table (summarize.py), failures and invalid attempts preserved:
+- 18-row attempt table (summarize.py), failures and invalid attempts preserved:
 - Per-task behavior/regression results, critical failures, blinded T03 findings:
 - Cost actual vs API-equivalent, cache accounting, retries/interventions, subscription quota, infra separate:
 - Autonomy observations and limitations:

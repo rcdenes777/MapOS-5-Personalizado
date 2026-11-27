@@ -9,25 +9,19 @@
       "id": "luna",
       "model": "gpt-6-luna",
       "provider": "openai-codex",
-      "effort": "max"
+      "effort": "high"
     },
     {
       "id": "terra",
       "model": "gpt-6.1-terra",
       "provider": "openai-codex",
-      "effort": "max"
-    },
-    {
-      "id": "sol",
-      "model": "gpt-6.1-sol",
-      "provider": "openai-codex",
-      "effort": "medium"
+      "effort": "high"
     },
     {
       "id": "flash",
       "model": "deepseek-flash",
       "provider": "deepseek",
-      "effort": "max"
+      "effort": "high"
     }
   ],
   "tasks": [

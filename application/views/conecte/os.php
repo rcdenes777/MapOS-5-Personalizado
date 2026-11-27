@@ -15,8 +15,27 @@
         <p class="text-caption text-muted" aria-live="polite"><?= e($total === 1 ? '1 ordem de serviço' : number_format($total, 0, ',', '.') . ' ordens de serviço') ?></p>
     </header>
 
+    <?php if (($totaisFinanceiros ?? null) !== null) { ?>
+        <section class="rounded-card border border-border bg-surface p-4" aria-label="Resumo financeiro das ordens">
+            <h2 class="text-heading-sm">Resumo financeiro das ordens</h2>
+            <dl class="mt-3 grid grid-cols-2 gap-4 sm:grid-cols-3">
+                <?php foreach (['total_c' => 'Total cobrado', 'pago_c' => 'Total pago', 'saldo_c' => 'Saldo a pagar'] as $campo => $rotulo) { ?>
+                    <div><dt class="text-caption text-muted"><?= e($rotulo) ?></dt><dd><?= e('R$ ' . number_format($totaisFinanceiros[$campo] / 100, 2, ',', '.')) ?></dd></div>
+                <?php } ?>
+            </dl>
+            <p class="mt-3 text-caption text-muted">Valores incluem todas as OS com cobrança formalizada, em todas as páginas.</p>
+        </section>
+    <?php } ?>
+    <?php if ($entregasDisponiveis ?? false) { ?>
+        <nav class="flex flex-wrap gap-3" aria-label="Filtrar ordens">
+            <?php foreach (['' => 'Todas', 'pendente' => 'A pagar', 'pago' => 'Pagas', 'entregue' => 'Entregues', 'nao-entregue' => 'Não entregues'] as $valor => $rotulo) { ?>
+                <a class="underline" href="<?= e(site_url('mine/os') . ($valor === '' ? '' : '?filtro=' . rawurlencode($valor))) ?>" <?= ($filtro ?? '') === $valor ? 'aria-current="page"' : '' ?>><?= e($rotulo) ?></a>
+            <?php } ?>
+        </nav>
+    <?php } ?>
+
     <?= component('data-table', [
-        'columns' => conecteColunasOs(true, $financeiroVisivel ?? false),
+        'columns' => conecteColunasOs(true, $financeiroVisivel ?? false, $entregasDisponiveis ?? false),
         'rows' => $results,
         'caption' => 'Ordens de serviço',
         'empty' => component('empty-state', [

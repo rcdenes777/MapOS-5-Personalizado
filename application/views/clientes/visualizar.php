@@ -1,4 +1,5 @@
 <?php require_once APPPATH . 'helpers/trifase_cadastro_helper.php'; ?>
+<?php require_once APPPATH . 'helpers/trifase_publico_helper.php'; ?>
 <?php
 /**
  * Ficha do cliente (#2841), migrada para os componentes da v5.
@@ -81,6 +82,13 @@ $secoes = [
     ]) ?>
 
     <?php if ($aba === 'dados') { ?>
+        <?php if (($pode['compartilhar_cliente'] ?? false) && trifasePublicoHabilitado()) { ?>
+            <section class="rounded-card border border-border bg-surface p-4">
+                <h2 class="text-heading-sm">Compartilhamento</h2>
+                <p class="mt-1 text-caption text-muted">Gerencie o acesso privado às ordens deste cliente.</p>
+                <?= component('button', ['label' => 'Link público do cliente', 'variant' => 'outline', 'href' => site_url('trifase_cliente/gerenciar/' . $id)]) ?>
+            </section>
+        <?php } ?>
         <div class="grid gap-4 lg:grid-cols-3">
             <?php foreach ($secoes as $titulo => $itens) { ?>
                 <section class="rounded-xl border border-border bg-surface p-4 sm:p-6" aria-label="<?= e($titulo) ?>">

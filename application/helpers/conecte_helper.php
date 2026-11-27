@@ -153,7 +153,7 @@ if (! function_exists('conecteColunasOs')) {
      * Colunas do data-table das OS do cliente (início e listagem). A completa
      * mostra também a previsão, a garantia e o botão de imprimir.
      */
-    function conecteColunasOs(bool $completa, bool $financeiro = false): array
+    function conecteColunasOs(bool $completa, bool $financeiro = false, bool $entregas = false): array
     {
         $colunas = [
             ['label' => 'OS', 'nowrap' => true, 'render' => fn ($o) => component('link', ['label' => 'OS #' . (int) $o->idOs, 'href' => site_url('mine/visualizarOs/' . (int) $o->idOs), 'class' => 'font-medium'])],
@@ -168,6 +168,10 @@ if (! function_exists('conecteColunasOs')) {
 
                 return $pill === null ? '—' : component('pill-status', $pill);
             }];
+        }
+
+        if ($entregas) {
+            $colunas[] = ['label' => 'Entregue', 'nowrap' => true, 'render' => static fn ($o) => $o->entregue ? 'Sim' : 'Não'];
         }
 
         if ($financeiro) {

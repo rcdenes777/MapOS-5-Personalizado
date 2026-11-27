@@ -102,8 +102,11 @@ class Conecte_model extends CI_Model
         return $result;
     }
 
-    public function getOs($table, $fields, $where, $perpage, $start, $one, $array, $cliente)
+    public function getOs($table, $fields, $where, $perpage, $start, $one, $array, $cliente, ?array $ids = null)
     {
+        if ($ids === []) {
+            return $one ? null : [];
+        }
         // $fields costuma vir como '*', o que traria usuarios.senha pelo join.
         if ($table === 'os') {
             trifaseGarantiaJoin($this->db);
@@ -112,6 +115,9 @@ class Conecte_model extends CI_Model
         $this->db->from($table);
         $this->db->join('usuarios', 'os.usuarios_id = usuarios.idUsuarios', 'left');
         $this->db->where('clientes_id', $cliente);
+        if ($ids !== null) {
+            $this->db->where_in('os.idOs', $ids);
+        }
         $this->db->limit($perpage, $start);
         $this->db->order_by('idOs', 'desc');
         if ($where) {

@@ -355,14 +355,44 @@ class Mine extends CI_Controller
     {
         $idCliente = $this->clienteLogado();
         $offset = max(0, (int) $this->uri->segment(3));
-        $total = $this->Conecte_model->count('os', $idCliente);
-        $resultados = $this->Conecte_model->getOs('os', '*', '', self::POR_PAGINA, $offset, '', '', $idCliente);
+        $entregasDisponiveis = $this->db->table_exists('trifase_entregas_estado');
+        $filtro = (string) $this->input->get('filtro');
+        if (! in_array($filtro, ['', 'pago', 'pendente', 'entregue', 'nao-entregue'], true)) {
+            $filtro = '';
+        }
+        $totaisFinanceiros = null;
+        if ($this->financeiroVisivel()) {
+            $this->load->model('Trifase_financeiro_model', 'financeiro_cliente');
+            $totaisFinanceiros = $this->financeiro_cliente->consolidadoCliente($idCliente);
+        }
+        $mapaEntrega = [];
+        $ids = null;
+        if ($entregasDisponiveis) {
+            $this->load->helper('trifase_portal_cliente');
+            $this->load->model('Trifase_cliente_publico_model', 'portal_cliente_interno');
+            $todas = $this->comFinanceiro($this->portal_cliente_interno->ordens($idCliente));
+            foreach ($todas as $ordem) {
+                $mapaEntrega[(int) $ordem->idOs] = (bool) $ordem->entregue;
+            }
+            $filtradas = trifasePortalFiltrar($todas, $filtro);
+            $ids = array_map(static fn ($ordem) => (int) $ordem->idOs, $filtradas);
+            $total = count($ids);
+        } else {
+            $filtro = '';
+            $total = $this->Conecte_model->count('os', $idCliente);
+        }
+        $resultados = $this->Conecte_model->getOs('os', '*', '', self::POR_PAGINA, $offset, '', '', $idCliente, $ids);
+        foreach ($resultados as $ordem) {
+            $ordem->entregue = $mapaEntrega[(int) $ordem->idOs] ?? null;
+        }
 
         return $this->tela('conecte/os', 'os', [
             'financeiroVisivel' => $this->financeiroVisivel(),
             'results' => $this->comFinanceiro($resultados),
-            'total' => $total,
-            'paginacao' => $this->paginacao(site_url('mine/os'), $total, $offset),
+            'total' => $total, 'filtro' => $filtro, 'entregasDisponiveis' => $entregasDisponiveis,
+            'totaisFinanceiros' => $totaisFinanceiros,
+            'paginacao' => paginacaoProps(['base_url' => site_url('mine/os'), 'total_rows' => $total,
+                'per_page' => self::POR_PAGINA, 'offset' => $offset, 'params' => ['filtro' => $filtro]]),
         ], $this->acaoAbrirOs());
     }
 

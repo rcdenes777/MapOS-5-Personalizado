@@ -324,6 +324,23 @@ class Trifase_financeiro_model extends CI_Model
         return $this->projecaoCliente($this->resumo($osId));
     }
 
+    /** Totais das obrigações formalizadas de todas as OS do cliente, sem paginação. */
+    public function consolidadoCliente(int $clienteId): array
+    {
+        $total = ['total_c' => 0, 'pago_c' => 0, 'saldo_c' => 0];
+        if ($clienteId <= 0) {
+            return $total;
+        }
+        $ordens = $this->db->select('idOs')->where('clientes_id', $clienteId)->get('os')->result();
+        $ids = array_map(static fn ($os) => (int) $os->idOs, $ordens);
+        foreach ($this->resumosCliente($ids) as $resumo) {
+            foreach (array_keys($total) as $campo) {
+                $total[$campo] += $resumo[$campo];
+            }
+        }
+        return $total;
+    }
+
     /** Versão em lote para listagens; OS sem obrigação ficam fora do mapa. */
     public function resumosCliente(array $ids): array
     {

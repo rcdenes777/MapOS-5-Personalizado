@@ -96,6 +96,22 @@ final class TrifaseFinanceiroClienteTest extends MaposTestCase
         $this->assertSame(0, $r['saldo_c']);
     }
 
+    public function testConsolidadoDoClienteIncluiTodasAsOrdensSemMisturarOutroCliente(): void
+    {
+        $this->db->insert('os', ['idOs' => 3, 'status' => 'Aberto', 'clientes_id' => 2]);
+        foreach (range(10, 20) as $id) {
+            $this->db->insert('os', ['idOs' => $id, 'status' => 'Aberto', 'clientes_id' => 1]);
+        }
+        $this->f->formalizar(1, 50000, 0, '2026-11-15', 7);
+        $this->f->receber(1, 10000, '2026-11-01', 'Pix', $this->chave('consolidado'), 7);
+        $this->f->formalizar(20, 7000, 0, '2026-11-15', 7);
+        $this->f->formalizar(3, 90000, 0, '2026-11-15', 7);
+
+        $this->assertTrue(method_exists($this->f, 'consolidadoCliente'));
+        $this->assertSame(['total_c' => 57000, 'pago_c' => 10000, 'saldo_c' => 47000], $this->f->consolidadoCliente(1));
+        $this->assertSame(['total_c' => 90000, 'pago_c' => 0, 'saldo_c' => 90000], $this->f->consolidadoCliente(2));
+    }
+
     public function testLoteDevolveSomenteOsComObrigacao(): void
     {
         $this->f->formalizar(1, 50000, 0, '2026-11-15', 7);

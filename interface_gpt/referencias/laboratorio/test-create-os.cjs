@@ -1,0 +1,15 @@
+const { chromium } = require('/home/dragonblue/workspace/interface-gpt-lab/tools/node_modules/playwright');
+const {guardLab}=require('./guard.cjs');
+const fs = require('fs');
+const {execFileSync}=require('child_process');
+const assert=require('assert/strict');
+const user=JSON.parse(fs.readFileSync('/home/dragonblue/workspace/mapos-r08-006-native-lab/private/users.json','utf8')).admin;
+const base='http://127.0.0.1:18130';
+const query=q=>execFileSync('docker',['compose','exec','-T','db','sh','-ec',`export MYSQL_PWD="$MYSQL_PASSWORD"; exec mysql -u "$MYSQL_USER" "$MYSQL_DATABASE" -N -e '${q}'`],{cwd:'/home/dragonblue/workspace/mapos-r08-006-native-lab',encoding:'utf8'}).trim();
+(async()=>{const browser=await chromium.launch({headless:true});try{const page=await browser.newPage();
+await guardLab(page);await page.locator('#email').fill(user.email);await page.locator('#senha').fill(user.password);await page.locator('#btn-acessar').click();await page.waitForURL('**/index.php/mapos');
+const before=Number(query('SELECT COUNT(*) FROM os'));
+await page.goto(base+'/index.php/os/adicionar');
+const response=await page.evaluate(async()=>{const f=document.querySelector('form[action$="/os/adicionar"]');const data=new FormData(f);for(const [k,v] of Object.entries({cliente:'Cliente Fictício Alfa',clientes_id:'1',tecnico:'Administrador laboratório',usuarios_id:'1',status:'Aberto',dataInicial:'2026-11-26',dataFinal:'2026-12-03',garantia:'90',descricaoProduto:'LAB equipamento exclusivamente sintetico',defeito:'LAB defeito sintetico',equipamento_modo:'existente',equipamento_id:''})) data.set(k,v); const r=await fetch(f.action,{method:'POST',body:data,redirect:'follow'});const text=await r.text(); return {status:r.status,url:new URL(r.url).pathname,success:/OS #\d+ criada/.test(text),error:(text.match(/Confira o campo destacado|Não foi possível salvar|Escolha um cliente da lista|Escolha um técnico ativo da lista/g)||[])};});
+const after=Number(query('SELECT COUNT(*) FROM os'));console.log(JSON.stringify({before,after,response}));assert.equal(response.status,200);assert.match(response.url,/^\/index\.php\/os\/visualizar\/\d+$/);assert.equal(after,before+1);assert.equal(response.success,true);fs.writeFileSync('/home/dragonblue/workspace/mapos-r08-006-native-lab/runtime/last-test-os.txt', response.url.split('/').pop()+'\n');
+}finally{await browser.close()}})().catch(e=>{console.error(e.message);process.exitCode=1});

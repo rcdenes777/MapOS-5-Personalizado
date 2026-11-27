@@ -1,0 +1,12 @@
+[Unit]
+Description=MapOS synthetic lab loopback to Unix socket
+
+[Service]
+ExecStart=/usr/bin/socat TCP-LISTEN:18130,bind=127.0.0.1,reuseaddr,fork UNIX-CONNECT:/home/dragonblue/workspace/mapos-r08-006-native-lab/runtime/socket/web.sock
+Restart=on-failure
+RestartSec=2
+NoNewPrivileges=true
+RestrictAddressFamilies=AF_INET AF_UNIX
+
+[Install]
+WantedBy=default.target

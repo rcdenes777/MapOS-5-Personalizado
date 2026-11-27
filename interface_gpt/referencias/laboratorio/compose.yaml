@@ -1,0 +1,57 @@
+name: mapos-native-synthetic-lab
+services:
+  db:
+    image: mysql:8.4
+    env_file: ./private/mysql.env
+    volumes:
+      - lab-db:/var/lib/mysql
+    networks: [isolated]
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost --silent"]
+      interval: 5s
+      timeout: 4s
+      retries: 40
+  app:
+    image: mapos5-preview-php:8.5.13
+    env_file: ./private/app.env
+    user: "1000:1000"
+    working_dir: /var/www/html
+    command: ["php", "-d", "variables_order=EGPCS", "-S", "0.0.0.0:8000", "-t", "/var/www/html", "/lab/router.php"]
+    volumes:
+      - ./source:/var/www/html:ro
+      - ./vendor:/var/www/html/application/vendor:ro
+      - ./runtime/logs:/var/www/html/application/logs
+      - ./runtime/cache:/var/www/html/application/cache
+      - ./runtime/anexos:/var/www/html/assets/anexos
+      - ./runtime/arquivos:/var/www/html/assets/arquivos
+      - ./runtime/userImage:/var/www/html/assets/userImage
+      - ./runtime/router.php:/lab/router.php:ro
+      - ./runtime/initialize.php:/lab/initialize.php:ro
+      - ./runtime/storage:/lab/storage
+      - ./private/users.json:/run/mapos-lab/users.json:ro
+    networks: [isolated]
+    depends_on:
+      db:
+        condition: service_healthy
+    cap_drop: [ALL]
+    security_opt: ["no-new-privileges:true"]
+    restart: unless-stopped
+  web:
+    image: nginx:alpine
+    user: "1000:1000"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./runtime/socket:/run/lab
+    networks: [isolated]
+    depends_on: [app]
+    cap_drop: [ALL]
+    security_opt: ["no-new-privileges:true"]
+    restart: unless-stopped
+networks:
+  isolated:
+    external: true
+    name: mapos-r08-006-proof-net
+volumes:
+  lab-db:
+    name: mapos-native-synthetic-db

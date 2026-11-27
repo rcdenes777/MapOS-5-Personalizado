@@ -169,7 +169,7 @@ const BancadaWarranty=(()=>{
    }
    const e={id:operationId(o),type:'troca',assessment:a.id,origin:o.origin,oldUnit:unit(o),replacement,source:d.source,destination:d.destination,sku:product?.sku||null,cost,reason,when,actor};
    // Only a fictional stock debit for the explicit replacement; no native inventory access.
-   if(product){product.quantity--; (product.movements??=[]).push({type:'troca_saida',quantity:1,returnId:o.id,operationId:e.id,cost,when,reason})}
+   if(product){const before=product.quantity;product.quantity--; (product.movements??=[]).push({id:(product.movements?.length||0)+1,sku:product.sku,type:'troca_saida',quantity:1,before,after:product.quantity,returnId:o.id,operationId:e.id,cost,when,reason,actor})}
    (o.warranty.operations??=[]).push(e);return e;
  }
  function days(v){ensure(/^\d{1,4}$/.test(String(v))&&Number(v)<=9999,'Confira o prazo concedido na OS.');return Number(v)}

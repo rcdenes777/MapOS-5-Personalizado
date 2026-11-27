@@ -39,7 +39,7 @@ const BancadaQuote = (() => {
   }
   const validDay=v=>{if(typeof v!=='string'||!/^\d{4}-\d{2}-\d{2}$/.test(v))return false;const d=new Date(v+'T00:00:00Z');return !Number.isNaN(d.getTime())&&d.toISOString().slice(0,10)===v};
   // Legacy snapshots did not record line IDs. Preserve their original content comparison.
-  const snapshotKey=(d,ids=false)=>JSON.stringify([d.items.map(i=>[...(ids?[i.lineId]:[]),i.type,i.name,i.quantity,i.unit]),d.discount]);
+  const snapshotKey=(d,ids=false)=>JSON.stringify([d.items.map(i=>[...(ids?[i.lineId]:[]),i.type,i.name,i.quantity,i.unit,...(ids&&i.stockSku?[i.stockSku]:[])]),d.discount]);
   function vigente(o){const v=active(o);if(o.status==='Cancelado'||!v)return null;const ids=v.items.every(i=>Number.isSafeInteger(i.lineId));return snapshotKey(v,ids)===snapshotKey(init(o).draft,ids)?v:null}
   function label(o){const q=init(o),v=active(o);if(!v)return q.versions.length?'Publicação retirada':q.draft.items.length?'Rascunho':'Sem orçamento';if(!vigente(o))return 'Itens alterados';return v.decision?.answer||'Aguardando resposta'}
   function sync(o){o.approval=label(o);o.proposal=totals(init(o).draft.items,o.quote.draft.discount).total}
@@ -54,9 +54,12 @@ const BancadaQuote = (() => {
     const items=draft.items.map(i=>{
       const prior=i.lineId===undefined||i.lineId===null?null:q.draft.items.find(x=>x.lineId===i.lineId);
       assert(i.lineId===undefined||i.lineId===null||prior&&!seen.has(i.lineId),'O item mudou ou não pertence a esta OS. Reabra o orçamento.');
+      assert(!i.stockSku&&!Object.prototype.hasOwnProperty.call(i,'stockCost'),'Vincule peças pelo estoque.');
       if(prior)seen.add(i.lineId);
+      if(prior?.stockSku){assert(i.type===prior.type&&i.name===prior.name&&i.quantity===prior.quantity,'Retire a peça vinculada pela operação de estoque.');return {...prior,unit:i.unit}}
       return {...copy(i),lineId:prior&&prior.type===i.type?prior.lineId:next++};
     });
+    assert(q.draft.items.every(i=>!i.stockSku||seen.has(i.lineId)),'Retire a peça vinculada pela operação de estoque.');
     q.draft={items,discount:draft.discount,terms};q.nextLineId=next;sync(o);
   }
   function publish(o,when,{source='publicar',internal=false}={}) {

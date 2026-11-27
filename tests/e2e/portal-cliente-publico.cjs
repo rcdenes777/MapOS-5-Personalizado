@@ -46,6 +46,10 @@ const fixture = JSON.parse(cp.execFileSync('docker', ['exec', container, 'php', 
     texto = await page.locator('body').innerText();
     assert.match(texto, new RegExp(`OS #${fixture.ordensA[1]}\\b`));
     assert.doesNotMatch(texto, new RegExp(`OS #${fixture.ordensA[2]}\\b`));
+    cp.execFileSync('docker', ['exec', '-e', 'PORTAL_MODE=entregar', container, 'php', '-d', 'variables_order=EGPCS', '/var/www/html/tests/Support/portal_cliente_publico.php'], { stdio: 'ignore' });
+    await page.reload();
+    texto = await page.locator('body').innerText();
+    assert.match(texto, new RegExp(`OS #${fixture.ordensA[2]}\\b`), 'new delivery updates the existing link');
     const novaOs = Number(cp.execFileSync('docker', ['exec', '-e', 'PORTAL_MODE=nova-os', container, 'php', '-d', 'variables_order=EGPCS', '/var/www/html/tests/Support/portal_cliente_publico.php'], { encoding: 'utf8' }));
     assert.ok(novaOs > 0);
     await page.goto(`${base}/index.php/publico_cliente/index/${fixture.a}`);
@@ -135,7 +139,7 @@ const fixture = JSON.parse(cp.execFileSync('docker', ['exec', container, 'php', 
     await clientPage.goto(`${base}/index.php/mine/os?filtro=entregue`);
     texto = await clientPage.locator('body').innerText();
     assert.match(texto, new RegExp(`OS #${fixture.ordensA[1]}\\b`));
-    assert.doesNotMatch(texto, new RegExp(`OS #${fixture.ordensA[2]}\\b`));
+    assert.match(texto, new RegExp(`OS #${fixture.ordensA[2]}\\b`), 'authenticated list reflects new delivery');
     console.log('PASS authenticated customer order list');
     await clientContext.close();
   } finally {

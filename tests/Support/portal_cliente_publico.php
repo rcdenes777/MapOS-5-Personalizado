@@ -16,6 +16,14 @@ ob_start();
 require 'index.php';
 ob_end_clean();
 $ci =& get_instance();
+if (getenv('PORTAL_MODE') === 'entregar') {
+    $f = json_decode(file_get_contents('/lab/portal-cliente-private.json'), true, flags: JSON_THROW_ON_ERROR);
+    $base = json_decode(file_get_contents('/lab/fixture-ids.json'), true, flags: JSON_THROW_ON_ERROR);
+    $ci->load->model('Trifase_entrega_model', 'entrega_lab_portal');
+    $dados = ['recebedor' => 'Pessoa sintética', 'itens' => 'Equipamento', 'observacoes' => '', 'terceiro' => '0', 'confirmou_condicoes' => '1', 'entregue_em' => date('Y-m-d')];
+    $ci->entrega_lab_portal->registrar((int) $f['ordensA'][2], $dados, (int) $base['usuario'], bin2hex(random_bytes(16)));
+    exit;
+}
 if (getenv('PORTAL_MODE') === 'receber') {
     $f = json_decode(file_get_contents('/lab/portal-cliente-private.json'), true, flags: JSON_THROW_ON_ERROR);
     $base = json_decode(file_get_contents('/lab/fixture-ids.json'), true, flags: JSON_THROW_ON_ERROR);

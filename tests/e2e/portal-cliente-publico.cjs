@@ -52,6 +52,11 @@ const fixture = JSON.parse(cp.execFileSync('docker', ['exec', container, 'php', 
     texto = await page.locator('body').innerText();
     assert.match(texto, new RegExp(`OS #${novaOs}\\b`), 'new order appears without issuing another link');
     assert.match(texto, /Equipamento novo sintetico/);
+    cp.execFileSync('docker', ['exec', '-e', 'PORTAL_MODE=receber', container, 'php', '-d', 'variables_order=EGPCS', '/var/www/html/tests/Support/portal_cliente_publico.php'], { stdio: 'ignore' });
+    await page.reload();
+    texto = await page.locator('body').innerText();
+    assert.match(texto, /R\$ 360,00/, 'new payment updates the existing link');
+    assert.match(texto, /R\$ 240,00/, 'balance updates after payment');
     response = await page.goto(`${base}/index.php/publico_cliente/os/${fixture.a}/${fixture.ordensA[1]}`);
     texto = await page.locator('body').innerText();
     assert.match(texto, /Total cobrado/);
@@ -122,10 +127,10 @@ const fixture = JSON.parse(cp.execFileSync('docker', ['exec', container, 'php', 
     assert.match(await clientPage.locator('body').innerText(), /Saldo a pagar/i, 'authenticated list exposes consolidated balance');
     assert.match(await clientPage.locator('body').innerText(), /Não entregues/i, 'authenticated list provides delivery filter');
     texto = await clientPage.locator('body').innerText();
-    for (const valor of ['R$ 600,00', 'R$ 350,00', 'R$ 250,00']) assert.ok(texto.includes(valor), 'consolidated values include all pages');
+    for (const valor of ['R$ 600,00', 'R$ 360,00', 'R$ 240,00']) assert.ok(texto.includes(valor), 'consolidated values include all pages');
     await clientPage.goto(`${base}/index.php/mine/os/10`);
     texto = await clientPage.locator('body').innerText();
-    assert.ok(texto.includes('R$ 250,00'), 'balance is independent of pagination');
+    assert.ok(texto.includes('R$ 240,00'), 'balance is independent of pagination');
     assert.match(texto, new RegExp(`OS #${fixture.ordensA[0]}\\b`));
     await clientPage.goto(`${base}/index.php/mine/os?filtro=entregue`);
     texto = await clientPage.locator('body').innerText();

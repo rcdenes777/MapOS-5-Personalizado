@@ -16,6 +16,13 @@ ob_start();
 require 'index.php';
 ob_end_clean();
 $ci =& get_instance();
+if (getenv('PORTAL_MODE') === 'receber') {
+    $f = json_decode(file_get_contents('/lab/portal-cliente-private.json'), true, flags: JSON_THROW_ON_ERROR);
+    $base = json_decode(file_get_contents('/lab/fixture-ids.json'), true, flags: JSON_THROW_ON_ERROR);
+    $ci->load->model('Trifase_financeiro_model', 'financeiro_lab_portal');
+    $ci->financeiro_lab_portal->receber((int) $f['osA'], 1000, date('Y-m-d'), 'Pix', bin2hex(random_bytes(16)), (int) $base['usuario']);
+    exit;
+}
 if (getenv('PORTAL_MODE') === 'contar-links-os') {
     $f = json_decode(file_get_contents('/lab/portal-cliente-private.json'), true, flags: JSON_THROW_ON_ERROR);
     echo (int) $ci->db->from('trifase_publico_links l')->join('os', 'os.idOs = l.os_id')->where('os.clientes_id', (int) $f['clienteA'])->count_all_results();

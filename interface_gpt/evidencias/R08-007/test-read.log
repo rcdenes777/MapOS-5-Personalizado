@@ -1,0 +1,8 @@
+cmd: node interface_gpt/referencias/laboratorio/test-read.cjs
+candidate(repo HEAD): af62e809844f4b2ab3fcdbb88376b5087c6ef365
+lab source: 8c256cae4ddaeefad68922abddbb8addfe37c99d
+served css sha256: 478efdfba10898515df902af8e737ec42cefb27e79334bd70c98a19ea3a4343a
+start: 2026-11-27T19:36:10Z
+native lab: anonymous redirects and admin/technician list, detail and empty search passed
+exit_code: 0
+end: 2026-11-27T19:36:13Z

@@ -1,0 +1,68 @@
+[
+  {
+    "viewport": "390x900",
+    "url": "http://127.0.0.1:18130/index.php/os",
+    "status": 200,
+    "h1": "Ordens de serviço",
+    "screenshot": "os-lista-admin-390x900.png",
+    "sha256": "72315232f9f58d6cef45d681d75bd782c6acd9e7d41bc7763ed3d1f64d3512d9",
+    "scrollWidth": 390,
+    "innerWidth": 390,
+    "overflow": 0,
+    "search": {
+      "width": 324,
+      "height": 44,
+      "x": 33,
+      "y": 259.03125,
+      "visible": true,
+      "inViewport": true
+    },
+    "action": {
+      "label": "Ver OS 10",
+      "width": 44,
+      "height": 44,
+      "visible": true,
+      "hittable": true
+    },
+    "rows": 10,
+    "detailLinks": 10,
+    "assertions": {
+      "no_overflow": true,
+      "search_visible": true,
+      "action_usable": true
+    }
+  },
+  {
+    "viewport": "1440x900",
+    "url": "http://127.0.0.1:18130/index.php/os",
+    "status": 200,
+    "h1": "Ordens de serviço",
+    "screenshot": "os-lista-admin-1440x900.png",
+    "sha256": "5a691140144cb4e852bc8291f6f7cf787ada13713cfd8c09b9bf13dbb10ec82f",
+    "scrollWidth": 1440,
+    "innerWidth": 1440,
+    "overflow": 0,
+    "search": {
+      "width": 431.09375,
+      "height": 42,
+      "x": 293,
+      "y": 239.015625,
+      "visible": true,
+      "inViewport": true
+    },
+    "action": {
+      "label": "Ver OS 10",
+      "width": 36,
+      "height": 36,
+      "visible": true,
+      "hittable": true
+    },
+    "rows": 10,
+    "detailLinks": 10,
+    "assertions": {
+      "no_overflow": true,
+      "search_visible": true,
+      "action_usable": true
+    }
+  }
+]

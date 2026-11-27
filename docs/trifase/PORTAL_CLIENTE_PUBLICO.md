@@ -1,5 +1,7 @@
 # Portal público do cliente — candidato em desenvolvimento
 
+> **UNREVIEWED — NOT APPROVED FOR MERGE.** Este é um checkpoint para inspeção independente, não uma entrega aceita. A implementação correspondente ao checkpoint é `e33f8256afedbf9a51f13a8797f02ac032a6c1aa`.
+
 **Estado: WIP. Não é autorização de implantação, merge ou aceite.**
 
 ## Escopo e segurança

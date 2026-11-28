@@ -1,6 +1,15 @@
 # Deploy do portal do cliente — prontidão e checklist
 
-**Status: pronto para aceite externo, NÃO implantado.** Código aprovado: `68dcc933a42db1e506cbdddedd015123fa77f0d5`. Branch: `feature/portal-cliente-publico`. Nada foi mesclado, publicado ou aplicado em produção; nenhuma configuração de produção foi alterada.
+**Status: prontidão de deploy ACEITA CONDICIONALMENTE pelo GPT Supervisor externo. NÃO implantado.** Código aprovado: `68dcc933a42db1e506cbdddedd015123fa77f0d5`. Branch: `feature/portal-cliente-publico`. Nada foi mesclado, publicado ou aplicado em produção; nenhuma configuração de produção foi alterada.
+
+Condições do aceite (2026-11-28):
+
+1. Antes da ativação, aplicar e **verificar** a proteção de token em todas as camadas reais que processam a requisição: nginx interno (inclusive redirecionamentos), logs do PHP-FPM, saída de contêiner e coletores de observabilidade existentes.
+2. Preservar os links individuais de OS já existentes e o estado atual da flag; aplicar a proteção de log **antes** de expor o portal.
+3. Não criar infraestrutura nem coletor de teste que não exista na instalação real.
+4. Sem merge, acesso a produção ou implantação até autorização explícita do responsável.
+
+O aceite é documental e independente; os testes não foram reexecutados pelo revisor.
 
 Este documento reúne o que foi validado no laboratório sintético (MySQL 8.4, PHP 8.5, nginx) para uma ativação segura. Onde a evidência é limite, está dito.
 

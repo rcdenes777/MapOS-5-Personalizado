@@ -271,7 +271,8 @@ class Clientes_model extends CI_Model
             foreach ($os as $o) {
                 $idOs = (int) $o->idOs;
                 // Anexos têm FK para a OS (NO ACTION no MySQL): precisam sair antes.
-                if (($this->db->table_exists('trifase_publico_anexos') && ! $this->db->where('os_id', $idOs)->delete('trifase_publico_anexos'))
+                if (($this->db->table_exists('trifase_publico_links') && ! $this->db->where('os_id', $idOs)->delete('trifase_publico_links'))
+                    || ($this->db->table_exists('trifase_publico_anexos') && ! $this->db->where('os_id', $idOs)->delete('trifase_publico_anexos'))
                     || ($this->db->table_exists('anexos') && ! $this->db->where('os_id', $idOs)->delete('anexos'))
                     || ! $this->db->where('os_id', $idOs)->delete('servicos_os')
                     || ! $this->db->where('os_id', $idOs)->delete('produtos_os')

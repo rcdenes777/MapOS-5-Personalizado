@@ -1,6 +1,6 @@
 # Portal público do cliente — candidato em desenvolvimento
 
-> **UNREVIEWED — NOT APPROVED FOR MERGE.** Este é um checkpoint para inspeção independente, não uma entrega aceita. A implementação correspondente ao checkpoint é `e33f8256afedbf9a51f13a8797f02ac032a6c1aa`.
+> **UNREVIEWED — NOT APPROVED FOR MERGE.** Este é um checkpoint para inspeção independente, não uma entrega aceita. O checkpoint de implementação anterior foi `e33f8256afedbf9a51f13a8797f02ac032a6c1aa`; consulte o histórico da branch para a revisão atual.
 
 **Estado: WIP. Não é autorização de implantação, merge ou aceite.**
 
@@ -15,7 +15,7 @@ As rotas públicas verificam o token em cada solicitação, limitam OS ao client
 1. Antes de qualquer produção, obter aprovação do responsável, backup verificado e revisão independente do commit e da configuração. Confirmar a compatibilidade da versão e da chave `APP_ENCRYPTION_KEY` existente; não trocá-la para instalar a feature.
 2. Em cópia isolada, validar a migration `20261127010000_trifase_cliente_publico`, os testes e os controles de acesso. Confirmar o plano de recuperação. Não alterar `banco.sql`.
 3. Na janela autorizada, aplicar as migrations pendentes pelo procedimento normal do projeto (`php index.php tools migrate`), depois de confirmar o destino e todas as migrations incluídas. Isso não foi executado em produção.
-4. Verificar `TRIFASE_PUBLICO_ENABLED`, `TRIFASE_PUBLIC_BASEURL` (origem HTTPS pública), `TRIFASE_PUBLICO_VALIDADE_DIAS` e, quando apropriado, `TRIFASE_FINANCEIRO_ENABLED`. O portal depende das tabelas de entrega e do módulo de links públicos. Configurar as flags apenas conforme a decisão de implantação.
+4. Verificar `TRIFASE_PUBLICO_ENABLED`, `TRIFASE_PUBLIC_BASEURL` (origem HTTPS pública), `TRIFASE_PUBLICO_VALIDADE_DIAS` e, quando apropriado, `TRIFASE_FINANCEIRO_ENABLED`. Sem as tabelas de entrega, a situação de entrega é apresentada como indisponível e seus filtros são ocultados. Configurar as flags apenas conforme a decisão de implantação.
 5. Testar com cliente e OS sintéticos autorizados, inclusive renovação, revogação, segregação, anexos e filtros. Não enviar links reais até o aceite.
 
 ## Proxy público

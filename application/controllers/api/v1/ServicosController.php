@@ -172,6 +172,12 @@ class ServicosController extends REST_Controller
             ], REST_Controller::HTTP_BAD_REQUEST);
         }
 
+        require_once APPPATH . 'helpers/trifase_orcamento_helper.php';
+        if (trifaseCatalogoItemProtegido($this->db, 'servico', (int) $id)) {
+            $this->response(['status' => false, 'message' => 'Serviço usado em orçamento negociado não pode ser excluído.'], REST_Controller::HTTP_FORBIDDEN);
+            return;
+        }
+
         $this->servicos_model->delete('servicos_os', 'servicos_id', $id);
 
         if ($this->servicos_model->delete('servicos', 'idServicos', $id)) {

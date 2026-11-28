@@ -8,7 +8,9 @@
         <section class="rounded-card border border-border bg-surface p-4">
             <h2 class="text-heading-sm text-text"><?= e('Versão ' . (int) $orcamentoAtual->numero . ($orcamentoAtual->ativo ? ' publicada' : ' retirada do link')) ?></h2>
             <?php if ($aguardaDecisaoOrcamento ?? false) { ?><p class="mt-2 text-body-md text-muted">Esta versão aguarda decisão comercial do cliente. O andamento técnico permanece independente.</p><?php } ?>
-            <?php if ($orcamentoAtual->ativo && ! hash_equals($orcamentoAtual->conteudo_hash, $hashOrcamento)) { ?><p class="mt-3 text-danger-ink">Os dados da OS mudaram. Esta versão deixou de aparecer ao cliente; registre a resposta na tela da OS para criar uma versão com os itens atuais (antes da entrega, também é possível publicar uma nova versão).</p><?php } ?>
+            <?php if ($orcamentoAtual->ativo && ! hash_equals($orcamentoAtual->conteudo_hash, $hashOrcamento)) { ?><p class="mt-3 text-danger-ink"><?= e(($orcamentoEntregue ?? false)
+                ? 'Os dados da OS mudaram e esta versão não aparece mais ao cliente. Como o equipamento já foi entregue, não será criada nova versão comercial; consulte o histórico e a regularização tardia autorizada.'
+                : 'Os dados da OS mudaram. Esta versão deixou de aparecer ao cliente; registre a resposta na tela da OS para criar uma versão com os itens atuais (antes da entrega, também é possível publicar uma nova versão).') ?></p><?php } ?>
             <?php if ($orcamentoAtual->ativo && $podePublicarOrcamento) { ?>
                 <details class="mt-3"><summary>Retirar orçamento do link</summary>
                     <form method="post" action="<?= e(site_url('trifase_orcamentos/retirar/' . (int) $ordemOrcamento->idOs)) ?>" class="mt-3 grid gap-3">

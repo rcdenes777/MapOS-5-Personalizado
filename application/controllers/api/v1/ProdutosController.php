@@ -242,6 +242,12 @@ class ProdutosController extends REST_Controller
             ], REST_Controller::HTTP_BAD_REQUEST);
         }
 
+        require_once APPPATH . 'helpers/trifase_orcamento_helper.php';
+        if (trifaseCatalogoItemProtegido($this->db, 'produto', (int) $id)) {
+            $this->response(['status' => false, 'message' => 'Produto usado em orçamento negociado não pode ser excluído.'], REST_Controller::HTTP_FORBIDDEN);
+            return;
+        }
+
         if (! $this->db->table_exists('trifase_estoque_eventos')) {
             $this->produtos_model->delete('produtos_os', 'produtos_id', $id);
             $this->produtos_model->delete('itens_de_vendas', 'produtos_id', $id);

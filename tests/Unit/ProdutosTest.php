@@ -70,5 +70,8 @@ final class ProdutosTest extends MaposTestCase
         $this->assertStringNotContainsString("post('idProdutos')", $codigo);
         $this->assertStringNotContainsString("post('estoqueAtual')", $codigo);
         $this->assertStringContainsString('updateEstoque((int) $produto->idProdutos, abs($quantidade)', $codigo);
+        $protecao = strpos($codigo, 'trifaseCatalogoItemProtegido');
+        $this->assertNotFalse($protecao, 'A exclusão precisa consultar a proteção de orçamento negociado.');
+        $this->assertLessThan(strpos($codigo, "delete('produtos_os'"), $protecao, 'A proteção vem antes de apagar itens da OS.');
     }
 }

@@ -150,6 +150,12 @@ class Servicos extends MY_Controller
             redirect(site_url('servicos/gerenciar/'));
         }
 
+        require_once APPPATH . 'helpers/trifase_orcamento_helper.php';
+        if (trifaseCatalogoItemProtegido($this->db, 'servico', (int) $id)) {
+            $this->session->set_flashdata('error', 'Serviço usado em orçamento negociado não pode ser excluído. Retire o desconto pela negociação antes.');
+            return redirect('servicos');
+        }
+
         $this->servicos_model->delete('servicos_os', 'servicos_id', $id);
         $this->servicos_model->delete('servicos', 'idServicos', $id);
 

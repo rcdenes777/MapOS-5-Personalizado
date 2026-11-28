@@ -215,6 +215,12 @@ class Produtos extends MY_Controller
             redirect(site_url('produtos'));
         }
 
+        require_once APPPATH . 'helpers/trifase_orcamento_helper.php';
+        if (trifaseCatalogoItemProtegido($this->db, 'produto', $id)) {
+            $this->session->set_flashdata('error', 'Produto usado em orçamento negociado não pode ser excluído. Retire o desconto pela negociação antes.');
+            return redirect('produtos/visualizar/' . $id);
+        }
+
         if (! $this->db->table_exists('trifase_estoque_eventos')) {
             $this->produtos_model->delete('produtos_os', 'produtos_id', $id);
             $this->produtos_model->delete('itens_de_vendas', 'produtos_id', $id);

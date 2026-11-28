@@ -262,6 +262,36 @@ final class TrifaseOrcamentoSimplificadoTest extends MaposTestCase
         $this->assertSame(6000, json_decode($versoes[0]['conteudo'], true)['total_c']);
     }
 
+    public function testRegularizacaoHistoricaRecusaSnapshotDeOutroCliente(): void
+    {
+        $versao = $this->publicar();
+        $this->entregar();
+        $this->db->where('idServicos_os', 1)->update('servicos_os', ['preco' => 85, 'subTotal' => 85]);
+        $linha = $this->db->where('id', $versao)->get('trifase_orcamento_versoes')->row();
+        $conteudo = json_decode($linha->conteudo, true);
+        $conteudo['cliente'] = 99;
+        $this->db->where('id', $versao)->update('trifase_orcamento_versoes', ['conteudo' => json_encode($conteudo)]);
+        $eventos = $this->db->get('trifase_orcamento_eventos')->result_array();
+        try {
+            $this->modelo->registrarRegularizacao(
+                1,
+                $versao,
+                'aprovar',
+                'Cliente QA',
+                '1',
+                str_pad('cli', 16, 'x'),
+                7,
+                ['canal' => 'telefone', 'comunicado_em' => date('Y-m-d'), 'justificativa' => 'Resposta recebida antes da entrega']
+            );
+            $this->fail('Snapshot de outro cliente não pode receber a decisão.');
+        } catch (DomainException $e) {
+            $this->assertStringContainsString('cliente', $e->getMessage());
+        }
+        $this->assertNull($this->modelo->decisao($versao));
+        $this->assertSame($eventos, $this->db->get('trifase_orcamento_eventos')->result_array());
+        $this->assertSame(1, (int) $this->db->where('os_id', 1)->count_all_results('trifase_orcamento_versoes'));
+    }
+
     public function testEntregaNaoPermiteCriarSnapshotDosValoresAtuaisParaRespostaTardia(): void
     {
         $versao = $this->publicar();

@@ -653,6 +653,8 @@ class Os extends MY_Controller
         $dados['pilotoPodeRegistrarResposta'] = $this->permite('vLancamento') && $this->permite('eOs') && $this->permite('publicarOrcamento');
         $dados['pilotoPodeRegularizarOrcamento'] = $dados['pilotoPodeRegistrarResposta'] && $this->permite('regularizarOrcamento');
         $dados['pilotoOrcamentoEntregue'] = false;
+        $dados['pilotoRetratoHistorico'] = null;
+        $dados['pilotoHistoricoDoCliente'] = false;
         $dados['pilotoOrcamento'] = null;
         $dados['pilotoOrcamentoDecisao'] = null;
         $dados['pilotoOrcamentoValido'] = false;
@@ -664,6 +666,11 @@ class Os extends MY_Controller
             if ($atualOrcamento !== null) {
                 $decisaoOrcamento = $this->orcamentos_os->decisao((int) $atualOrcamento->id);
                 $orcamentoValido = $this->orcamentos_os->versaoVigente($os, $atualOrcamento) !== null;
+                $historico = json_decode((string) ($atualOrcamento->conteudo ?? ''), true);
+                if (is_array($historico) && isset($historico['itens'], $historico['cliente'], $historico['pecas_c'], $historico['servicos_c'], $historico['desconto_c'], $historico['total_c'])) {
+                    $dados['pilotoRetratoHistorico'] = $historico;
+                    $dados['pilotoHistoricoDoCliente'] = (int) $historico['cliente'] === (int) $os->clientes_id;
+                }
                 if ($decisaoOrcamento !== null) {
                     // O técnico recebe somente a resposta, sem nome, itens ou valores do orçamento.
                     $dados['pilotoRespostaCliente'] = ['tipo' => $decisaoOrcamento->tipo, 'criado_em' => $decisaoOrcamento->criado_em, 'atual' => $orcamentoValido];

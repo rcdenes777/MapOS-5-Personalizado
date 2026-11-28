@@ -180,6 +180,39 @@ final class TrifaseOrcamentoRespostaViewTest extends \PHPUnit\Framework\TestCase
         $this->assertStringContainsString('Versões e respostas', $entregue);
     }
 
+    public function testRegularizacaoHistoricaMostraOsItensEValoresExatosDaVersao(): void
+    {
+        $html = $this->renderizar('trifase/orcamento-resumo', ['pilotoOrcamentoEntregue' => true,
+            'pilotoPodeRegularizarOrcamento' => true, 'pilotoOrcamentoValido' => false,
+            'pilotoRetratoOrcamento' => ['itens' => [['nome' => 'Valor vivo', 'tipo' => 'servico', 'quantidade' => '1', 'unitario_c' => 8000, 'desconto_c' => 0, 'total_c' => 8000]], 'pecas_c' => 0, 'servicos_c' => 8000, 'desconto_c' => 0, 'total_c' => 8000]]);
+        foreach (['Valores da versão histórica 2', 'Serviço histórico', '70,00', '10,00', '60,00', 'regularizar_resposta/1', 'cliente registrado neste orçamento confere'] as $trecho) {
+            $this->assertStringContainsString($trecho, $html);
+        }
+        $this->assertStringNotContainsString('Valor vivo', $html);
+    }
+
+    public function testRegularizacaoHistoricaDeOutroClienteNaoOfereceFormulario(): void
+    {
+        $html = $this->renderizar('trifase/orcamento-resumo', ['pilotoOrcamentoEntregue' => true,
+            'pilotoPodeRegularizarOrcamento' => true, 'pilotoOrcamentoValido' => false, 'pilotoHistoricoDoCliente' => false]);
+        $this->assertStringNotContainsString('regularizar_resposta/1', $html);
+        $this->assertStringContainsString('mesmo cliente', $html);
+    }
+
+    public function testPainelAposEntregaNaoPrometeCriarVersaoComItensAtuais(): void
+    {
+        $dados = ['ordemOrcamento' => (object) ['idOs' => 1, 'status' => 'Em Andamento'],
+            'orcamentoAtual' => (object) ['id' => 2, 'numero' => 1, 'ativo' => 1, 'conteudo_hash' => str_repeat('b', 64)],
+            'podePublicarOrcamento' => true, 'hashOrcamento' => str_repeat('a', 64), 'versoesOrcamento' => [], 'eventosOrcamento' => [],
+            'apresentacaoOrcamento' => ['equipamento' => '', 'defeito' => '', 'diagnostico' => ''],
+            'termosCondicoes' => [], 'escolhasCondicoes' => trifaseOrcamentoEscolhas([], []),
+            'retratoOrcamento' => ['os' => 1, 'itens' => [], 'pecas_c' => 0, 'servicos_c' => 7000, 'desconto_c' => 0, 'total_c' => 7000],
+            'orcamentoEntregue' => true];
+        $html = $this->renderizar('trifase/orcamento-painel', $dados);
+        $this->assertStringNotContainsString('criar uma versão com os itens atuais', $html);
+        $this->assertStringContainsString('não será criada nova versão comercial', $html);
+    }
+
     public function testHistoricoMultilinhaEscapaHtmlENaoExibeNotasPrivadasAoPublico(): void
     {
         $decisao = $this->decisao();
@@ -238,6 +271,7 @@ final class TrifaseOrcamentoRespostaViewTest extends \PHPUnit\Framework\TestCase
             'pilotoOrcamentoValido' => true, 'pilotoOrcamentoDecisao' => null, 'pilotoPodeRegistrarResposta' => true,
             'versaoOrcamento' => (object) ['id' => 1, 'numero' => 2], 'retratoOrcamento' => ['os' => 1, 'itens' => [], 'pecas_c' => 0, 'servicos_c' => 0, 'desconto_c' => 0, 'total_c' => 0],
             'pilotoRetratoOrcamento' => ['itens' => [['nome' => 'Serviço QA', 'tipo' => 'servico', 'quantidade' => '1', 'unitario_c' => 7000, 'desconto_c' => 0, 'total_c' => 7000]], 'pecas_c' => 0, 'servicos_c' => 7000, 'desconto_c' => 1000, 'total_c' => 6000], 'pilotoHashOrcamento' => str_repeat('a', 64),
+            'pilotoRetratoHistorico' => ['os' => 1, 'cliente' => 3, 'itens' => [['nome' => 'Serviço histórico', 'tipo' => 'servico', 'quantidade' => '1', 'unitario_c' => 7000, 'desconto_c' => 0, 'total_c' => 7000]], 'pecas_c' => 0, 'servicos_c' => 7000, 'desconto_c' => 1000, 'total_c' => 6000], 'pilotoHistoricoDoCliente' => true,
             'decisaoOrcamento' => null, 'erroOrcamento' => null, 'responderOrcamentoUrl' => '/responder'];
         ob_start();
         try {

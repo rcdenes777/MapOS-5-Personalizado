@@ -394,6 +394,11 @@ class Trifase_orcamento_model extends CI_Model
                 // A resposta tardia pertence ao retrato documentado, nunca aos itens atuais.
                 $historica = $this->atual($id);
                 if ($historica !== null && $historica->ativo && (int) $historica->id === $versao) {
+                    $retratoHistorico = json_decode((string) $historica->conteudo, true);
+                    if (! is_array($retratoHistorico) || ! isset($retratoHistorico['cliente'])
+                        || (int) $retratoHistorico['cliente'] !== (int) $os->clientes_id) {
+                        throw new DomainException('A versão histórica não pertence ao cliente desta OS; confira o histórico antes de registrar.');
+                    }
                     $atual = $historica;
                 }
             }

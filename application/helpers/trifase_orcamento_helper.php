@@ -169,3 +169,46 @@ function trifaseOrcamentoEscolhas(array $apresentacao, array $termos): array
     }
     return $r;
 }
+
+/**
+ * Item de catálogo ligado a OS publicada com desconto geral efetivo. Excluir o
+ * cadastro apagaria itens dessa OS fora da negociação auditada, então a
+ * remoção é recusada mesmo quando tabelas opcionais de estoque/custo faltam.
+ */
+function trifaseCatalogoItemProtegido(object $db, string $tipo, int $id): bool
+{
+    if ($id <= 0 || ! in_array($tipo, ['produto', 'servico'], true)) {
+        return false;
+    }
+    foreach (['os', 'trifase_orcamento_versoes', 'produtos_os', 'servicos_os'] as $tabela) {
+        if (! $db->table_exists($tabela)) {
+            return false;
+        }
+    }
+    $campo = $tipo === 'produto' ? 'produtos_id' : 'servicos_id';
+    $itens = $tipo === 'produto' ? 'produtos_os' : 'servicos_os';
+    require_once APPPATH . 'helpers/os_helper.php';
+    foreach ($db->select('os_id')->distinct()->where($campo, $id)->get($itens)->result() as $linha) {
+        $osId = (int) $linha->os_id;
+        if ($osId <= 0 || $db->where('os_id', $osId)->count_all_results('trifase_orcamento_versoes') === 0) {
+            continue;
+        }
+        $os = $db->where('idOs', $osId)->get('os', 1)->row();
+        if ($os === null) {
+            continue;
+        }
+        $pecas = $db->select('COALESCE(SUM(subTotal), 0) AS total', false)->where('os_id', $osId)->get('produtos_os')->row();
+        $servicos = $db->select('COALESCE(SUM(subTotal), 0) AS total', false)->where('os_id', $osId)->get('servicos_os')->row();
+        $totais = osTotais(
+            (float) ($pecas->total ?? 0),
+            (float) ($servicos->total ?? 0),
+            $os->valor_desconto ?? 0,
+            $os->tipo_desconto ?? null,
+            $os->desconto ?? 0
+        );
+        if ($totais['bruto'] > 0 && $totais['total'] < $totais['bruto']) {
+            return true;
+        }
+    }
+    return false;
+}

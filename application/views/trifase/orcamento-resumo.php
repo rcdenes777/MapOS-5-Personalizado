@@ -30,11 +30,15 @@
                 <?= component('button', ['label' => 'Salvar resposta', 'variant' => 'outline', 'type' => 'submit']) ?>
             </form>
         </details>
-    <?php } elseif ($podeRegistrar && $orcamentoEntregue && ! $pilotoOrcamentoValido && ($pilotoPodeRegularizarOrcamento ?? false) && (int) ($pilotoOrcamento->ativo ?? 0) === 1) { ?>
+    <?php } elseif ($podeRegistrar && $orcamentoEntregue && ! $pilotoOrcamentoValido && ($pilotoPodeRegularizarOrcamento ?? false)
+        && (int) ($pilotoOrcamento->ativo ?? 0) === 1 && ($pilotoHistoricoDoCliente ?? false) && is_array($pilotoRetratoHistorico ?? null)) { ?>
         <details class="trifase-os-adicionar mt-3">
             <summary>Regularização administrativa tardia</summary>
-            <p class="mt-2 text-caption text-muted">A resposta será vinculada à versão histórica documentada, não aos valores atuais. A entrega e o histórico técnico são preservados.</p>
-            <form method="post" action="<?= e(site_url('trifase_orcamentos/regularizar_resposta/' . (int) $os->idOs)) ?>" class="grid gap-3 p-3" <?= js_module('formulario/padrao') ?>>
+            <p class="mt-2 text-caption text-muted">Confira os valores exatos da versão histórica documentada; a resposta será vinculada a ela, não aos valores atuais. A entrega e o histórico técnico são preservados.</p>
+            <h3 class="mt-3 text-label-md"><?= e('Valores da versão histórica ' . (int) $pilotoOrcamento->numero) ?></h3>
+            <p class="text-caption text-muted">O cliente registrado neste orçamento confere com o cliente desta OS.</p>
+            <?php $this->load->view('trifase/orcamento-itens', ['retratoOrcamento' => $pilotoRetratoHistorico]); ?>
+            <form method="post" action="<?= e(site_url('trifase_orcamentos/regularizar_resposta/' . (int) $os->idOs)) ?>" class="mt-3 grid gap-3 p-3" <?= js_module('formulario/padrao') ?>>
                 <input type="hidden" name="<?= e($this->security->get_csrf_token_name()) ?>" value="<?= e($this->security->get_csrf_hash()) ?>">
                 <input type="hidden" name="versao" value="<?= e((int) $pilotoOrcamento->id) ?>">
                 <input type="hidden" name="operacao" value="<?= e(bin2hex(random_bytes(16))) ?>">
@@ -44,8 +48,8 @@
         </details>
     <?php } elseif ($podeRegistrar && $orcamentoEntregue && ! $pilotoOrcamentoValido) { ?>
         <p class="mt-3 text-muted"><?= e((int) ($pilotoOrcamento->ativo ?? 0) === 1
-            ? 'A resposta não pode ser registrada nesta tela: após a entrega, somente uma regularização tardia sobre a versão histórica, com permissão específica, pode documentá-la.'
-            : 'A publicação desta versão foi retirada do link. Publique uma versão ativa ou use a regularização tardia autorizada antes de documentar a resposta.') ?></p>
+            ? 'A resposta não pode ser registrada nesta tela: é necessária uma regularização tardia sobre a versão histórica, com permissão específica e valores históricos disponíveis do mesmo cliente.'
+            : 'A publicação desta versão foi retirada do link. Esta tela não registra resposta sobre versão retirada; consulte o histórico.') ?></p>
     <?php } ?>
 <?php } ?>
 <?= component('button', ['label' => 'Consultar orçamento e versões', 'variant' => 'outline', 'href' => site_url('trifase_orcamentos/visualizar/' . (int) $os->idOs)]) ?>

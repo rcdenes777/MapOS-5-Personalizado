@@ -6,6 +6,16 @@ require_once APPPATH . 'controllers/api/v1/ProdutosController.php';
 
 final class ApiProdutosCustosTest extends MaposTestCase
 {
+    public function testExclusaoDaApiProtegeItensDeOrcamentoNegociado(): void
+    {
+        foreach ([['api/v1/ProdutosController.php', "delete('produtos_os'"], ['api/v1/ServicosController.php', "delete('servicos_os'"]] as [$arquivo, $exclusao]) {
+            $codigo = (string) file_get_contents(APPPATH . 'controllers/' . $arquivo);
+            $protecao = strpos($codigo, 'trifaseCatalogoItemProtegido');
+            $this->assertNotFalse($protecao, $arquivo . ' precisa consultar a proteção.');
+            $this->assertLessThan(strpos($codigo, $exclusao), $protecao, $arquivo . ' protege antes de apagar itens.');
+        }
+    }
+
     public function testConsultaEEdicaoDaApiExigemPermissoesIndependentesDeCusto(): void
     {
         $this->db->query('CREATE TABLE produtos (idProdutos INTEGER PRIMARY KEY, descricao TEXT, unidade TEXT, precoCompra REAL, precoVenda REAL,

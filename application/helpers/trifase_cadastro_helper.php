@@ -31,7 +31,17 @@ function trifaseClienteTemHistoricoProtegido(object $db, int $id): bool
     if ($db->table_exists('trifase_equipamentos') && $db->where('cliente_id', $id)->count_all_results('trifase_equipamentos')) {
         return true;
     }
-    foreach (['trifase_os_custos', 'trifase_financeiro_obrigacoes', 'trifase_entregas_eventos', 'trifase_orcamento_versoes', 'trifase_atendimentos', 'trifase_cancelamentos'] as $tabela) {
+    // Financeiro e cadastros legados: nunca apagar em cascata, recusar com mensagem clara.
+    foreach (['lancamentos' => 'clientes_id', 'cobrancas' => 'clientes_id', 'equipamentos' => 'clientes_id'] as $tabela => $coluna) {
+        if ($db->table_exists($tabela) && $db->field_exists($coluna, $tabela) && $db->where($coluna, $id)->count_all_results($tabela)) {
+            return true;
+        }
+    }
+    $porOs = ['trifase_os_custos', 'trifase_financeiro_obrigacoes', 'trifase_entregas_eventos', 'trifase_orcamento_versoes',
+        'trifase_atendimentos', 'trifase_cancelamentos', 'trifase_entregas_estado', 'trifase_orcamento_estado',
+        'trifase_orcamento_eventos', 'trifase_garantia_operacoes', 'trifase_garantia_reembolsos',
+        'trifase_garantia_retornos', 'trifase_garantia_trocas', 'os_financeiro', 'os_recebimentos', 'os_revisoes_orcamento'];
+    foreach ($porOs as $tabela) {
         if ($db->table_exists($tabela) && $db->from($tabela . ' tf_protegido')->join('os', 'os.idOs = tf_protegido.os_id')->where('os.clientes_id', $id)->count_all_results()) {
             return true;
         }

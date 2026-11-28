@@ -269,9 +269,15 @@ class Clientes_model extends CI_Model
                 return false;
             }
             foreach ($os as $o) {
-                if (! $this->db->where('os_id', $o->idOs)->delete('servicos_os')
-                    || ! $this->db->where('os_id', $o->idOs)->delete('produtos_os')
-                    || ! $this->db->where('idOs', $o->idOs)->delete('os')
+                $idOs = (int) $o->idOs;
+                // Anexos têm FK para a OS (NO ACTION no MySQL): precisam sair antes.
+                if (($this->db->table_exists('trifase_publico_anexos') && ! $this->db->where('os_id', $idOs)->delete('trifase_publico_anexos'))
+                    || ($this->db->table_exists('anexos') && ! $this->db->where('os_id', $idOs)->delete('anexos'))
+                    || ! $this->db->where('os_id', $idOs)->delete('servicos_os')
+                    || ! $this->db->where('os_id', $idOs)->delete('produtos_os')
+                    || ($this->db->table_exists('equipamentos_os') && ! $this->db->where('os_id', $idOs)->delete('equipamentos_os'))
+                    || ($this->db->table_exists('trifase_os_equipamentos') && ! $this->db->where('os_id', $idOs)->delete('trifase_os_equipamentos'))
+                    || ! $this->db->where('idOs', $idOs)->delete('os')
                     || $this->db->affected_rows() !== 1) {
                     $this->db->trans_rollback();
                     return false;

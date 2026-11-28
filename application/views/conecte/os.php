@@ -26,14 +26,16 @@
             <p class="mt-3 text-caption text-muted">Valores incluem todas as OS com cobrança formalizada, em todas as páginas.</p>
         </section>
     <?php } ?>
-    <?php if ($entregasDisponiveis ?? false) { ?>
+    <?php if (($entregasDisponiveis ?? false) || ($financeiroVisivel ?? false)) { ?>
         <nav class="flex flex-wrap gap-3" aria-label="Filtrar ordens">
             <?php
             $filtrosOs = ['' => 'Todas'];
             if ($financeiroVisivel ?? false) {
                 $filtrosOs += ['pendente' => 'A pagar', 'pago' => 'Pagas'];
             }
-            $filtrosOs += ['entregue' => 'Entregues', 'nao-entregue' => 'Não entregues'];
+            if ($entregasDisponiveis ?? false) {
+                $filtrosOs += ['entregue' => 'Entregues', 'nao-entregue' => 'Não entregues'];
+            }
             foreach ($filtrosOs as $valor => $rotulo) { ?>
                 <a class="inline-flex min-h-11 items-center rounded-md px-2 underline <?= e(($filtro ?? '') === $valor ? 'bg-primary-tint font-semibold' : '') ?>" href="<?= e(site_url('mine/os') . ($valor === '' ? '' : '?filtro=' . rawurlencode($valor))) ?>" <?= ($filtro ?? '') === $valor ? 'aria-current="page"' : '' ?>><?= e($rotulo) ?></a>
             <?php } ?>

@@ -31,6 +31,23 @@ if (getenv('PORTAL_MODE') === 'receber') {
     $ci->financeiro_lab_portal->receber((int) $f['osA'], 1000, date('Y-m-d'), 'Pix', bin2hex(random_bytes(16)), (int) $base['usuario']);
     exit;
 }
+if (getenv('PORTAL_MODE') === 'exclusao-cliente') {
+    $base = json_decode(file_get_contents('/lab/fixture-ids.json'), true, flags: JSON_THROW_ON_ERROR);
+    $ci->db->insert('clientes', ['nomeCliente' => 'Exclusão sintética', 'email' => 'exclusao-' . bin2hex(random_bytes(6)) . '@example.invalid', 'dataCadastro' => date('Y-m-d'), 'fornecedor' => 0]);
+    $id = (int) $ci->db->insert_id();
+    $ci->load->model('Trifase_cliente_publico_model', 'portal_exclusao_lab');
+    $ci->load->model('Clientes_model', 'clientes_exclusao_lab');
+    $token = $ci->portal_exclusao_lab->gerar($id, (int) $base['usuario']);
+    if (! $ci->clientes_exclusao_lab->delete('clientes', 'idClientes', $id)) {
+        throw new RuntimeException('Exclusão sintética falhou.');
+    }
+    $ci->db->insert('clientes', ['idClientes' => $id, 'nomeCliente' => 'Reutilização sintética', 'email' => 'reuso-' . bin2hex(random_bytes(6)) . '@example.invalid', 'dataCadastro' => date('Y-m-d'), 'fornecedor' => 0]);
+    if ($ci->portal_exclusao_lab->resolver($token) !== null) {
+        throw new RuntimeException('Token antigo permaneceu válido.');
+    }
+    echo "PASS exclusão e reutilização do identificador em MySQL\n";
+    exit;
+}
 if (getenv('PORTAL_MODE') === 'contar-links-os') {
     $f = json_decode(file_get_contents('/lab/portal-cliente-private.json'), true, flags: JSON_THROW_ON_ERROR);
     echo (int) $ci->db->from('trifase_publico_links l')->join('os', 'os.idOs = l.os_id')->where('os.clientes_id', (int) $f['clienteA'])->count_all_results();
@@ -74,6 +91,10 @@ for ($i = 1; $i <= 12; $i++) {
     $ci->db->insert('os', ['dataInicial' => date('Y-m-d'), 'descricaoProduto' => 'Equipamento Alfa ' . $i, 'defeito' => 'Teste', 'status' => 'Finalizado', 'observacoes' => 'PRIVADO-ALFA', 'clientes_id' => $clienteA, 'usuarios_id' => $usuario, 'faturado' => 0, 'valorTotal' => '0.00']);
     $osA[] = (int) $ci->db->insert_id();
 }
+$ci->db->insert('servicos_os', ['servico' => 'Serviço sintético', 'quantidade' => 1, 'preco' => '100.00', 'os_id' => $osA[10], 'servicos_id' => (int) $base['servico'], 'subTotal' => '100.00']);
+$ci->load->model('Trifase_orcamento_model', 'orcamento_lab_portal');
+$osOrcamento = $ci->db->where('idOs', $osA[10])->get('os')->row();
+$ci->orcamento_lab_portal->publicar($osA[10], $ci->orcamento_lab_portal->hash($ci->orcamento_lab_portal->retrato($osOrcamento)), $usuario, bin2hex(random_bytes(16)), ['diagnostico' => 'Diagnóstico público sintético']);
 $ci->db->insert('os', ['dataInicial' => date('Y-m-d'), 'descricaoProduto' => 'Equipamento Beta Sintetico', 'defeito' => 'Teste', 'status' => 'Finalizado', 'observacoes' => 'PRIVADO-BETA', 'clientes_id' => $clienteB, 'usuarios_id' => $usuario, 'faturado' => 0, 'valorTotal' => '0.00']);
 $osB = (int) $ci->db->insert_id();
 $ci->load->model('Trifase_financeiro_model', 'financeiro_lab_portal');

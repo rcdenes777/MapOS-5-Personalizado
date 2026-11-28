@@ -59,6 +59,47 @@ final class TrifaseClientePublicoTest extends MaposTestCase
         $this->assertNotNull($this->db->where('cliente_id', 1)->get('trifase_cliente_publico_links')->row());
     }
 
+    public function testExcluirClienteInvalidaTokenMesmoSeIdentificadorForReutilizado(): void
+    {
+        require_once APPPATH . 'models/Clientes_model.php';
+        $portal = new Trifase_cliente_publico_model(new Trifase_token(['chave' => str_repeat('segredo-ficticio-', 4)]));
+        $portal->db = $this->db;
+        $token = $portal->gerar(1, 7);
+        $outro = $portal->gerar(2, 7);
+        $clientes = new Clientes_model();
+        $clientes->db = $this->db;
+        $this->assertTrue($clientes->delete('clientes', 'idClientes', 1));
+        $this->assertNull($this->db->where('cliente_id', 1)->get('trifase_cliente_publico_links')->row());
+        $this->db->insert('clientes', ['idClientes' => 1, 'nomeCliente' => 'Novo cliente']);
+        $this->assertNull($portal->resolver($token));
+        $this->assertNotNull($portal->resolver($outro));
+    }
+
+    public function testFalhaAoExcluirClientePreservaTokenNaMesmaTransacao(): void
+    {
+        require_once APPPATH . 'models/Clientes_model.php';
+        $portal = new Trifase_cliente_publico_model(new Trifase_token(['chave' => str_repeat('segredo-ficticio-', 4)]));
+        $portal->db = $this->db;
+        $token = $portal->gerar(1, 7);
+        $this->db->query('CREATE TRIGGER impedir_exclusao BEFORE DELETE ON clientes BEGIN SELECT RAISE(IGNORE); END');
+        $clientes = new Clientes_model();
+        $clientes->db = $this->db;
+        $this->assertFalse($clientes->delete('clientes', 'idClientes', 1));
+        $this->assertNotNull($portal->resolver($token));
+        $this->assertSame(1, $this->db->where('idClientes', 1)->count_all_results('clientes'));
+    }
+
+    public function testListaSemTabelasDeEntregaMantemOsEEntregaIndisponivel(): void
+    {
+        $this->db->query('DROP TABLE trifase_entregas_eventos');
+        $this->db->insert('os', ['idOs' => 10, 'clientes_id' => 1, 'status' => 'Aberto', 'descricaoProduto' => 'TV']);
+        $modelo = new Trifase_cliente_publico_model();
+        $modelo->db = $this->db;
+        $linhas = $modelo->ordens(1);
+        $this->assertCount(1, $linhas);
+        $this->assertNull($linhas[0]->entregue);
+    }
+
     public function testListaEDetalheLimitadosAoClienteEEntregaRefleteEstadoAtual(): void
     {
         $this->assertTrue(class_exists('Trifase_cliente_publico_model'));

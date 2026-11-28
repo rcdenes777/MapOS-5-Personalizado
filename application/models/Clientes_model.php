@@ -114,6 +114,33 @@ class Clientes_model extends CI_Model
 
     public function delete($table, $fieldID, $ID)
     {
+        if ($table === 'clientes' && $fieldID === 'idClientes' && $this->db->table_exists('trifase_cliente_publico_links')) {
+            if (! $this->db->trans_begin()) {
+                return false;
+            }
+            try {
+                $lock = match ($this->db->dbdriver) {
+                    'mysqli' => ' FOR UPDATE',
+                    'sqlite3' => '',
+                    default => throw new RuntimeException('Driver de banco não suportado.'),
+                };
+                $sql = $this->db->select('idClientes')->where('idClientes', $ID)->get_compiled_select('clientes');
+                if (! $this->db->query($sql . $lock)->row()
+                    || ! $this->db->where('cliente_id', $ID)->delete('trifase_cliente_publico_links')
+                    || ! $this->db->where($fieldID, $ID)->delete($table)
+                    || $this->db->affected_rows() !== 1
+                    || ! $this->db->trans_status()
+                    || ! $this->db->trans_commit()) {
+                    $this->db->trans_rollback();
+                    return false;
+                }
+                return true;
+            } catch (Throwable $erro) {
+                $this->db->trans_rollback();
+                throw $erro;
+            }
+        }
+
         $this->db->where($fieldID, $ID);
         $this->db->delete($table);
         if ($this->db->affected_rows() == '1') {

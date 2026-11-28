@@ -20,7 +20,7 @@ class Publico_cliente extends CI_Controller
             }
         }
         if (! trifasePublicoHabilitado() || ! in_array($this->input->method(true), ['GET', 'HEAD'], true)
-            || ! $this->db->table_exists('trifase_cliente_publico_links') || ! $this->db->table_exists('trifase_entregas_estado')) {
+            || ! $this->db->table_exists('trifase_cliente_publico_links')) {
             show_404('', false);
         }
         $this->load->model('Trifase_cliente_publico_model', 'portal_cliente');
@@ -34,7 +34,8 @@ class Publico_cliente extends CI_Controller
         $financeiro = $this->financeiro($os);
         $filtro = (string) $this->input->get('filtro');
         if (! in_array($filtro, ['', 'pago', 'pendente', 'entregue', 'nao-entregue'], true)
-            || ($financeiro === null && in_array($filtro, ['pago', 'pendente'], true))) {
+            || ($financeiro === null && in_array($filtro, ['pago', 'pendente'], true))
+            || (! $this->entregasDisponiveis() && in_array($filtro, ['entregue', 'nao-entregue'], true))) {
             $filtro = '';
         }
         $filtradas = trifasePortalFiltrar($os, $filtro);
@@ -52,7 +53,8 @@ class Publico_cliente extends CI_Controller
         $this->financeiro([$ordem]);
         $this->load->model('Trifase_publico_model', 'anexos_cliente_publico');
         $anexos = $this->anexos_cliente_publico->anexos((int) $ordem->idOs, true);
-        $this->renderizar($token, $cliente, [$ordem], null, 1, '', true, $anexos);
+        $orcamento = $this->orcamentoCliente((int) $ordem->idOs, (int) $cliente->idClientes);
+        $this->renderizar($token, $cliente, [$ordem], null, 1, '', true, $anexos, $orcamento);
     }
 
     public function anexo($token = null, $id = null, $anexoId = null)
@@ -100,14 +102,44 @@ class Publico_cliente extends CI_Controller
         return $totais;
     }
 
-    private function renderizar(string $token, object $cliente, array $ordens, ?array $financeiro, int $total, string $filtro, bool $detalhe = false, array $anexos = []): void
+    private function entregasDisponiveis(): bool
+    {
+        return $this->db->table_exists('trifase_entregas_estado') && $this->db->table_exists('trifase_entregas_eventos');
+    }
+
+    private function orcamentoCliente(int $idOs, int $idCliente): ?array
+    {
+        require_once APPPATH . 'helpers/trifase_orcamento_helper.php';
+        if (! trifaseOrcamentoHabilitado()) {
+            return null;
+        }
+        foreach (['trifase_orcamento_estado', 'trifase_orcamento_versoes', 'trifase_orcamento_eventos'] as $tabela) {
+            if (! $this->db->table_exists($tabela)) {
+                return null;
+            }
+        }
+        $this->load->model('Trifase_orcamento_model', 'orcamento_cliente_publico');
+        $versao = $this->orcamento_cliente_publico->publicadoParaCliente($idOs, $idCliente);
+        if ($versao === null) {
+            return null;
+        }
+        $retrato = json_decode($versao->conteudo, true);
+        if (! is_array($retrato)) {
+            return null;
+        }
+        return ['situacao' => trifaseOrcamentoSituacao($this->orcamento_cliente_publico->decisao((int) $versao->id)),
+            'apresentacao' => $retrato['apresentacao'] ?? [], 'itens' => $retrato['itens'] ?? []];
+    }
+
+    private function renderizar(string $token, object $cliente, array $ordens, ?array $financeiro, int $total, string $filtro, bool $detalhe = false, array $anexos = [], ?array $orcamento = null): void
     {
         $base = trifasePublicoBase(base_url());
         $prefixo = $base . (config_item('index_page') ? trim((string) config_item('index_page'), '/') . '/' : '');
         $this->load->view('trifase/cliente-publico', ['cliente' => $cliente, 'ordens' => $ordens, 'financeiro' => $financeiro,
             'total' => $total, 'filtro' => $filtro, 'detalhe' => $detalhe, 'basePublica' => $base,
             'financeiroDisponivel' => trifaseFinanceiroHabilitado() && $this->db->table_exists('trifase_financeiro_obrigacoes'),
+            'entregasDisponiveis' => $this->entregasDisponiveis(),
             'urlPortal' => $prefixo . 'publico_cliente/index/' . $token, 'urlOs' => $prefixo . 'publico_cliente/os/' . $token . '/',
-            'urlAnexo' => $prefixo . 'publico_cliente/anexo/' . $token . '/', 'anexos' => $anexos]);
+            'urlAnexo' => $prefixo . 'publico_cliente/anexo/' . $token . '/', 'anexos' => $anexos, 'orcamentoCliente' => $orcamento]);
     }
 }

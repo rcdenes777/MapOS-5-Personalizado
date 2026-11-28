@@ -368,6 +368,12 @@ class Trifase_orcamento_model extends CI_Model
         }
     }
 
+    /** Somente após autenticar o cliente; confere o dono sob a mesma trava da OS. */
+    public function publicadoParaCliente(int $id, int $clienteId): ?object
+    {
+        return $this->transacao($id, fn ($os) => (int) $os->clientes_id === $clienteId ? $this->versaoVigente($os) : null);
+    }
+
     public function publicado(int $id, mixed $token): ?object
     {
         return $this->transacao($id, fn ($os) => $this->publicadoSobTrava($os, $token));

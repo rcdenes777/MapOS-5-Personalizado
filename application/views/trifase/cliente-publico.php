@@ -4,7 +4,9 @@ $filtros = ['' => 'Todas'];
 if ($financeiroDisponivel) {
     $filtros += ['pendente' => 'A pagar', 'pago' => 'Pagas'];
 }
-$filtros += ['entregue' => 'Entregues', 'nao-entregue' => 'Não entregues'];
+if ($entregasDisponiveis ?? false) {
+    $filtros += ['entregue' => 'Entregues', 'nao-entregue' => 'Não entregues'];
+}
 ?>
 <!DOCTYPE html>
 <html lang="pt-br" data-tema="padrao" data-tema-modo="claro">
@@ -46,10 +48,13 @@ $filtros += ['entregue' => 'Entregues', 'nao-entregue' => 'Não entregues'];
         <?php foreach ($ordens as $ordem) { ?>
             <article class="rounded-card border border-border bg-surface p-4">
                 <h2 class="text-heading-sm"><a class="underline" href="<?= e($urlOs . (int) $ordem->idOs) ?>"><?= e('OS #' . (int) $ordem->idOs) ?></a></h2>
-                <dl class="mt-3 grid gap-3 sm:grid-cols-2">
+                <dl class="mt-3 grid grid-cols-2 gap-3">
                     <div><dt class="text-caption text-muted">Equipamento</dt><dd class="break-words"><?= e(osTextoCurto($ordem->descricaoProduto) ?: 'Não informado') ?></dd></div>
-                    <div><dt class="text-caption text-muted">Serviço</dt><dd><?= e($ordem->status) ?></dd></div>
-                    <div><dt class="text-caption text-muted">Entregue</dt><dd><?= e($ordem->entregue ? 'Sim' : 'Não') ?></dd></div>
+                    <div><dt class="text-caption text-muted">Situação</dt><dd><?= e($ordem->status) ?></dd></div>
+                    <?php if ($detalhe && ! empty($ordem->dataInicial) && ($dataAbertura = date_create((string) $ordem->dataInicial)) !== false) { ?>
+                        <div><dt class="text-caption text-muted">Aberta em</dt><dd><?= e($dataAbertura->format('d/m/Y')) ?></dd></div>
+                    <?php } ?>
+                    <div><dt class="text-caption text-muted">Entregue</dt><dd><?= e(($entregasDisponiveis ?? false) ? ($ordem->entregue ? 'Sim' : 'Não') : 'Informação indisponível') ?></dd></div>
                     <?php if ($detalhe && isset($ordem->financeiro)) { ?>
                         <div><dt class="text-caption text-muted">Total cobrado</dt><dd><?= e($dinheiro($ordem->financeiro['total_c'])) ?></dd></div>
                         <div><dt class="text-caption text-muted">Total pago</dt><dd><?= e($dinheiro($ordem->financeiro['pago_c'])) ?></dd></div>
@@ -58,6 +63,25 @@ $filtros += ['entregue' => 'Entregues', 'nao-entregue' => 'Não entregues'];
                     <div><dt class="text-caption text-muted">Saldo a pagar</dt><dd><?= e(isset($ordem->financeiro) ? $dinheiro($ordem->financeiro['saldo_c']) : '—') ?></dd></div>
                 </dl>
             </article>
+        <?php } ?>
+        <?php if ($detalhe && ! empty($orcamentoCliente)) { ?>
+            <section class="rounded-card border border-border bg-surface p-4" aria-label="Orçamento publicado">
+                <h2 class="text-heading-sm">Orçamento publicado</h2>
+                <p class="mt-3"><?= e($orcamentoCliente['situacao']) ?></p>
+                <dl class="mt-3 grid gap-3">
+                    <?php foreach (['equipamento' => 'Equipamento', 'defeito' => 'Defeito relatado', 'diagnostico' => 'Diagnóstico', 'prazo' => 'Prazo estimado', 'garantia' => 'Garantia'] as $campo => $rotulo) { ?>
+                        <?php if (! empty($orcamentoCliente['apresentacao'][$campo])) { ?>
+                            <div><dt class="text-caption text-muted"><?= e($rotulo) ?></dt><dd class="whitespace-pre-wrap break-words"><?= e($orcamentoCliente['apresentacao'][$campo]) ?></dd></div>
+                        <?php } ?>
+                    <?php } ?>
+                </dl>
+                <h3 class="mt-3 text-label-md"><?= e($orcamentoCliente['situacao'] === 'Aprovado' ? 'Trabalho aprovado' : 'Itens do orçamento') ?></h3>
+                <ul class="mt-2 list-disc pl-5">
+                    <?php foreach ($orcamentoCliente['itens'] as $item) { ?>
+                        <li><?= e($item['nome'] ?? '') ?></li>
+                    <?php } ?>
+                </ul>
+            </section>
         <?php } ?>
         <?php if ($detalhe) { ?>
             <section class="rounded-card border border-border bg-surface p-4" aria-label="Arquivos compartilhados">

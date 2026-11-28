@@ -79,10 +79,16 @@ class Trifase_cliente_publico_model extends CI_Model
 
     private function consultaOrdens(int $clienteId): object
     {
-        return $this->db->select('os.idOs, os.status, os.dataInicial, os.dataFinal, os.descricaoProduto, evento.id AS entregue')
-            ->from('os')->join('trifase_entregas_estado AS entrega', 'entrega.os_id = os.idOs', 'left')
-            ->join('trifase_entregas_eventos AS evento', 'evento.id = entrega.evento_id AND evento.os_id = entrega.os_id', 'left')
-            ->where('os.clientes_id', $clienteId);
+        $entregas = $this->db->table_exists('trifase_entregas_estado') && $this->db->table_exists('trifase_entregas_eventos');
+        $this->db->select('os.idOs, os.status, os.dataInicial, os.dataFinal, os.descricaoProduto');
+        if ($entregas) {
+            $this->db->select('evento.id AS entregue')->from('os')
+                ->join('trifase_entregas_estado AS entrega', 'entrega.os_id = os.idOs', 'left')
+                ->join('trifase_entregas_eventos AS evento', 'evento.id = entrega.evento_id AND evento.os_id = entrega.os_id', 'left');
+        } else {
+            $this->db->select('NULL AS entregue', false)->from('os');
+        }
+        return $this->db->where('os.clientes_id', $clienteId);
     }
 
     public function resolver(mixed $token): ?object

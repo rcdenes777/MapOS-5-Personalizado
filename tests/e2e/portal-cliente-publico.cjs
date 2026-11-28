@@ -64,9 +64,27 @@ const fixture = JSON.parse(cp.execFileSync('docker', ['exec', container, 'php', 
     response = await page.goto(`${base}/index.php/publico_cliente/os/${fixture.a}/${fixture.ordensA[1]}`);
     texto = await page.locator('body').innerText();
     assert.match(texto, /Total cobrado/);
+    assert.match(texto, /Aberta em\s+\d{2}\/\d{2}\/\d{4}/, 'order detail shows its opening date');
+    assert.doesNotMatch(texto, /PRIVADO-ALFA/, 'order detail excludes private notes');
     assert.match(texto, /R\$ 200,00/);
     assert.match(texto, /Total pago/);
     assert.match(texto, /R\$ 50,00/);
+    response = await page.goto(`${base}/index.php/publico_cliente/os/${fixture.a}/${fixture.ordensA[10]}`);
+    assert.equal(response.status(), 200);
+    texto = await page.locator('body').innerText();
+    assert.match(texto, /Diagnóstico público sintético/);
+    assert.match(texto, /Aguardando resposta/);
+    assert.doesNotMatch(texto, /Trabalho aprovado|PRIVADO-ALFA/);
+    if (process.env.PORTAL_SCREENSHOT_DIR) {
+      const path = require('node:path');
+      await page.screenshot({ path: path.join(process.env.PORTAL_SCREENSHOT_DIR, 'portal-detalhe-desktop.png') });
+      const mobile = await browser.newContext({ viewport: { width: 375, height: 812 }, deviceScaleFactor: 1 });
+      const mobilePage = await mobile.newPage();
+      assert.equal((await mobilePage.goto(`${base}/index.php/publico_cliente/os/${fixture.a}/${fixture.ordensA[10]}`)).status(), 200);
+      assert.equal(await mobilePage.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), true);
+      await mobilePage.screenshot({ path: path.join(process.env.PORTAL_SCREENSHOT_DIR, 'portal-detalhe-mobile.png') });
+      await mobile.close();
+    }
     response = await page.goto(`${base}/index.php/publico_cliente/os/${fixture.a}/${fixture.osB}`);
     assert.equal(response.status(), 404, 'other customer order is not accessible');
     response = await page.goto(`${base}/index.php/publico_cliente/os/${fixture.b}/${fixture.osB}`);
@@ -126,6 +144,9 @@ const fixture = JSON.parse(cp.execFileSync('docker', ['exec', container, 'php', 
     await clientPage.locator('[name=email]').fill(fixture.emailCliente);
     await clientPage.locator('[name=senha]').fill(fixture.senhaCliente);
     await Promise.all([clientPage.waitForURL('**/mine/painel'), clientPage.locator('button[type=submit]').click()]);
+    texto = await clientPage.locator('body').innerText();
+    for (const valor of ['R$ 600,00', 'R$ 360,00', 'R$ 240,00']) assert.ok(texto.includes(valor), 'dashboard consolidates all formalized orders');
+    assert.match(texto, /Entregue/i, 'dashboard shows effective delivery');
     await clientPage.goto(`${base}/index.php/mine/os`);
     assert.match(await clientPage.locator('body').innerText(), /Entregue/i, 'authenticated list exposes effective delivery');
     assert.match(await clientPage.locator('body').innerText(), /Saldo a pagar/i, 'authenticated list exposes consolidated balance');

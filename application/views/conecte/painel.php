@@ -25,6 +25,18 @@ $verTodas = static fn (string $rotulo, string $url) => component('link', ['label
         <?= component('kpi-card', ['label' => 'Cobranças', 'value' => $resumo['cobrancas'], 'icon' => 'receipt', 'caption' => $verTodas('Ver cobranças', 'mine/cobrancas'), 'class' => 'col-span-2 lg:col-span-1']) ?>
     </div>
 
+    <?php if (($totaisFinanceiros ?? null) !== null) { ?>
+        <section class="rounded-card border border-border bg-surface p-4" aria-label="Resumo financeiro das ordens">
+            <h2 class="text-heading-sm">Resumo financeiro das ordens</h2>
+            <dl class="mt-3 grid grid-cols-2 gap-4 sm:grid-cols-3">
+                <?php foreach (['total_c' => 'Total cobrado', 'pago_c' => 'Total pago', 'saldo_c' => 'Saldo a pagar'] as $campo => $rotulo) { ?>
+                    <div><dt class="text-caption text-muted"><?= e($rotulo) ?></dt><dd><?= e('R$ ' . number_format($totaisFinanceiros[$campo] / 100, 2, ',', '.')) ?></dd></div>
+                <?php } ?>
+            </dl>
+            <p class="mt-3 text-caption text-muted">Valores incluem todas as OS com cobrança formalizada.</p>
+        </section>
+    <?php } ?>
+
     <section class="flex flex-col gap-3" aria-labelledby="titulo-ultimas-os">
         <div class="flex items-baseline justify-between gap-3">
             <h2 id="titulo-ultimas-os" class="text-heading-sm text-text">Últimas ordens de serviço</h2>
@@ -33,7 +45,7 @@ $verTodas = static fn (string $rotulo, string $url) => component('link', ['label
             <?php } ?>
         </div>
         <?= component('data-table', [
-            'columns' => conecteColunasOs(false, $financeiroVisivel ?? false),
+            'columns' => conecteColunasOs(false, $financeiroVisivel ?? false, $entregasDisponiveis ?? false),
             'rows' => $os,
             'caption' => 'Últimas ordens de serviço',
             'empty' => component('empty-state', [

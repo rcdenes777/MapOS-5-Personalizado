@@ -80,6 +80,28 @@ final class TrifaseFinanceiroClienteViewTest extends \PHPUnit\Framework\TestCase
         $this->assertStringContainsString('Informação financeira indisponível', $html);
         $this->assertStringNotContainsString('Sem cobrança formalizada', $html);
         $this->assertStringNotContainsString('filtro=pago', $html);
+        $this->assertStringContainsString('Informação indisponível', $html);
+        $this->assertStringNotContainsString('filtro=entregue', $html);
+    }
+
+    public function testDetalhePublicoDistinguePropostaEAprovacaoSemDadosInternos(): void
+    {
+        $dados = [
+            'cliente' => (object) ['nomeCliente' => 'Cliente fictício'],
+            'ordens' => [(object) ['idOs' => 1, 'descricaoProduto' => 'TV', 'status' => 'Aberto', 'entregue' => null]],
+            'financeiro' => null, 'financeiroDisponivel' => false, 'total' => 1, 'filtro' => '', 'detalhe' => true,
+            'basePublica' => 'https://exemplo.invalid/', 'urlPortal' => '/portal', 'urlOs' => '/os/', 'urlAnexo' => '/anexo/', 'anexos' => [],
+            'orcamentoCliente' => ['situacao' => 'Aguardando resposta', 'apresentacao' => ['diagnostico' => 'Diagnóstico publicado'], 'itens' => [['tipo' => 'servico', 'nome' => 'Troca de tela']]],
+        ];
+        $html = $this->renderizar('trifase/cliente-publico', $dados);
+        $this->assertStringContainsString('Diagnóstico publicado', $html);
+        $this->assertStringContainsString('Troca de tela', $html);
+        $this->assertStringContainsString('Aguardando resposta', $html);
+        $this->assertStringNotContainsString('Trabalho aprovado', $html);
+        $dados['orcamentoCliente']['situacao'] = 'Aprovado';
+        $htmlAprovado = $this->renderizar('trifase/cliente-publico', $dados);
+        $this->assertStringContainsString('Trabalho aprovado', $htmlAprovado);
+        $this->assertStringNotContainsString('Aguardando resposta', $htmlAprovado);
     }
 
     public function testFlagDesligadaRemoveAsColunasFinanceiras(): void

@@ -287,10 +287,30 @@ class Mine extends CI_Controller
     public function painel()
     {
         $idCliente = $this->clienteLogado();
+        $financeiroVisivel = $this->financeiroVisivel();
+        $totaisFinanceiros = null;
+        if ($financeiroVisivel) {
+            $this->load->model('Trifase_financeiro_model', 'financeiro_cliente');
+            $totaisFinanceiros = $this->financeiro_cliente->consolidadoCliente($idCliente);
+        }
+        $entregasDisponiveis = $this->db->table_exists('trifase_entregas_estado') && $this->db->table_exists('trifase_entregas_eventos');
+        $recentes = $this->comFinanceiro($this->Conecte_model->getLastOs($idCliente, self::RECENTES));
+        if ($entregasDisponiveis) {
+            $this->load->model('Trifase_cliente_publico_model', 'portal_cliente_interno');
+            $entregas = [];
+            foreach ($this->portal_cliente_interno->ordens($idCliente) as $ordem) {
+                $entregas[(int) $ordem->idOs] = (bool) $ordem->entregue;
+            }
+            foreach ($recentes as $ordem) {
+                $ordem->entregue = $entregas[(int) $ordem->idOs] ?? false;
+            }
+        }
 
         return $this->tela('conecte/painel', 'painel', [
-            'financeiroVisivel' => $this->financeiroVisivel(),
-            'os' => $this->comFinanceiro($this->Conecte_model->getLastOs($idCliente, self::RECENTES)),
+            'financeiroVisivel' => $financeiroVisivel,
+            'totaisFinanceiros' => $totaisFinanceiros,
+            'entregasDisponiveis' => $entregasDisponiveis,
+            'os' => $recentes,
             'compras' => $this->Conecte_model->getLastCompras($idCliente, self::RECENTES),
             'resumo' => [
                 'os_em_andamento' => $this->Conecte_model->contarOsEmAndamento($idCliente),
@@ -355,10 +375,11 @@ class Mine extends CI_Controller
     {
         $idCliente = $this->clienteLogado();
         $offset = max(0, (int) $this->uri->segment(3));
-        $entregasDisponiveis = $this->db->table_exists('trifase_entregas_estado');
+        $entregasDisponiveis = $this->db->table_exists('trifase_entregas_estado') && $this->db->table_exists('trifase_entregas_eventos');
         $filtro = (string) $this->input->get('filtro');
         if (! in_array($filtro, ['', 'pago', 'pendente', 'entregue', 'nao-entregue'], true)
-            || (! $this->financeiroVisivel() && in_array($filtro, ['pago', 'pendente'], true))) {
+            || (! $this->financeiroVisivel() && in_array($filtro, ['pago', 'pendente'], true))
+            || (! $entregasDisponiveis && in_array($filtro, ['entregue', 'nao-entregue'], true))) {
             $filtro = '';
         }
         $totaisFinanceiros = null;
@@ -368,7 +389,7 @@ class Mine extends CI_Controller
         }
         $mapaEntrega = [];
         $ids = null;
-        if ($entregasDisponiveis) {
+        if ($entregasDisponiveis || $this->financeiroVisivel()) {
             $this->load->helper('trifase_portal_cliente');
             $this->load->model('Trifase_cliente_publico_model', 'portal_cliente_interno');
             $todas = $this->comFinanceiro($this->portal_cliente_interno->ordens($idCliente));

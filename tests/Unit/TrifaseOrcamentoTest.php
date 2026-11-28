@@ -77,6 +77,16 @@ final class TrifaseOrcamentoTest extends MaposTestCase
         return [$entregas, $id];
     }
 
+    public function testOrcamentoPublicadoDoClienteNaoExpõeOutraOsOuVersaoDesatualizada(): void
+    {
+        $this->assertTrue(method_exists($this->modelo, 'publicadoParaCliente'));
+        $versao = $this->publicar();
+        $this->assertNull($this->modelo->publicadoParaCliente(1, 4));
+        $this->assertSame($versao, (int) $this->modelo->publicadoParaCliente(1, 3)->id);
+        $this->db->where('idServicos_os', 1)->update('servicos_os', ['preco' => 99]);
+        $this->assertNull($this->modelo->publicadoParaCliente(1, 3));
+    }
+
     public function testPublicacaoAposEntregaPreservaVersaoAprovadaEConsultaMesmoSemFlag(): void
     {
         $versao = $this->publicar();

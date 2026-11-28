@@ -52,6 +52,14 @@ final class ClientesExclusaoAtomicaTest extends MaposTestCase
         $this->assertSame($antes, $this->contagens());
     }
 
+    public function testFalhaNaOsDesfazOsItensEImpedeExcluirCliente(): void
+    {
+        $antes = $this->contagens();
+        $this->db->query('CREATE TRIGGER impedir_os BEFORE DELETE ON os BEGIN SELECT RAISE(IGNORE); END');
+        $this->assertFalse($this->clientes->excluirComDependencias(1));
+        $this->assertSame($antes, $this->contagens());
+    }
+
     public function testExclusaoValidaRemoveTodasAsDependencias(): void
     {
         $this->assertSame(array_fill_keys(array_keys($this->contagens()), 1), $this->contagens());

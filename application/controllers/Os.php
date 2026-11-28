@@ -1033,7 +1033,7 @@ class Os extends MY_Controller
             $dados['mostrarEntrega'] = true;
             $dados['entregaImpressao'] = $this->entrega_impressao->ativa($id);
         }
-        if ($id > 0 && trifaseFinanceiroHabilitado() && $this->db->table_exists('trifase_financeiro_obrigacoes')) {
+        if ($id > 0 && trifaseFinanceiroClienteDisponivel($this->db)) {
             $this->load->model('Trifase_financeiro_model', 'financeiro_impressao');
             $dados['financeiroImpressao'] = $this->financeiro_impressao->resumoCliente($id);
         }

@@ -271,7 +271,8 @@ class Clientes_model extends CI_Model
             foreach ($os as $o) {
                 if (! $this->db->where('os_id', $o->idOs)->delete('servicos_os')
                     || ! $this->db->where('os_id', $o->idOs)->delete('produtos_os')
-                    || ! $this->db->where('idOs', $o->idOs)->delete('os')) {
+                    || ! $this->db->where('idOs', $o->idOs)->delete('os')
+                    || $this->db->affected_rows() !== 1) {
                     $this->db->trans_rollback();
                     return false;
                 }

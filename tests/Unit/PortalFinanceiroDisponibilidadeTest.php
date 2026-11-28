@@ -3,9 +3,57 @@
 require_once APPPATH . 'helpers/trifase_financeiro_helper.php';
 require_once APPPATH . 'controllers/Mine.php';
 require_once APPPATH . 'controllers/Publico_cliente.php';
+require_once APPPATH . 'controllers/Os.php';
 
 final class PortalFinanceiroDisponibilidadeTest extends MaposTestCase
 {
+    public function testImpressaoNaoConsultaFinanceiroSemTabelaDeEventos(): void
+    {
+        $anterior = $_ENV['TRIFASE_FINANCEIRO_ENABLED'] ?? null;
+        $entregas = $_ENV['TRIFASE_ENTREGAS_ENABLED'] ?? null;
+        $_ENV['TRIFASE_FINANCEIRO_ENABLED'] = 'true';
+        $_ENV['TRIFASE_ENTREGAS_ENABLED'] = 'false';
+        try {
+            $this->db->query('CREATE TABLE trifase_financeiro_obrigacoes (os_id INTEGER PRIMARY KEY)');
+            $controle = new class() extends Os {
+                public $db;
+                public $load;
+                public $financeiro_impressao;
+                public function __construct()
+                {
+                }
+            };
+            $controle->db = $this->db;
+            $controle->load = new class() {
+                public function model($nome, $alias): void
+                {
+                }
+            };
+            $controle->financeiro_impressao = new class() {
+                public function resumoCliente($id): array
+                {
+                    return ['total_c' => 100];
+                }
+            };
+            $metodo = new ReflectionMethod(Os::class, 'dadosDaImpressao');
+            $this->assertNull($metodo->invoke($controle, 1)['financeiroImpressao']);
+            $this->db->query('CREATE TABLE trifase_financeiro_eventos (id INTEGER PRIMARY KEY)');
+            $this->db->data_cache = [];
+            $this->assertSame(['total_c' => 100], $metodo->invoke($controle, 1)['financeiroImpressao']);
+        } finally {
+            if ($anterior === null) {
+                unset($_ENV['TRIFASE_FINANCEIRO_ENABLED']);
+            } else {
+                $_ENV['TRIFASE_FINANCEIRO_ENABLED'] = $anterior;
+            }
+            if ($entregas === null) {
+                unset($_ENV['TRIFASE_ENTREGAS_ENABLED']);
+            } else {
+                $_ENV['TRIFASE_ENTREGAS_ENABLED'] = $entregas;
+            }
+        }
+    }
+
     public function testPortalPublicoNaoConsultaEventosAusentes(): void
     {
         $anterior = $_ENV['TRIFASE_FINANCEIRO_ENABLED'] ?? null;

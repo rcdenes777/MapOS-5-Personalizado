@@ -75,7 +75,7 @@ class Publico extends CI_Controller
             }
         }
         $financeiro = null;
-        if (trifaseFinanceiroHabilitado() && $this->db->table_exists('trifase_financeiro_obrigacoes')) {
+        if (trifaseFinanceiroClienteDisponivel($this->db)) {
             $this->load->model('Trifase_financeiro_model', 'financeiro_publico');
             $financeiro = $this->financeiro_publico->resumoCliente((int) $os->idOs);
         }

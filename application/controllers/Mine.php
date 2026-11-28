@@ -794,7 +794,7 @@ class Mine extends CI_Controller
 
     private function financeiroVisivel(): bool
     {
-        return trifaseFinanceiroHabilitado() && $this->db->table_exists('trifase_financeiro_obrigacoes');
+        return trifaseFinanceiroClienteDisponivel($this->db);
     }
 
     /**

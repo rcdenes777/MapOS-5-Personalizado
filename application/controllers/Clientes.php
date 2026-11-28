@@ -316,7 +316,10 @@ class Clientes extends MY_Controller
             $this->clientes_model->removeClientVendas($vendas);
         }
 
-        $this->clientes_model->delete('clientes', 'idClientes', $id);
+        if (! $this->clientes_model->delete('clientes', 'idClientes', $id)) {
+            $this->session->set_flashdata('error', 'Não foi possível excluir o cliente.');
+            return redirect(site_url('clientes') . listagemQuery(listagemFiltros(self::FILTROS, $this->input->get())));
+        }
         log_info('Removeu um cliente. ID' . $id);
 
         $this->session->set_flashdata('success', 'Cliente excluído com sucesso!');

@@ -84,7 +84,7 @@ class Publico_cliente extends CI_Controller
 
     private function financeiro(array $ordens): ?array
     {
-        if (! trifaseFinanceiroHabilitado() || ! $this->db->table_exists('trifase_financeiro_obrigacoes')) {
+        if (! trifaseFinanceiroClienteDisponivel($this->db)) {
             return null;
         }
         $this->load->model('Trifase_financeiro_model', 'financeiro_cliente_publico');
@@ -137,7 +137,7 @@ class Publico_cliente extends CI_Controller
         $prefixo = $base . (config_item('index_page') ? trim((string) config_item('index_page'), '/') . '/' : '');
         $this->load->view('trifase/cliente-publico', ['cliente' => $cliente, 'ordens' => $ordens, 'financeiro' => $financeiro,
             'total' => $total, 'filtro' => $filtro, 'detalhe' => $detalhe, 'basePublica' => $base,
-            'financeiroDisponivel' => trifaseFinanceiroHabilitado() && $this->db->table_exists('trifase_financeiro_obrigacoes'),
+            'financeiroDisponivel' => trifaseFinanceiroClienteDisponivel($this->db),
             'entregasDisponiveis' => $this->entregasDisponiveis(),
             'urlPortal' => $prefixo . 'publico_cliente/index/' . $token, 'urlOs' => $prefixo . 'publico_cliente/os/' . $token . '/',
             'urlAnexo' => $prefixo . 'publico_cliente/anexo/' . $token . '/', 'anexos' => $anexos, 'orcamentoCliente' => $orcamento]);

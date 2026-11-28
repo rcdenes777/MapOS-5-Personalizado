@@ -107,6 +107,12 @@ const fixture = JSON.parse(cp.execFileSync('docker', ['exec', container, 'php', 
     await page.locator('[name=email]').fill(creds.email);
     await page.locator('[name=senha]').fill(creds.password);
     await Promise.all([page.waitForURL('**/mapos'), page.locator('button[type=submit]').click()]);
+    await page.goto(`${base}/index.php/clientes/gerenciar`);
+    await page.locator('#form-excluir-cliente [name=id]').evaluate(element => { element.value = '2147483647'; });
+    await Promise.all([page.waitForURL('**/clientes**'), page.locator('#form-excluir-cliente').evaluate(form => form.requestSubmit())]);
+    const exclusaoInexistente = await page.locator('body').innerText();
+    assert.match(exclusaoInexistente, /Não foi possível excluir o cliente/);
+    assert.doesNotMatch(exclusaoInexistente, /Cliente excluído com sucesso/);
     response = await page.goto(`${base}/index.php/clientes/visualizar/${fixture.clienteA}`);
     assert.equal(response.status(), 200);
     assert.equal(await page.getByRole('link', { name: /link público do cliente/i }).count(), 1, 'customer record links to sharing controls');

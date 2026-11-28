@@ -55,6 +55,31 @@ class OsController extends REST_Controller
         return $this->permission->checkPermission($this->logged_user()->level, 'vLancamento');
     }
 
+    /**
+     * Desconto geral negociado trava itens e valores comerciais até ser
+     * retirado pela negociação auditada. Sem desconto geral ativo, a API
+     * mantém o comportamento nativo.
+     */
+    private function bloquearItemNegociado(object $os): void
+    {
+        if (! $this->db->table_exists('trifase_orcamento_versoes')
+            || $this->db->where('os_id', (int) $os->idOs)->count_all_results('trifase_orcamento_versoes') === 0
+            || ! $this->descontoGeralAtivo($os)) {
+            return;
+        }
+        $this->response([
+            'status' => false,
+            'message' => 'Esta OS tem desconto negociado. Retire o desconto pela negociação do orçamento antes de alterar itens ou valores.',
+        ], REST_Controller::HTTP_FORBIDDEN);
+    }
+
+    /** Desconto geral ativo pelo total efetivo canônico (inclui legado sem tipo). */
+    private function descontoGeralAtivo(object $os): bool
+    {
+        $totais = $this->os_model->totais($os);
+        return round((float) $totais['bruto'], 2) > 0 && round((float) $totais['total'], 2) < round((float) $totais['bruto'], 2);
+    }
+
     private function dadosDaOs(object $os, bool $verValores): object
     {
         $os = apiSemSenha($os);
@@ -581,6 +606,11 @@ class OsController extends REST_Controller
         }
 
         $os = $this->osParaEditar($id, 'Desconto não pode ser adicionado. OS Faturada/Cancelada');
+        if ($this->db->table_exists('trifase_orcamento_versoes')
+            && $this->db->where('os_id', (int) $os->idOs)->count_all_results('trifase_orcamento_versoes') > 0) {
+            $this->response(['status' => false, 'message' => 'Use a negociação do orçamento para alterar descontos nesta OS.'], REST_Controller::HTTP_FORBIDDEN);
+            return;
+        }
 
         $tipo = $this->post('tipoDesconto', true) ?: 'real';
         $desconto = $this->post('desconto', true);
@@ -649,7 +679,8 @@ class OsController extends REST_Controller
             ], REST_Controller::HTTP_BAD_REQUEST);
         }
 
-        $this->osParaEditar($id, 'OS Faturada/Cancelada não pode ser alterada.', 'Erro ao tentar inserir produto na OS. OS Não encontrada!');
+        $os = $this->osParaEditar($id, 'OS Faturada/Cancelada não pode ser alterada.', 'Erro ao tentar inserir produto na OS. OS Não encontrada!');
+        $this->bloquearItemNegociado($os);
         $this->validarValoresDoItem($this->post('preco', true), $this->post('quantidade', true));
         if (floor((float) $this->post('quantidade', true)) !== (float) $this->post('quantidade', true)) {
             $this->response(['status' => false, 'message' => 'A quantidade de produto deve ser inteira.'], 422);
@@ -735,7 +766,8 @@ class OsController extends REST_Controller
             ], REST_Controller::HTTP_BAD_REQUEST);
         }
 
-        $this->osParaEditar($id, 'OS Faturada/Cancelada não pode ser alterada.');
+        $os = $this->osParaEditar($id, 'OS Faturada/Cancelada não pode ser alterada.');
+        $this->bloquearItemNegociado($os);
         $ddAntigo = $this->os_model->getProdutoDaOs((int) $id, (int) $idProdutos_os);
         if (! $ddAntigo) {
             $this->response([
@@ -806,7 +838,8 @@ class OsController extends REST_Controller
             ], REST_Controller::HTTP_UNAUTHORIZED);
         }
 
-        $this->osParaEditar($id, 'OS Faturada/Cancelada não pode ser alterada.', 'Não foi possível excluir o Produto da OS.');
+        $os = $this->osParaEditar($id, 'OS Faturada/Cancelada não pode ser alterada.', 'Não foi possível excluir o Produto da OS.');
+        $this->bloquearItemNegociado($os);
 
         $ddAntigo = $this->os_model->getProdutoDaOs((int) $id, (int) $idProdutos_os);
 
@@ -871,7 +904,8 @@ class OsController extends REST_Controller
             ], REST_Controller::HTTP_BAD_REQUEST);
         }
 
-        $this->osParaEditar($id, 'OS Faturada/Cancelada não pode ser alterada.', 'Erro ao tentar inserir serviço na OS. OS Não encontrada!');
+        $os = $this->osParaEditar($id, 'OS Faturada/Cancelada não pode ser alterada.', 'Erro ao tentar inserir serviço na OS. OS Não encontrada!');
+        $this->bloquearItemNegociado($os);
         $this->validarValoresDoItem($this->post('preco', true), $this->post('quantidade', true));
 
         if (! $this->os_model->getServicoCadastro((int) $this->post('idServico', true))) {
@@ -945,7 +979,8 @@ class OsController extends REST_Controller
             ], REST_Controller::HTTP_BAD_REQUEST);
         }
 
-        $this->osParaEditar($id, 'OS Faturada/Cancelada não pode ser alterada.');
+        $os = $this->osParaEditar($id, 'OS Faturada/Cancelada não pode ser alterada.');
+        $this->bloquearItemNegociado($os);
         $ddAntigo = $this->os_model->getServicoDaOs((int) $id, (int) $idServicos_os);
         if (! $ddAntigo) {
             $this->response([
@@ -1003,7 +1038,8 @@ class OsController extends REST_Controller
             ], REST_Controller::HTTP_UNAUTHORIZED);
         }
 
-        $this->osParaEditar($id, 'OS Faturada/Cancelada não pode ser alterada.', 'Não foi possível excluir o Serviço da OS.');
+        $os = $this->osParaEditar($id, 'OS Faturada/Cancelada não pode ser alterada.', 'Não foi possível excluir o Serviço da OS.');
+        $this->bloquearItemNegociado($os);
 
         if (! $this->os_model->getServicoDaOs((int) $id, (int) $idServicos_os)) {
             $this->response([

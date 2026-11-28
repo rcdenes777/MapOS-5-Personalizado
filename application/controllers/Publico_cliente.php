@@ -128,8 +128,25 @@ class Publico_cliente extends CI_Controller
         if (! is_array($retrato)) {
             return null;
         }
+        // Valores comerciais vêm somente do retrato publicado, nunca da OS viva.
+        // Retratos legados incompletos ou inválidos não representam zero.
+        $valoresValidos = true;
+        foreach (['pecas_c', 'servicos_c', 'desconto_c', 'total_c'] as $campo) {
+            if (! isset($retrato[$campo]) || ! is_int($retrato[$campo]) || $retrato[$campo] < 0 || $retrato[$campo] > 100000000000) {
+                $valoresValidos = false;
+                break;
+            }
+        }
+        if ($valoresValidos && ($retrato['desconto_c'] > $retrato['pecas_c'] + $retrato['servicos_c']
+            || $retrato['total_c'] > $retrato['pecas_c'] + $retrato['servicos_c']
+            || abs($retrato['pecas_c'] + $retrato['servicos_c'] - $retrato['desconto_c'] - $retrato['total_c']) > 1)) {
+            $valoresValidos = false;
+        }
         return ['situacao' => trifaseOrcamentoSituacao($this->orcamento_cliente_publico->decisao((int) $versao->id)),
-            'apresentacao' => $retrato['apresentacao'] ?? [], 'itens' => $retrato['itens'] ?? []];
+            'apresentacao' => $retrato['apresentacao'] ?? [], 'itens' => $retrato['itens'] ?? [],
+            'subtotal_c' => $valoresValidos ? $retrato['pecas_c'] + $retrato['servicos_c'] : null,
+            'desconto_c' => $valoresValidos ? $retrato['desconto_c'] : null,
+            'total_c' => $valoresValidos ? $retrato['total_c'] : null];
     }
 
     private function renderizar(string $token, object $cliente, array $ordens, ?array $financeiro, int $total, string $filtro, bool $detalhe = false, array $anexos = [], ?array $orcamento = null): void

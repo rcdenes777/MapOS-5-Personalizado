@@ -77,50 +77,185 @@ class Trifase_orcamento_model extends CI_Model
         }
         $apresentacao = trifaseOrcamentoApresentacao($apresentacao);
         $hash = $this->hash(['publicar', $id, $esperado, $usuario, $apresentacao]);
-        return $this->transacao($id, function ($os) use ($id, $esperado, $usuario, $chave, $hash, $apresentacao) {
+        return $this->transacao($id, fn ($os) => $this->publicarSobTrava($os, $id, $esperado, $usuario, $chave, $hash, $apresentacao));
+    }
+
+    /** Chamador mantém a trava da OS e é responsável pela transação. */
+    private function publicarSobTrava(object $os, int $id, string $esperado, int $usuario, string $chave, string $hash, array $apresentacao, array $auditoria = []): int
+    {
+        if ($anterior = $this->reenvio($id, $chave, $hash)) {
+            return (int) $anterior->versao_id;
+        }
+        if ($this->entregue($id)) {
+            throw new DomainException('Equipamento entregue. Corrija a entrega ativa antes de publicar outra versão do orçamento.');
+        }
+        if ($os->status === 'Cancelado') {
+            throw new DomainException('Não publique orçamento de OS cancelada.');
+        }
+        $retrato = $this->retrato($os);
+        if ($retrato['itens'] === [] || ! hash_equals($esperado, $this->hash($retrato))) {
+            throw new DomainException('Os itens ou valores mudaram. Reabra e confira a prévia antes de publicar.');
+        }
+        if ($apresentacao !== []) {
+            $retrato['apresentacao'] = $apresentacao;
+        }
+        if (strlen(json_encode($retrato, JSON_THROW_ON_ERROR)) > 60000) {
+            throw new DomainException('Orçamento muito extenso. Reduza os itens antes de publicar.');
+        }
+        $numero = $this->db->where('os_id', $id)->count_all_results('trifase_orcamento_versoes') + 1;
+        $this->inserir('trifase_orcamento_versoes', ['os_id' => $id, 'numero' => $numero, 'conteudo' => json_encode($retrato, JSON_THROW_ON_ERROR),
+            'conteudo_hash' => $esperado, 'usuario_id' => $usuario, 'criado_em' => date('Y-m-d H:i:s')]);
+        $versao = (int) $this->db->insert_id();
+        $this->evento($id, $versao, 'publicar', '', $usuario, null, $chave, $hash, $auditoria);
+        $dados = ['versao_id' => $versao, 'ativo' => 1];
+        $ok = $this->atual($id) !== null
+            ? $this->db->where('os_id', $id)->update('trifase_orcamento_estado', $dados)
+            : $this->db->insert('trifase_orcamento_estado', ['os_id' => $id] + $dados);
+        if (! $ok) {
+            throw new RuntimeException('Não foi possível publicar o orçamento.');
+        }
+        if (in_array($os->status, self::ETAPAS_DE_ORCAMENTO, true)) {
+            $this->registrarAndamento($os, 'Negociação', $usuario, date('Y-m-d H:i:s'));
+        }
+        require_once APPPATH . 'helpers/trifase_garantia_helper.php';
+        if (trifaseGarantiaOperacoesHabilitadas() && $this->db->table_exists('trifase_garantia_retornos') && $this->db->where('os_id', $id)->count_all_results('trifase_garantia_retornos')) {
+            require_once APPPATH . 'models/Trifase_garantia_model.php';
+            $g = new Trifase_garantia_model();
+            $g->db = $this->db;
+            $g->registrarOrcamento($id, $versao, $usuario);
+        }
+        return $versao;
+    }
+
+    /** Prévia conferida no servidor; não altera a OS nem publica nem trava a OS. */
+    public function preverDesconto(int $id, int $versao, string $hashAnterior, string $tipo, mixed $valor): array
+    {
+        $os = $this->db->where('idOs', $id)->get('os', 1)->row();
+        if (! $os) {
+            throw new DomainException('OS não encontrada.');
+        }
+        $this->validarNegociacao($os, $versao, $hashAnterior);
+        [$dados, $retrato] = $this->calcularNegociacao($os, $tipo, $valor);
+        return ['retrato' => $retrato, 'hash_proposto' => $this->hash($retrato)];
+    }
+
+    /** Aplica desconto e publica sob uma única trava e transação da OS. */
+    public function negociarDesconto(int $id, int $versao, string $hashAnterior, int $usuario, string $chave, string $tipo, mixed $valor, string $motivo, string $hashProposto = ''): int
+    {
+        $this->validarOperacao($chave);
+        if ($usuario <= 0 || ! mb_check_encoding($motivo, 'UTF-8') || trim($motivo) === '' || mb_strlen($motivo) > 2000 || preg_match('/[\x00-\x08\x0b\x0c\x0e-\x1f\x7f]/', $motivo)) {
+            throw new DomainException('Informe o motivo interno da negociação.');
+        }
+        $motivo = trim($motivo);
+        $hash = $this->hash(['negociar', $id, $versao, $hashAnterior, $usuario, $tipo, $valor, $motivo, $hashProposto]);
+        return $this->transacao($id, function ($os) use ($id, $versao, $hashAnterior, $usuario, $chave, $tipo, $valor, $motivo, $hashProposto, $hash) {
+            if (($indisponivel = $this->negociacaoIndisponivel()) !== null) {
+                throw new DomainException($indisponivel);
+            }
             if ($anterior = $this->reenvio($id, $chave, $hash)) {
                 return (int) $anterior->versao_id;
             }
-            if ($this->entregue($id)) {
-                throw new DomainException('Equipamento entregue. Corrija a entrega ativa antes de publicar outra versão do orçamento.');
+            $atual = $this->validarNegociacao($os, $versao, $hashAnterior);
+            [$dados, $retrato] = $this->calcularNegociacao($os, $tipo, $valor);
+            $novoHash = $this->hash($retrato);
+            if (hash_equals($atual->conteudo_hash, $novoHash)) {
+                throw new DomainException('O desconto proposto não altera o orçamento atual.');
             }
-            if ($os->status === 'Cancelado') {
-                throw new DomainException('Não publique orçamento de OS cancelada.');
+            if (! preg_match('/\A[a-f0-9]{64}\z/', $hashProposto) || ! hash_equals($novoHash, $hashProposto)) {
+                throw new DomainException('A prévia mudou. Confira os valores antes de publicar.');
             }
-            $retrato = $this->retrato($os);
-            if ($retrato['itens'] === [] || ! hash_equals($esperado, $this->hash($retrato))) {
-                throw new DomainException('Os itens ou valores mudaram. Reabra e confira a prévia antes de publicar.');
+            $conteudo = json_decode((string) $atual->conteudo, true, 32, JSON_THROW_ON_ERROR);
+            $apresentacao = $conteudo['apresentacao'] ?? [];
+            $antes = $this->retrato($os);
+            if (! $this->db->where('idOs', $id)->update('os', $dados)) {
+                throw new RuntimeException('Não foi possível aplicar o desconto.');
             }
-            if ($apresentacao !== []) {
-                $retrato['apresentacao'] = $apresentacao;
+            $osAtual = $this->db->where('idOs', $id)->get('os', 1)->row();
+            if (! $osAtual || ! hash_equals($novoHash, $this->hash($this->retrato($osAtual)))) {
+                throw new RuntimeException('Não foi possível conferir os valores da negociação.');
             }
-            if (strlen(json_encode($retrato, JSON_THROW_ON_ERROR)) > 60000) {
-                throw new DomainException('Orçamento muito extenso. Reduza os itens antes de publicar.');
-            }
-            $numero = $this->db->where('os_id', $id)->count_all_results('trifase_orcamento_versoes') + 1;
-            $this->inserir('trifase_orcamento_versoes', ['os_id' => $id, 'numero' => $numero, 'conteudo' => json_encode($retrato, JSON_THROW_ON_ERROR),
-                'conteudo_hash' => $esperado, 'usuario_id' => $usuario, 'criado_em' => date('Y-m-d H:i:s')]);
-            $versao = (int) $this->db->insert_id();
-            $this->evento($id, $versao, 'publicar', '', $usuario, null, $chave, $hash);
-            $dados = ['versao_id' => $versao, 'ativo' => 1];
-            $ok = $this->atual($id) !== null
-                ? $this->db->where('os_id', $id)->update('trifase_orcamento_estado', $dados)
-                : $this->db->insert('trifase_orcamento_estado', ['os_id' => $id] + $dados);
-            if (! $ok) {
-                throw new RuntimeException('Não foi possível publicar o orçamento.');
-            }
-            if (in_array($os->status, self::ETAPAS_DE_ORCAMENTO, true)) {
-                $this->registrarAndamento($os, 'Negociação', $usuario, date('Y-m-d H:i:s'));
-            }
-            require_once APPPATH . 'helpers/trifase_garantia_helper.php';
-            if (trifaseGarantiaOperacoesHabilitadas() && $this->db->table_exists('trifase_garantia_retornos') && $this->db->where('os_id', $id)->count_all_results('trifase_garantia_retornos')) {
-                require_once APPPATH . 'models/Trifase_garantia_model.php';
-                $g = new Trifase_garantia_model();
-                $g->db = $this->db;
-                $g->registrarOrcamento($id, $versao, $usuario);
-            }
-            return $versao;
+            $audit = json_encode(['motivo' => $motivo, 'versao_anterior' => $versao, 'tipo' => $tipo, 'solicitado' => (string) $valor,
+                'anterior_c' => $antes['total_c'], 'novo_c' => $retrato['total_c'],
+                'desconto_anterior_c' => $antes['desconto_c'], 'desconto_novo_c' => $retrato['desconto_c']], JSON_THROW_ON_ERROR);
+            return $this->publicarSobTrava($osAtual, $id, $novoHash, $usuario, $chave, $hash, is_array($apresentacao) ? $apresentacao : [], ['negociacao' => $audit]);
         });
+    }
+
+    /** Pré-requisitos da negociação: módulos ativos, banco migrado e auditoria. */
+    public function negociacaoDisponivel(): bool
+    {
+        return $this->negociacaoIndisponivel() === null;
+    }
+
+    /** Motivo operacional específico quando a negociação está indisponível. */
+    public function negociacaoMotivo(): ?string
+    {
+        return $this->negociacaoIndisponivel();
+    }
+
+    private function negociacaoIndisponivel(): ?string
+    {
+        require_once APPPATH . 'helpers/trifase_financeiro_helper.php';
+        require_once APPPATH . 'helpers/trifase_entrega_helper.php';
+        if (! trifaseFinanceiroHabilitado()) {
+            return 'O módulo financeiro do cliente está desativado; ative-o para negociar com segurança.';
+        }
+        if (! trifaseFinanceiroProjecaoDisponivel($this->db)) {
+            return 'Atualize o banco de dados para negociar: faltam as tabelas de obrigações e eventos financeiros.';
+        }
+        if (! trifaseEntregaHabilitada()) {
+            return 'O módulo de entregas está desativado; ative-o para negociar com segurança.';
+        }
+        if (! $this->db->table_exists('trifase_entregas_estado') || ! $this->db->table_exists('trifase_entregas_eventos')) {
+            return 'Atualize o banco de dados para negociar: falta o registro de entregas.';
+        }
+        if (! $this->db->table_exists('trifase_cancelamentos') || ! $this->db->table_exists('trifase_financeiro_projecoes')
+            || ! $this->db->table_exists('lancamentos') || ! $this->db->table_exists('cobrancas')) {
+            return 'Atualize o banco de dados para negociar: faltam tabelas de cancelamento, financeiro ou cobranças.';
+        }
+        if (! $this->db->table_exists('trifase_orcamento_eventos') || ! $this->db->field_exists('negociacao', 'trifase_orcamento_eventos')) {
+            return 'Atualize o banco de dados para negociar: falta a auditoria da negociação.';
+        }
+        return null;
+    }
+
+    private function validarNegociacao(object $os, int $versao, string $hashAnterior): object
+    {
+        if (($indisponivel = $this->negociacaoIndisponivel()) !== null) {
+            throw new DomainException($indisponivel);
+        }
+        $id = (int) $os->idOs;
+        if (in_array($os->status, ['Cancelado', 'Faturado'], true) || (int) $os->faturado !== 0 || ! empty($os->lancamento) || $this->entregue($id)
+            || $this->db->where('os_id', $id)->count_all_results('trifase_financeiro_obrigacoes')
+            || $this->db->where('os_id', $id)->count_all_results('trifase_financeiro_eventos')
+            || $this->db->where('os_id', $id)->count_all_results('trifase_financeiro_projecoes')
+            || $this->db->where('os_id', $id)->count_all_results('cobrancas')
+            || $this->db->where_in('descricao', osDescricoesDaFatura($id))->count_all_results('lancamentos')) {
+            throw new DomainException('A OS possui entrega, cancelamento ou referência financeira que impede negociação.');
+        }
+        $cancelamento = $this->db->where('os_id', $id)->where_in('tipo', ['solicitar', 'retirar', 'confirmar'])->order_by('id', 'desc')->get('trifase_cancelamentos', 1)->row();
+        if (($cancelamento->tipo ?? '') === 'solicitar') {
+            throw new DomainException('Existe pedido de cancelamento pendente.');
+        }
+        $atual = $this->versaoVigente($os);
+        if ($atual === null || (int) $atual->id !== $versao || ! preg_match('/\A[a-f0-9]{64}\z/', $hashAnterior) || ! hash_equals($atual->conteudo_hash, $hashAnterior)) {
+            throw new DomainException('Orçamento indisponível ou atualizado. Reabra e confira a versão.');
+        }
+        return $atual;
+    }
+
+    private function calcularNegociacao(object $os, string $tipo, mixed $valor): array
+    {
+        $antes = $this->retrato($os);
+        [$dados, $erros] = osCalcularDesconto(($antes['total_c'] + $antes['desconto_c']) / 100, $tipo, $valor);
+        if ($erros !== []) {
+            throw new DomainException((string) reset($erros));
+        }
+        $proposta = clone $os;
+        foreach ($dados as $campo => $valorCalculado) {
+            $proposta->{$campo} = $valorCalculado;
+        }
+        return [$dados, $this->retrato($proposta)];
     }
 
     public function retirar(int $id, int $versao, int $usuario, string $chave): void
@@ -154,10 +289,10 @@ class Trifase_orcamento_model extends CI_Model
         $this->registrarResposta($id, $token, $versao, $tipo, $nome, $confirmado, $chave, null);
     }
 
-    public function registrarRespostaInterna(int $id, int $versao, mixed $tipo, mixed $nome, mixed $confirmado, string $chave, int $usuario, array $comunicacao): void
+    public function registrarRespostaInterna(int $id, int $versao, mixed $tipo, mixed $nome, mixed $confirmado, string $chave, int $usuario, array $comunicacao, ?string $hashConfirmado = null): void
     {
         $comunicacao = $this->validarComunicacao($usuario, $comunicacao);
-        $this->registrarResposta($id, null, $versao, $tipo, $nome, $confirmado, $chave, $usuario, $comunicacao);
+        $this->registrarResposta($id, null, $versao, $tipo, $nome, $confirmado, $chave, $usuario, $comunicacao, false, $hashConfirmado);
     }
 
     public function registrarRegularizacao(int $id, int $versao, mixed $tipo, mixed $nome, mixed $confirmado, string $chave, int $usuario, array $comunicacao): void
@@ -236,7 +371,7 @@ class Trifase_orcamento_model extends CI_Model
         return $entregas->ativa($id);
     }
 
-    private function registrarResposta(int $id, mixed $token, int $versao, mixed $tipo, mixed $nome, mixed $confirmado, string $chave, ?int $usuario, array $comunicacao = [], bool $regularizacao = false): void
+    private function registrarResposta(int $id, mixed $token, int $versao, mixed $tipo, mixed $nome, mixed $confirmado, string $chave, ?int $usuario, array $comunicacao = [], bool $regularizacao = false, ?string $hashConfirmado = null): void
     {
         $this->validarOperacao($chave);
         if (! in_array($tipo, ['aprovar', 'recusar'], true) || $confirmado !== '1' || ! is_string($nome)
@@ -245,14 +380,35 @@ class Trifase_orcamento_model extends CI_Model
             throw new DomainException('Informe seu nome e confirme a decisão sobre esta versão.');
         }
         $nome = trim($nome);
-        $hash = $this->hash($usuario === null ? ['responder', $id, $versao, $tipo, $nome] : [$regularizacao ? 'regularizacao_tardia' : 'resposta_interna', $id, $versao, $tipo, $nome, $usuario, $comunicacao]);
-        $this->transacao($id, function ($os) use ($id, $token, $versao, $tipo, $nome, $chave, $hash, $usuario, $comunicacao, $regularizacao) {
+        $identidade = $usuario === null ? ['responder', $id, $versao, $tipo, $nome] : [$regularizacao ? 'regularizacao_tardia' : 'resposta_interna', $id, $versao, $tipo, $nome, $usuario, $comunicacao];
+        if ($hashConfirmado !== null) {
+            $identidade[] = $hashConfirmado;
+        }
+        $hash = $this->hash($identidade);
+        $this->transacao($id, function ($os) use ($id, $token, $versao, $tipo, $nome, $chave, $hash, $usuario, $comunicacao, $regularizacao, $hashConfirmado) {
             if ($this->reenvio($id, $chave, $hash)) {
                 return;
             }
             $atual = $usuario === null ? $this->publicadoSobTrava($os, $token) : $this->versaoVigente($os);
+            if ($regularizacao && $atual === null && $os->status !== 'Cancelado' && $this->entregaAtiva($id) !== null) {
+                // A resposta tardia pertence ao retrato documentado, nunca aos itens atuais.
+                $historica = $this->atual($id);
+                if ($historica !== null && $historica->ativo && (int) $historica->id === $versao) {
+                    $atual = $historica;
+                }
+            }
             $registrada = $usuario !== null && ! $regularizacao && $atual === null ? $this->atual($id) : null;
+            if ($usuario !== null && ! $regularizacao && $hashConfirmado !== null
+                && (! preg_match('/\A[a-f0-9]{64}\z/', $hashConfirmado) || ! hash_equals($hashConfirmado, $this->hash($this->retrato($os))))) {
+                throw new DomainException('Orçamento indisponível ou atualizado. Reabra e confira a versão.');
+            }
             if ($registrada !== null && (int) $registrada->id === $versao) {
+                if ($this->entregaAtiva($id) !== null) {
+                    throw new DomainException('Após a entrega, registre a resposta somente em uma versão histórica documentada.');
+                }
+                if ($hashConfirmado === null) {
+                    throw new DomainException('Orçamento indisponível ou atualizado. Reabra e confira a versão.');
+                }
                 // Itens/valores mudaram depois da publicação: a resposta da equipe cria, no mesmo ato,
                 // a versão correspondente ao estado atual, sem exigir publicação manual.
                 $versao = $this->snapshotParaResposta($os, $usuario, $hash);

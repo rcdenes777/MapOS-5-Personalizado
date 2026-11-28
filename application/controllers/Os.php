@@ -669,6 +669,12 @@ class Os extends MY_Controller
                     $dados['pilotoRespostaCliente'] = ['tipo' => $decisaoOrcamento->tipo, 'criado_em' => $decisaoOrcamento->criado_em, 'atual' => $orcamentoValido];
                 }
                 if ($this->permite('vLancamento')) {
+                    try {
+                        $dados['pilotoRetratoOrcamento'] = $this->orcamentos_os->retrato($os);
+                        $dados['pilotoHashOrcamento'] = $this->orcamentos_os->hash($dados['pilotoRetratoOrcamento']);
+                    } catch (DomainException $e) {
+                        // Sem prévia válida, não oferecer o registro; manter a consulta da OS.
+                    }
                     $dados['pilotoOrcamento'] = $atualOrcamento;
                     $dados['pilotoOrcamentoDecisao'] = $decisaoOrcamento;
                     $dados['pilotoOrcamentoValido'] = $orcamentoValido;
@@ -1393,6 +1399,9 @@ class Os extends MY_Controller
         if (! $os) {
             return;
         }
+        if ($this->itemComercialBloqueado($os)) {
+            return;
+        }
 
         $produto = $tipo === 'produto';
         $idCadastro = (int) $this->input->post($produto ? 'idProduto' : 'idServico');
@@ -1504,6 +1513,9 @@ class Os extends MY_Controller
 
         $produto = $tipo === 'produto';
         $idOs = (int) $os->idOs;
+        if ($this->itemComercialBloqueado($os)) {
+            return;
+        }
         $idItem = (int) $this->input->post('idItem');
         $item = $idItem > 0
             ? ($produto ? $this->os_model->getProdutoDaOs($idOs, $idItem) : $this->os_model->getServicoDaOs($idOs, $idItem))
@@ -1561,6 +1573,9 @@ class Os extends MY_Controller
     {
         $os = $this->osParaAlterar();
         if (! $os) {
+            return;
+        }
+        if ($this->itemComercialBloqueado($os)) {
             return;
         }
 
@@ -1841,6 +1856,41 @@ class Os extends MY_Controller
         armazenamentoEnviar($arquivo, 'anexo-' . (int) $anexo->idAnexos . '.' . strtolower(pathinfo($arquivo, PATHINFO_EXTENSION)), $baixar);
     }
 
+    /** Alterar desconto geral de OS com histórico comercial exige negociação auditada. */
+    private function descontoExigeNegociacao(int $idOs): bool
+    {
+        if ($this->db->table_exists('trifase_orcamento_versoes')
+            && $this->db->where('os_id', $idOs)->count_all_results('trifase_orcamento_versoes') > 0) {
+            $this->responderJson(403, ['result' => false, 'message' => 'Use a negociação do orçamento para alterar o desconto geral desta OS.']);
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Com desconto geral negociado, itens e valores comerciais ficam travados
+     * até o desconto ser retirado pelo fluxo auditado de negociação. Sem
+     * desconto geral, o desconto por item e a edição de itens continuam
+     * disponíveis como antes.
+     */
+    private function itemComercialBloqueado(object $os): bool
+    {
+        if (! $this->db->table_exists('trifase_orcamento_versoes')
+            || $this->db->where('os_id', (int) $os->idOs)->count_all_results('trifase_orcamento_versoes') === 0
+            || ! $this->descontoGeralAtivo($os)) {
+            return false;
+        }
+        $this->responderJson(403, ['result' => false, 'message' => 'Esta OS tem desconto negociado. Retire o desconto pela negociação do orçamento antes de alterar itens ou valores.']);
+        return true;
+    }
+
+    /** Desconto geral ativo pelo total efetivo canônico (inclui legado sem tipo). */
+    private function descontoGeralAtivo(object $os): bool
+    {
+        $totais = $this->os_model->totais($os);
+        return round((float) $totais['bruto'], 2) > 0 && round((float) $totais['total'], 2) < round((float) $totais['bruto'], 2);
+    }
+
     /**
      * Desconto da OS em R$ ou %, calculado no servidor sobre o total dos
      * itens (osCalcularDesconto()). 0 remove o desconto.
@@ -1864,6 +1914,9 @@ class Os extends MY_Controller
         }
 
         $idOs = (int) $os->idOs;
+        if ($this->descontoExigeNegociacao($idOs)) {
+            return;
+        }
         $totais = $this->os_model->totais($os);
         [$dados, $erros] = osCalcularDesconto($totais['bruto'], $this->input->post('tipoDesconto'), $this->input->post('desconto'));
 

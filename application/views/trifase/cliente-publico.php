@@ -77,6 +77,16 @@ if ($entregasDisponiveis ?? false) {
                         <?php } ?>
                     <?php } ?>
                 </dl>
+                <?php if (($orcamentoCliente['subtotal_c'] ?? null) !== null && ($orcamentoCliente['desconto_c'] ?? null) !== null && ($orcamentoCliente['total_c'] ?? null) !== null) { ?>
+                    <dl class="mt-3 grid grid-cols-2 gap-3">
+                        <div><dt class="text-caption text-muted">Subtotal dos itens</dt><dd><?= e($dinheiro($orcamentoCliente['subtotal_c'])) ?></dd></div>
+                        <div><dt class="text-caption text-muted">Desconto geral</dt><dd><?= e($dinheiro($orcamentoCliente['desconto_c'])) ?></dd></div>
+                        <div><dt class="text-caption text-muted">Total do orçamento</dt><dd><?= e($dinheiro($orcamentoCliente['total_c'])) ?></dd></div>
+                    </dl>
+                    <p class="mt-2 text-caption text-muted">Subtotal líquido dos descontos individuais dos itens. Estes valores não são uma cobrança formalizada.</p>
+                <?php } else { ?>
+                    <p class="mt-3 text-muted">Valores do orçamento indisponíveis.</p>
+                <?php } ?>
                 <h3 class="mt-3 text-label-md"><?= e($orcamentoCliente['situacao'] === 'Aprovado' ? 'Trabalho aprovado' : 'Itens do orçamento') ?></h3>
                 <ul class="mt-2 list-disc pl-5">
                     <?php foreach ($orcamentoCliente['itens'] as $item) { ?>

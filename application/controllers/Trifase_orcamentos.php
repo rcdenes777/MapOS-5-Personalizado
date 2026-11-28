@@ -29,7 +29,22 @@ class Trifase_orcamentos extends MY_Controller
         if (! in_array($this->input->method(true), ['GET', 'HEAD'], true)) {
             show_error('Método não permitido.', 405);
         }
-        $os = $this->ordem($id);
+        return $this->painel($this->ordem($id));
+    }
+
+    private function painel(object $os, ?array $previa = null)
+    {
+        $this->data['previaNegociacao'] = $previa;
+        $this->data['linkPublicoAtivo'] = null;
+        if ($this->permite('eOs')) {
+            require_once APPPATH . 'helpers/trifase_publico_helper.php';
+            if (trifasePublicoHabilitado() && $this->db->table_exists('trifase_publico_links')) {
+                $this->load->model('Trifase_publico_model', 'publico_model');
+                $token = $this->publico_model->tokenAtivo((int) $os->idOs);
+                $this->data['linkPublicoAtivo'] = $token !== null ? trifasePublicoUrl($token, base_url(), (string) config_item('index_page')) : null;
+                $this->output->set_header('Referrer-Policy: no-referrer');
+            }
+        }
         $this->data['ordemOrcamento'] = $os;
         $this->data['retratoOrcamento'] = $this->orcamentos->retrato($os);
         $this->data['apresentacaoOrcamento'] = [
@@ -42,8 +57,16 @@ class Trifase_orcamentos extends MY_Controller
         $this->data['hashOrcamento'] = $this->orcamentos->hash($this->data['retratoOrcamento']);
         $this->data['orcamentoEntregue'] = $this->orcamentos->entregue((int) $os->idOs);
         $this->data['orcamentoAtual'] = $this->orcamentos->atual((int) $os->idOs);
+        if ($previa !== null && ($this->data['orcamentoAtual'] === null || ! $this->data['orcamentoAtual']->ativo
+            || (int) $this->data['orcamentoAtual']->id !== $previa['versao']
+            || ! hash_equals($previa['hash_anterior'], $this->data['hashOrcamento'])
+            || ! hash_equals($previa['hash_anterior'], $this->data['orcamentoAtual']->conteudo_hash))) {
+            throw new DomainException('O orçamento mudou. Reabra e calcule uma nova prévia.');
+        }
+        $this->data['apresentacaoPublicada'] = [];
         if ($this->data['orcamentoAtual'] !== null) {
             $publicadoAnterior = json_decode($this->data['orcamentoAtual']->conteudo, true, 32, JSON_THROW_ON_ERROR);
+            $this->data['apresentacaoPublicada'] = $publicadoAnterior['apresentacao'] ?? [];
             foreach (['pagamento', 'prazo', 'garantia'] as $campo) {
                 if (isset($publicadoAnterior['apresentacao'][$campo])) {
                     $this->data['apresentacaoOrcamento'][$campo] = $publicadoAnterior['apresentacao'][$campo];
@@ -54,10 +77,95 @@ class Trifase_orcamentos extends MY_Controller
         $this->data['escolhasCondicoes'] = trifaseOrcamentoEscolhas($this->data['apresentacaoOrcamento'], $this->data['termosCondicoes']);
         $this->data['versoesOrcamento'] = $this->orcamentos->historico((int) $os->idOs);
         $this->data['eventosOrcamento'] = $this->orcamentos->eventos((int) $os->idOs);
+        $this->data['aguardaDecisaoOrcamento'] = $this->data['orcamentoAtual'] !== null
+            && (bool) $this->data['orcamentoAtual']->ativo
+            && hash_equals($this->data['orcamentoAtual']->conteudo_hash, $this->data['hashOrcamento'])
+            && $this->orcamentos->decisao((int) $this->data['orcamentoAtual']->id) === null;
+        $this->data['orcamentoVigente'] = $this->data['orcamentoAtual'] !== null
+            && hash_equals($this->data['orcamentoAtual']->conteudo_hash, $this->data['hashOrcamento']);
+        $this->data['negociacaoDisponivel'] = $this->orcamentos->negociacaoDisponivel();
+        $this->data['negociacaoMotivo'] = $this->orcamentos->negociacaoMotivo();
         $this->data['podePublicarOrcamento'] = $this->permite('eOs') && $this->permite('publicarOrcamento');
         $this->data['view'] = 'trifase/orcamento-painel';
         $this->data['menuOs'] = 'OS';
         return $this->layout();
+    }
+
+    public function prever_desconto($id = null)
+    {
+        if (! $this->permission->checkPermission($this->session->userdata('permissao'), 'vOs')
+            || ! $this->permission->checkPermission($this->session->userdata('permissao'), 'vLancamento')
+            || ! $this->permission->checkPermission($this->session->userdata('permissao'), 'eOs')
+            || ! $this->permission->checkPermission($this->session->userdata('permissao'), 'publicarOrcamento')) {
+            show_error('Você não tem permissão para negociar o orçamento.', 403);
+        }
+        $this->somentePost();
+        $os = $this->ordem($id);
+        try {
+            $dados = $this->dadosNegociacao();
+            $resultado = $this->orcamentos->preverDesconto((int) $os->idOs, $dados['versao'], $dados['hash_anterior'], $dados['tipo'], $dados['valor']);
+            $dados['retrato'] = $resultado['retrato'];
+            $dados['hash_proposto'] = $resultado['hash_proposto'];
+            $dados['operacao'] = bin2hex(random_bytes(16));
+            $this->session->set_userdata('negociacao_previa_' . (int) $os->idOs, [
+                'versao' => $dados['versao'],
+                'hash' => $resultado['hash_proposto'],
+                'expira' => time() + 600,
+            ]);
+            return $this->painel($os, $dados);
+        } catch (DomainException $e) {
+            return $this->falha($e->getMessage());
+        } catch (RuntimeException $e) {
+            return $this->falha('Não foi possível calcular a prévia. Recarregue e tente novamente.', 500);
+        }
+    }
+
+    public function negociar_desconto($id = null)
+    {
+        if (! $this->permission->checkPermission($this->session->userdata('permissao'), 'vOs')
+            || ! $this->permission->checkPermission($this->session->userdata('permissao'), 'vLancamento')
+            || ! $this->permission->checkPermission($this->session->userdata('permissao'), 'eOs')
+            || ! $this->permission->checkPermission($this->session->userdata('permissao'), 'publicarOrcamento')) {
+            show_error('Você não tem permissão para negociar o orçamento.', 403);
+        }
+        $this->somentePost();
+        $os = $this->ordem($id);
+        try {
+            $dados = $this->dadosNegociacao(true);
+            if ($this->input->post('confirmar') !== '1') {
+                throw new DomainException('Confirme a publicação da nova versão.');
+            }
+            $previa = $this->session->userdata('negociacao_previa_' . (int) $os->idOs);
+            $hashProposto = $this->textoPost('hash_proposto');
+            if (! is_array($previa) || ($previa['expira'] ?? 0) < time()
+                || (int) ($previa['versao'] ?? 0) !== $dados['versao']
+                || ! is_string($previa['hash'] ?? null) || ! hash_equals($previa['hash'], $hashProposto)) {
+                throw new DomainException('A prévia expirou ou não confere. Calcule novamente antes de publicar.');
+            }
+            $this->orcamentos->negociarDesconto((int) $os->idOs, $dados['versao'], $dados['hash_anterior'], (int) $this->session->userdata('id_admin'), $this->textoPost('operacao'), $dados['tipo'], $dados['valor'], $dados['motivo'], $hashProposto);
+            $this->session->set_flashdata('success', 'Negociação confirmada. Se esta operação já havia sido registrada, nenhuma nova versão foi criada. O link permanece o mesmo.');
+        } catch (DomainException $e) {
+            return $this->falha($e->getMessage());
+        } catch (RuntimeException $e) {
+            return $this->falha('Não foi possível confirmar a negociação. Confira o histórico antes de tentar novamente.', 500);
+        }
+        redirect('trifase_orcamentos/visualizar/' . (int) $os->idOs);
+    }
+
+    private function dadosNegociacao(bool $confirmacao = false): array
+    {
+        $tipo = $this->comunicacaoPost('tipo');
+        $valor = $this->comunicacaoPost($confirmacao ? 'valor_codificado' : 'valor');
+        $motivo = $this->comunicacaoPost($confirmacao ? 'motivo_codificado' : 'motivo');
+        if ($confirmacao) {
+            $valor = is_string($valor) ? base64_decode($valor, true) : false;
+            $motivo = is_string($motivo) ? base64_decode($motivo, true) : false;
+        }
+        $versao = filter_var($this->textoPost('versao'), FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
+        if ($versao === false || ! is_string($tipo) || ! in_array($tipo, ['real', 'porcento'], true) || ! is_string($valor) || ! is_string($motivo) || trim($motivo) === '') {
+            throw new DomainException('Informe tipo, valor e motivo interno para negociar.');
+        }
+        return ['versao' => $versao, 'hash_anterior' => $this->textoPost('hash_anterior'), 'tipo' => $tipo, 'valor' => $valor, 'motivo' => $motivo];
     }
 
     public function publicar($id = null)
@@ -95,6 +203,10 @@ class Trifase_orcamentos extends MY_Controller
         $this->somentePost();
         $os = $this->ordem($id);
         try {
+            $hashConfirmado = $this->textoPost('retrato_hash');
+            if ($this->input->post('confirmar_retrato') !== '1' || ! preg_match('/\A[a-f0-9]{64}\z/', $hashConfirmado)) {
+                throw new DomainException('Orçamento indisponível ou atualizado. Reabra e confira a versão.');
+            }
             $this->orcamentos->registrarRespostaInterna(
                 (int) $os->idOs,
                 (int) $this->textoPost('versao'),
@@ -107,7 +219,8 @@ class Trifase_orcamentos extends MY_Controller
                     'canal' => $this->input->post('canal'),
                     'comunicado_em' => $this->input->post('comunicado_em'),
                     'observacao' => $this->comunicacaoPost('observacao') ?? '',
-                ]
+                ],
+                $hashConfirmado
             );
             $this->session->set_flashdata('success', 'Resposta registrada na versão do orçamento.');
         } catch (DomainException $e) {

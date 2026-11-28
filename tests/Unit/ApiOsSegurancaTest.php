@@ -176,6 +176,59 @@ final class ApiOsSegurancaTest extends MaposTestCase
         return (int) $this->db->where($where)->count_all_results($tabela);
     }
 
+    public function testDescontoApiNaoAlteraOsComVersaoComercial(): void
+    {
+        $this->db->query('CREATE TABLE trifase_orcamento_versoes (id INTEGER PRIMARY KEY, os_id INTEGER)');
+        $this->db->query('INSERT INTO trifase_orcamento_versoes (id, os_id) VALUES (1, 1)');
+        unset($this->db->data_cache['table_names']);
+        $this->db->query("UPDATE os SET desconto = 10, valor_desconto = 140, tipo_desconto = 'real' WHERE idOs = 1");
+
+        $resposta = $this->chamar('desconto_post', [1], ['tipoDesconto' => 'real', 'desconto' => '20']);
+
+        $this->assertSame(403, $resposta['code']);
+        $os = $this->db->get_where('os', ['idOs' => 1])->row();
+        $this->assertEquals(10, $os->desconto);
+        $this->assertEquals(140, $os->valor_desconto);
+    }
+
+    public function testItensDaApiBloqueadosComDescontoNegociado(): void
+    {
+        $this->db->query('CREATE TABLE trifase_orcamento_versoes (id INTEGER PRIMARY KEY, os_id INTEGER)');
+        $this->db->query('INSERT INTO trifase_orcamento_versoes (id, os_id) VALUES (1, 1)');
+        unset($this->db->data_cache['table_names']);
+        $this->db->query("UPDATE os SET desconto = 10, valor_desconto = 140, tipo_desconto = 'real' WHERE idOs = 1");
+
+        $resposta = $this->chamar('produtos_delete', [1, 1]);
+        $this->assertSame(403, $resposta['code']);
+        $this->assertSame(1, $this->contar('produtos_os', ['idProdutos_os' => 1]));
+
+        $resposta = $this->chamar('servicos_delete', [1, 1]);
+        $this->assertSame(403, $resposta['code']);
+        $this->assertSame(1, $this->contar('servicos_os', ['idServicos_os' => 1]));
+    }
+
+    public function testItensDaApiBloqueadosComDescontoGeralLegadoSemTipo(): void
+    {
+        $this->db->query('CREATE TABLE trifase_orcamento_versoes (id INTEGER PRIMARY KEY, os_id INTEGER)');
+        $this->db->query('INSERT INTO trifase_orcamento_versoes (id, os_id) VALUES (1, 1)');
+        unset($this->db->data_cache['table_names']);
+        $this->db->query('UPDATE os SET desconto = 0, valor_desconto = 140, tipo_desconto = NULL WHERE idOs = 1');
+
+        $resposta = $this->chamar('produtos_delete', [1, 1]);
+        $this->assertSame(403, $resposta['code']);
+        $this->assertSame(1, $this->contar('produtos_os', ['idProdutos_os' => 1]));
+    }
+
+    public function testItensDaApiPermitidosSemDescontoGeralMesmoComVersao(): void
+    {
+        $this->db->query('CREATE TABLE trifase_orcamento_versoes (id INTEGER PRIMARY KEY, os_id INTEGER)');
+        $this->db->query('INSERT INTO trifase_orcamento_versoes (id, os_id) VALUES (1, 1)');
+        unset($this->db->data_cache['table_names']);
+
+        $this->assertSame(200, $this->chamar('produtos_delete', [1, 1])['code']);
+        $this->assertSame(200, $this->chamar('servicos_delete', [1, 1])['code']);
+    }
+
     public function testItemDeOutraOsNaoEAlteradoNemExcluido(): void
     {
         // O item 2 de produtos_os pertence à OS 2, e a URL é da OS 1.

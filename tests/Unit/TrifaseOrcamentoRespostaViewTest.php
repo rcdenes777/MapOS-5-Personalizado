@@ -21,7 +21,7 @@ final class TrifaseOrcamentoRespostaViewTest extends \PHPUnit\Framework\TestCase
     public function testFormularioInternoExigeCanalDataENaoAtribuiAssinaturaAoCliente(): void
     {
         $html = $this->renderizar('trifase/orcamento-resumo');
-        foreach (['name="canal"', 'Telefone', 'WhatsApp', 'Presencial', 'name="comunicado_em"', 'type="date"', 'name="observacao"', 'name="confirmar"', 'name="versao"', 'name="operacao"'] as $campo) {
+        foreach (['name="canal"', 'Telefone', 'WhatsApp', 'Presencial', 'name="comunicado_em"', 'type="date"', 'name="observacao"', 'name="confirmar"', 'name="versao"', 'name="operacao"', 'name="retrato_hash"', 'name="confirmar_retrato"', 'Serviço QA', '60,00', str_repeat('a', 64)] as $campo) {
             $this->assertStringContainsString($campo, $html);
         }
         $this->assertStringContainsString('Data informada da comunicação', $html);
@@ -94,15 +94,44 @@ final class TrifaseOrcamentoRespostaViewTest extends \PHPUnit\Framework\TestCase
     {
         $dados = ['pilotoOrcamentoEntregue' => true, 'pilotoPodeRegularizarOrcamento' => true];
         $html = $this->renderizar('trifase/orcamento-resumo', $dados);
-        // Um único caminho: registrar_resposta, sem o formulário administrativo paralelo.
+        // Com os valores ainda vigentes, o registro normal continua disponível.
         $this->assertStringContainsString('registrar_resposta/1', $html);
         $this->assertStringNotContainsString('regularizar_resposta/1', $html);
         $this->assertStringNotContainsString('Regularização administrativa tardia', $html);
-        $obsoleto = $this->renderizar('trifase/orcamento-resumo', array_replace($dados, ['pilotoOrcamentoValido' => false]));
-        $this->assertStringContainsString('registrar_resposta/1', $obsoleto);
-        $this->assertStringContainsString('cria uma nova versão com os itens e valores atuais', $obsoleto);
+    }
+
+    public function testAposEntregaSemVersaoVigenteRegularizaSomenteVersaoHistorica(): void
+    {
+        $dados = ['pilotoOrcamentoEntregue' => true, 'pilotoPodeRegularizarOrcamento' => true, 'pilotoOrcamentoValido' => false];
+        $html = $this->renderizar('trifase/orcamento-resumo', $dados);
+        // Após a entrega não se cria nova versão a partir dos valores atuais.
+        $this->assertStringNotContainsString('registrar_resposta/1', $html);
+        $this->assertStringNotContainsString('cria uma nova versão com os itens e valores atuais', $html);
+        $this->assertStringContainsString('regularizar_resposta/1', $html);
+        $this->assertStringContainsString('Regularização administrativa tardia', $html);
+        $this->assertStringContainsString('versão histórica', $html);
+        $this->assertStringContainsString('name="justificativa"', $html);
         $jaDecidido = $this->renderizar('trifase/orcamento-resumo', array_replace($dados, ['pilotoOrcamentoDecisao' => $this->decisao()]));
-        $this->assertStringNotContainsString('registrar_resposta/1', $jaDecidido);
+        $this->assertStringNotContainsString('regularizar_resposta/1', $jaDecidido);
+    }
+
+    public function testAposEntregaSemVersaoVigenteESemPermissaoNaoOfereceFormulario(): void
+    {
+        $html = $this->renderizar('trifase/orcamento-resumo', ['pilotoOrcamentoEntregue' => true,
+            'pilotoPodeRegularizarOrcamento' => false, 'pilotoOrcamentoValido' => false]);
+        $this->assertStringNotContainsString('registrar_resposta/1', $html);
+        $this->assertStringNotContainsString('regularizar_resposta/1', $html);
+        $this->assertStringContainsString('regularização tardia', $html);
+    }
+
+    public function testVersaoRetiradaNaoOfereceRegularizacaoQueOModeloRecusaria(): void
+    {
+        $html = $this->renderizar('trifase/orcamento-resumo', ['pilotoOrcamentoEntregue' => true,
+            'pilotoPodeRegularizarOrcamento' => true, 'pilotoOrcamentoValido' => false,
+            'pilotoOrcamento' => (object) ['id' => 1, 'numero' => 2, 'ativo' => 0]]);
+        $this->assertStringNotContainsString('regularizar_resposta/1', $html);
+        $this->assertStringNotContainsString('registrar_resposta/1', $html);
+        $this->assertStringContainsString('retirada do link', $html);
     }
 
     public function testRegistroAposEntregaSemJustificativaNaoExibeRotuloDeRegularizacaoNemCampoVazio(): void
@@ -205,9 +234,10 @@ final class TrifaseOrcamentoRespostaViewTest extends \PHPUnit\Framework\TestCase
                 $this->dados = $antes;
             }
         };
-        $dados += ['os' => (object) ['idOs' => 1, 'status' => 'Aberto'], 'pilotoOrcamento' => (object) ['id' => 1, 'numero' => 2],
+        $dados += ['os' => (object) ['idOs' => 1, 'status' => 'Aberto'], 'pilotoOrcamento' => (object) ['id' => 1, 'numero' => 2, 'ativo' => 1],
             'pilotoOrcamentoValido' => true, 'pilotoOrcamentoDecisao' => null, 'pilotoPodeRegistrarResposta' => true,
             'versaoOrcamento' => (object) ['id' => 1, 'numero' => 2], 'retratoOrcamento' => ['os' => 1, 'itens' => [], 'pecas_c' => 0, 'servicos_c' => 0, 'desconto_c' => 0, 'total_c' => 0],
+            'pilotoRetratoOrcamento' => ['itens' => [['nome' => 'Serviço QA', 'tipo' => 'servico', 'quantidade' => '1', 'unitario_c' => 7000, 'desconto_c' => 0, 'total_c' => 7000]], 'pecas_c' => 0, 'servicos_c' => 7000, 'desconto_c' => 1000, 'total_c' => 6000], 'pilotoHashOrcamento' => str_repeat('a', 64),
             'decisaoOrcamento' => null, 'erroOrcamento' => null, 'responderOrcamentoUrl' => '/responder'];
         ob_start();
         try {

@@ -477,18 +477,15 @@ final class TrifaseOrcamentoTest extends MaposTestCase
         $this->assertSame($entrega, (int) $this->modelo->decisao($versao)->entrega_id);
     }
 
-    public function testRegularizacaoRejeitaVersaoSubstituidaRetiradaCanceladaOuDivergente(): void
+    public function testRegularizacaoRejeitaVersaoSubstituidaRetiradaOuCancelada(): void
     {
         $antiga = $this->publicar();
         $versao = $this->publicar('nova');
         $this->entregar();
         $dados = ['canal' => 'telefone', 'comunicado_em' => date('Y-m-d\TH:i'), 'justificativa' => 'Registro atrasado'];
-        foreach (['substituida', 'retirada', 'cancelada', 'divergente'] as $caso) {
+        foreach (['substituida', 'retirada', 'cancelada'] as $caso) {
             $this->db->where('os_id', 1)->update('trifase_orcamento_estado', ['ativo' => $caso === 'retirada' ? 0 : 1]);
             $this->db->where('idOs', 1)->update('os', ['status' => $caso === 'cancelada' ? 'Cancelado' : 'Finalizado']);
-            if ($caso === 'divergente') {
-                $this->db->where('idProdutos_os', 1)->update('produtos_os', ['subTotal' => 40]);
-            }
             try {
                 $this->modelo->registrarRegularizacao(1, $caso === 'substituida' ? $antiga : $versao, 'aprovar', 'Cliente QA', '1', $this->chave($caso), 7, $dados);
                 $this->fail('Aceitou versão indisponível');

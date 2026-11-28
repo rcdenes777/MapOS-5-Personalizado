@@ -1146,6 +1146,96 @@ final class OsTelaTest extends MaposTestCase
         $this->assertStringContainsString('Atualizar banco', $corpo['message']);
     }
 
+    public function testDescontoItemNativoPermaneceDisponivelSemDescontoGeralAposPublicacao(): void
+    {
+        $this->criarBanco();
+        $this->db->query('CREATE TABLE trifase_orcamento_versoes (id INTEGER PRIMARY KEY, os_id INTEGER)');
+        $this->db->insert('trifase_orcamento_versoes', ['id' => 1, 'os_id' => 1]);
+        $controller = $this->controller($this->model(), ['idOs' => '1', 'idItem' => '1', 'tipoDescontoItem' => 'real', 'descontoItem' => '5']);
+        $controller->descontoProduto();
+        $this->assertSame(200, $this->resposta($controller)[0]);
+        $item = $this->db->where('idProdutos_os', 1)->get('produtos_os')->row();
+        $this->assertSame(5.0, (float) $item->desconto);
+        $this->assertSame(295.0, (float) $item->subTotal);
+    }
+
+    public function testDescontoItemNativoBloqueadoComDescontoNegociado(): void
+    {
+        $this->criarBanco();
+        $this->db->query('CREATE TABLE trifase_orcamento_versoes (id INTEGER PRIMARY KEY, os_id INTEGER)');
+        $this->db->insert('trifase_orcamento_versoes', ['id' => 1, 'os_id' => 1]);
+        $this->db->query("UPDATE os SET desconto = 10, valor_desconto = 340, tipo_desconto = 'real' WHERE idOs = 1");
+        $antes = $this->db->where('idProdutos_os', 1)->get('produtos_os')->row_array();
+        $controller = $this->controller($this->model(), ['idOs' => '1', 'idItem' => '1', 'tipoDescontoItem' => 'real', 'descontoItem' => '5']);
+        $controller->descontoProduto();
+        [$status, $corpo] = $this->resposta($controller);
+        $this->assertSame(403, $status);
+        $this->assertStringContainsString('negociação', $corpo['message']);
+        $this->assertSame($antes, $this->db->where('idProdutos_os', 1)->get('produtos_os')->row_array());
+    }
+
+    public function testAdicionarEExcluirItemBloqueadosComDescontoNegociado(): void
+    {
+        $this->criarBanco();
+        $this->db->query('CREATE TABLE trifase_orcamento_versoes (id INTEGER PRIMARY KEY, os_id INTEGER)');
+        $this->db->insert('trifase_orcamento_versoes', ['id' => 1, 'os_id' => 1]);
+        $this->db->query("UPDATE os SET desconto = 10, valor_desconto = 340, tipo_desconto = 'real' WHERE idOs = 1");
+
+        $controller = $this->controller($this->model(), ['idOs' => '1', 'idProduto' => '1']);
+        $controller->adicionarProduto();
+        $this->assertSame(403, $this->resposta($controller)[0]);
+        $this->assertSame(2, (int) $this->db->count_all('produtos_os'), 'Nenhum item foi incluído.');
+
+        $controller = $this->controller($this->model(), ['idOs' => '1', 'idItem' => '1']);
+        $controller->excluirProduto();
+        $this->assertSame(403, $this->resposta($controller)[0]);
+        $this->assertSame(2, (int) $this->db->count_all('produtos_os'), 'Nenhum item foi excluído.');
+    }
+
+    public function testItemBloqueadoComDescontoGeralLegadoSemTipo(): void
+    {
+        $this->criarBanco();
+        $this->db->query('CREATE TABLE trifase_orcamento_versoes (id INTEGER PRIMARY KEY, os_id INTEGER)');
+        $this->db->insert('trifase_orcamento_versoes', ['id' => 1, 'os_id' => 1]);
+        // Legado: valor_desconto é o total já descontado e pode existir sem tipo/informado.
+        $this->db->query('UPDATE os SET desconto = 0, valor_desconto = 340, tipo_desconto = NULL WHERE idOs = 1');
+        $antes = $this->db->where('idProdutos_os', 1)->get('produtos_os')->row_array();
+        $controller = $this->controller($this->model(), ['idOs' => '1', 'idItem' => '1', 'tipoDescontoItem' => 'real', 'descontoItem' => '5']);
+        $controller->descontoProduto();
+        [$status, $corpo] = $this->resposta($controller);
+        $this->assertSame(403, $status);
+        $this->assertStringContainsString('negociação', $corpo['message']);
+        $this->assertSame($antes, $this->db->where('idProdutos_os', 1)->get('produtos_os')->row_array());
+    }
+
+    public function testItemPermitidoQuandoTipoExisteMasTotalEfetivoNaoTemDesconto(): void
+    {
+        $this->criarBanco();
+        $this->db->query('CREATE TABLE trifase_orcamento_versoes (id INTEGER PRIMARY KEY, os_id INTEGER)');
+        $this->db->insert('trifase_orcamento_versoes', ['id' => 1, 'os_id' => 1]);
+        // Estado inconsistente sem desconto efetivo: o total efetivo é o bruto.
+        $this->db->query("UPDATE os SET desconto = 10, valor_desconto = 350, tipo_desconto = 'real' WHERE idOs = 1");
+        $controller = $this->controller($this->model(), ['idOs' => '1', 'idItem' => '1', 'tipoDescontoItem' => 'real', 'descontoItem' => '5']);
+        $controller->descontoProduto();
+        $this->assertSame(200, $this->resposta($controller)[0]);
+    }
+
+    public function testDescontoNativoNaoAlteraOrcamentoJaPublicado(): void
+    {
+        $this->criarBanco();
+        $this->db->query('CREATE TABLE trifase_orcamento_versoes (id INTEGER PRIMARY KEY, os_id INTEGER)');
+        $this->db->query('CREATE TABLE trifase_orcamento_estado (os_id INTEGER PRIMARY KEY, versao_id INTEGER, ativo INTEGER)');
+        $this->db->insert('trifase_orcamento_versoes', ['id' => 1, 'os_id' => 1]);
+        $this->db->insert('trifase_orcamento_estado', ['os_id' => 1, 'versao_id' => 1, 'ativo' => 1]);
+        $antes = $this->db->where('idOs', 1)->get('os')->row_array();
+        $controller = $this->controller($this->model(), ['idOs' => '1', 'tipoDesconto' => 'real', 'desconto' => '10']);
+        $controller->adicionarDesconto();
+        [$status, $corpo] = $this->resposta($controller);
+        $this->assertSame(403, $status);
+        $this->assertStringContainsString('orçamento', $corpo['message']);
+        $this->assertSame($antes, $this->db->where('idOs', 1)->get('os')->row_array());
+    }
+
     public function testDescontoIgnoraOResultadoDoNavegador(): void
     {
         $this->criarBanco();

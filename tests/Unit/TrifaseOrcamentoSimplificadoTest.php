@@ -181,6 +181,115 @@ final class TrifaseOrcamentoSimplificadoTest extends MaposTestCase
         $this->assertSame('Recusado', trifaseOrcamentoSituacao($this->modelo->decisao($versao)));
     }
 
+    public function testRespostaInternaObsoletaNaoDecideValoresNaoConfirmados(): void
+    {
+        $versao = $this->publicar();
+        $antesVersoes = $this->db->get('trifase_orcamento_versoes')->result_array();
+        $antesEventos = $this->db->get('trifase_orcamento_eventos')->result_array();
+        $this->db->where('idServicos_os', 1)->update('servicos_os', ['preco' => 85, 'subTotal' => 85]);
+        try {
+            $this->modelo->registrarRespostaInterna(
+                1,
+                $versao,
+                'aprovar',
+                'Cliente QA',
+                '1',
+                str_pad('stale', 16, 'x'),
+                7,
+                ['canal' => 'telefone', 'comunicado_em' => '2026-11-20']
+            );
+            $this->fail('A versão antiga não confirma os valores atuais.');
+        } catch (DomainException $e) {
+            $this->assertStringContainsString('indisponível ou atualizado', $e->getMessage());
+        }
+        $this->assertSame($antesVersoes, $this->db->get('trifase_orcamento_versoes')->result_array());
+        $this->assertSame($antesEventos, $this->db->get('trifase_orcamento_eventos')->result_array());
+        $this->assertNull($this->modelo->decisao($versao));
+    }
+
+    public function testPreviaAntigaRecusadaEPreviaAtualConfirmadaPermiteRegistro(): void
+    {
+        $versao = $this->publicar();
+        $hashAnterior = $this->modelo->hash($this->modelo->retrato($this->os()));
+        $this->db->where('idServicos_os', 1)->update('servicos_os', ['preco' => 85, 'subTotal' => 85]);
+        $versoes = $this->db->get('trifase_orcamento_versoes')->result_array();
+        $eventos = $this->db->get('trifase_orcamento_eventos')->result_array();
+        $dados = ['canal' => 'telefone', 'comunicado_em' => '2026-11-20'];
+        try {
+            $this->modelo->registrarRespostaInterna(1, $versao, 'aprovar', 'Cliente QA', '1', str_pad('preview', 16, 'x'), 7, $dados, $hashAnterior);
+            $this->fail('Prévia antiga aceita.');
+        } catch (DomainException $e) {
+            $this->assertStringContainsString('indisponível ou atualizado', $e->getMessage());
+        }
+        $this->assertSame($versoes, $this->db->get('trifase_orcamento_versoes')->result_array());
+        $this->assertSame($eventos, $this->db->get('trifase_orcamento_eventos')->result_array());
+        $hashAtual = $this->modelo->hash($this->modelo->retrato($this->os()));
+        $this->modelo->registrarRespostaInterna(1, $versao, 'aprovar', 'Cliente QA', '1', str_pad('preview', 16, 'x'), 7, $dados, $hashAtual);
+        $atual = $this->modelo->atual(1);
+        $this->assertSame(8500, json_decode($atual->conteudo, true)['total_c']);
+        $this->assertSame('aprovar', $this->modelo->decisao((int) $atual->id)->tipo);
+        $this->modelo->registrarRespostaInterna(1, $versao, 'aprovar', 'Cliente QA', '1', str_pad('preview', 16, 'x'), 7, $dados, $hashAtual);
+        try {
+            $this->modelo->registrarRespostaInterna(1, $versao, 'aprovar', 'Cliente QA', '1', str_pad('preview', 16, 'x'), 7, $dados, $hashAnterior);
+            $this->fail('Reenvio com prévia diferente aceito.');
+        } catch (DomainException $e) {
+            $this->assertStringContainsString('Chave já utilizada', $e->getMessage());
+        }
+    }
+
+    public function testRegularizacaoTardiaUsaVersaoDocumentadaMesmoComAlteracaoPosterior(): void
+    {
+        $versao = $this->publicar();
+        $this->entregar();
+        $this->db->where('idServicos_os', 1)->update('servicos_os', ['preco' => 85, 'subTotal' => 85]);
+        $versoes = $this->db->get('trifase_orcamento_versoes')->result_array();
+        try {
+            $this->modelo->registrarRegularizacao(
+                1,
+                $versao,
+                'aprovar',
+                'Cliente QA',
+                '1',
+                str_pad('hist', 16, 'x'),
+                7,
+                ['canal' => 'telefone', 'comunicado_em' => date('Y-m-d'), 'justificativa' => 'Resposta recebida antes da entrega']
+            );
+        } catch (DomainException $e) {
+            $this->fail('Versão histórica documentada recusada: ' . $e->getMessage());
+        }
+        $this->assertSame($versoes, $this->db->get('trifase_orcamento_versoes')->result_array());
+        $this->assertSame('aprovar', $this->modelo->decisao($versao)->tipo);
+        $this->assertSame(6000, json_decode($versoes[0]['conteudo'], true)['total_c']);
+    }
+
+    public function testEntregaNaoPermiteCriarSnapshotDosValoresAtuaisParaRespostaTardia(): void
+    {
+        $versao = $this->publicar();
+        $this->entregar('2026-11-20');
+        $this->db->where('idServicos_os', 1)->update('servicos_os', ['preco' => 85, 'subTotal' => 85]);
+        $antes = $this->db->get('trifase_orcamento_versoes')->result_array();
+        $eventos = $this->db->get('trifase_orcamento_eventos')->result_array();
+        try {
+            $this->modelo->registrarRespostaInterna(
+                1,
+                $versao,
+                'aprovar',
+                'Cliente QA',
+                '1',
+                str_pad('late', 16, 'x'),
+                7,
+                ['canal' => 'telefone', 'comunicado_em' => '2026-11-20'],
+                $this->modelo->hash($this->modelo->retrato($this->os()))
+            );
+            $this->fail('Entrega não permite criar snapshot dos valores atuais.');
+        } catch (DomainException $e) {
+            $this->assertStringContainsString('versão histórica', $e->getMessage());
+        }
+        $this->assertSame($antes, $this->db->get('trifase_orcamento_versoes')->result_array());
+        $this->assertSame($eventos, $this->db->get('trifase_orcamento_eventos')->result_array());
+        $this->assertNull($this->modelo->decisao($versao));
+    }
+
     public function testVersaoForjadaNaoCriaSnapshot(): void
     {
         $versao = $this->publicar();
@@ -216,7 +325,6 @@ final class TrifaseOrcamentoSimplificadoTest extends MaposTestCase
             ['equipamento' => 'Bicicleta', 'defeito' => 'Freio', 'diagnostico' => '', 'pagamento' => '', 'prazo' => '', 'garantia' => '']
         );
         $this->db->where('idOs', 1)->update('os', ['status' => 'Finalizado']);
-        $this->entregar('2026-11-20');
         $this->db->where('idServicos_os', 1)->update('servicos_os', ['preco' => 85, 'subTotal' => 85]);
         $this->modelo->registrarRespostaInterna(
             1,
@@ -226,7 +334,8 @@ final class TrifaseOrcamentoSimplificadoTest extends MaposTestCase
             '1',
             str_pad('pre2', 16, 'x'),
             7,
-            ['canal' => 'presencial', 'comunicado_em' => '2026-11-20']
+            ['canal' => 'presencial', 'comunicado_em' => '2026-11-20'],
+            $this->modelo->hash($this->modelo->retrato($this->os()))
         );
         $atual = $this->modelo->atual(1);
         $this->assertSame(1, (int) $atual->ativo);
@@ -236,11 +345,10 @@ final class TrifaseOrcamentoSimplificadoTest extends MaposTestCase
         $this->assertSame('aprovar', $this->modelo->decisao((int) $atual->id)->tipo);
     }
 
-    public function testItensEditadosAposEntregaCriamVersaoNoAtoDoRegistro(): void
+    public function testItensEditadosAntesDaEntregaCriamVersaoNoAtoDoRegistro(): void
     {
         $versao = $this->publicar();
         $this->db->where('idOs', 1)->update('os', ['status' => 'Finalizado']);
-        $this->entregar('2026-11-20');
         $this->db->where('idServicos_os', 1)->update('servicos_os', ['preco' => 85, 'subTotal' => 85]);
         $this->assertNull($this->modelo->decisao($versao));
         $antes = (int) $this->db->where('os_id', 1)->count_all_results('trifase_orcamento_versoes');
@@ -252,7 +360,8 @@ final class TrifaseOrcamentoSimplificadoTest extends MaposTestCase
             '1',
             str_pad('snap', 16, 'q'),
             7,
-            ['canal' => 'presencial', 'comunicado_em' => '2026-11-20']
+            ['canal' => 'presencial', 'comunicado_em' => '2026-11-20'],
+            $this->modelo->hash($this->modelo->retrato($this->os()))
         );
         $atual = $this->modelo->atual(1);
         $this->assertSame($antes + 1, (int) $atual->numero);
@@ -271,13 +380,12 @@ final class TrifaseOrcamentoSimplificadoTest extends MaposTestCase
     public function testReenvioAposSnapshotNaoCriaOutraVersaoNemOutroEvento(): void
     {
         $versao = $this->publicar();
-        $this->entregar('2026-11-20');
         $this->db->where('idServicos_os', 1)->update('servicos_os', ['preco' => 85, 'subTotal' => 85]);
         $dados = ['canal' => 'presencial', 'comunicado_em' => '2026-11-20'];
-        $this->modelo->registrarRespostaInterna(1, $versao, 'aprovar', 'Cliente QA', '1', str_pad('rpt', 16, 'p'), 7, $dados);
+        $this->modelo->registrarRespostaInterna(1, $versao, 'aprovar', 'Cliente QA', '1', str_pad('rpt', 16, 'p'), 7, $dados, $this->modelo->hash($this->modelo->retrato($this->os())));
         $versoes = (int) $this->db->where('os_id', 1)->count_all_results('trifase_orcamento_versoes');
         $eventos = (int) $this->db->where('os_id', 1)->count_all_results('trifase_orcamento_eventos');
-        $this->modelo->registrarRespostaInterna(1, $versao, 'aprovar', 'Cliente QA', '1', str_pad('rpt', 16, 'p'), 7, $dados);
+        $this->modelo->registrarRespostaInterna(1, $versao, 'aprovar', 'Cliente QA', '1', str_pad('rpt', 16, 'p'), 7, $dados, $this->modelo->hash($this->modelo->retrato($this->os())));
         $this->assertSame($versoes, (int) $this->db->where('os_id', 1)->count_all_results('trifase_orcamento_versoes'));
         $this->assertSame($eventos, (int) $this->db->where('os_id', 1)->count_all_results('trifase_orcamento_eventos'));
     }
@@ -287,7 +395,6 @@ final class TrifaseOrcamentoSimplificadoTest extends MaposTestCase
         $versao = $this->publicar();
         $this->modelo->retirar(1, $versao, 7, str_pad('ret', 16, 'o'));
         $this->assertNull($this->modelo->publicado(1, $this->token));
-        $this->entregar('2026-11-20');
         $this->modelo->registrarRespostaInterna(
             1,
             $versao,
@@ -296,7 +403,8 @@ final class TrifaseOrcamentoSimplificadoTest extends MaposTestCase
             '1',
             str_pad('ret2', 16, 'n'),
             7,
-            ['canal' => 'presencial', 'comunicado_em' => '2026-11-20']
+            ['canal' => 'presencial', 'comunicado_em' => '2026-11-20'],
+            $this->modelo->hash($this->modelo->retrato($this->os()))
         );
         $atual = $this->modelo->atual(1);
         $this->assertSame(1, (int) $atual->ativo);
@@ -307,7 +415,6 @@ final class TrifaseOrcamentoSimplificadoTest extends MaposTestCase
     public function testSnapshotRecusaOrcamentoAcimaDoLimiteSemGravarVersao(): void
     {
         $versao = $this->publicar();
-        $this->entregar('2026-11-20');
         $this->db->insert('produtos', ['idProdutos' => 1, 'descricao' => 'Peça sintética', 'precoVenda' => 1]);
         for ($lote = 0; $lote < 8; $lote++) {
             $linhas = [];
@@ -330,7 +437,8 @@ final class TrifaseOrcamentoSimplificadoTest extends MaposTestCase
                 '1',
                 str_pad('big', 16, 'z'),
                 7,
-                ['canal' => 'presencial', 'comunicado_em' => '2026-11-20']
+                ['canal' => 'presencial', 'comunicado_em' => '2026-11-20'],
+                $this->modelo->hash($this->modelo->retrato($this->os()))
             );
         } finally {
             $this->assertSame($antes, (int) $this->db->where('os_id', 1)->count_all_results('trifase_orcamento_versoes'));
@@ -340,7 +448,6 @@ final class TrifaseOrcamentoSimplificadoTest extends MaposTestCase
     public function testSegundaRespostaComVersaoAntigaNaoCriaOutraVersao(): void
     {
         $versao = $this->publicar();
-        $this->entregar('2026-11-20');
         $this->db->where('idServicos_os', 1)->update('servicos_os', ['preco' => 85, 'subTotal' => 85]);
         $this->modelo->registrarRespostaInterna(
             1,
@@ -350,7 +457,8 @@ final class TrifaseOrcamentoSimplificadoTest extends MaposTestCase
             '1',
             str_pad('um', 16, 'm'),
             7,
-            ['canal' => 'presencial', 'comunicado_em' => '2026-11-20']
+            ['canal' => 'presencial', 'comunicado_em' => '2026-11-20'],
+            $this->modelo->hash($this->modelo->retrato($this->os()))
         );
         $versoes = (int) $this->db->where('os_id', 1)->count_all_results('trifase_orcamento_versoes');
         $this->expectException(DomainException::class);

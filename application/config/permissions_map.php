@@ -64,6 +64,8 @@ $config['permissions_map'] = [
     ],
     'Trifase_orcamentos' => [
         'visualizar' => ['todas' => ['vOs', 'vLancamento']],
+        'prever_desconto' => ['todas' => ['vOs', 'vLancamento', 'eOs', 'publicarOrcamento']],
+        'negociar_desconto' => ['todas' => ['vOs', 'vLancamento', 'eOs', 'publicarOrcamento']],
         'publicar' => ['todas' => ['vOs', 'vLancamento', 'eOs', 'publicarOrcamento']],
         'regularizar_resposta' => ['todas' => ['vOs', 'vLancamento', 'eOs', 'publicarOrcamento', 'regularizarOrcamento']],
         'registrar_resposta' => ['todas' => ['vOs', 'vLancamento', 'eOs', 'publicarOrcamento']],

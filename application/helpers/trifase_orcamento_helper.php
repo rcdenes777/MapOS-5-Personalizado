@@ -246,7 +246,11 @@ function trifaseCatalogoExcluirProtegido(object $db, string $tipo, int $id, call
     try {
         if (($db->dbdriver ?? '') === 'mysqli') {
             sort($ids);
-            $db->query('SELECT idOs FROM ' . $db->dbprefix('os') . ' WHERE idOs IN (' . implode(',', array_fill(0, count($ids), '?')) . ') FOR UPDATE', $ids);
+            $lock = $db->query('SELECT idOs FROM ' . $db->dbprefix('os') . ' WHERE idOs IN (' . implode(',', array_fill(0, count($ids), '?')) . ') FOR UPDATE', $ids);
+            if ($lock === false) {
+                $db->trans_rollback();
+                return false;
+            }
         }
         if (trifaseCatalogoItemProtegido($db, $tipo, $id)) {
             $db->trans_rollback();

@@ -174,9 +174,9 @@ class ServicosController extends REST_Controller
 
         require_once APPPATH . 'helpers/trifase_orcamento_helper.php';
         $excluir = function () use ($id): bool {
-            $itens = (bool) $this->servicos_model->delete('servicos_os', 'servicos_id', $id);
+            $this->servicos_model->delete('servicos_os', 'servicos_id', $id);
 
-            return $itens && (bool) $this->servicos_model->delete('servicos', 'idServicos', $id);
+            return (bool) $this->servicos_model->delete('servicos', 'idServicos', $id);
         };
         try {
             if (! trifaseCatalogoExcluirProtegido($this->db, 'servico', (int) $id, $excluir)) {

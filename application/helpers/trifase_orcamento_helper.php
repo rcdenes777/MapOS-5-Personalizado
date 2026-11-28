@@ -237,7 +237,7 @@ function trifaseCatalogoExcluirProtegido(object $db, string $tipo, int $id, call
             $ids[(int) $linha->os_id] = (int) $linha->os_id;
         }
     }
-    if ($ids === []) {
+    if ($ids === [] && ($db->dbdriver ?? '') !== 'mysqli') {
         return (bool) $excluir();
     }
     if (! $db->trans_begin()) {
@@ -245,11 +245,25 @@ function trifaseCatalogoExcluirProtegido(object $db, string $tipo, int $id, call
     }
     try {
         if (($db->dbdriver ?? '') === 'mysqli') {
-            sort($ids);
-            $lock = $db->query('SELECT idOs FROM ' . $db->dbprefix('os') . ' WHERE idOs IN (' . implode(',', array_fill(0, count($ids), '?')) . ') FOR UPDATE', $ids);
-            if ($lock === false) {
+            $catalogo = $tipo === 'produto' ? 'produtos' : 'servicos';
+            $chaveCatalogo = $tipo === 'produto' ? 'idProdutos' : 'idServicos';
+            $travaCatalogo = $db->query('SELECT ' . $chaveCatalogo . ' FROM ' . $db->dbprefix($catalogo) . ' WHERE ' . $chaveCatalogo . ' = ? FOR UPDATE', [$id]);
+            if ($travaCatalogo === false) {
                 $db->trans_rollback();
                 return false;
+            }
+            foreach ($db->select('os_id')->distinct()->where($campo, $id)->get($itens)->result() as $linha) {
+                if ((int) $linha->os_id > 0) {
+                    $ids[(int) $linha->os_id] = (int) $linha->os_id;
+                }
+            }
+            if ($ids !== []) {
+                sort($ids);
+                $travaOs = $db->query('SELECT idOs FROM ' . $db->dbprefix('os') . ' WHERE idOs IN (' . implode(',', array_fill(0, count($ids), '?')) . ') FOR UPDATE', $ids);
+                if ($travaOs === false) {
+                    $db->trans_rollback();
+                    return false;
+                }
             }
         }
         if (trifaseCatalogoItemProtegido($db, $tipo, $id)) {
@@ -257,7 +271,7 @@ function trifaseCatalogoExcluirProtegido(object $db, string $tipo, int $id, call
             return false;
         }
         $resultado = (bool) $excluir();
-        if (! $resultado || ! $db->trans_commit()) {
+        if (! $resultado || $db->trans_status() === false || ! $db->trans_commit()) {
             $db->trans_rollback();
             throw new RuntimeException('Não foi possível concluir a exclusão protegida.');
         }

@@ -103,7 +103,11 @@ if ($trifase_ui_piloto ?? false) {
                 // A obrigação é a fonte do total das OS geridas, inclusive após
                 // abatimentos; a soma nativa dos itens fica para as demais OS.
                 $coluna['render'] = static function ($o) use ($listaFinanceiro, $listaFinanceiroHabilitado) {
-                    $resumo = $listaFinanceiroHabilitado ? ($listaFinanceiro[(int) $o->idOs] ?? null) : null;
+                    if (! $listaFinanceiroHabilitado) {
+                        // Sem projeção, a soma dos itens não é o total cobrado.
+                        return 'Indisponível';
+                    }
+                    $resumo = $listaFinanceiro[(int) $o->idOs] ?? null;
 
                     return dinheiro($resumo === null ? $o->total : $resumo['total_c'] / 100);
                 };
@@ -182,26 +186,35 @@ $resumo = ($total === 1 ? '1 ordem de serviço' : number_format($total, 0, ',', 
                     </div>
                     <?= component('pill-status', ['label' => count($cancelamentosPendentes) . (count($cancelamentosPendentes) === 1 ? ' pendente' : ' pendentes'), 'variant' => 'warning']) ?>
                 </div>
+                <?php
+                // Sem projeção calculável o valor é desconhecido, não zero nem "não faturada".
+                $totalCancelamento = static fn (?int $centavos): string => $centavos !== null
+                    ? dinheiro($centavos / 100)
+                    : (($listaFinanceiroHabilitado ?? false) ? 'Não faturada' : 'Indisponível');
+            $valorCancelamento = static fn (?int $centavos): string => $centavos !== null
+                ? dinheiro($centavos / 100)
+                : (($listaFinanceiroHabilitado ?? false) ? 'R$ 0,00' : 'Indisponível');
+            ?>
                 <?= component('data-table', [
-                    'caption' => 'Cancelamentos pendentes de análise financeira',
-                    'dense' => true,
-                    'rows' => $cancelamentosPendentes,
-                    'empty' => 'Nenhum cancelamento pendente.',
-                    'columns' => [
-                        ['label' => 'OS', 'align' => 'right', 'nowrap' => true, 'render' => fn ($c) => '#' . (int) $c['os_id']],
-                        ['label' => 'Cliente', 'render' => fn ($c) => $clienteComLink && $c['clientes_id'] > 0
-                            ? component('link', ['label' => $c['nomeCliente'], 'href' => site_url('clientes/visualizar/' . $c['clientes_id']), 'class' => 'font-medium'])
-                            : $c['nomeCliente']],
-                        ['label' => 'Conferência técnica', 'nowrap' => true, 'render' => fn ($c) => component('pill-status', $c['tecnica_concluida']
-                            ? ['label' => 'Concluída', 'variant' => 'success']
-                            : ['label' => 'Pendente', 'variant' => 'warning'])],
-                        ['label' => 'Total', 'align' => 'right', 'nowrap' => true, 'render' => fn ($c) => $c['total_c'] === null ? 'Não faturada' : dinheiro($c['total_c'] / 100)],
-                        ['label' => 'Recebido', 'align' => 'right', 'nowrap' => true, 'render' => fn ($c) => $c['recebido_c'] === null ? 'R$ 0,00' : dinheiro($c['recebido_c'] / 100)],
-                        ['label' => 'Já devolvido', 'align' => 'right', 'nowrap' => true, 'render' => fn ($c) => $c['devolvido_c'] === null ? 'R$ 0,00' : dinheiro($c['devolvido_c'] / 100)],
-                        ['label' => 'Saldo', 'align' => 'right', 'nowrap' => true, 'render' => fn ($c) => $c['saldo_c'] === null ? 'R$ 0,00' : dinheiro($c['saldo_c'] / 100)],
-                        ['label' => 'Ações', 'align' => 'right', 'nowrap' => true, 'render' => fn ($c) => component('button', ['label' => 'Analisar cancelamento', 'variant' => 'outline', 'size' => 'sm', 'href' => site_url('trifase_cancelamentos/visualizar/' . (int) $c['os_id'])])],
-                    ],
-                ]) ?>
+                'caption' => 'Cancelamentos pendentes de análise financeira',
+                'dense' => true,
+                'rows' => $cancelamentosPendentes,
+                'empty' => 'Nenhum cancelamento pendente.',
+                'columns' => [
+                    ['label' => 'OS', 'align' => 'right', 'nowrap' => true, 'render' => fn ($c) => '#' . (int) $c['os_id']],
+                    ['label' => 'Cliente', 'render' => fn ($c) => $clienteComLink && $c['clientes_id'] > 0
+                        ? component('link', ['label' => $c['nomeCliente'], 'href' => site_url('clientes/visualizar/' . $c['clientes_id']), 'class' => 'font-medium'])
+                        : $c['nomeCliente']],
+                    ['label' => 'Conferência técnica', 'nowrap' => true, 'render' => fn ($c) => component('pill-status', $c['tecnica_concluida']
+                        ? ['label' => 'Concluída', 'variant' => 'success']
+                        : ['label' => 'Pendente', 'variant' => 'warning'])],
+                    ['label' => 'Total', 'align' => 'right', 'nowrap' => true, 'render' => fn ($c) => $totalCancelamento($c['total_c'])],
+                    ['label' => 'Recebido', 'align' => 'right', 'nowrap' => true, 'render' => fn ($c) => $valorCancelamento($c['recebido_c'])],
+                    ['label' => 'Já devolvido', 'align' => 'right', 'nowrap' => true, 'render' => fn ($c) => $valorCancelamento($c['devolvido_c'])],
+                    ['label' => 'Saldo', 'align' => 'right', 'nowrap' => true, 'render' => fn ($c) => $valorCancelamento($c['saldo_c'])],
+                    ['label' => 'Ações', 'align' => 'right', 'nowrap' => true, 'render' => fn ($c) => component('button', ['label' => 'Analisar cancelamento', 'variant' => 'outline', 'size' => 'sm', 'href' => site_url('trifase_cancelamentos/visualizar/' . (int) $c['os_id'])])],
+                ],
+            ]) ?>
             </section>
         <?php } ?>
     <?php } ?>

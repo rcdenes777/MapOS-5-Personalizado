@@ -92,14 +92,34 @@ final class TrifaseOsListagemViewTest extends \PHPUnit\Framework\TestCase
         $this->assertStringNotContainsString('R$', $html);
     }
 
-    public function testModuloFinanceiroDesligadoMantemColunaNativa(): void
+    public function testProjecaoIndisponivelNaoUsaTotalDosItensComoTotalCobrado(): void
     {
         $html = $this->renderizar([
             1 => ['total_c' => 50000],
         ], ['total' => 88], ['listaFinanceiroHabilitado' => false]);
 
-        $this->assertSame(['R$ 88,00'], $this->celulas($html, 'Total'));
+        $this->assertSame(['Indisponível'], $this->celulas($html, 'Total'), 'Soma dos itens não é o total cobrado');
         $this->assertSame([], $this->celulas($html, 'Pagamento'));
+        $this->assertStringNotContainsString('R$ 88,00', $html);
+    }
+
+    public function testFilaCancelamentosDistingueIndisponivelDeNaoFaturada(): void
+    {
+        $pendentes = [[
+            'os_id' => 1, 'pedido_id' => 9, 'clientes_id' => 1, 'nomeCliente' => 'Cliente',
+            'solicitante' => 'Cliente', 'motivo' => 'Desistiu', 'criado_em' => '2026-11-05 10:00:00',
+            'tecnica_concluida' => true, 'total_c' => null, 'recebido_c' => null, 'devolvido_c' => null, 'saldo_c' => null,
+            'resumo' => null,
+        ]];
+        $semProjecao = $this->renderizar([], ['status' => 'Aprovado'], ['cancelamentosPendentes' => $pendentes, 'listaFinanceiroHabilitado' => false]);
+        $this->assertStringContainsString('Indisponível', $semProjecao, 'Migração parcial não pode virar valor zero');
+        $this->assertStringNotContainsString('Não faturada', $semProjecao);
+        $this->assertStringNotContainsString('R$ 0,00', $semProjecao);
+
+        $comProjecao = $this->renderizar([], ['status' => 'Aprovado'], ['cancelamentosPendentes' => $pendentes, 'listaFinanceiroHabilitado' => true]);
+        $this->assertStringContainsString('Não faturada', $comProjecao);
+        $this->assertStringContainsString('R$ 0,00', $comProjecao);
+        $this->assertStringNotContainsString('Indisponível', $comProjecao);
     }
 
     public function testInterfacePilotoDesligadaMantemListagemNativa(): void

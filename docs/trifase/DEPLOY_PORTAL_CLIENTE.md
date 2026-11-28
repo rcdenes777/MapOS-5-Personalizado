@@ -44,7 +44,7 @@ server {
 
     # Token no caminho: nada deste bloco vai para o error log (request line crua).
     location ~ ^/(index\.php/)?publico(_cliente)?(/|$) {
-        error_log off;
+        error_log /dev/null;
         # ... proxy_pass e cabeçalhos do bloco existente ...
     }
 
@@ -55,8 +55,10 @@ server {
 Detalhes que custaram teste e devem ser preservados:
 
 - A regex precisa de aspas por causa de `{64}`; sem aspas o nginx não sobe (`unexpected "{"`).
-- `error_log off;` só vale dentro do `location`; fora dele, o 502 do portal vaza o token. Não cria arquivo chamado `off`.
+- Use `error_log /dev/null;` dentro do `location`. **Não use `error_log off`**: `off` não é chave suportada de desligamento, é interpretado como destino e pode criar um arquivo chamado `off`, onde o token vazaria. Fora do `location`, o 502 do portal grava a request line crua.
 - A rota aceita com e sem `index.php`; sem o prefixo opcional, uma instalação com URL limpa vazaria o token.
+- Aplicar em **todas** as camadas nginx que veem a requisição: a que a aplicação traz em `docker/etc/nginx/default.conf` e qualquer proxy externo. Uma camada sem o bloco anula a outra.
+- Conferir também o stdout/stderr do contêiner do proxy, não só o arquivo de log.
 
 ### Resultado medido
 
@@ -71,9 +73,10 @@ Seis requisições através de um nginx real na frente da aplicação de laborat
 | link individual de OS | 200 | `/index.php/publico/os/***` |
 | mesma rota sem `index.php` | 404 | `/publico_cliente/index/***` |
 
-- Token válido e token inválido: **0 ocorrências** em qualquer arquivo de `/var/log/nginx`.
+- Token válido e token inválido: **0 ocorrências** em qualquer arquivo de `/var/log/nginx`, e **0** no stdout/stderr do contêiner.
 - Referer com token também sai mascarado.
 - Controle positivo: 502 em rota comum continua registrado no `error_log` — a proteção é cirúrgica, não cega o servidor.
+- Com `error_log /dev/null`: 502 na rota do portal não deixa token em arquivo nem no stdout/stderr, e nenhum arquivo chamado `off` é criado.
 
 ### Observabilidade além do proxy
 
@@ -112,9 +115,9 @@ docker exec <db> sh -c 'exec mysqldump -uroot -p"$MYSQL_ROOT_PASSWORD" \
 
 | Cenário | Ação | Efeito nos links |
 |---|---|---|
-| Desligar o portal | `TRIFASE_PUBLICO_ENABLED=false` e recarregar o PHP-FPM | Nenhum; links ficam inacessíveis e voltam ao religar |
+| Desligar o portal | `TRIFASE_PUBLICO_ENABLED=false` e recarregar o PHP-FPM | Portal **e link individual de OS** ficam inacessíveis; voltam ao religar |
 | Reverter código | Redeploy do release anterior; manter a tabela | Nenhum; o código antigo ignora a tabela |
-| Reverter schema | `tools migrate <versão anterior>` | **Destrói todos os links** |
+| Reverter schema | `tools migrate <versão anterior>` | **Destrói todos os links do portal** |
 | Restaurar backup | restore do dump | Vínculos voltam ao estado do dump; revogar depois |
 
 Não há rollback de dados sem perda de links: a tabela é a própria credencial. Planeje a comunicação ao cliente antes de qualquer um dos dois últimos casos.
@@ -123,14 +126,26 @@ Não há rollback de dados sem perda de links: a tabela é a própria credencial
 
 Flags lidas pelo portal: `TRIFASE_PUBLICO_ENABLED`, `TRIFASE_PUBLIC_BASEURL`, `TRIFASE_PUBLICO_VALIDADE_DIAS`, `TRIFASE_FINANCEIRO_ENABLED`, `TRIFASE_ENTREGAS_ENABLED`, `TRIFASE_ORCAMENTOS_ENABLED`.
 
-Sequência segura:
+**`TRIFASE_PUBLICO_ENABLED` não é exclusiva do portal novo**: ela também libera o link público individual de OS (`Publico.php`), já existente e possivelmente em uso com links enviados a clientes. Desligá-la para "deployar com segurança" derruba esses links. O caminho depende do estado atual da instalação.
 
-1. Deploy do código com `TRIFASE_PUBLICO_ENABLED=false` (padrão). Rotas públicas respondem 404; nada exposto.
-2. `php index.php tools migrate` — cria a tabela.
-3. Configurar `TRIFASE_PUBLIC_BASEURL` com a origem pública **https** (sem usuário, senha, query ou fragmento) e `TRIFASE_PUBLICO_VALIDADE_DIAS` (1–365). **Antes de ligar a flag**: uma URL inválida lança `DomainException` na renderização e a tela responde 500. Verificado com `ftp://invalido`.
-4. Aplicar o bloco de proxy da seção 2 e recarregar o nginx. Confirmar com uma requisição de token falso que o access log mostra `***`.
-5. Ligar `TRIFASE_PUBLICO_ENABLED=true` e recarregar o PHP-FPM.
-6. Smoke test com cliente sintético: gerar link pelo painel, abrir em desktop e celular, conferir OS, valores (se o financeiro estiver ligado), anexos publicados, renovar e revogar.
+### Caso A — a flag já está ligada (link individual em uso)
+
+1. **Não desligar a flag.** O deploy não abre nada: a migration cria a tabela de vínculos vazia e, sem vínculo, toda URL do portal responde 404.
+2. Registrar antes: `TRIFASE_PUBLICO_ENABLED`, `TRIFASE_PUBLIC_BASEURL`, validade e uma amostra de links individuais ativos (para conferir depois).
+3. Deploy do código e `php index.php tools migrate`.
+4. Configurar `TRIFASE_PUBLIC_BASEURL` (https, sem usuário/senha/query/fragmento) e a validade.
+5. Aplicar o bloco de proxy e recarregar o nginx.
+6. Confirmar que os **links individuais existentes** continuam respondendo 200.
+7. Smoke test com cliente sintético e só então emitir o primeiro link real.
+
+### Caso B — a flag está desligada (link individual não usado)
+
+1. Deploy do código com `TRIFASE_PUBLICO_ENABLED=false`. Rotas públicas respondem 404; nada exposto.
+2. `php index.php tools migrate`.
+3. Configurar `TRIFASE_PUBLIC_BASEURL` e validade **antes** de ligar: URL inválida lança `DomainException` na renderização e a tela responde 500 (verificado com `ftp://invalido`).
+4. Aplicar o bloco de proxy e recarregar o nginx.
+5. Ligar `TRIFASE_PUBLICO_ENABLED=true` e recarregar o PHP-FPM. Isso habilita portal **e** link individual — comportamento esperado.
+6. Smoke test sintético (lista, detalhe, anexo, renovar, revogar).
 7. Só então emitir links reais. Nunca enviar link automaticamente.
 
 `APP_ENCRYPTION_KEY` **não deve mudar**: ela cifra o token em repouso. Trocar a chave não invalida o acesso do visitante (a resolução usa o hash), mas impede o painel de reexibir o link existente.
@@ -141,7 +156,8 @@ Pré-deploy
 - [ ] Commit implantado é `68dcc933` (ou descendente só de documentação), verificado por `git rev-parse`.
 - [ ] Backup do banco concluído e **restaurado em cópia** com sucesso (não basta gerar o arquivo).
 - [ ] Janela e responsável definidos; comunicação de revogação de links pronta.
-- [ ] Flags conferidas: `TRIFASE_PUBLICO_ENABLED=false` no momento do deploy.
+- [ ] Estado atual de `TRIFASE_PUBLICO_ENABLED` registrado. Se já estiver ligada (link individual em uso), **não desligar**: isso derruba os links já enviados.
+- [ ] Amostra de links individuais de OS anotada para conferência pós-deploy.
 
 Deploy
 - [ ] Código publicado; `php index.php tools migrate` executado uma vez, com saída de sucesso.
@@ -152,6 +168,7 @@ Deploy
 
 Pós-deploy
 - [ ] Requisição com token falso: 404 e `***` no access log.
+- [ ] Links individuais de OS conferidos (os que já existiam antes do deploy).
 - [ ] Smoke test completo com cliente sintético (lista, detalhe, anexo, renovação, revogação).
 - [ ] Nenhum token em `application/logs`, access log, error log ou coletor.
 - [ ] Link revogado continua 404 imediatamente após a revogação.
@@ -159,8 +176,9 @@ Pós-deploy
 
 ## 8. Riscos residuais
 
-- Máscara validada em nginx; se o proxy real for Apache, Traefik ou um CDN, o bloco precisa ser reescrito e revalidado — o `error_log` de cada um trata a request line de forma diferente.
+- Máscara validada em nginx; se o proxy real for Apache, Traefik ou um CDN, o bloco precisa ser reescrito e revalidado — o `error_log` de cada um trata a request line de forma diferente. Havendo duas camadas nginx (app + proxy externo), o bloco vai nas duas.
 - Coletor de logs não foi exercitado: a segunda barreira (regex no coletor) é recomendação, não evidência.
+- `TRIFASE_PUBLICO_ENABLED` acopla portal novo e link individual de OS. Não existe interruptor separado; qualquer desligamento afeta os dois.
 - Bloqueios de banco podem gerar deadlock sem retry automático.
 - Drivers exercitados: MySQL/mysqli e SQLite. Outros não foram validados.
 - Restauração de backup reativa tokens antigos por desenho.
@@ -169,3 +187,4 @@ Pós-deploy
 
 - Aceite do código: `VALIDACAO_PORTAL_CLIENTE_68DCC933.md` (suíte 2.084 testes, Playwright no laboratório, contrato HTTP da API, concorrência).
 - Este documento: ensaios de máscara, migração, backup/restauração e flags executados no laboratório sintético em 2026-11-28, com contêineres descartáveis removidos ao final.
+- Revisão externa da prontidão de deploy apontou F01 (`error_log off` → `/dev/null`, revalidado) e F02 (acoplamento da flag), ambos incorporados aqui.

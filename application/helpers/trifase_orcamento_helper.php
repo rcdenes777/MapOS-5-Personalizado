@@ -187,7 +187,9 @@ function trifaseCatalogoItemProtegido(object $db, string $tipo, int $id): bool
     }
     $campo = $tipo === 'produto' ? 'produtos_id' : 'servicos_id';
     $itens = $tipo === 'produto' ? 'produtos_os' : 'servicos_os';
-    require_once APPPATH . 'helpers/os_helper.php';
+    require_once APPPATH . 'models/Trifase_orcamento_model.php';
+    $modelo = new Trifase_orcamento_model();
+    $modelo->db = $db;
     foreach ($db->select('os_id')->distinct()->where($campo, $id)->get($itens)->result() as $linha) {
         $osId = (int) $linha->os_id;
         if ($osId <= 0 || $db->where('os_id', $osId)->count_all_results('trifase_orcamento_versoes') === 0) {
@@ -197,16 +199,14 @@ function trifaseCatalogoItemProtegido(object $db, string $tipo, int $id): bool
         if ($os === null) {
             continue;
         }
-        $pecas = $db->select('COALESCE(SUM(subTotal), 0) AS total', false)->where('os_id', $osId)->get('produtos_os')->row();
-        $servicos = $db->select('COALESCE(SUM(subTotal), 0) AS total', false)->where('os_id', $osId)->get('servicos_os')->row();
-        $totais = osTotais(
-            (float) ($pecas->total ?? 0),
-            (float) ($servicos->total ?? 0),
-            $os->valor_desconto ?? 0,
-            $os->tipo_desconto ?? null,
-            $os->desconto ?? 0
-        );
-        if ($totais['bruto'] > 0 && $totais['total'] < $totais['bruto']) {
+        try {
+            // Mesmo retrato canônico da publicação: cobre subTotal legado vazio e desconto por item.
+            $retrato = $modelo->retrato($os);
+        } catch (Throwable $e) {
+            return true;
+        }
+        $bruto = $retrato['pecas_c'] + $retrato['servicos_c'];
+        if ($bruto > 0 && $retrato['total_c'] < $bruto) {
             return true;
         }
     }

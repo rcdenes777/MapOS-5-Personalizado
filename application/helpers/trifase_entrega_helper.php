@@ -7,6 +7,14 @@ function trifaseEntregaHabilitada(): bool
     return filter_var($_ENV['TRIFASE_ENTREGAS_ENABLED'] ?? false, FILTER_VALIDATE_BOOLEAN);
 }
 
+/** Situação de entrega só é apresentada com o módulo ativo e migrado. */
+function trifaseEntregasDisponiveis(object $db): bool
+{
+    return trifaseEntregaHabilitada()
+        && $db->table_exists('trifase_entregas_estado')
+        && $db->table_exists('trifase_entregas_eventos');
+}
+
 /** A proteção do histórico permanece mesmo com a extensão desligada. */
 function trifaseEntregaTemHistorico(object $db, int $id): bool
 {

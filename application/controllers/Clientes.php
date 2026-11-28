@@ -274,7 +274,7 @@ class Clientes extends MY_Controller
             'editar_os' => $this->permite('eOs'),
             'ver_venda' => $this->permite('vVenda'),
             'editar_venda' => $this->permite('eVenda'),
-            'compartilhar_cliente' => $this->permite('eCliente') && $this->permite('vOs') && $this->permite('vLancamento'),
+            'compartilhar_cliente' => $this->permite('vCliente') && $this->permite('eCliente') && $this->permite('vOs') && $this->permite('vLancamento'),
         ];
 
         if ($this->data['pode']['editar']) {

@@ -13,6 +13,10 @@ class Trifase_financeiro extends MY_Controller
         if (! trifaseFinanceiroHabilitado()) {
             show_404('', false);
         }
+        if (! trifaseFinanceiroProjecaoDisponivel($this->db)) {
+            // Migração incompleta: sem as duas tabelas o saldo não é calculável.
+            show_error('O financeiro das OS está indisponível: a migração do módulo não foi concluída.', 503);
+        }
         $this->load->model('Trifase_financeiro_model', 'financeiro_os');
         $this->load->model('os_model');
         $this->load->helper(['os', 'financeiro']);

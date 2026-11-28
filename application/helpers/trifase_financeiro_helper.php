@@ -20,12 +20,17 @@ function trifaseFinanceiroHabilitado(): bool
     return filter_var($_ENV['TRIFASE_FINANCEIRO_ENABLED'] ?? false, FILTER_VALIDATE_BOOLEAN);
 }
 
-/** A projeção precisa das obrigações e de seus eventos de pagamento. */
+/** A projeção do cliente precisa das obrigações e dos seus eventos de pagamento. */
+function trifaseFinanceiroProjecaoDisponivel(object $db): bool
+{
+    return $db->table_exists('trifase_financeiro_obrigacoes')
+        && $db->table_exists('trifase_financeiro_eventos');
+}
+
+/** Leitura pública/autenticada: sem as duas tabelas não há valor a apresentar. */
 function trifaseFinanceiroClienteDisponivel(object $db): bool
 {
-    return trifaseFinanceiroHabilitado()
-        && $db->table_exists('trifase_financeiro_obrigacoes')
-        && $db->table_exists('trifase_financeiro_eventos');
+    return trifaseFinanceiroHabilitado() && trifaseFinanceiroProjecaoDisponivel($db);
 }
 
 function trifaseFinanceiroOsGerida(object $db, int $id): bool

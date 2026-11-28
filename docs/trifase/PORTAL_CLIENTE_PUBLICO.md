@@ -34,6 +34,16 @@ A reversão de código e regras de proxy deve ser coordenada com o estado de mig
 
 ## Evidência provisória
 
+### Candidato atual: correções de migração parcial e contrato da API
+
+A entrega anterior foi `98600544`. Sobre ela:
+
+- O financeiro passou a ter um predicado único de projeção (`trifaseFinanceiroProjecaoDisponivel`: obrigações **e** eventos). A fila de cancelamentos, a lista `financeiro/ordens`, a tela da OS e o portal deixam de consultar a projeção quando ela não é calculável. A tela de escrita responde 503 controlado em vez de erro de banco, e o cancelamento fica bloqueado até a conciliação — não se cancela com saldo desconhecido.
+- A exclusão de cliente na API voltou ao contrato anterior: 404 para cliente inexistente, 409 para dependência ou restrição, 403 para histórico protegido, 401 sem token. A rota executa o mesmo método transacional do painel.
+- O portal não mostra mais "Saldo a pagar" quando a projeção está indisponível; a coluna de entrega do portal e da área do cliente passou a exigir o módulo de entregas ligado além das tabelas, como as demais telas.
+
+Os relatos abaixo descrevem checkpoints anteriores e são mantidos como histórico; contagens antigas não valem para o candidato atual.
+
 ### Continuação: checkpoint de inspeção, não aprovado
 
 A correção em andamento para exclusão remove o vínculo público na mesma transação do cliente; foram exercitados reuso do identificador em MySQL sintético e rollback em SQLite. A tela autenticada mostra o consolidado das cobranças formalizadas e entrega efetiva. O detalhe público mostra a data de abertura e, quando disponível, conteúdo de orçamento publicado vigente, identificado como aprovado ou aguardando resposta; os textos e itens vêm do retrato publicado, não das notas internas da OS. Também foi adicionada uma alternativa para ausência das tabelas de entrega. Esses resultados são parciais e não substituem revisão independente, testes finais nem validação de concorrência e de migrações parciais.

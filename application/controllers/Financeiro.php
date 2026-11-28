@@ -137,7 +137,9 @@ class Financeiro extends MY_Controller
         $offset = (int) $this->uri->segment(3);
         $total = $this->os_model->contar($filtros);
         $linhas = $this->os_model->listar($filtros, (int) $this->data['configuration']['per_page'], $offset);
-        $resumos = $this->financeiro_os->resumos(array_map(static fn ($o) => (int) $o->idOs, $linhas));
+        $resumos = trifaseFinanceiroProjecaoDisponivel($this->db)
+            ? $this->financeiro_os->resumos(array_map(static fn ($o) => (int) $o->idOs, $linhas))
+            : [];
         $cancelamentosPendentes = [];
         if ($this->db->table_exists('trifase_cancelamentos')) {
             $this->load->model('Trifase_cancelamento_model', 'cancelamentos_os');
@@ -145,7 +147,8 @@ class Financeiro extends MY_Controller
             $resumos = $this->cancelamentos_os->resumosEncerrados(array_map(static fn ($o) => (int) $o->idOs, $linhas), $resumos);
         }
         $this->data = array_merge($this->data, [
-            'contextoFinanceiro' => true, 'listaVerFinanceiro' => true, 'listaFinanceiroHabilitado' => true,
+            'contextoFinanceiro' => true, 'listaVerFinanceiro' => true,
+            'listaFinanceiroHabilitado' => trifaseFinanceiroProjecaoDisponivel($this->db),
             'listaVerCliente' => $this->permite('vCliente'), 'listaFilas' => Trifase_os_fila::opcoes($this->db),
             'listaFinanceiro' => $resumos,
             'cancelamentosPendentes' => $cancelamentosPendentes,

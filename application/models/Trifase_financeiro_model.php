@@ -282,7 +282,7 @@ class Trifase_financeiro_model extends CI_Model
     public function resumos(array $ids): array
     {
         $ids = array_values(array_unique(array_filter(array_map('intval', $ids), static fn ($id) => $id > 0)));
-        if ($ids === []) {
+        if ($ids === [] || ! trifaseFinanceiroProjecaoDisponivel($this->db)) {
             return [];
         }
         $recebidos = [];

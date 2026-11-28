@@ -30,13 +30,13 @@
         <nav class="flex flex-wrap gap-3" aria-label="Filtrar ordens">
             <?php
             $filtrosOs = ['' => 'Todas'];
-            if ($financeiroVisivel ?? false) {
-                $filtrosOs += ['pendente' => 'A pagar', 'pago' => 'Pagas'];
-            }
-            if ($entregasDisponiveis ?? false) {
-                $filtrosOs += ['entregue' => 'Entregues', 'nao-entregue' => 'Não entregues'];
-            }
-            foreach ($filtrosOs as $valor => $rotulo) { ?>
+        if ($financeiroVisivel ?? false) {
+            $filtrosOs += ['pendente' => 'A pagar', 'pago' => 'Pagas'];
+        }
+        if ($entregasDisponiveis ?? false) {
+            $filtrosOs += ['entregue' => 'Entregues', 'nao-entregue' => 'Não entregues'];
+        }
+        foreach ($filtrosOs as $valor => $rotulo) { ?>
                 <a class="inline-flex min-h-11 items-center rounded-md px-2 underline <?= e(($filtro ?? '') === $valor ? 'bg-primary-tint font-semibold' : '') ?>" href="<?= e(site_url('mine/os') . ($valor === '' ? '' : '?filtro=' . rawurlencode($valor))) ?>" <?= ($filtro ?? '') === $valor ? 'aria-current="page"' : '' ?>><?= e($rotulo) ?></a>
             <?php } ?>
         </nav>
@@ -47,11 +47,11 @@
         'rows' => $results,
         'caption' => 'Ordens de serviço',
         'empty' => component('empty-state', [
-            'title' => 'Nenhuma ordem de serviço ainda',
-            'message' => 'Precisa de conserto ou manutenção? Abra uma OS e a assistência entra em contato.',
-            'icon' => 'wrench',
-            'action' => component('button', ['label' => 'Abrir OS', 'icon' => 'plus', 'variant' => 'outline', 'href' => site_url('mine/adicionarOs')]),
-            'class' => 'border-0',
+        'title' => 'Nenhuma ordem de serviço ainda',
+        'message' => 'Precisa de conserto ou manutenção? Abra uma OS e a assistência entra em contato.',
+        'icon' => 'wrench',
+        'action' => component('button', ['label' => 'Abrir OS', 'icon' => 'plus', 'variant' => 'outline', 'href' => site_url('mine/adicionarOs')]),
+        'class' => 'border-0',
         ]),
     ]) ?>
 

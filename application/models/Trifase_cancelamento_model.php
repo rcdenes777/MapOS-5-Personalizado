@@ -42,7 +42,7 @@ class Trifase_cancelamento_model extends CI_Model
         }
         $ids = array_map(static fn ($l) => (int) $l->os_id, $linhas);
         $faltantes = array_values(array_diff($ids, array_keys($resumos)));
-        if ($faltantes !== [] && trifaseFinanceiroHabilitado() && $this->db->table_exists('trifase_financeiro_obrigacoes')) {
+        if ($faltantes !== [] && trifaseFinanceiroClienteDisponivel($this->db)) {
             require_once APPPATH . 'models/Trifase_financeiro_model.php';
             $f = new Trifase_financeiro_model();
             $f->db = $this->db;
@@ -111,10 +111,15 @@ class Trifase_cancelamento_model extends CI_Model
         }
         $financeiro = null;
         if (trifaseFinanceiroOsGerida($this->db, $id)) {
-            require_once APPPATH . 'models/Trifase_financeiro_model.php';
-            $f = new Trifase_financeiro_model();
-            $f->db = $this->db;
-            $financeiro = $f->resumo($id);
+            if (trifaseFinanceiroProjecaoDisponivel($this->db)) {
+                require_once APPPATH . 'models/Trifase_financeiro_model.php';
+                $f = new Trifase_financeiro_model();
+                $f->db = $this->db;
+                $financeiro = $f->resumo($id);
+            } else {
+                // Sem a tabela de eventos o saldo é desconhecido: não cancelar às cegas.
+                $bloqueios[] = 'A projeção financeira está indisponível nesta instalação. Concilie o financeiro antes de cancelar.';
+            }
         } elseif ((int) ($os->faturado ?? 0) === 1 || ! empty($os->lancamento)) {
             $bloqueios[] = 'Existe faturamento ou lançamento anterior não conciliado. Concilie-o no financeiro antes do cancelamento.';
         }

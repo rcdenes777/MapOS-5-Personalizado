@@ -60,7 +60,9 @@ if ($entregasDisponiveis ?? false) {
                         <div><dt class="text-caption text-muted">Total pago</dt><dd><?= e($dinheiro($ordem->financeiro['pago_c'])) ?></dd></div>
                     <?php } ?>
                     <div><dt class="text-caption text-muted">Pagamento</dt><dd><?= e($financeiroDisponivel ? ($ordem->financeiro['situacao'] ?? 'Sem cobrança formalizada') : 'Informação financeira indisponível') ?></dd></div>
-                    <div><dt class="text-caption text-muted">Saldo a pagar</dt><dd><?= e(isset($ordem->financeiro) ? $dinheiro($ordem->financeiro['saldo_c']) : '—') ?></dd></div>
+                    <?php if ($financeiroDisponivel) { ?>
+                        <div><dt class="text-caption text-muted">Saldo a pagar</dt><dd><?= e(isset($ordem->financeiro) ? $dinheiro($ordem->financeiro['saldo_c']) : '—') ?></dd></div>
+                    <?php } ?>
                 </dl>
             </article>
         <?php } ?>

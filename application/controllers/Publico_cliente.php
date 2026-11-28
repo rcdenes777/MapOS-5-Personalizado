@@ -6,6 +6,7 @@ require_once APPPATH . 'helpers/trifase_publico_helper.php';
 require_once APPPATH . 'helpers/trifase_financeiro_helper.php';
 require_once APPPATH . 'helpers/trifase_video_helper.php';
 require_once APPPATH . 'helpers/trifase_portal_cliente_helper.php';
+require_once APPPATH . 'helpers/trifase_entrega_helper.php';
 
 /** Portal de leitura autorizado apenas por capacidade do cliente. */
 class Publico_cliente extends CI_Controller
@@ -104,7 +105,7 @@ class Publico_cliente extends CI_Controller
 
     private function entregasDisponiveis(): bool
     {
-        return $this->db->table_exists('trifase_entregas_estado') && $this->db->table_exists('trifase_entregas_eventos');
+        return trifaseEntregasDisponiveis($this->db);
     }
 
     private function orcamentoCliente(int $idOs, int $idCliente): ?array

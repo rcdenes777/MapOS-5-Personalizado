@@ -2,7 +2,7 @@
 
 defined('BASEPATH') or exit('No direct script access allowed');
 
-require APPPATH . '/libraries/REST_Controller.php';
+require_once APPPATH . '/libraries/REST_Controller.php';
 
 class ClientesController extends REST_Controller
 {
@@ -201,6 +201,14 @@ class ClientesController extends REST_Controller
             ], REST_Controller::HTTP_BAD_REQUEST);
         }
 
+        if (! $this->clientes_model->getById((int) $id)) {
+            $this->response([
+                'status' => false,
+                'message' => 'Cliente não encontrado.',
+            ], REST_Controller::HTTP_NOT_FOUND);
+            return;
+        }
+
         if ($this->clientes_model->excluirComDependencias((int) $id)) {
             $this->log_app('Removeu um cliente. ID' . $id);
             $this->response([
@@ -209,9 +217,10 @@ class ClientesController extends REST_Controller
             ], REST_Controller::HTTP_OK);
         }
 
+        // Dependência ou restrição é conflito com o estado atual; não é erro interno.
         $this->response([
             'status' => false,
-            'message' => 'Não foi possível excluir o Cliente.',
-        ], REST_Controller::HTTP_INTERNAL_SERVER_ERROR);
+            'message' => 'Não foi possível excluir o Cliente: dependências ou restrições impedem a exclusão.',
+        ], REST_Controller::HTTP_CONFLICT);
     }
 }

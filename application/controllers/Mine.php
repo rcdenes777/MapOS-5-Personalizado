@@ -29,7 +29,7 @@ class Mine extends CI_Controller
     {
         parent::__construct();
         $this->load->model('Conecte_model');
-        $this->load->helper(['Security_helper', 'os', 'vendas', 'financeiro', 'clientes', 'conecte', 'trifase_financeiro']);
+        $this->load->helper(['Security_helper', 'os', 'vendas', 'financeiro', 'clientes', 'conecte', 'trifase_financeiro', 'trifase_entrega']);
     }
 
     public function index()
@@ -293,7 +293,7 @@ class Mine extends CI_Controller
             $this->load->model('Trifase_financeiro_model', 'financeiro_cliente');
             $totaisFinanceiros = $this->financeiro_cliente->consolidadoCliente($idCliente);
         }
-        $entregasDisponiveis = $this->db->table_exists('trifase_entregas_estado') && $this->db->table_exists('trifase_entregas_eventos');
+        $entregasDisponiveis = trifaseEntregasDisponiveis($this->db);
         $recentes = $this->comFinanceiro($this->Conecte_model->getLastOs($idCliente, self::RECENTES));
         if ($entregasDisponiveis) {
             $this->load->model('Trifase_cliente_publico_model', 'portal_cliente_interno');
@@ -375,7 +375,7 @@ class Mine extends CI_Controller
     {
         $idCliente = $this->clienteLogado();
         $offset = max(0, (int) $this->uri->segment(3));
-        $entregasDisponiveis = $this->db->table_exists('trifase_entregas_estado') && $this->db->table_exists('trifase_entregas_eventos');
+        $entregasDisponiveis = trifaseEntregasDisponiveis($this->db);
         $filtro = (string) $this->input->get('filtro');
         if (! in_array($filtro, ['', 'pago', 'pendente', 'entregue', 'nao-entregue'], true)
             || (! $this->financeiroVisivel() && in_array($filtro, ['pago', 'pendente'], true))

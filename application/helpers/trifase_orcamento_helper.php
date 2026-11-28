@@ -252,7 +252,12 @@ function trifaseCatalogoExcluirProtegido(object $db, string $tipo, int $id, call
                 $db->trans_rollback();
                 return false;
             }
-            foreach ($db->select('os_id')->distinct()->where($campo, $id)->get($itens)->result() as $linha) {
+            $relacoes = $db->query('SELECT DISTINCT os_id FROM ' . $db->dbprefix($itens) . ' WHERE ' . $campo . ' = ? FOR UPDATE', [$id]);
+            if ($relacoes === false) {
+                $db->trans_rollback();
+                return false;
+            }
+            foreach ($relacoes->result() as $linha) {
                 if ((int) $linha->os_id > 0) {
                     $ids[(int) $linha->os_id] = (int) $linha->os_id;
                 }

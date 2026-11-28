@@ -29,7 +29,7 @@ Continuação de `VALIDACAO_PORTAL_CLIENTE_98600544.md` e de `VALIDACAO_PORTAL_C
 
 ## Revisão independente
 
-Primeira rodada externa sobre `cf88f45f`: **aceite substancial com um achado material (F01)**, corrigido aqui. As revisões DeepSeek anteriores (`1451fa5f`, `d2502caa`, delta até `98600544`) estão registradas nos documentos próprios e não valem como aceite independente — o Supervisor desta sessão usa o mesmo provedor e modelo da rota `review`. O aceite final depende da segunda rodada do GPT Supervisor externo. Nenhuma revisão visual nova foi solicitada: as telas capturadas não mudaram.
+**Aceite técnico externo concedido** para `68dcc933`, com F01 encerrado e nenhum achado material adicional no escopo revisado. Primeira rodada externa sobre `cf88f45f`: **aceite substancial com um achado material (F01)**, corrigido aqui. As revisões DeepSeek anteriores (`1451fa5f`, `d2502caa`, delta até `98600544`) estão registradas nos documentos próprios e não valem como aceite independente — o Supervisor desta sessão usa o mesmo provedor e modelo da rota `review`. O aceite final foi dado pelo GPT Supervisor externo; a ativação em produção continua bloqueada até autorização explícita do responsável e verificação operacional das máscaras de token e do procedimento de migração/reversão. Nenhuma revisão visual nova foi solicitada: as telas capturadas não mudaram.
 
 ## Limites e riscos remanescentes
 

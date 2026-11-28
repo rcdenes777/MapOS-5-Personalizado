@@ -243,27 +243,28 @@ class ProdutosController extends REST_Controller
         }
 
         require_once APPPATH . 'helpers/trifase_orcamento_helper.php';
-        if (trifaseCatalogoItemProtegido($this->db, 'produto', (int) $id)) {
-            $this->response(['status' => false, 'message' => 'Produto usado em orçamento negociado não pode ser excluído.'], REST_Controller::HTTP_FORBIDDEN);
+        $excluir = function () use ($id): bool {
+            if (! $this->db->table_exists('trifase_estoque_eventos')) {
+                $this->produtos_model->delete('produtos_os', 'produtos_id', $id);
+                $this->produtos_model->delete('itens_de_vendas', 'produtos_id', $id);
+            }
+
+            return (bool) $this->produtos_model->delete('produtos', 'idProdutos', $id);
+        };
+        try {
+            if (! trifaseCatalogoExcluirProtegido($this->db, 'produto', (int) $id, $excluir)) {
+                $this->response(['status' => false, 'message' => 'Produto usado em orçamento negociado não pode ser excluído.'], REST_Controller::HTTP_FORBIDDEN);
+                return;
+            }
+        } catch (RuntimeException $e) {
+            $this->response(['status' => false, 'message' => 'Não foi possível excluir o Produto. Avise ao Administrador.'], REST_Controller::HTTP_INTERNAL_SERVER_ERROR);
             return;
         }
 
-        if (! $this->db->table_exists('trifase_estoque_eventos')) {
-            $this->produtos_model->delete('produtos_os', 'produtos_id', $id);
-            $this->produtos_model->delete('itens_de_vendas', 'produtos_id', $id);
-        }
-
-        if ($this->produtos_model->delete('produtos', 'idProdutos', $id)) {
-            $this->log_app('Removeu um Produto. ID' . $id);
-            $this->response([
-                'status' => true,
-                'message' => 'Produto excluído com sucesso!',
-            ], REST_Controller::HTTP_OK);
-        }
-
+        $this->log_app('Removeu um Produto. ID' . $id);
         $this->response([
-            'status' => false,
-            'message' => 'Não foi possível excluir o Produto. Avise ao Administrador.',
-        ], REST_Controller::HTTP_INTERNAL_SERVER_ERROR);
+            'status' => true,
+            'message' => 'Produto excluído com sucesso!',
+        ], REST_Controller::HTTP_OK);
     }
 }

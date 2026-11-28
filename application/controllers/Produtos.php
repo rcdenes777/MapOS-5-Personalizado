@@ -216,22 +216,24 @@ class Produtos extends MY_Controller
         }
 
         require_once APPPATH . 'helpers/trifase_orcamento_helper.php';
-        if (trifaseCatalogoItemProtegido($this->db, 'produto', $id)) {
-            $this->session->set_flashdata('error', 'Produto usado em orçamento negociado não pode ser excluído. Retire o desconto pela negociação antes.');
-            return redirect('produtos/visualizar/' . $id);
-        }
-
-        if (! $this->db->table_exists('trifase_estoque_eventos')) {
-            $this->produtos_model->delete('produtos_os', 'produtos_id', $id);
-            $this->produtos_model->delete('itens_de_vendas', 'produtos_id', $id);
-        }
-        if (! $this->produtos_model->delete('produtos', 'idProdutos', $id)) {
+        $excluir = function () use ($id): bool {
+            if (! $this->db->table_exists('trifase_estoque_eventos')) {
+                $this->produtos_model->delete('produtos_os', 'produtos_id', $id);
+                $this->produtos_model->delete('itens_de_vendas', 'produtos_id', $id);
+            }
+            return (bool) $this->produtos_model->delete('produtos', 'idProdutos', $id);
+        };
+        try {
+            if (! trifaseCatalogoExcluirProtegido($this->db, 'produto', $id, $excluir)) {
+                $this->session->set_flashdata('error', 'Produto usado em orçamento negociado não pode ser excluído. Retire o desconto pela negociação antes.');
+                return redirect('produtos/visualizar/' . $id);
+            }
+        } catch (RuntimeException $e) {
             $this->session->set_flashdata('error', 'Não foi possível excluir o produto. Confira os vínculos.');
             return redirect('produtos/visualizar/' . $id);
         }
 
         log_info('Removeu um produto. ID: ' . $id);
-
         $this->session->set_flashdata('success', 'Produto excluído com sucesso!');
         redirect(site_url('produtos') . listagemQuery(listagemFiltros(self::FILTROS, $this->input->get())));
     }

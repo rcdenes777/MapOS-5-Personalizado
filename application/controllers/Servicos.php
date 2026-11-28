@@ -151,16 +151,22 @@ class Servicos extends MY_Controller
         }
 
         require_once APPPATH . 'helpers/trifase_orcamento_helper.php';
-        if (trifaseCatalogoItemProtegido($this->db, 'servico', (int) $id)) {
-            $this->session->set_flashdata('error', 'Serviço usado em orçamento negociado não pode ser excluído. Retire o desconto pela negociação antes.');
-            return redirect('servicos');
+        $excluir = function () use ($id): bool {
+            $itens = (bool) $this->servicos_model->delete('servicos_os', 'servicos_id', $id);
+
+            return $itens && (bool) $this->servicos_model->delete('servicos', 'idServicos', $id);
+        };
+        try {
+            if (! trifaseCatalogoExcluirProtegido($this->db, 'servico', (int) $id, $excluir)) {
+                $this->session->set_flashdata('error', 'Serviço usado em orçamento negociado não pode ser excluído. Retire o desconto pela negociação antes.');
+                return redirect('servicos');
+            }
+        } catch (RuntimeException $e) {
+            $this->session->set_flashdata('error', 'Não foi possível excluir o serviço. Confira os vínculos.');
+            return redirect('servicos/gerenciar/' . (int) $id);
         }
 
-        $this->servicos_model->delete('servicos_os', 'servicos_id', $id);
-        $this->servicos_model->delete('servicos', 'idServicos', $id);
-
         log_info('Removeu um serviço. ID: ' . $id);
-
         $this->session->set_flashdata('success', 'Serviço excluído com sucesso!');
         redirect(site_url('servicos') . listagemQuery(listagemFiltros(self::FILTROS, $this->input->get())));
     }

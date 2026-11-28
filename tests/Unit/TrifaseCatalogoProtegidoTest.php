@@ -54,6 +54,31 @@ final class TrifaseCatalogoProtegidoTest extends MaposTestCase
         $this->assertTrue(trifaseCatalogoItemProtegido($this->db, 'servico', 1));
     }
 
+    public function testExclusaoProtegidaNaoExecutaCallbackComDescontoEfetivo(): void
+    {
+        $this->cenario(340);
+        $chamado = false;
+        $this->assertFalse(trifaseCatalogoExcluirProtegido($this->db, 'produto', 1, function () use (&$chamado): bool {
+            $chamado = true;
+
+            return true;
+        }));
+        $this->assertFalse($chamado, 'Callback de exclusão não roda quando há desconto negociado.');
+        $this->assertSame(1, (int) $this->db->count_all('produtos_os'));
+    }
+
+    public function testExclusaoProtegidaExecutaCallbackSemDescontoEfetivo(): void
+    {
+        $this->cenario(350, 'real', 10);
+        $chamado = false;
+        $this->assertTrue(trifaseCatalogoExcluirProtegido($this->db, 'produto', 1, function () use (&$chamado): bool {
+            $chamado = true;
+
+            return true;
+        }));
+        $this->assertTrue($chamado);
+    }
+
     public function testSubtotalLegadoNuloNaoEscondeDescontoEfetivo(): void
     {
         $this->cenario(340);

@@ -212,3 +212,54 @@ function trifaseCatalogoItemProtegido(object $db, string $tipo, int $id): bool
     }
     return false;
 }
+
+/**
+ * Executa a exclusão do catálogo sob a mesma trava das OSs vinculadas: sem
+ * isso, uma negociação concorrente poderia publicar desconto entre a
+ * verificação e o delete. A revalidação acontece depois do lock.
+ *
+ * @param  callable():bool  $excluir
+ */
+function trifaseCatalogoExcluirProtegido(object $db, string $tipo, int $id, callable $excluir): bool
+{
+    if ($id <= 0 || ! in_array($tipo, ['produto', 'servico'], true)
+        || ! $db->table_exists('trifase_orcamento_versoes')) {
+        return (bool) $excluir();
+    }
+    $campo = $tipo === 'produto' ? 'produtos_id' : 'servicos_id';
+    $itens = $tipo === 'produto' ? 'produtos_os' : 'servicos_os';
+    if (! $db->table_exists($itens)) {
+        return (bool) $excluir();
+    }
+    $ids = [];
+    foreach ($db->select('os_id')->distinct()->where($campo, $id)->get($itens)->result() as $linha) {
+        if ((int) $linha->os_id > 0) {
+            $ids[(int) $linha->os_id] = (int) $linha->os_id;
+        }
+    }
+    if ($ids === []) {
+        return (bool) $excluir();
+    }
+    if (! $db->trans_begin()) {
+        throw new RuntimeException('Não foi possível iniciar a exclusão protegida.');
+    }
+    try {
+        if (($db->dbdriver ?? '') === 'mysqli') {
+            sort($ids);
+            $db->query('SELECT idOs FROM ' . $db->dbprefix('os') . ' WHERE idOs IN (' . implode(',', array_fill(0, count($ids), '?')) . ') FOR UPDATE', $ids);
+        }
+        if (trifaseCatalogoItemProtegido($db, $tipo, $id)) {
+            $db->trans_rollback();
+            return false;
+        }
+        $resultado = (bool) $excluir();
+        if (! $resultado || ! $db->trans_commit()) {
+            $db->trans_rollback();
+            throw new RuntimeException('Não foi possível concluir a exclusão protegida.');
+        }
+        return true;
+    } catch (Throwable $e) {
+        $db->trans_rollback();
+        throw $e;
+    }
+}

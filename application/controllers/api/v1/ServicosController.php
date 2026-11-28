@@ -173,24 +173,25 @@ class ServicosController extends REST_Controller
         }
 
         require_once APPPATH . 'helpers/trifase_orcamento_helper.php';
-        if (trifaseCatalogoItemProtegido($this->db, 'servico', (int) $id)) {
-            $this->response(['status' => false, 'message' => 'Serviço usado em orçamento negociado não pode ser excluído.'], REST_Controller::HTTP_FORBIDDEN);
+        $excluir = function () use ($id): bool {
+            $itens = (bool) $this->servicos_model->delete('servicos_os', 'servicos_id', $id);
+
+            return $itens && (bool) $this->servicos_model->delete('servicos', 'idServicos', $id);
+        };
+        try {
+            if (! trifaseCatalogoExcluirProtegido($this->db, 'servico', (int) $id, $excluir)) {
+                $this->response(['status' => false, 'message' => 'Serviço usado em orçamento negociado não pode ser excluído.'], REST_Controller::HTTP_FORBIDDEN);
+                return;
+            }
+        } catch (RuntimeException $e) {
+            $this->response(['status' => false, 'message' => 'Não foi possível excluir o Serviço. Avise ao Administrador.'], REST_Controller::HTTP_INTERNAL_SERVER_ERROR);
             return;
         }
 
-        $this->servicos_model->delete('servicos_os', 'servicos_id', $id);
-
-        if ($this->servicos_model->delete('servicos', 'idServicos', $id)) {
-            $this->log_app('Removeu um Serviço. ID' . $id);
-            $this->response([
-                'status' => true,
-                'message' => 'Serviço excluído com sucesso!',
-            ], REST_Controller::HTTP_OK);
-        }
-
+        $this->log_app('Removeu um Serviço. ID' . $id);
         $this->response([
-            'status' => false,
-            'message' => 'Não foi possível excluir o Serviço. Avise ao Administrador.',
-        ], REST_Controller::HTTP_INTERNAL_SERVER_ERROR);
+            'status' => true,
+            'message' => 'Serviço excluído com sucesso!',
+        ], REST_Controller::HTTP_OK);
     }
 }

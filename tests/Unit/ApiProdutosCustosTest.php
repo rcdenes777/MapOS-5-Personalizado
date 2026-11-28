@@ -8,11 +8,9 @@ final class ApiProdutosCustosTest extends MaposTestCase
 {
     public function testExclusaoDaApiProtegeItensDeOrcamentoNegociado(): void
     {
-        foreach ([['api/v1/ProdutosController.php', "delete('produtos_os'"], ['api/v1/ServicosController.php', "delete('servicos_os'"]] as [$arquivo, $exclusao]) {
+        foreach ([['api/v1/ProdutosController.php', "trifaseCatalogoExcluirProtegido(\$this->db, 'produto', (int) \$id, \$excluir)"], ['api/v1/ServicosController.php', "trifaseCatalogoExcluirProtegido(\$this->db, 'servico', (int) \$id, \$excluir)"]] as [$arquivo, $chamada]) {
             $codigo = (string) file_get_contents(APPPATH . 'controllers/' . $arquivo);
-            $protecao = strpos($codigo, 'trifaseCatalogoItemProtegido');
-            $this->assertNotFalse($protecao, $arquivo . ' precisa consultar a proteção.');
-            $this->assertLessThan(strpos($codigo, $exclusao), $protecao, $arquivo . ' protege antes de apagar itens.');
+            $this->assertStringContainsString($chamada, $codigo, $arquivo . ' executa a exclusão sob a proteção.');
         }
     }
 

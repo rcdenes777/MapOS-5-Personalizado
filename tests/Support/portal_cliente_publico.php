@@ -16,6 +16,39 @@ ob_start();
 require 'index.php';
 ob_end_clean();
 $ci =& get_instance();
+if (in_array(getenv('PORTAL_MODE'), ['exclusao-atomica-preparar', 'exclusao-atomica-sucesso'], true)) {
+    $base = json_decode(file_get_contents('/lab/fixture-ids.json'), true, flags: JSON_THROW_ON_ERROR);
+    $usuario = (int) $base['usuario'];
+    $ci->db->insert('clientes', ['nomeCliente' => 'Exclusão atômica sintética', 'email' => 'atomica-' . bin2hex(random_bytes(6)) . '@example.invalid', 'dataCadastro' => date('Y-m-d'), 'fornecedor' => 0]);
+    $cliente = (int) $ci->db->insert_id();
+    $ci->db->insert('os', ['dataInicial' => date('Y-m-d'), 'descricaoProduto' => 'OS sintética', 'defeito' => 'Teste', 'status' => 'Aberto', 'clientes_id' => $cliente, 'usuarios_id' => $usuario, 'faturado' => 0, 'valorTotal' => '0.00']);
+    $os = (int) $ci->db->insert_id();
+    $ci->db->insert('vendas', ['dataVenda' => date('Y-m-d'), 'clientes_id' => $cliente, 'usuarios_id' => $usuario, 'valorTotal' => '0.00']);
+    $venda = (int) $ci->db->insert_id();
+    $lancamento = 0;
+    if (getenv('PORTAL_MODE') === 'exclusao-atomica-preparar') {
+        $ci->db->insert('lancamentos', ['descricao' => 'Restrição sintética', 'valor' => '10.00', 'data_vencimento' => date('Y-m-d'), 'clientes_id' => $cliente, 'usuarios_id' => $usuario]);
+        $lancamento = (int) $ci->db->insert_id();
+    }
+    $ci->load->model('Trifase_cliente_publico_model', 'portal_atomico');
+    $token = $ci->portal_atomico->gerar($cliente, $usuario);
+    file_put_contents('/lab/portal-exclusao-atomica.json', json_encode(compact('cliente', 'os', 'venda', 'lancamento', 'token'), JSON_THROW_ON_ERROR));
+    chmod('/lab/portal-exclusao-atomica.json', 0600);
+    echo $cliente;
+    exit;
+}
+if (getenv('PORTAL_MODE') === 'exclusao-atomica-verificar') {
+    $f = json_decode(file_get_contents('/lab/portal-exclusao-atomica.json'), true, flags: JSON_THROW_ON_ERROR);
+    $ci->load->model('Trifase_cliente_publico_model', 'portal_atomico');
+    echo json_encode([
+        'cliente' => (int) $ci->db->where('idClientes', $f['cliente'])->count_all_results('clientes'),
+        'os' => (int) $ci->db->where('idOs', $f['os'])->count_all_results('os'),
+        'venda' => (int) $ci->db->where('idVendas', $f['venda'])->count_all_results('vendas'),
+        'lancamento' => (int) $ci->db->where('idLancamentos', $f['lancamento'])->count_all_results('lancamentos'),
+        'token' => $ci->portal_atomico->resolver($f['token']) !== null,
+    ], JSON_THROW_ON_ERROR);
+    exit;
+}
 if (getenv('PORTAL_MODE') === 'entregar') {
     $f = json_decode(file_get_contents('/lab/portal-cliente-private.json'), true, flags: JSON_THROW_ON_ERROR);
     $base = json_decode(file_get_contents('/lab/fixture-ids.json'), true, flags: JSON_THROW_ON_ERROR);

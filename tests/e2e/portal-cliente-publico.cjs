@@ -107,12 +107,34 @@ const fixture = JSON.parse(cp.execFileSync('docker', ['exec', container, 'php', 
     await page.locator('[name=email]').fill(creds.email);
     await page.locator('[name=senha]').fill(creds.password);
     await Promise.all([page.waitForURL('**/mapos'), page.locator('button[type=submit]').click()]);
+    const clienteAtomico = Number(cp.execFileSync('docker', ['exec', '-e', 'PORTAL_MODE=exclusao-atomica-preparar', container, 'php', '-d', 'variables_order=EGPCS', '/var/www/html/tests/Support/portal_cliente_publico.php'], { encoding: 'utf8' }));
+    assert.ok(clienteAtomico > 0);
+    const estadoExclusao = () => JSON.parse(cp.execFileSync('docker', ['exec', '-e', 'PORTAL_MODE=exclusao-atomica-verificar', container, 'php', '-d', 'variables_order=EGPCS', '/var/www/html/tests/Support/portal_cliente_publico.php'], { encoding: 'utf8' }));
+    assert.deepEqual(estadoExclusao(), { cliente: 1, os: 1, venda: 1, lancamento: 1, token: true });
+    await page.goto(`${base}/index.php/clientes/gerenciar`);
+    await page.locator('#form-excluir-cliente [name=id]').evaluate((element, id) => { element.value = String(id); }, clienteAtomico);
+    const [exclusaoResposta] = await Promise.all([
+      page.waitForResponse(response => response.url().includes('/clientes/excluir') && response.request().method() === 'POST'),
+      page.locator('#form-excluir-cliente').evaluate(form => form.requestSubmit()),
+    ]);
+    assert.deepEqual(estadoExclusao(), { cliente: 1, os: 1, venda: 1, lancamento: 1, token: true }, 'failed customer deletion must preserve every related record and token');
+    assert.notEqual(exclusaoResposta.status(), 500, 'failed deletion is reported without a server error');
+    await page.waitForURL('**/index.php/clientes');
+    assert.match(await page.locator('body').innerText(), /Não foi possível excluir o cliente/);
     await page.goto(`${base}/index.php/clientes/gerenciar`);
     await page.locator('#form-excluir-cliente [name=id]').evaluate(element => { element.value = '2147483647'; });
-    await Promise.all([page.waitForURL('**/clientes**'), page.locator('#form-excluir-cliente').evaluate(form => form.requestSubmit())]);
+    await Promise.all([page.waitForURL('**/index.php/clientes'), page.locator('#form-excluir-cliente').evaluate(form => form.requestSubmit())]);
     const exclusaoInexistente = await page.locator('body').innerText();
     assert.match(exclusaoInexistente, /Não foi possível excluir o cliente/);
     assert.doesNotMatch(exclusaoInexistente, /Cliente excluído com sucesso/);
+    const clienteExcluivel = Number(cp.execFileSync('docker', ['exec', '-e', 'PORTAL_MODE=exclusao-atomica-sucesso', container, 'php', '-d', 'variables_order=EGPCS', '/var/www/html/tests/Support/portal_cliente_publico.php'], { encoding: 'utf8' }));
+    assert.ok(clienteExcluivel > 0);
+    assert.deepEqual(estadoExclusao(), { cliente: 1, os: 1, venda: 1, lancamento: 0, token: true });
+    await page.goto(`${base}/index.php/clientes/gerenciar`);
+    await page.locator('#form-excluir-cliente [name=id]').evaluate((element, id) => { element.value = String(id); }, clienteExcluivel);
+    await Promise.all([page.waitForURL('**/index.php/clientes'), page.locator('#form-excluir-cliente').evaluate(form => form.requestSubmit())]);
+    assert.match(await page.locator('body').innerText(), /Cliente excluído com sucesso/);
+    assert.deepEqual(estadoExclusao(), { cliente: 0, os: 0, venda: 0, lancamento: 0, token: false });
     response = await page.goto(`${base}/index.php/clientes/visualizar/${fixture.clienteA}`);
     assert.equal(response.status(), 200);
     assert.equal(await page.getByRole('link', { name: /link público do cliente/i }).count(), 1, 'customer record links to sharing controls');

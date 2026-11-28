@@ -201,18 +201,7 @@ class ClientesController extends REST_Controller
             ], REST_Controller::HTTP_BAD_REQUEST);
         }
 
-        $os = $this->clientes_model->getAllOsByClient($id);
-        if ($os != null && ! $this->clientes_model->removeClientOs($os)) {
-            $this->response(['status' => false, 'message' => 'Não foi possível excluir as OS vinculadas. Confira o histórico do cliente.'], 409);
-            return;
-        }
-
-        $vendas = $this->clientes_model->getAllVendasByClient($id);
-        if ($vendas != null) {
-            $this->clientes_model->removeClientVendas($vendas);
-        }
-
-        if ($this->clientes_model->delete('clientes', 'idClientes', $id) == true) {
+        if ($this->clientes_model->excluirComDependencias((int) $id)) {
             $this->log_app('Removeu um cliente. ID' . $id);
             $this->response([
                 'status' => true,

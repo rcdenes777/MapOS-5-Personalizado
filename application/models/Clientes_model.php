@@ -112,6 +112,48 @@ class Clientes_model extends CI_Model
         return false;
     }
 
+    /** Exclui cliente, OS, vendas e link como uma única operação. */
+    public function excluirComDependencias(int $id): bool
+    {
+        require_once APPPATH . 'helpers/trifase_cadastro_helper.php';
+        if ($id <= 0 || $this->db->trans_active() || ! $this->db->trans_begin()) {
+            return false;
+        }
+        $debug = $this->db->db_debug;
+        $this->db->db_debug = false;
+        try {
+            $sufixo = match ($this->db->dbdriver) {
+                'mysqli' => ' FOR UPDATE',
+                'sqlite3' => '',
+                default => throw new RuntimeException('Driver de banco não suportado.'),
+            };
+            $cliente = $this->db->query('SELECT idClientes FROM clientes WHERE idClientes = ?' . $sufixo, [$id]);
+            if (! $cliente || ! $cliente->row() || trifaseClienteTemHistoricoProtegido($this->db, $id)) {
+                $this->db->trans_rollback();
+                return false;
+            }
+            $os = $this->getAllOsByClient($id);
+            $vendas = $this->getAllVendasByClient($id);
+            if (($os !== [] && ! $this->removeClientOs($os))
+                || ($vendas !== [] && ! $this->removeClientVendas($vendas))
+                || ! $this->delete('clientes', 'idClientes', $id)
+                || ! $this->db->trans_status()) {
+                $this->db->trans_rollback();
+                return false;
+            }
+            if (! $this->db->trans_commit()) {
+                $this->db->trans_rollback();
+                return false;
+            }
+            return true;
+        } catch (Throwable $erro) {
+            $this->db->trans_rollback();
+            return false;
+        } finally {
+            $this->db->db_debug = $debug;
+        }
+    }
+
     public function delete($table, $fieldID, $ID)
     {
         if ($table === 'clientes' && $fieldID === 'idClientes' && $this->db->table_exists('trifase_cliente_publico_links')) {
@@ -270,10 +312,14 @@ class Clientes_model extends CI_Model
         try {
             foreach ($vendas as $v) {
                 $this->db->where('vendas_id', $v->idVendas);
-                $this->db->delete('itens_de_vendas');
+                if (! $this->db->delete('itens_de_vendas')) {
+                    return false;
+                }
 
                 $this->db->where('idVendas', $v->idVendas);
-                $this->db->delete('vendas');
+                if (! $this->db->delete('vendas') || $this->db->affected_rows() !== 1) {
+                    return false;
+                }
             }
         } catch (Exception $e) {
             return false;

@@ -293,30 +293,17 @@ class Clientes extends MY_Controller
             redirect(base_url());
         }
 
-        $id = $this->input->post('id');
+        $id = filter_var($this->input->post('id'), FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
+        if ($id === false) {
+            $this->session->set_flashdata('error', 'Erro ao tentar excluir cliente.');
+            return redirect(site_url('clientes/gerenciar/'));
+        }
         $this->load->helper('trifase_cadastro');
         if (trifaseClienteTemHistoricoProtegido($this->db, (int) $id)) {
             $this->session->set_flashdata('error', 'Cliente com histórico de relacionamento não pode ser excluído.');
             return redirect('clientes/visualizar/' . (int) $id);
         }
-        if ($id == null) {
-            $this->session->set_flashdata('error', 'Erro ao tentar excluir cliente.');
-            redirect(site_url('clientes/gerenciar/'));
-        }
-
-        $os = $this->clientes_model->getAllOsByClient($id);
-        if ($os != null && ! $this->clientes_model->removeClientOs($os)) {
-            $this->session->set_flashdata('error', 'Não foi possível excluir as OS vinculadas. Confira o histórico do cliente.');
-            return redirect('clientes/visualizar/' . (int) $id);
-        }
-
-        // excluindo Vendas vinculadas ao cliente
-        $vendas = $this->clientes_model->getAllVendasByClient($id);
-        if ($vendas != null) {
-            $this->clientes_model->removeClientVendas($vendas);
-        }
-
-        if (! $this->clientes_model->delete('clientes', 'idClientes', $id)) {
+        if (! $this->clientes_model->excluirComDependencias((int) $id)) {
             $this->session->set_flashdata('error', 'Não foi possível excluir o cliente.');
             return redirect(site_url('clientes') . listagemQuery(listagemFiltros(self::FILTROS, $this->input->get())));
         }
